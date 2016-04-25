@@ -30,11 +30,10 @@
 	<body class="gray-bg">
     	<div class="middle-box text-center loginscreen animated fadeInDown">
         	<div>
-        		<!--  
+        		
             	<div>
-					<img class="animated flip" src="${pageContext.request.contextPath}/images/kecak.png"/>
+					<img class="animated flip" src="${pageContext.request.contextPath}/images/logo-login.png"/>
 				</div>
-				-->
             	<h2>Login.</h2>
             	<c:if test="${not empty param.error && not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION']}">
 					<div class="alert alert-danger">

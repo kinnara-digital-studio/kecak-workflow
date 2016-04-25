@@ -10,8 +10,6 @@ public interface UserSaltDao {
 
     Boolean deleteUserSalt(String id);
     
-    Boolean deleteUserSaltByUserId(String userId);
-    
     UserSalt getUserSalt(String id);
 
     UserSalt getUserSaltByUserId(String userId);
