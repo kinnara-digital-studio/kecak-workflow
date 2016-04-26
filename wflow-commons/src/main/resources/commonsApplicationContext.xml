@@ -146,6 +146,10 @@
         <property name="cacheName" value="org.joget.cache.SETUP_CACHE"/>
     </bean>
     
-    <bean id="nonceGenerator" class="org.joget.commons.util.NonceGeneratorImpl"/>
+    <bean id="nonceGenerator" class="org.joget.commons.util.NonceGeneratorImpl">
+		<property name="cache">
+            <ref local="resourceBundleMessageCache" />
+        </property>
+    </bean>
 
 </beans>
