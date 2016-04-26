@@ -1,0 +1,197 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /*padding-top: 20px;*/
+  padding-bottom: 250px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 200px;
+  background-image: url('../images/images.jpg');
+  
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container .breadcrumb {
+ margin-top: 60px;
+}
+
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.panel-tab {
+	background:#f9f9f9
+}
+.panel-tab:after, .panel-tab:before {
+	display:table;
+	line-height:0;
+	content:""
+}
+.panel-tab:after {
+	clear:both
+}
+.tab-bar {
+	list-style:none;
+	margin:0
+}
+.tab-bar:after, .tab-bar:before {
+	display:table;
+	line-height:0;
+	content:""
+}
+.tab-bar:after {
+	clear:both
+}
+.tab-bar.right > li {
+	float:right
+}
+.tab-bar.right > li .active:first-child a {
+	border-right:none
+}
+.tab-bar.grey-tab {
+	background:#e6e6e6
+}
+.tab-bar.grey-tab li.active a {
+	border:transparent;
+	background:#f9f9f9
+}
+.tab-bar.grey-tab li.active a:focus,.tab-bar.grey-tab li.active a:hover {
+	border:transparent
+}
+.tab-bar.grey-tab li a {
+	color:#bbb;
+	border-radius:0;
+	-moz-border-radius:0;
+	-webkit-border-radius:0;
+	border:transparent;
+	text-shadow:0 1px 0 #fff
+}
+.tab-bar.bg-danger li:not(.active) a,
+.tab-bar.bg-info li:not(.active) a,
+.tab-bar.bg-primary li:not(.active) a,
+.tab-bar.bg-success li:not(.active) a,
+.tab-bar.bg-warning li:not(.active) a {
+	color:#fff;
+	text-shadow:none;
+	transition:color .2s ease;
+	-webkit-transition:color .2s ease;
+	-moz-transition:color .2s ease;
+	-ms-transition:color .2s ease;
+	-o-transition:color .2s ease
+}
+.tab-bar.bg-danger li:not(.active) a:focus,
+.tab-bar.bg-danger li:not(.active) a:hover,
+.tab-bar.bg-info li:not(.active) a:focus,
+.tab-bar.bg-info li:not(.active) a:hover,
+.tab-bar.bg-primary li:not(.active) a:focus,
+.tab-bar.bg-primary li:not(.active) a:hover,
+.tab-bar.bg-success li:not(.active) a:focus,
+.tab-bar.bg-success li:not(.active) a:hover,
+.tab-bar.bg-warning li:not(.active) a:focus,
+.tab-bar.bg-warning li:not(.active) a:hover {
+	color:#eee;transition:color .2s ease;
+	-webkit-transition:color .2s ease;
+	-moz-transition:color .2s ease;
+	-ms-transition:color .2s ease;
+	-o-transition:color .2s ease
+}
+.tab-bar > li {
+	display:inline-block;float:left;
+	margin-bottom:-1px
+}
+.tab-bar > li.active:first-child a {
+	border-left:none
+}
+.tab-bar > li.active a {
+	background:#fff;
+	color:#777
+}
+.tab-bar > li a {
+	display:block;
+	padding:10px;
+	color:#ccc;
+	text-shadow:0 1px #fff;
+	transition:color .2s ease;
+	-webkit-transition:color .2s ease;
+	-moz-transition:color .2s ease;
+	-ms-transition:color .2s ease;-o-transition:color .2s ease
+}
+.tab-bar > li a:focus, .tab-bar > li a:hover {
+	text-decoration:none;
+	color:#777;
+	transition:color .2s ease;
+	-webkit-transition:color .2s ease;
+	-moz-transition:color .2s ease;
+	-ms-transition:color .2s ease;
+	-o-transition:color .2s ease
+}
+.wizard-steps {
+	border-top:1px solid #eee;
+	border-bottom:1px solid #eee;
+	margin:0
+}
+.wizard-steps:after, .wizard-steps:before {
+	display:table;
+	line-height:0;
+	content:""
+}
+.wizard-steps:after {
+	clear:both
+}
+.wizard-steps li {
+	display:inline-block;
+	position:relative;
+	float:left;
+	padding:0 5px 0 20px
+}
+.wizard-steps li.active {
+	background:#9ad268
+}
+.wizard-steps li.active:after {
+	border-left-color:#9ad268
+}
+.wizard-steps li.active a {
+	color:#fff;
+	font-weight:700;
+	transition:all .2s ease;
+	-webkit-transition:all .2s ease;
+	-moz-transition:all .2s ease;
+	-ms-transition:all .2s ease;
+	-o-transition:all .2s ease
+}
+.wizard-steps li a {
+	display:block;
+	padding:10px;
+	text-align:center;
+	color:#ccc;
+	transition:all .2s ease;
+	-webkit-transition:all .2s ease;
+	-moz-transition:all .2s ease;
+	-ms-transition:all .2s ease;
+	-o-transition:all .2s ease
+}
+.wizard-steps li a:focus, .wizard-steps li a:hover {
+	text-decoration:none
+}
+.wizard-steps li:after,.wizard-steps li:before{border:solid transparent;content:" ";height:0;width:0;top:0;right:-36px;position:absolute;pointer-events:none;bottom:100%}.wizard-steps li:after{border-color:rgba(136,183,213,0);border-left-color:#f9f9f9;border-width:18px;z-index:2}.wizard-steps li:before{border-color:rgba(194,225,245,0);border-left-color:#eee;border-width:20px;right:-40px;top:-2px;z-index:1}.tab-left:after,.tab-left:before{display:table;line-height:0;content:""}.tab-left:after{clear:both}.tab-left .tab-bar{float:left}.tab-left .tab-bar>li{display:block;float:none;margin-right:-1px;border-right:1px solid #eee}.tab-left .tab-bar>li.active{border-right:1px solid #fff;z-index:2}.tab-left .tab-bar>li.active:first-child a{border-top:none}.tab-left .tab-bar>li.active a{border-top:1px solid #eee;border-bottom:1px solid #eee}.tab-left .tab-content{overflow:auto;padding:15px 20px;border-left:1px solid #eee}.tab-right:after,.tab-right:before{display:table;line-height:0;content:""}.tab-right:after{clear:both}.tab-right .tab-bar{float:right}.tab-right .tab-bar>li{display:block;float:none;margin-left:-1px;border-left:1px solid #eee}.tab-right .tab-bar>li.active{border-left:1px solid #fff;z-index:2}.tab-right .tab-bar>li.active:first-child a{border-top:none}.tab-right .tab-bar>li.active a{border-top:1px solid #eee;border-bottom:1px solid #eee}.tab-right .tab-content{overflow:auto;padding:15px 20px;border-right:1px solid #eee}

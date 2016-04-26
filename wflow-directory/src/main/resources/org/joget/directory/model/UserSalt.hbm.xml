@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class entity-name="UserSalt" name="org.joget.directory.model.UserSalt" table="dir_user_salt">
+        <id column="id" name="id" type="string"/>
+        <property column="userId" name="userId" type="string"/>
+        <property column="randomSalt" name="randomSalt" type="string"/>
+    </class>
+</hibernate-mapping>
