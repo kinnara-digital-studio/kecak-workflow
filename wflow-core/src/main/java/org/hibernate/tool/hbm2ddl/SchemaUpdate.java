@@ -238,7 +238,6 @@ public class SchemaUpdate {
                         formatted += delimiter;
                     }
                     if (target.doScript()) {
-                        System.out.println(formatted);
                     }
                     if (outputFile != null) {
                         outputFileWriter.write(formatted + "\n");

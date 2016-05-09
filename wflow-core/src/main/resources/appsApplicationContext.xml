@@ -197,6 +197,10 @@
         <property name="sessionFactory" ref="reportSessionFactory"/>
     </bean>
 
+    <bean id="jdbcDataListDao" class="org.joget.apps.app.dao.JdbcDataListDaoImpl">
+         <property name="sessionFactory" ref="appSessionFactory"/>
+    </bean>
+
     <bean id="workflowHelper" class="org.joget.apps.app.service.AppWorkflowHelper">
     </bean>
 

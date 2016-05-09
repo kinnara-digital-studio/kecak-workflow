@@ -49,6 +49,7 @@ import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.dao.EnvironmentVariableDao;
 import org.joget.apps.app.dao.FormDefinitionDao;
+import org.joget.apps.app.dao.JdbcDataListDao;
 import org.joget.apps.app.dao.MessageDao;
 import org.joget.apps.app.dao.PackageDefinitionDao;
 import org.joget.apps.app.dao.PluginDefaultPropertiesDao;
@@ -209,6 +210,8 @@ public class ConsoleWebController {
     FormDataDao formDataDao;
     @Autowired
     LocaleResolver localeResolver;
+    @Autowired
+    JdbcDataListDao jdbcDataListDao;
 
     @RequestMapping({"/index", "/", "/home"})
     public String index() {
@@ -769,6 +772,7 @@ public class ConsoleWebController {
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        
         return "console/directory/userList";
     }
 

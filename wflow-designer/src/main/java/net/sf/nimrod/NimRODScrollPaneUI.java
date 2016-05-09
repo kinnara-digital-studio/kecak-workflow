@@ -74,7 +74,6 @@ public class NimRODScrollPaneUI extends BasicScrollPaneUI {
         }
       }
       catch ( Exception ex) {
-        System.out.println( ex);
         ex.printStackTrace();
       }
     }

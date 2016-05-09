@@ -103,7 +103,8 @@ public class JsonResponseFilter implements Filter {
             String callback = httpRequest.getParameter("callback");
             
             SetupManager setupManager = (SetupManager) AppUtil.getApplicationContext().getBean("setupManager");
-            String jsonpWhitelist = setupManager.getSettingValue("jsonpWhitelist");
+            @SuppressWarnings("static-access")
+			String jsonpWhitelist = setupManager.getSettingValue("jsonpWhitelist");
             if (!"*".equals(jsonpWhitelist)) {
                 String domain = SecurityUtil.getDomainName(httpRequest.getHeader("referer"));
                 List<String> whitelist = new ArrayList<String>();

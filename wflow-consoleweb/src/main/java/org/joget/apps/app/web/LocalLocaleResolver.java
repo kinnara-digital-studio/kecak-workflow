@@ -82,7 +82,8 @@ public class LocalLocaleResolver extends SessionLocaleResolver implements Locale
 
                 if (gmt == null) {
                     //get system locale
-                    String systemGmt = getSetupManager().getSettingValue("systemTimeZone");
+                    @SuppressWarnings("static-access")
+					String systemGmt = getSetupManager().getSettingValue("systemTimeZone");
                     if (systemGmt != null && !systemGmt.isEmpty()) {
                         gmt = systemGmt;
                     }
@@ -152,7 +153,8 @@ public class LocalLocaleResolver extends SessionLocaleResolver implements Locale
         if (locale == null) {
             String localeCode = null;
             try {
-                String enableUserLocale = getSetupManager().getSettingValue("enableUserLocale");
+                @SuppressWarnings("static-access")
+				String enableUserLocale = getSetupManager().getSettingValue("enableUserLocale");
                 if (enableUserLocale != null && enableUserLocale.equalsIgnoreCase("true") && !getWorkflowUserManager().isCurrentUserAnonymous()) {
                     String userLocale = null;
                     User user = getDirectoryManager().getUserByUsername(getWorkflowUserManager().getCurrentUsername());
@@ -166,7 +168,8 @@ public class LocalLocaleResolver extends SessionLocaleResolver implements Locale
 
                 if (localeCode == null) {
                     //get system locale
-                    String systemLocale = getSetupManager().getSettingValue("systemLocale");
+                    @SuppressWarnings("static-access")
+					String systemLocale = getSetupManager().getSettingValue("systemLocale");
                     if (systemLocale != null && !systemLocale.isEmpty()) {
                         localeCode = systemLocale;
                     }
