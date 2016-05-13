@@ -197,6 +197,11 @@
         <property name="sessionFactory" ref="reportSessionFactory"/>
     </bean>
 
+	<bean id="formDataAuditTrailExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="maxPoolSize" value="10" />
+        <property name="waitForTasksToCompleteOnShutdown" value="true" />
+    </bean>
+    
     <bean id="jdbcDataListDao" class="org.joget.apps.app.dao.JdbcDataListDaoImpl">
          <property name="sessionFactory" ref="appSessionFactory"/>
     </bean>

@@ -1,6 +1,7 @@
 package org.joget.apps.datalist.lib;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.joget.apps.app.dao.FormDefinitionDao;
@@ -12,8 +13,10 @@ import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionDefault;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.form.dao.FormDataDao;
+import org.joget.apps.form.lib.FormDataAuditTrailTask;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.model.FormDataAuditTrail;
 import org.joget.apps.form.model.FormDataDeletableBinder;
 import org.joget.apps.form.model.FormLoadBinder;
 import org.joget.apps.form.model.FormLoadMultiRowElementBinder;
@@ -23,20 +26,25 @@ import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.StringUtil;
+import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowProcess;
 import org.joget.workflow.model.WorkflowProcessLink;
 import org.joget.workflow.model.dao.WorkflowProcessLinkDao;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.orm.hibernate4.HibernateObjectRetrievalFailureException;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.gson.Gson;
 
 /**
  * Test implementation for an action
  */
 public class FormRowDeleteDataListAction extends DataListActionDefault {
     
-    protected WorkflowManager workflowManager;
+    private static final String DELETE = "delete";
+	protected WorkflowManager workflowManager;
     protected WorkflowProcessLinkDao linkDao;
 
     public WorkflowProcessLinkDao getLinkDao() {
@@ -137,6 +145,23 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
                 if (tableName != null) {
                     FormDataDao formDataDao = (FormDataDao) FormUtil.getApplicationContext().getBean("formDataDao");
                     formDataDao.delete(formDefId, tableName, rowKeys);
+                    
+                    FormDataAuditTrail formDataAuditTrail = new FormDataAuditTrail();
+                    formDataAuditTrail.setId(UuidGenerator.getInstance().getUuid());
+                	formDataAuditTrail.setAction(DELETE);
+                	formDataAuditTrail.setUsername(WorkflowUtil.getCurrentUsername());
+                	
+                	AppDefinition appdef = AppUtil.getCurrentAppDefinition();
+                	formDataAuditTrail.setAppId(appdef.getAppId());
+                	formDataAuditTrail.setAppVersion(""+appdef.getVersion());
+                	
+                	formDataAuditTrail.setDatetime(new Date());
+                	formDataAuditTrail.setFormId(formDefId);
+                	formDataAuditTrail.setTableName(tableName);
+                	formDataAuditTrail.setData(new Gson().toJson(rowKeys));
+                
+                	TaskExecutor executor = (TaskExecutor) AppUtil.getApplicationContext().getBean("formDataAuditTrailExecutor");
+                    executor.execute(new FormDataAuditTrailTask(formDataAuditTrail));
                 }
             }
         }
@@ -192,13 +217,36 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
         
         Map<FormLoadBinder, FormRowSet> binders = formData.getLoadBinderMap();
         
+        boolean deleted = false;
+        FormDataAuditTrail formDataAuditTrail = new FormDataAuditTrail();
+        formDataAuditTrail.setId(UuidGenerator.getInstance().getUuid());
+    	formDataAuditTrail.setAction(DELETE);
+    	formDataAuditTrail.setUsername(WorkflowUtil.getCurrentUsername());
+    	
+    	AppDefinition appdef = AppUtil.getCurrentAppDefinition();
+    	formDataAuditTrail.setAppId(appdef.getAppId());
+    	formDataAuditTrail.setAppVersion(""+appdef.getVersion());
+    	
+    	String formId = null;
+    	String tableName = null;
+    	String data = null;
+    	Date dateTime = null;
+    	
         for (FormLoadBinder binder : binders.keySet()) {
             if (binder == form.getLoadBinder()) {
                 try {
                     if ("true".equalsIgnoreCase(getPropertyString("abortRelatedRunningProcesses"))) {
                         abortRunningProcesses(primaryKey);
                     }
-                    formDataDao.delete(form.getPropertyString(FormUtil.PROPERTY_ID), form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME), new String[]{primaryKey});
+                    formId = form.getPropertyString(FormUtil.PROPERTY_ID);
+                    tableName = form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
+                    String[] primaryKeyValues = new String[]{primaryKey};
+                    formDataDao.delete(formId, tableName, primaryKeyValues);
+                    
+                    deleted = true;
+                    dateTime = new Date();
+                    data = new Gson().toJson(primaryKeyValues);
+                	
                 } catch (HibernateObjectRetrievalFailureException e) {
                     //ignore
                 }
@@ -211,9 +259,27 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
                     if ("true".equalsIgnoreCase(getPropertyString("abortRelatedRunningProcesses"))) {
                         abortRunningProcesses(binders.get(binder));
                     }
-                    formDataDao.delete(b.getFormId(), b.getTableName(), binders.get(binder));
+                    
+                    formId = b.getFormId();
+                    tableName = b.getTableName(); 
+                    FormRowSet rows = binders.get(binder);
+                    formDataDao.delete(formId, tableName, rows);
+                    
+                    deleted = true;
+                    dateTime = new Date();
+                	data = new Gson().toJson(rows);
                 }
             }
+        }
+        
+        if (deleted) {
+        	formDataAuditTrail.setDatetime(dateTime);
+        	formDataAuditTrail.setFormId(formId);
+        	formDataAuditTrail.setTableName(tableName);
+        	formDataAuditTrail.setData(data);
+        	
+        	TaskExecutor executor = (TaskExecutor) AppUtil.getApplicationContext().getBean("formDataAuditTrailExecutor");
+            executor.execute(new FormDataAuditTrailTask(formDataAuditTrail));
         }
     }
     

@@ -2,29 +2,39 @@ package org.joget.apps.form.lib;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.model.FormDataAuditTrail;
 import org.joget.apps.form.model.FormDataDeletableBinder;
 import org.joget.apps.form.model.FormLoadElementBinder;
 import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.model.FormStoreElementBinder;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowVariable;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.springframework.core.task.TaskExecutor;
+
+import com.google.gson.Gson;
 
 /**
  * Data binder that loads/stores data from the form database and also workflow variables.
  */
 public class WorkflowFormBinder extends DefaultFormBinder implements FormLoadElementBinder, FormStoreElementBinder, FormDataDeletableBinder {
 
-    @Override
+    private static final String SAVE_OR_UPDATE = "saveOrUpdate";
+
+	@Override
     public String getName() {
         return "Workflow Form Binder";
     }
@@ -95,6 +105,27 @@ public class WorkflowFormBinder extends DefaultFormBinder implements FormLoadEle
         if (rows != null && !rows.isEmpty()) {
             // store form data to DB
             result = super.store(element, rows, formData);
+            
+            if (result != null) {            	
+            	FormDataAuditTrail formDataAuditTrail = new FormDataAuditTrail();
+            	formDataAuditTrail.setId(UuidGenerator.getInstance().getUuid());
+            	formDataAuditTrail.setAction(SAVE_OR_UPDATE);
+            	formDataAuditTrail.setDatetime(new Date());
+            	formDataAuditTrail.setFormId(this.getFormId());
+            	formDataAuditTrail.setTableName(this.getTableName());
+            	formDataAuditTrail.setUsername(WorkflowUtil.getCurrentUsername());
+            	
+            	AppDefinition appdef = AppUtil.getCurrentAppDefinition();
+            	formDataAuditTrail.setAppId(appdef.getAppId());
+            	formDataAuditTrail.setAppVersion(""+appdef.getVersion());
+            	
+                String jsonResult = new Gson().toJson(result);
+            	formDataAuditTrail.setData(jsonResult);
+            	
+            	TaskExecutor executor = (TaskExecutor) AppUtil.getApplicationContext().getBean("formDataAuditTrailExecutor");
+                executor.execute(new FormDataAuditTrailTask(formDataAuditTrail));
+                
+            }
 
             // handle workflow variables
             if (!rows.isMultiRow()) {
