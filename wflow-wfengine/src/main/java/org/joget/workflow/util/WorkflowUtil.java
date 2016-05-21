@@ -40,6 +40,10 @@ public class WorkflowUtil implements ApplicationContextAware {
     public static final String CURRENT_USERNAME = "currentUsername";
     public static final String PERFORMER = "performer";
     public static final String ROLE_ADMIN = WorkflowUserManager.ROLE_ADMIN;
+    public static final String ROLE_MANAGER = WorkflowUserManager.ROLE_MANAGER;
+    public static final String ROLE_MONITORING = WorkflowUserManager.ROLE_MONITORING;
+    public static final String ROLE_USER = WorkflowUserManager.ROLE_USER;
+    
     public static final String ACTIVITY_DEF_ID_RUN_PROCESS = "runProcess";
     public static final String PROCESS_START_WHITE_LIST = "processStartWhiteList";
     static ApplicationContext appContext;
@@ -175,7 +179,8 @@ public class WorkflowUtil implements ApplicationContextAware {
      * @param propertyName
      * @return 
      */
-    public static String getSystemSetupValue(String propertyName) {
+    @SuppressWarnings("static-access")
+	public static String getSystemSetupValue(String propertyName) {
         SetupManager setupManager = (SetupManager) appContext.getBean("setupManager");
         return setupManager.getSettingValue(propertyName);
     }

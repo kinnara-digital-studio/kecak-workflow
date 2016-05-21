@@ -5,7 +5,10 @@
 <c:set var="isQuickEditEnabled" value="<%= AppUtil.isQuickEditEnabled() %>"/>
 <c:if test="${isQuickEditEnabled || param.webConsole =='true'}">
     <c:set var="isAdmin" value="<%= WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN) %>"/>
-    <c:if test="${isAdmin}">
+    <c:set var="isManager" value="<%= WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_MANAGER) %>"/>
+    <c:set var="isMonitoring" value="<%= WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_MONITORING) %>"/>
+    
+    <c:if test="${isAdmin || isManager || isMonitoring}">
 
         <link href="${pageContext.request.contextPath}/js/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/admin_bar.css" />
@@ -18,25 +21,31 @@
             </div>
             <div id="adminBarButtons">
             <c:if test="${!empty param.appId || !empty param.webConsole}">
-                <c:if test="${!empty param.appId}">
+                <c:if test="${!empty param.appId && (isManager || isAdmin)}">
                     <div>
                         <a class="adminBarButton" style="display:none" title="CTRL-1: <fmt:message key='adminBar.label.designApp'/>" href="${pageContext.request.contextPath}/web/console/app/${param.appId}/${param.appVersion}/forms" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/app/${param.appId}/${param.appVersion}/forms')"><i class="icon-edit"></i><br><fmt:message key='adminBar.label.app'/></a>
                     </div>
                 </c:if>
-                <c:if test="${!empty param.appControls}">
+                <c:if test="${!empty param.appControls && (isManager || isAdmin)}">
                     <div>
                         <a class="adminBarButton" style="display:none" title="CTRL-1: <fmt:message key='adminBar.label.manageApps'/>" href="${pageContext.request.contextPath}/web/desktop/apps" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/desktop/apps')"><i class="icon-wrench"></i><br><fmt:message key='adminBar.label.allApps'/></a>
                     </div>
                 </c:if>
-                <div>
-                    <a class="adminBarButton" style="display:none" title="CTRL-2: <fmt:message key='adminBar.label.setupUsers'/>" href="${pageContext.request.contextPath}/web/console/directory/users" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/directory/users')"><i class="icon-user"></i><br><fmt:message key='adminBar.label.users'/></a>
-                </div>
-                <div>
-                    <a class="adminBarButton" style="display:none" title="CTRL-3: <fmt:message key='adminBar.label.monitorApps'/>" href="${pageContext.request.contextPath}/web/console/monitor/running" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/monitor/running')"><i class="icon-dashboard"></i><br><fmt:message key='adminBar.label.monitor'/></a>
-                </div>
-                <div>
-                    <a class="adminBarButton" style="display:none" title="CTRL-4: <fmt:message key='adminBar.label.systemSettings'/>" href="${pageContext.request.contextPath}/web/console/setting/general" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/setting/general')"><i class="icon-cogs"></i><br><fmt:message key='adminBar.label.settings'/></a>
-                </div>
+                <c:if test="${isAdmin}">
+	                <div>
+	                    <a class="adminBarButton" style="display:none" title="CTRL-2: <fmt:message key='adminBar.label.setupUsers'/>" href="${pageContext.request.contextPath}/web/console/directory/users" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/directory/users')"><i class="icon-user"></i><br><fmt:message key='adminBar.label.users'/></a>
+	                </div>
+                </c:if>
+                <c:if test="${isMonitoring || isAdmin}">
+	                <div>
+	                    <a class="adminBarButton" style="display:none" title="CTRL-3: <fmt:message key='adminBar.label.monitorApps'/>" href="${pageContext.request.contextPath}/web/console/monitor/running" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/monitor/running')"><i class="icon-dashboard"></i><br><fmt:message key='adminBar.label.monitor'/></a>
+	                </div>
+                </c:if>
+                <c:if test="${isAdmin}">
+                	<div>
+                    	<a class="adminBarButton" style="display:none" title="CTRL-4: <fmt:message key='adminBar.label.systemSettings'/>" href="${pageContext.request.contextPath}/web/console/setting/general" onclick="return AdminBar.showQuickOverlay('${pageContext.request.contextPath}/web/console/setting/general')"><i class="icon-cogs"></i><br><fmt:message key='adminBar.label.settings'/></a>
+                	</div>
+                </c:if>
             </c:if>
             </div>
         </div>

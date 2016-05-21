@@ -17,6 +17,9 @@ public class WorkflowUserManager {
     
     public static final String ROLE_ANONYMOUS = "roleAnonymous";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_MANAGER = "ROLE_MANAGER";
+    public static final String ROLE_MONITORING = "ROLE_MONITORING";
+    public static final String ROLE_USER = "ROLE_USER";
 
     @SuppressWarnings("rawtypes")
 	private ThreadLocal currentThreadUser = new ThreadLocal();
