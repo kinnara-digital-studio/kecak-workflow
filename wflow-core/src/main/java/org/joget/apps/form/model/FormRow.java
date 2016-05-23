@@ -19,8 +19,8 @@ public class FormRow extends Properties {
 	private static final long serialVersionUID = 9003210642246560176L;
 	
 	Map<String, String[]> tempFilePathMap;
-
-    public FormRow() {
+	
+	public FormRow() {
         super();
     }
 
@@ -109,7 +109,58 @@ public class FormRow extends Properties {
         }
     }
 
-    @Override
+    public String getCreatedBy() {
+		String createdBy = null;
+    	Object obj = get(FormUtil.PROPERTY_CREATED_BY);
+    	if (obj != null) {
+    		createdBy = (String) obj;
+    	}
+    	return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		if (createdBy != null) {
+            put(FormUtil.PROPERTY_CREATED_BY, createdBy);
+        } else {
+            remove(FormUtil.PROPERTY_CREATED_BY);
+        }
+	}
+
+	public String getModifiedBy() {
+		String modifiedBy = null;
+    	Object obj = get(FormUtil.PROPERTY_MODIFIED_BY);
+    	if (obj != null) {
+    		modifiedBy = (String) obj;
+    	}
+    	return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		if (modifiedBy != null) {
+            put(FormUtil.PROPERTY_MODIFIED_BY, modifiedBy);
+        } else {
+            remove(FormUtil.PROPERTY_MODIFIED_BY);
+        }
+	}
+
+	public Boolean getDeleted() {
+		Boolean deleted = null;
+    	Object obj = get(FormUtil.PROPERTY_DELETED);
+    	if (obj != null) {
+    		deleted = (Boolean) obj;
+    	}
+    	return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		if (deleted != null) {
+            put(FormUtil.PROPERTY_DELETED, deleted);
+        } else {
+            remove(FormUtil.PROPERTY_DELETED);
+        }
+	}
+
+	@Override
     public boolean equals(Object obj) {
         FormRow row = (FormRow) obj;
         if (getId().equals(row.getId())) {

@@ -88,6 +88,9 @@ public class FormUtil implements ApplicationContextAware {
     public static final String PROPERTY_READONLY_LABEL = "readonlyLabel";
     public static final String PROPERTY_DATE_CREATED = "dateCreated";
     public static final String PROPERTY_DATE_MODIFIED = "dateModified";
+    public static final String PROPERTY_CREATED_BY = "createdBy";
+    public static final String PROPERTY_MODIFIED_BY = "modifiedBy";
+    public static final String PROPERTY_DELETED = "deleted";
     public static final String PROPERTY_CUSTOM_PROPERTIES = "customProperties";
     public static final String PROPERTY_TABLE_NAME = "tableName";
     public static final String PROPERTY_TEMP_FILE_PATH = "_tempFilePathMap";

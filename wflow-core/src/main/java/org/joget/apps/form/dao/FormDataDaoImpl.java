@@ -272,7 +272,10 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
-                if (!FormUtil.PROPERTY_ID.equals(sortProperty) && !FormUtil.PROPERTY_DATE_CREATED.equals(sortProperty) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(sortProperty)) {
+                if (!FormUtil.PROPERTY_ID.equals(sortProperty) 
+                		&& !FormUtil.PROPERTY_DATE_CREATED.equals(sortProperty) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(sortProperty)
+                		&& !FormUtil.PROPERTY_CREATED_BY.equals(sortProperty) && !FormUtil.PROPERTY_MODIFIED_BY.equals(sortProperty)
+                		&& !FormUtil.PROPERTY_DELETED.equals(sortProperty)) {
                     Collection<String> columnNames = getFormDefinitionColumnNames(tableName);
                     if (columnNames.contains(sort)) {
                         sortProperty = FormUtil.PROPERTY_CUSTOM_PROPERTIES + "." + sort;
@@ -1012,7 +1015,10 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
             
             for (Object column : columnsName) {
                 String columnName = (String) column;
-                if (columnName != null && !columnName.isEmpty() && !FormUtil.PROPERTY_ID.equals(columnName) && !FormUtil.PROPERTY_DATE_CREATED.equals(columnName) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(columnName)) {
+                if (columnName != null && !columnName.isEmpty() && !FormUtil.PROPERTY_ID.equals(columnName) 
+                		&& !FormUtil.PROPERTY_DATE_CREATED.equals(columnName) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(columnName)
+                		&& !FormUtil.PROPERTY_CREATED_BY.equals(columnName) && !FormUtil.PROPERTY_MODIFIED_BY.equals(columnName)
+                		&& !FormUtil.PROPERTY_DELETED.equals(columnName)) {
                     String lowerCasePropName = columnName.toLowerCase();
                     if (!lowerCaseColumnSet.contains(lowerCasePropName)) {
                         columnList.add(columnName);
@@ -1025,6 +1031,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
             columnList.remove(FormUtil.PROPERTY_ID);
             columnList.remove(FormUtil.PROPERTY_DATE_CREATED);
             columnList.remove(FormUtil.PROPERTY_DATE_MODIFIED);
+            columnList.remove(FormUtil.PROPERTY_CREATED_BY);
+            columnList.remove(FormUtil.PROPERTY_MODIFIED_BY);
+            columnList.remove(FormUtil.PROPERTY_DELETED);
         }
         return columnList;
     }
@@ -1077,6 +1086,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
                 columnList.remove(FormUtil.PROPERTY_ID);
                 columnList.remove(FormUtil.PROPERTY_DATE_CREATED);
                 columnList.remove(FormUtil.PROPERTY_DATE_MODIFIED);
+                columnList.remove(FormUtil.PROPERTY_CREATED_BY);
+                columnList.remove(FormUtil.PROPERTY_MODIFIED_BY);
+                columnList.remove(FormUtil.PROPERTY_DELETED);
                 
                 LogUtil.debug("", "All Columns - " + columnList.toString());
                 formColumnCache.put(tableName, columnList);
