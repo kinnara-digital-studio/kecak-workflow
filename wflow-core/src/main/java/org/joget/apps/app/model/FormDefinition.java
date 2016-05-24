@@ -11,70 +11,109 @@ import org.simpleframework.xml.Root;
 @Root
 public class FormDefinition extends AbstractAppVersionedObject {
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2883309375896902588L;
+	
 	@NotBlank
-    @Element(required = false)
-    private String name;
-    @NotBlank
-    @Element(required = false)
-    private String tableName;
-    @Element(required = false)
-    private String json;
-    @Element(required = false)
-    private String description;
-    @Element(required = false)
-    private Date dateCreated;
-    @Element(required = false)
-    private Date dateModified;
+	@Element(required = false)
+	private String name;
+	
+	@NotBlank
+	@Element(required = false)
+	private String tableName;
+	
+	@Element(required = false)
+	private String json;
+	
+	@Element(required = false)
+	private String description;
+	
+	@Element(required = false)
+	private Date dateCreated;
+	
+	@Element(required = false)
+	private Date dateModified;
+	
+	@Element(required = false)
+	private String createdBy;
+	
+	@Element(required = false)
+	private String modifiedBy;
+	
+	@Element(required = false)
+	private Boolean deleted;
 
-    public Date getDateCreated() {
-        return dateCreated;
-    }
+	public Date getDateCreated() {
+		return dateCreated;
+	}
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
 
-    public Date getDateModified() {
-        return dateModified;
-    }
+	public Date getDateModified() {
+		return dateModified;
+	}
 
-    public void setDateModified(Date dateModified) {
-        this.dateModified = dateModified;
-    }
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
 
-    public String getTableName() {
-        return tableName;
-    }
+	public String getTableName() {
+		return tableName;
+	}
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 
-    public String getJson() {
-        return json;
-    }
+	public String getJson() {
+		return json;
+	}
 
-    public void setJson(String json) {
-        this.json = json;
-    }
+	public void setJson(String json) {
+		this.json = json;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

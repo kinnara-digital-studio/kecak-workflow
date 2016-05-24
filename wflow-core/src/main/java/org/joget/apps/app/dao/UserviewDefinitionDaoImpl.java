@@ -11,6 +11,7 @@ import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.commons.util.DynamicDataSourceManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
 
 public class UserviewDefinitionDaoImpl extends AbstractAppVersionedObjectDao<UserviewDefinition> implements UserviewDefinitionDao {
 
@@ -89,8 +90,13 @@ public class UserviewDefinitionDaoImpl extends AbstractAppVersionedObjectDao<Use
 
     @Override
     public boolean add(UserviewDefinition object) {
-        object.setDateCreated(new Date());
-        object.setDateModified(new Date());
+    	String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setCreatedBy(currentUsername);
+        object.setModifiedBy(currentUsername);
+        
+        Date currentDate = new Date();
+        object.setDateCreated(currentDate);
+        object.setDateModified(currentDate);
         return super.add(object);
     }
 
@@ -98,6 +104,8 @@ public class UserviewDefinitionDaoImpl extends AbstractAppVersionedObjectDao<Use
     public boolean update(UserviewDefinition object) {
         cache.remove(getCacheKey(object.getId(), object.getAppId(), object.getAppVersion()));
         
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setModifiedBy(currentUsername);
         object.setDateModified(new Date());
         return super.update(object);
     }

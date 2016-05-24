@@ -10,6 +10,9 @@
         <property index="idx_name" name="name" type="string"/>
         <property name="dateCreated" type="timestamp"/>
         <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <property name="tableName" type="string"/>
         <property name="json" type="text"/>
         <property name="description" type="text"/>

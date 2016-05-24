@@ -2,10 +2,13 @@ package org.joget.apps.app.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
 
 public class PluginDefaultPropertiesDaoImpl extends AbstractAppVersionedObjectDao<PluginDefaultProperties> implements PluginDefaultPropertiesDao {
 
@@ -74,5 +77,26 @@ public class PluginDefaultPropertiesDaoImpl extends AbstractAppVersionedObjectDa
             LogUtil.error(getClass().getName(), e, "");
         }
         return result;
+    }
+    
+    @Override
+    public boolean add(PluginDefaultProperties object) {
+    	String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setCreatedBy(currentUsername);
+        object.setModifiedBy(currentUsername);
+        
+        Date currentDate = new Date();
+        object.setDateCreated(currentDate);
+        object.setDateModified(currentDate);
+        return super.add(object);
+    }
+
+    @Override
+    public boolean update(PluginDefaultProperties object) {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setModifiedBy(currentUsername);
+        
+        object.setDateModified(new Date());
+        return super.update(object);
     }
 }

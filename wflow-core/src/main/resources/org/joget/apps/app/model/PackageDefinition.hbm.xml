@@ -9,6 +9,9 @@
         <property name="name" type="string"/>
         <property name="dateCreated" type="timestamp"/>
         <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <many-to-one entity-name="AppDefinition" name="appDefinition">
             <column name="appId"/>
             <column name="appVersion"/>

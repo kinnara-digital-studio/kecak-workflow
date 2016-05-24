@@ -2,6 +2,7 @@ package org.joget.apps.app.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -170,6 +171,8 @@ public class PackageDefinitionDaoImpl extends AbstractVersionedObjectDao<Package
                 }
             }
 
+            String currentUsername = WorkflowUtil.getCurrentUsername();
+            Date currentDate = new Date();
             Map<String, PackageActivityForm> activityForms = packageDef.getPackageActivityFormMap();
             for (String key : activityForms.keySet()) {
                 if (activityIds.contains(key)) {
@@ -183,9 +186,16 @@ public class PackageDefinitionDaoImpl extends AbstractVersionedObjectDao<Package
                 }
             }
             Map<String, PackageParticipant> participantMap = packageDef.getPackageParticipantMap();
+            PackageParticipant packageParticipant = null;
             for (String key : participantMap.keySet()) {
                 if (participantIds.contains(key)) {
-                    packageParticipantMap.put(key, participantMap.get(key));
+                	packageParticipant = participantMap.get(key);
+                	packageParticipant.setDateCreated(currentDate);
+                	packageParticipant.setDateModified(currentDate);
+                	packageParticipant.setCreatedBy(currentUsername);
+                	packageParticipant.setModifiedBy(currentUsername);
+                	
+                    packageParticipantMap.put(key, packageParticipant);
                 }
             }
         } catch (Exception e) {
@@ -215,6 +225,14 @@ public class PackageDefinitionDaoImpl extends AbstractVersionedObjectDao<Package
             packageDef.removePackageActivityForm(processDefId, activityDefId);
             saveOrUpdate(packageDef);
         }
+        
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        Date currentDate = new Date();
+        activityForm.setCreatedBy(currentUsername);
+        activityForm.setDateCreated(currentDate);
+        activityForm.setModifiedBy(currentUsername);
+        activityForm.setDateModified(currentDate);
+        
         packageDef.addPackageActivityForm(activityForm);
         saveOrUpdate(packageDef);
     }
@@ -240,6 +258,14 @@ public class PackageDefinitionDaoImpl extends AbstractVersionedObjectDao<Package
             packageDef.removePackageActivityPlugin(processDefId, activityDefId);
             saveOrUpdate(packageDef);
         }
+        
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        Date currentDate = new Date();
+        activityPlugin.setCreatedBy(currentUsername);
+        activityPlugin.setDateCreated(currentDate);
+        activityPlugin.setModifiedBy(currentUsername);
+        activityPlugin.setDateModified(currentDate);
+        
         packageDef.addPackageActivityPlugin(activityPlugin);
         saveOrUpdate(packageDef);
     }
@@ -265,6 +291,13 @@ public class PackageDefinitionDaoImpl extends AbstractVersionedObjectDao<Package
             packageDef.removePackageParticipant(processDefId, participantId);
             saveOrUpdate(packageDef);
         }
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        Date currentDate = new Date();
+        participant.setCreatedBy(currentUsername);
+        participant.setDateCreated(currentDate);
+        participant.setModifiedBy(currentUsername);
+        participant.setDateModified(currentDate);
+        
         packageDef.addPackageParticipant(participant);
         saveOrUpdate(packageDef);
     }

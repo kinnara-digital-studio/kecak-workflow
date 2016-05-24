@@ -11,6 +11,7 @@ import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.DatalistDefinition;
 import org.joget.commons.util.DynamicDataSourceManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
 
 public class DatalistDefinitionDaoImpl extends AbstractAppVersionedObjectDao<DatalistDefinition> implements DatalistDefinitionDao {
 
@@ -89,14 +90,22 @@ public class DatalistDefinitionDaoImpl extends AbstractAppVersionedObjectDao<Dat
 
     @Override
     public boolean add(DatalistDefinition object) {
-        object.setDateCreated(new Date());
-        object.setDateModified(new Date());
+    	String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setCreatedBy(currentUsername);
+        object.setModifiedBy(currentUsername);
+        
+        Date currentDate = new Date();
+        object.setDateCreated(currentDate);
+        object.setDateModified(currentDate);
         return super.add(object);
     }
 
     @Override
     public boolean update(DatalistDefinition object) {
         cache.remove(getCacheKey(object.getId(), object.getAppId(), object.getAppVersion()));
+        
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setModifiedBy(currentUsername);
         
         object.setDateModified(new Date());
         return super.update(object);

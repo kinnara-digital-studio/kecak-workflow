@@ -3,14 +3,18 @@ package org.joget.apps.app.dao;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
+
 import org.hibernate.Query;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.Message;
 import org.joget.commons.util.DynamicDataSourceManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 public class MessageDaoImpl extends AbstractAppVersionedObjectDao<Message> implements MessageDao {
 
@@ -149,6 +153,21 @@ public class MessageDaoImpl extends AbstractAppVersionedObjectDao<Message> imple
     public boolean update(Message object) {
         String key = getCacheKey(object.getMessageKey(), object.getLocale(), object.getAppId(), object.getAppVersion().toString());
         cache.remove(key);
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setModifiedBy(currentUsername);
+        
         return super.update(object);
+    }
+    
+    @Override
+    public boolean add(Message object) {
+    	String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setCreatedBy(currentUsername);
+        object.setModifiedBy(currentUsername);
+        
+        Date currentDate = new Date();
+        object.setDateCreated(currentDate);
+        object.setDateModified(currentDate);
+        return super.add(object);
     }
 }

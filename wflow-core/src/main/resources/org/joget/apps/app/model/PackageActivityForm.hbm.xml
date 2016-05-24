@@ -17,6 +17,10 @@
         <property name="formIFrameStyle" type="string"/>
         <property name="autoContinue" type="boolean"/>
         <property name="disableSaveAsDraft" type="boolean"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
         <many-to-one entity-name="PackageDefinition" insert="false" name="packageDefinition" not-null="true" update="false">
             <column name="packageId"/>
             <column name="packageVersion"/>

@@ -13,6 +13,9 @@
         <property name="meta" type="text"/>
         <property name="dateCreated" type="timestamp"/>
         <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <bag cascade="all-delete-orphan" inverse="true" lazy="true" name="formDefinitionList">
             <key>
                 <column name="appId"/>

@@ -24,8 +24,10 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
@@ -1777,8 +1779,9 @@ public class AppServiceImpl implements AppService {
         newAppDef.setId(appId);
         newAppDef.setName(appDef.getName());
         newAppDef.setPublished(Boolean.FALSE);
-        newAppDef.setDateCreated(new Date());
-        newAppDef.setDateModified(new Date());
+        Date currentDate = new Date();
+        newAppDef.setDateCreated(currentDate);
+        newAppDef.setDateModified(currentDate);
         newAppDef.setLicense(appDef.getLicense());
         newAppDef.setDescription(appDef.getDescription());
         newAppDef.setMeta(appDef.getMeta());

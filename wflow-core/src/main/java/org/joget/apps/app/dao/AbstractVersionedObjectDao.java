@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.joget.apps.app.model.AbstractVersionedObject;
 import org.joget.commons.spring.model.AbstractSpringDao;
+import org.joget.workflow.util.WorkflowUtil;
 
 /**
  * DAO to load/store VersionedObjects objects
@@ -301,10 +302,13 @@ public abstract class AbstractVersionedObjectDao<T extends AbstractVersionedObje
      * @param object
      */
     public void saveOrUpdate(T object) {
+    	String currentUsername = WorkflowUtil.getCurrentUsername();
         if (object.getDateCreated() == null) {
             object.setDateCreated(new Date());
+            object.setCreatedBy(currentUsername);
         }
         object.setDateModified(new Date());
+        object.setModifiedBy(currentUsername);
         saveOrUpdate(getEntityName(), object);
     }
 

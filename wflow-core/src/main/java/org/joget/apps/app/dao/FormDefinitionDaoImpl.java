@@ -13,6 +13,7 @@ import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.form.model.FormColumnCache;
 import org.joget.commons.util.DynamicDataSourceManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
 
 /**
  * DAO to load/store FormDefinition objects
@@ -124,8 +125,13 @@ public class FormDefinitionDaoImpl extends AbstractAppVersionedObjectDao<FormDef
     public boolean add(FormDefinition object) {
         formColumnCache.remove(object.getTableName());
         
-        object.setDateCreated(new Date());
-        object.setDateModified(new Date());
+        Date currentDate = new Date();
+        object.setDateCreated(currentDate);
+        object.setDateModified(currentDate);
+        
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setCreatedBy(currentUsername);
+        object.setModifiedBy(currentUsername);
         return super.add(object);
     }
 
@@ -137,6 +143,9 @@ public class FormDefinitionDaoImpl extends AbstractAppVersionedObjectDao<FormDef
         
         // update object
         object.setDateModified(new Date());
+        
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        object.setModifiedBy(currentUsername);
         return super.update(object);
     }
 

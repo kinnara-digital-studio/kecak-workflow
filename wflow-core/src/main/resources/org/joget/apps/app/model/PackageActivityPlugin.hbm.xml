@@ -13,6 +13,10 @@
         <property column="ouid" name="uid" type="string"/>
         <property name="pluginName" type="string"/>
         <property name="pluginProperties" type="text"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
         <many-to-one entity-name="PackageDefinition" insert="false" name="packageDefinition" not-null="true" update="false">
             <column name="packageId"/>
             <column name="packageVersion"/>

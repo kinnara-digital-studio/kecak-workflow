@@ -10,6 +10,11 @@
         <property name="pluginName" type="string"/>
         <property name="pluginDescription" type="text"/>
         <property name="pluginProperties" type="text"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <many-to-one entity-name="AppDefinition" insert="false" name="appDefinition" update="false">
             <column name="appId"/>
             <column name="appVersion"/>

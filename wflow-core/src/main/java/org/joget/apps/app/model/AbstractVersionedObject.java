@@ -20,19 +20,33 @@ public class AbstractVersionedObject implements Serializable {
     public static final String VERSION_LATEST = "latest";
     @Element(required = false)
     private String appId;
+    
     @NotBlank
     @RegExp(value = "^[0-9a-zA-Z_]+$")
     @Element(required = false)
     private String id;
+    
     @Element(required = false)
     private Long version = Long.valueOf(1);
+    
     @NotBlank
     @Element(required = false)
     private String name;
+    
     @Element(required = false)
     private Date dateCreated;
+    
     @Element(required = false)
     private Date dateModified;
+    
+    @Element(required = false)
+	private String createdBy;
+	
+	@Element(required = false)
+	private String modifiedBy;
+	
+	@Element(required = false)
+	private Boolean deleted;
 
     /**
      * Unique ID (primary key) for the object, which consists of the ID and version separated by underscore.
@@ -121,4 +135,28 @@ public class AbstractVersionedObject implements Serializable {
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
     }
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

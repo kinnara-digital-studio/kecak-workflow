@@ -18,15 +18,28 @@ public class DatalistDefinition extends AbstractAppVersionedObject {
 	@NotBlank
     @Element(required = false)
     private String name;
+	
     @Element(required = false)
     private String description;
+    
     @Element(required = false)
     private String json;
+    
     @Element(required = false)
     private Date dateCreated;
+    
     @Element(required = false)
     private Date dateModified;
 
+    @Element(required = false)
+	private String createdBy;
+	
+	@Element(required = false)
+	private String modifiedBy;
+	
+	@Element(required = false)
+	private Boolean deleted;
+	
     public Date getDateCreated() {
         return dateCreated;
     }
@@ -66,4 +79,28 @@ public class DatalistDefinition extends AbstractAppVersionedObject {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }
