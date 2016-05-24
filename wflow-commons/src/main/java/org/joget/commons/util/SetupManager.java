@@ -20,7 +20,9 @@ public class SetupManager {
     public static final String DIRECTORY_PROFILES = "app_profiles";
     public static final String MASTER_LOGIN_PASSWORD = "masterLoginPassword";
     public static final String SECURE_VALUE = "****SECURE VALUE*****";
-
+    public static final String MASTER_LOGIN_USERNAME = "masterLoginUsername";
+    public static final String MASTER_LOGIN_HASH = "masterLoginHash";
+    
     private static final String BASE_DIRECTORY;
 
     static {
@@ -175,6 +177,12 @@ public class SetupManager {
         }
     }
 
+	public static String getSettingValueFromDb(String property) {
+		Collection<Setting> result = getSetupDao().find("WHERE property = ?", new String[] { property }, null, null, null, null);
+		Setting setting = result.isEmpty() ? null : result.iterator().next();
+		return (setting != null) ? setting.getValue() : null;
+
+	}
     /**
      * Gets the system setting value by property key. Cached if possible.
      * @param property

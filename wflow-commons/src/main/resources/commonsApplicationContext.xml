@@ -151,5 +151,10 @@
 			<ref local="resourceBundleMessageCache" />
 		</property>
 	</bean>
+	
+	<bean id="securityUtil" class="org.joget.commons.util.SecurityUtil">
+        <property name="dataEncryption" ref="dataEncryption" />
+        <property name="nonceGenerator" ref="nonceGenerator" />
+    </bean>
 
 </beans>

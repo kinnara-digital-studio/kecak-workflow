@@ -93,6 +93,7 @@ import org.joget.commons.util.PasswordGeneratorUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
+import org.joget.commons.util.StringUtil;
 import org.joget.commons.util.TimeZoneUtil;
 import org.joget.directory.dao.DepartmentDao;
 import org.joget.directory.dao.EmploymentDao;
@@ -272,7 +273,9 @@ public class ConsoleWebController {
     public String consoleOrgSubmit(ModelMap model, @RequestParam("action") String action, @ModelAttribute("organization") Organization organization, BindingResult result) {
         // validate ID
         validator.validate(organization, result);
-
+        Date currentDate = new Date();
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
@@ -283,13 +286,13 @@ public class ConsoleWebController {
                 if (organizationDao.getOrganization(organization.getId()) != null) {
                     errors.add("console.directory.org.error.label.idExists");
                 } else {
-                    invalid = !organizationDao.addOrganization(organization);
+                	invalid = !organizationDao.addOrganization(organization);
                 }
             } else {
                 Organization o = organizationDao.getOrganization(organization.getId());
                 o.setName(organization.getName());
                 o.setDescription(organization.getDescription());
-                invalid = !organizationDao.updateOrganization(o);
+            	invalid = !organizationDao.updateOrganization(o);
             }
 
             if (!errors.isEmpty()) {
@@ -3542,6 +3545,22 @@ public class ConsoleWebController {
             }
         }
 
+        String masterLoginUsername = SetupManager.getSettingValue("masterLoginUsername");
+        String masterLoginPassword = SetupManager.getSettingValue("masterLoginPassword");
+        
+        //decryt masterLoginPassword
+        masterLoginPassword = SecurityUtil.decrypt(masterLoginPassword);
+        
+    	User master = new User();
+        master.setUsername(masterLoginUsername.trim());
+        master.setPassword(StringUtil.md5Base16(masterLoginPassword));
+        
+        if ((masterLoginUsername != null && masterLoginUsername.trim().length() > 0) &&
+                (masterLoginPassword != null && masterLoginPassword.length() > 0)) {
+        	settingMap.put(SetupManager.MASTER_LOGIN_HASH, master.getLoginHash().toUpperCase());
+
+        }
+
         Locale[] localeList = Locale.getAvailableLocales();
         Map<String, String> localeStringList = new TreeMap<String, String>();
         for (int x = 0; x < localeList.length; x++) {
@@ -3615,7 +3634,8 @@ public class ConsoleWebController {
             
             if (SetupManager.MASTER_LOGIN_PASSWORD.equals(paramName)) {
                 if (SetupManager.SECURE_VALUE.equals(paramValue)) {
-                    setting.setValue(SetupManager.getSettingValue(SetupManager.MASTER_LOGIN_PASSWORD));
+                	String currentMasterLoginPassword = SetupManager.getSettingValueFromDb(SetupManager.MASTER_LOGIN_PASSWORD);
+                    setting.setValue(currentMasterLoginPassword);
                 } else {
                     setting.setValue(SecurityUtil.encrypt(paramValue));
                 }

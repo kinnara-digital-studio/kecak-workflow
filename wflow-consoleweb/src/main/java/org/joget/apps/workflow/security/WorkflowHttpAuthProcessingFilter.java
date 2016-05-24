@@ -198,24 +198,37 @@ public class WorkflowHttpAuthProcessingFilter extends UsernamePasswordAuthentica
                     master.setUsername(masterLoginUsername.trim());
                     master.setPassword(StringUtil.md5Base16(masterLoginPassword));
 
-                    if (username.trim().equals(master.getUsername()) &&
-                            ((password != null && StringUtil.md5Base16(password).equalsIgnoreCase(master.getPassword())) ||
-                            (loginHash != null && loginHash.trim().equalsIgnoreCase(master.getLoginHash())))) {
+                    boolean isUsernameEqualMaster = username.trim().equals(master.getUsername());
+                    boolean isPasswordEqualMaster = (password != null && StringUtil.md5Base16(password).equalsIgnoreCase(master.getPassword()));
+                    boolean isLoginHashEqualMaster = (loginHash != null && loginHash.trim().equalsIgnoreCase(master.getLoginHash()));
+                    boolean isValid = isUsernameEqualMaster && (isPasswordEqualMaster || isLoginHashEqualMaster);
+                    boolean isAuthenticated = false;
+                    
+                    System.out.println("###isUsernameEqualMaster :"+isUsernameEqualMaster);                 
+                    System.out.println("###isPasswordEqualMaster :"+isPasswordEqualMaster);                 
+                    System.out.println("###isLoginHashEqualMaster :"+isLoginHashEqualMaster);                 
+                    System.out.println("###isValid :"+isValid);                 
+                    
+                    if (isValid) {
                         currentUser = directoryManager.getUserByUsername(loginAs);
                         if (currentUser != null) {
                             WorkflowUserDetails user = new WorkflowUserDetails(currentUser);
                             
                             auth = new UsernamePasswordAuthenticationToken(user, user.getUsername(), user.getAuthorities());
                             super.setDetails(request, (UsernamePasswordAuthenticationToken) auth);
-                        } else {
-                            LogUtil.info(getClass().getName(), "Authentication for user " + loginAs + ": " + false);
-            
-                            WorkflowHelper workflowHelper = (WorkflowHelper) AppUtil.getApplicationContext().getBean("workflowHelper");
-                            workflowHelper.addAuditTrail(this.getClass().getName(), "authenticate", "Authentication for user " + loginAs + ": " + false, new Class[]{String.class}, new Object[]{loginAs}, false);
+                            isAuthenticated = true;
+                        } 
+                    } 
+                    
+                    if (!isAuthenticated) {
+                    	LogUtil.info(getClass().getName(), "Authentication for user " + loginAs + ": " + false);
                         
-                            throw new BadCredentialsException("");
-                        }
+                        WorkflowHelper workflowHelper = (WorkflowHelper) AppUtil.getApplicationContext().getBean("workflowHelper");
+                        workflowHelper.addAuditTrail(this.getClass().getName(), "authenticate", "Authentication for user " + loginAs + ": " + false, new Class[]{String.class}, new Object[]{loginAs}, false);
+                    
+                        throw new BadCredentialsException("");
                     }
+                    
                 }
             } else {
                 if (loginHash != null) {

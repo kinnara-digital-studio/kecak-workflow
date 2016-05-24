@@ -228,7 +228,11 @@
                         <label for="masterLoginPassword"><fmt:message key="console.setting.general.label.masterLoginPassword"/></label>
                         <span class="form-input">
                             <input id="masterLoginPassword" type="password" name="masterLoginPassword" value="<c:out value="${settingMap['masterLoginPassword']}"/>"/>
-                            <i><span class="ftl_label"><fmt:message key="console.setting.general.label.masterLoginHash"/></span><span id="masterLoginHash">-</span></i>
+                            <i>
+                            	<span class="ftl_label">
+                            		<fmt:message key="console.setting.general.label.masterLoginHash"/>
+                            	</span>
+                            	<span>${settingMap['masterLoginHash']}</span></i>
                         </span>
                     </div>
                 </span>
