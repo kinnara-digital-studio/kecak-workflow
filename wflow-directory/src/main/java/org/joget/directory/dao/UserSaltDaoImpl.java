@@ -1,15 +1,35 @@
 package org.joget.directory.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.UserSalt;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
 
+	private WorkflowUserManager workflowUserManager;
+	
+	
+	public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
+
 	public Boolean addUserSalt(UserSalt userSalt) {
 		try {
+			String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	userSalt.setCreatedBy(currentUsername);
+        	userSalt.setModifiedBy(currentUsername);
+        	userSalt.setDateCreated(currentDate);
+        	userSalt.setDateModified(currentDate);
 			save("UserSalt", userSalt);
 			return true;
 		} catch (Exception e) {
@@ -20,6 +40,10 @@ public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
 
 	public Boolean updateUserSalt(UserSalt userSalt) {
 		try {
+			String currentUsername = workflowUserManager.getCurrentUsername();
+
+        	userSalt.setModifiedBy(currentUsername);
+        	userSalt.setDateModified(new Date());
 			merge("UserSalt", userSalt);
 			return true;
 		} catch (Exception e) {

@@ -1,15 +1,35 @@
 package org.joget.directory.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.Role;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class RoleDaoImpl extends AbstractSpringDao implements RoleDao {
 
-    public Boolean addRole(Role role) {
+	private WorkflowUserManager workflowUserManager;
+	
+	
+    public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
+
+	public Boolean addRole(Role role) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	role.setCreatedBy(currentUsername);
+        	role.setModifiedBy(currentUsername);
+        	role.setDateCreated(currentDate);
+        	role.setDateModified(currentDate);
             save("Role", role);
             return true;
         } catch (Exception e) {
@@ -20,6 +40,10 @@ public class RoleDaoImpl extends AbstractSpringDao implements RoleDao {
 
     public Boolean updateRole(Role role) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+
+        	role.setModifiedBy(currentUsername);
+        	role.setDateModified(new Date());
             merge("Role", role);
             return true;
         } catch (Exception e) {

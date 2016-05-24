@@ -2,6 +2,7 @@ package org.joget.directory.model;
 
 import org.joget.commons.spring.model.Auditable;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 import org.joget.commons.util.StringUtil;
 import org.joget.commons.util.TimeZoneUtil;
@@ -16,6 +17,8 @@ public class User implements Serializable, Auditable {
 	private static final long serialVersionUID = 5248198835477844227L;
 	public static final int ACTIVE = 1;
     public static final int INACTIVE = 0;
+    public static final String LOGIN_HASH_DELIMINATOR = "::";
+
     private String id;
     @NotBlank
     @RegExp(value = "^[\\.@0-9a-zA-Z_-]+$")
@@ -39,8 +42,12 @@ public class User implements Serializable, Auditable {
     private String oldPassword;
     private String confirmPassword;
     private Boolean readonly = false;
-    public static final String LOGIN_HASH_DELIMINATOR = "::";
-
+    private Date dateCreated;
+	private Date dateModified;
+	private String createdBy;
+	private String modifiedBy;
+	private Boolean deleted;
+    
     public String getId() {
         return id;
     }
@@ -175,4 +182,44 @@ public class User implements Serializable, Auditable {
     public String getLoginHash() {
         return StringUtil.md5(username + LOGIN_HASH_DELIMINATOR + password);
     }
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public Date getDateModified() {
+		return dateModified;
+	}
+
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

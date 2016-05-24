@@ -2,15 +2,18 @@ package org.joget.directory.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.Group;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class GroupDaoImpl extends AbstractSpringDao implements GroupDao {
 
     private OrganizationDao organizationDao;
-
+    private WorkflowUserManager workflowUserManager;
+    
     public OrganizationDao getOrganizationDao() {
         return organizationDao;
     }
@@ -19,8 +22,23 @@ public class GroupDaoImpl extends AbstractSpringDao implements GroupDao {
         this.organizationDao = organizationDao;
     }
 
-    public Boolean addGroup(Group group) {
+    public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
+
+	public Boolean addGroup(Group group) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	group.setCreatedBy(currentUsername);
+        	group.setModifiedBy(currentUsername);
+        	group.setDateCreated(currentDate);
+        	group.setDateModified(currentDate);
             save("Group", group);
             return true;
         } catch (Exception e) {
@@ -31,6 +49,10 @@ public class GroupDaoImpl extends AbstractSpringDao implements GroupDao {
 
     public Boolean updateGroup(Group group) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+
+        	group.setModifiedBy(currentUsername);
+        	group.setDateModified(new Date());
             merge("Group", group);
             return true;
         } catch (Exception e) {

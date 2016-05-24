@@ -3,6 +3,11 @@
 <hibernate-mapping>
     <class entity-name="UserSalt" name="org.joget.directory.model.UserSalt" table="dir_user_salt">
         <id column="id" name="id" type="string"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <property column="userId" name="userId" type="string"/>
         <property column="randomSalt" name="randomSalt" type="string"/>
     </class>

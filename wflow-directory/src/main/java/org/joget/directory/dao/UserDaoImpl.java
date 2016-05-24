@@ -2,6 +2,7 @@ package org.joget.directory.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.joget.commons.spring.model.AbstractSpringDao;
@@ -21,6 +22,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
     private RoleDao roleDao;
     private EmploymentDao employmentDao;
     private DepartmentDao departmentDao;
+    private WorkflowUserManager workflowUserManager;
 
     public DepartmentDao getDepartmentDao() {
         return departmentDao;
@@ -54,11 +56,26 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
         this.roleDao = roleDao;
     }
 
-    public Boolean addUser(User user) {
+    public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
+
+	public Boolean addUser(User user) {
         try {
             
             adminRoleFilter(user);
             
+            String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	user.setCreatedBy(currentUsername);
+        	user.setModifiedBy(currentUsername);
+        	user.setDateCreated(currentDate);
+        	user.setDateModified(currentDate);
             save("User", user);
             return true;
         } catch (Exception e) {
@@ -71,6 +88,10 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
         try {
             adminRoleFilter(user);
             
+            String currentUsername = workflowUserManager.getCurrentUsername();
+
+        	user.setModifiedBy(currentUsername);
+        	user.setDateModified(new Date());
             merge("User", user);
             return true;
         } catch (Exception e) {
@@ -90,6 +111,10 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
                     getEmploymentDao().updateEmployment(info);
                 } else {
                     user.getEmployments().add(info);
+                    String currentUsername = workflowUserManager.getCurrentUsername();
+
+                	user.setModifiedBy(currentUsername);
+                	user.setDateModified(new Date());
                     saveOrUpdate("User", user);
                 }
             }
@@ -305,6 +330,11 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
             Group group = getGroupDao().getGroup(groupId);
             if (user != null && group != null) {
                 user.getGroups().add(group);
+                
+                String currentUsername = workflowUserManager.getCurrentUsername();
+
+            	user.setModifiedBy(currentUsername);
+            	user.setDateModified(new Date());
                 saveOrUpdate("User", user);
                 return true;
             }
@@ -320,6 +350,11 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
             Group group = getGroupDao().getGroup(groupId);
             if (user != null && group != null) {
                 user.getGroups().remove(group);
+                
+                String currentUsername = workflowUserManager.getCurrentUsername();
+
+            	user.setModifiedBy(currentUsername);
+            	user.setDateModified(new Date());
                 saveOrUpdate("User", user);
                 return true;
             }

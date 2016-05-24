@@ -1,13 +1,26 @@
 package org.joget.directory.dao;
 
+import java.util.Date;
+
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.EmploymentReportTo;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class EmploymentReportToDaoImpl extends AbstractSpringDao implements EmploymentReportToDao {
 
+	private WorkflowUserManager workflowUserManager;
+
     public Boolean addEmploymentReportTo(EmploymentReportTo employmentReportTo) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+			Date currentDate = new Date();
+
+			employmentReportTo.setCreatedBy(currentUsername);
+			employmentReportTo.setModifiedBy(currentUsername);
+			employmentReportTo.setDateCreated(currentDate);
+			employmentReportTo.setDateModified(currentDate);
+			
             save("EmploymentReportTo", employmentReportTo);
             return true;
         } catch (Exception e) {
@@ -18,6 +31,9 @@ public class EmploymentReportToDaoImpl extends AbstractSpringDao implements Empl
 
     public Boolean updateEmploymentReportTo(EmploymentReportTo employmentReportTo) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	employmentReportTo.setModifiedBy(currentUsername);
+			employmentReportTo.setDateModified(new Date());
             merge("EmploymentReportTo", employmentReportTo);
             return true;
         } catch (Exception e) {
@@ -53,4 +69,12 @@ public class EmploymentReportToDaoImpl extends AbstractSpringDao implements Empl
             return null;
         }
     }
+
+	public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
 }

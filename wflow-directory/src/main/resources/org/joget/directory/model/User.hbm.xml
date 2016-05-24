@@ -3,6 +3,11 @@
 <hibernate-mapping>
     <class entity-name="User" name="org.joget.directory.model.User" table="dir_user">
         <id column="id" name="id" type="string"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <property column="username" name="username" type="string"/>
         <property column="password" name="password" type="string"/>
         <property column="firstName" name="firstName" type="string"/>

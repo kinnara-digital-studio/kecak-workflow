@@ -2,17 +2,20 @@ package org.joget.directory.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.Employment;
 import org.joget.directory.model.Grade;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class GradeDaoImpl extends AbstractSpringDao implements GradeDao {
 
     private OrganizationDao organizationDao;
     private EmploymentDao employmentDao;
+    private WorkflowUserManager workflowUserManager;
 
     public EmploymentDao getEmploymentDao() {
         return employmentDao;
@@ -30,8 +33,23 @@ public class GradeDaoImpl extends AbstractSpringDao implements GradeDao {
         this.organizationDao = organizationDao;
     }
 
-    public Boolean addGrade(Grade grade) {
+    public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
+
+	public Boolean addGrade(Grade grade) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	grade.setCreatedBy(currentUsername);
+        	grade.setModifiedBy(currentUsername);
+        	grade.setDateCreated(currentDate);
+        	grade.setDateModified(currentDate);
             save("Grade", grade);
             return true;
         } catch (Exception e) {
@@ -42,6 +60,9 @@ public class GradeDaoImpl extends AbstractSpringDao implements GradeDao {
 
     public Boolean updateGrade(Grade grade) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	grade.setModifiedBy(currentUsername);
+        	grade.setDateModified(new Date());
             merge("Grade", grade);
             return true;
         } catch (Exception e) {

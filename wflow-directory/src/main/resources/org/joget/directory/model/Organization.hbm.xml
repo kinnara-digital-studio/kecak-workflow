@@ -3,6 +3,11 @@
 <hibernate-mapping>
     <class entity-name="Organization" name="org.joget.directory.model.Organization" table="dir_organization">
         <id column="id" name="id" type="string"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <property column="name" name="name" type="string"/>
         <property column="description" name="description" type="string"/>
         <property column="parentId" name="parentId" type="string"/>

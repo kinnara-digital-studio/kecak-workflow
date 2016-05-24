@@ -2,17 +2,21 @@ package org.joget.directory.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.Department;
 import org.joget.directory.model.Employment;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class DepartmentDaoImpl extends AbstractSpringDao implements DepartmentDao {
 
     private OrganizationDao organizationDao;
     private EmploymentDao employmentDao;
+    private WorkflowUserManager workflowUserManager;
 
     public EmploymentDao getEmploymentDao() {
         return employmentDao;
@@ -32,6 +36,14 @@ public class DepartmentDaoImpl extends AbstractSpringDao implements DepartmentDa
 
     public Boolean addDepartment(Department department) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	department.setCreatedBy(currentUsername);
+        	department.setModifiedBy(currentUsername);
+        	department.setDateCreated(currentDate);
+        	department.setDateModified(currentDate);
+        	
             save("Department", department);
             return true;
         } catch (Exception e) {
@@ -42,6 +54,11 @@ public class DepartmentDaoImpl extends AbstractSpringDao implements DepartmentDa
 
     public Boolean updateDepartment(Department department) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+
+        	department.setModifiedBy(currentUsername);
+        	department.setDateModified(new Date());
+        	
             merge("Department", department);
             return true;
         } catch (Exception e) {
@@ -228,4 +245,12 @@ public class DepartmentDaoImpl extends AbstractSpringDao implements DepartmentDa
 
         return 0L;
     }
+
+	public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
 }

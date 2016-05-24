@@ -1,6 +1,7 @@
 package org.joget.directory.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.joget.commons.spring.model.AbstractSpringDao;
@@ -10,6 +11,7 @@ import org.joget.directory.model.Employment;
 import org.joget.directory.model.Grade;
 import org.joget.directory.model.Group;
 import org.joget.directory.model.Organization;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class OrganizationDaoImpl extends AbstractSpringDao implements OrganizationDao {
 
@@ -17,6 +19,7 @@ public class OrganizationDaoImpl extends AbstractSpringDao implements Organizati
     private GroupDao groupDao;
     private DepartmentDao departmentDao;
     private EmploymentDao employmentDao;
+    private WorkflowUserManager workflowUserManager;
 
     public EmploymentDao getEmploymentDao() {
         return employmentDao;
@@ -50,8 +53,23 @@ public class OrganizationDaoImpl extends AbstractSpringDao implements Organizati
         this.groupDao = groupDao;
     }
 
-    public Boolean addOrganization(Organization organization) {
+    public WorkflowUserManager getWorkflowUserManager() {
+		return workflowUserManager;
+	}
+
+	public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+		this.workflowUserManager = workflowUserManager;
+	}
+
+	public Boolean addOrganization(Organization organization) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+        	Date currentDate = new Date();
+        	
+        	organization.setCreatedBy(currentUsername);
+        	organization.setModifiedBy(currentUsername);
+        	organization.setDateCreated(currentDate);
+        	organization.setDateModified(currentDate);
             save("Organization", organization);
             return true;
         } catch (Exception e) {
@@ -62,6 +80,10 @@ public class OrganizationDaoImpl extends AbstractSpringDao implements Organizati
 
     public Boolean updateOrganization(Organization organization) {
         try {
+        	String currentUsername = workflowUserManager.getCurrentUsername();
+
+        	organization.setModifiedBy(currentUsername);
+        	organization.setDateModified(new Date());
             merge("Organization", organization);
             return true;
         } catch (Exception e) {

@@ -5,6 +5,11 @@
         <id column="id" name="id" type="string">
             <generator class="uuid"/>
         </id>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
         <many-to-one column="employmentId" entity-name="Employment" name="subordinate" unique="true"/>
         <many-to-one column="reportToId" entity-name="Employment" name="reportTo"/>
     </class>
