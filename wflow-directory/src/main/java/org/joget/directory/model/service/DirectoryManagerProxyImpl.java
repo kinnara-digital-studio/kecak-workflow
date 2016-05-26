@@ -15,6 +15,7 @@ import org.joget.directory.model.Role;
 import org.joget.directory.model.User;
 import org.joget.plugin.base.PluginManager;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.joget.commons.util.StringUtil;
@@ -117,7 +118,7 @@ public class DirectoryManagerProxyImpl implements ExtDirectoryManager {
                         propertySetting = new Setting();
                         propertySetting.setProperty(propertiesName);
                         propertySetting.setValue(properties);
-                        
+                        setting.setDateModified(new Date());
                         getSetupManager().saveSetting(propertySetting);
                     }
                     
