@@ -273,8 +273,6 @@ public class ConsoleWebController {
     public String consoleOrgSubmit(ModelMap model, @RequestParam("action") String action, @ModelAttribute("organization") Organization organization, BindingResult result) {
         // validate ID
         validator.validate(organization, result);
-        Date currentDate = new Date();
-        String currentUsername = WorkflowUtil.getCurrentUsername();
         
         boolean invalid = result.hasErrors();
         if (!invalid) {
@@ -3548,17 +3546,16 @@ public class ConsoleWebController {
         String masterLoginUsername = SetupManager.getSettingValue("masterLoginUsername");
         String masterLoginPassword = SetupManager.getSettingValue("masterLoginPassword");
         
-        //decryt masterLoginPassword
-        masterLoginPassword = SecurityUtil.decrypt(masterLoginPassword);
-        
-    	User master = new User();
-        master.setUsername(masterLoginUsername.trim());
-        master.setPassword(StringUtil.md5Base16(masterLoginPassword));
-        
         if ((masterLoginUsername != null && masterLoginUsername.trim().length() > 0) &&
                 (masterLoginPassword != null && masterLoginPassword.length() > 0)) {
+        	//decryt masterLoginPassword
+            masterLoginPassword = SecurityUtil.decrypt(masterLoginPassword);
+            
+        	User master = new User();
+            master.setUsername(masterLoginUsername.trim());
+            master.setPassword(StringUtil.md5Base16(masterLoginPassword));
+            
         	settingMap.put(SetupManager.MASTER_LOGIN_HASH, master.getLoginHash().toUpperCase());
-
         }
 
         Locale[] localeList = Locale.getAvailableLocales();
@@ -3598,7 +3595,8 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/setting/general/submit", method = RequestMethod.POST)
     public String consoleSettingGeneralSubmit(HttpServletRequest request, ModelMap map) {
-        List<String> settingsIsNotNull = new ArrayList<String>();
+    	String currentUsername = WorkflowUtil.getCurrentUsername();
+    	List<String> settingsIsNotNull = new ArrayList<String>();
 
         List<String> booleanSettingsList = new ArrayList<String>();
         booleanSettingsList.add("deleteProcessOnCompletion");
@@ -3644,7 +3642,8 @@ public class ConsoleWebController {
             if (HostManager.isVirtualHostEnabled() && ("dataFileBasePath".equals(paramName) || "designerwebBaseUrl".equals(paramName))) {
                 setting.setValue("");
             }
-            
+            setting.setDateModified(new Date());
+            setting.setModifiedBy(currentUsername);
             setupManager.saveSetting(setting);
         }
 
@@ -3656,6 +3655,8 @@ public class ConsoleWebController {
                     setting.setProperty(s);
                 }
                 setting.setValue("false");
+                setting.setDateModified(new Date());
+                setting.setModifiedBy(currentUsername);
                 setupManager.saveSetting(setting);
             }
         }
@@ -3836,7 +3837,8 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/setting/directoryManagerImpl/config/submit", method = RequestMethod.POST)
     public String consoleSettingDirectoryManagerImplConfigSubmit(ModelMap map, @RequestParam("id") String id, @RequestParam(value = "pluginProperties", required = false) String pluginProperties, HttpServletRequest request) {
-        @SuppressWarnings("unused")
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+    	@SuppressWarnings("unused")
 		Plugin plugin = (Plugin) pluginManager.getPlugin(id);
 
         String settingName = "";
@@ -3853,6 +3855,8 @@ public class ConsoleWebController {
             setting.setProperty("directoryManagerImpl");
         }
         setting.setValue(id);
+        setting.setDateModified(new Date());
+        setting.setModifiedBy(currentUsername);
         setupManager.saveSetting(setting);
 
         Setting propertySetting = SetupManager.getSettingByProperty(settingName);
@@ -3895,6 +3899,8 @@ public class ConsoleWebController {
         } else {
             propertySetting.setValue(PropertyUtil.propertiesJsonStoreProcessing(propertySetting.getValue(), pluginProperties));
         }
+        setting.setDateModified(new Date());
+        setting.setModifiedBy(currentUsername);
         setupManager.saveSetting(propertySetting);
 
         String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
