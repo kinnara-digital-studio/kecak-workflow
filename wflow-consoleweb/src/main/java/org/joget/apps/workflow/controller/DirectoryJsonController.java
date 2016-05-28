@@ -6,16 +6,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.workflow.security.WorkflowUserDetails;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
-
+import org.joget.commons.util.SetupManager;
+import org.joget.commons.util.StringUtil;
 import org.joget.directory.dao.EmploymentDao;
 import org.joget.directory.dao.UserDao;
 import org.joget.directory.model.Department;
@@ -30,8 +34,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
 import org.joget.directory.model.Organization;
 import org.joget.directory.model.User;
+import org.joget.directory.model.service.DirectoryManager;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.workflow.model.dao.WorkflowHelper;
+import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -704,6 +710,81 @@ public class DirectoryJsonController {
                     workflowHelper.addAuditTrail(this.getClass().getName(), "authenticate", "Authentication for user " + username + ": false");
                 }
             }
+        }
+        
+        if (WorkflowUtil.isCurrentUserAnonymous()) {
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.accumulate("username", WorkflowUtil.getCurrentUsername());
+      
+        boolean isAdmin = WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN);
+        if (isAdmin) {
+            jsonObject.accumulate("isAdmin", "true");
+        }
+        
+        // csrf token
+        String csrfToken = SecurityUtil.getCsrfTokenName() + "=" + SecurityUtil.getCsrfTokenValue(httpRequest);
+        jsonObject.accumulate("token", csrfToken);
+
+        AppUtil.writeJson(writer, jsonObject, callback);
+    }
+    
+    @RequestMapping("/json/directory/user/ssov2")
+    public void singleSignOnVersion2(Writer writer, HttpServletRequest httpRequest, HttpServletResponse httpResponse, 
+    		@RequestParam(value = "callback", required = false) String callback, 
+    		@RequestParam(value = "username", required = true) String username, 
+    		@RequestParam(value = "hash", required = true) String hash, 
+    		@RequestParam(value = "loginAs", required = true) String loginAs) throws JSONException, IOException, ServletException {
+    	String masterLoginUsername = SetupManager.getSettingValue("masterLoginUsername");
+    	String masterLoginPassword = SetupManager.getSettingValue("masterLoginPassword");
+        
+    	WorkflowUserManager workflowUserManager = (WorkflowUserManager) AppUtil.getApplicationContext().getBean("workflowUserManager");
+    	
+    	DirectoryManager dm = (DirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
+    	User user = dm.getUserByUsername(loginAs);
+    	
+		if ((masterLoginUsername != null && masterLoginUsername.trim().length() > 0)
+				&& (masterLoginPassword != null && masterLoginPassword.length() > 0)) {
+			// decryt masterLoginPassword
+			masterLoginPassword = SecurityUtil.decrypt(masterLoginPassword);
+			
+			User master = new User();
+			master.setUsername(masterLoginUsername.trim());
+			master.setPassword(StringUtil.md5Base16(masterLoginPassword));
+			
+			String loginHash = master.getLoginHash().toUpperCase();
+			
+			if (username.equals(master.getUsername()) && hash.toUpperCase().equals(loginHash)) {
+				WorkflowUserDetails userDetail = new WorkflowUserDetails(user);
+		
+                Authentication request = new UsernamePasswordAuthenticationToken(userDetail, userDetail.getUsername(), userDetail.getAuthorities());
+             
+                //Login the user
+                SecurityContextHolder.getContext().setAuthentication(request);
+                workflowUserManager.setCurrentThreadUser(user.getUsername());
+             
+                // generate new session to avoid session fixation vulnerability
+                HttpSession session = httpRequest.getSession(false);
+                if (session != null) {
+                    SavedRequest savedRequest = (SavedRequest) session.getAttribute("SPRING_SECURITY_SAVED_REQUEST_KEY");
+                    session.invalidate();
+                    session = httpRequest.getSession(true);
+                    if (savedRequest != null) {
+                        session.setAttribute("SPRING_SECURITY_SAVED_REQUEST_KEY", savedRequest);
+                    }
+                }
+
+                // add success to audit trail
+                boolean authenticated = request.isAuthenticated();
+                System.out.println("###authenticated :"+authenticated);
+                LogUtil.info(getClass().getName(), "Authentication for user " + username + ": " + authenticated);
+                WorkflowHelper workflowHelper = (WorkflowHelper) AppUtil.getApplicationContext().getBean("workflowHelper");
+                workflowHelper.addAuditTrail(this.getClass().getName(), "authenticate", "Authentication for user " + username + ": " + authenticated);                
+
+            } 
         }
         
         if (WorkflowUtil.isCurrentUserAnonymous()) {

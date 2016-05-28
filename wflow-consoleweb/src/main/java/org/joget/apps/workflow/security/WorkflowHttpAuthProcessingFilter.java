@@ -127,7 +127,12 @@ public class WorkflowHttpAuthProcessingFilter extends UsernamePasswordAuthentica
             requiresAuth = true;
         } else if (us != null) {
             uri = uri.substring(request.getContextPath().length());
-            if (us.getAuthenticateAllApi() && uri.startsWith("/web/json/") && (!uri.startsWith("/web/json/plugin") || uri.startsWith("/web/json/plugin/list")) && !uri.startsWith("/web/json/directory/user/sso") && !uri.startsWith("/web/json/workflow/currentUsername") && !uri.startsWith("/web/json/apps/published/userviews") && isAnonymous) {
+            if (us.getAuthenticateAllApi() && uri.startsWith("/web/json/") 
+            		&& (!uri.startsWith("/web/json/plugin") || uri.startsWith("/web/json/plugin/list")) 
+            		&& !uri.startsWith("/web/json/directory/user/sso") 
+            		&& !uri.startsWith("/web/json/directory/user/ssov2") 
+            		&& !uri.startsWith("/web/json/workflow/currentUsername") 
+            		&& !uri.startsWith("/web/json/apps/published/userviews") && isAnonymous) {
                 // authenticateAllApi flag is true, so force authentication for all json calls except for plugin, sso, and published userview calls
                 requiresAuth = true;
             } else if (us.getForceSessionTimeout() && !isAnonymous) {
