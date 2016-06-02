@@ -83,8 +83,9 @@
     },
     {
         name : 'size',
-        label : '@@form.selectbox.size@@',
-        type : 'textfield'
+        label : 'Width (%)',
+        type : 'textfield',
+        value : '20'
     },
     {
         name : 'readonly',
