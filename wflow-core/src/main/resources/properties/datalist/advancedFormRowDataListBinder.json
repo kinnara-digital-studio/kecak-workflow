@@ -1,0 +1,108 @@
+[{
+    title : '@@datalist.afrdlb.config@@',
+    properties : [{
+        name : 'formDefId',
+        label : '@@datalist.afrdlb.form@@',
+        type : 'selectbox',
+	options_ajax : '[CONTEXT_PATH]/web/json/console/app/%s/%s/forms/options',
+        required : 'True'
+    }]
+},
+{
+    title : '@@datalist.afrdlb.filter@@',
+    properties : [{
+        name : 'filters',
+        label : '@@datalist.afrdlb.filters@@',
+        type : 'grid',
+        columns : [{
+            key : 'join',
+            label : '@@datalist.afrdlb.join@@',
+            options : [{
+                value : 'AND',
+                label : '@@datalist.afrdlb.join.and@@'
+            },
+            {
+                value : 'OR',
+                label : '@@datalist.afrdlb.join.or@@'
+            }]
+        },
+        {
+            key : 'field',
+            label : '@@datalist.afrdlb.field@@'
+        },
+        {
+            key : 'operator',
+            label : '@@datalist.afrdlb.operator@@',
+            options : [{
+                value : '=',
+                label : '@@datalist.afrdlb.operator.equal@@'
+            },
+            {
+                value : '<>',
+                label : '@@datalist.afrdlb.operator.notEqual@@'
+            },
+            {
+                value : '>',
+                label : '@@datalist.afrdlb.operator.greaterThan@@'
+            },
+            {
+                value : '>=',
+                label : '@@datalist.afrdlb.operator.greaterThanOrEqual@@'
+            },
+            {
+                value : '<',
+                label : '@@datalist.afrdlb.operator.lessThan@@'
+            },
+            {
+                value : '<=',
+                label : '@@datalist.afrdlb.operator.lessThanOrEqual@@'
+            },
+            {
+                value : 'LIKE',
+                label : '@@datalist.afrdlb.operator.like@@'
+            },
+            {
+                value : 'NOT LIKE',
+                label : '@@datalist.afrdlb.operator.notLike@@'
+            },
+            {
+                value : 'IN',
+                label : '@@datalist.afrdlb.operator.in@@'
+            },
+            {
+                value : 'NOT IN',
+                label : '@@datalist.afrdlb.operator.notIn@@'
+            },
+            {
+                value : 'IS TRUE',
+                label : '@@datalist.afrdlb.operator.isTrue@@'
+            },
+            {
+                value : 'IS FALSE',
+                label : '@@datalist.afrdlb.operator.isFalse@@'
+            },
+            {
+                value : 'IS NULL',
+                label : '@@datalist.afrdlb.operator.isNull@@'
+            },
+            {
+                value : 'IS NOT NULL',
+                label : '@@datalist.afrdlb.operator.isNotNull@@'
+            }]
+        },
+        {
+            key : 'value',
+            label : '@@datalist.afrdlb.value@@'
+        }]
+    }]
+},
+{
+    title : '@@datalist.afrdlb.advanced@@',
+    properties : [{
+        name : 'extraCondition',
+        label : '@@datalist.afrdlb.extraCondition@@',
+        type : 'textarea',
+        rows : '5',
+        cols : '50'
+    }]
+}]

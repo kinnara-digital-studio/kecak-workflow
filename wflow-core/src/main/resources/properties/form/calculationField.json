@@ -1,0 +1,150 @@
+[{
+    title : '@@form.calculationfield.editCalculationField@@',
+    properties : [{
+        name : 'id',
+        label : '@@form.calculationfield.id@@',
+        type : 'textfield',
+        required : 'True',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@form.calculationfield.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@form.calculationfield.label@@',
+        type : 'textfield',
+        value : 'Calculation Field'
+    },
+    {
+        name : 'variables',
+        label : '@@form.calculationfield.variables@@',
+        description : '@@form.calculationfield.variables.desc@@',
+        type : 'grid',
+        required : 'True',
+        columns : [{
+            key : 'variableName',
+            label : '@@form.calculationfield.variableName@@'
+        },
+        {
+            key : 'fieldId',
+            label : '@@form.calculationfield.fieldId@@'
+        },
+        {
+            key : 'operation',
+            label : '@@form.calculationfield.multivalueOperation@@',
+            options : [{
+                value : 'sum',
+                label : '@@form.calculationfield.multivalueOperation.sum@@'
+            },
+            {
+                value : 'avg',
+                label : '@@form.calculationfield.multivalueOperation.avg@@'
+            },
+            {
+                value : 'min',
+                label : '@@form.calculationfield.multivalueOperation.min@@'
+            },
+            {
+                value : 'max',
+                label : '@@form.calculationfield.multivalueOperation.max@@'
+            }]
+        }]
+    },
+    {
+        name : 'equation',
+        label : '@@form.calculationfield.equation@@',
+        description : '@@form.calculationfield.equation.desc@@',
+        type : 'textfield'
+    }]
+},
+{
+    title : '@@form.calculationfield.advancedOptions@@',
+    properties : [{
+        label : '@@form.calculationfield.data@@',
+        type : 'header'
+    },
+    {
+        name : 'validator',
+        label : '@@form.calculationfield.validator@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormValidator',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        label : '@@form.calculationfield.format@@',
+        type : 'header'
+    },
+    {
+        name : 'style',
+        label : '@@form.calculationfield.style@@',
+        type : 'selectbox',
+        required : 'True',
+        value : 'us',
+        options : [{
+            value : 'us',
+            label : '@@form.calculationfield.format.us@@'
+        },
+        {
+            value : 'euro',
+            label : '@@form.calculationfield.format.euro@@'
+        }]
+    },
+    {
+        name : 'numOfDecimal',
+        label : '@@form.calculationfield.numOfDecimal@@',
+        type : 'textfield',
+        required : 'True',
+        value : '2',
+        regex_validation : '^[0-9]+$',
+        validation_message : '@@form.calculationfield.invalidNumOfDecimal@@'
+    },
+    {
+        name : 'prefix',
+        label : '@@form.calculationfield.prefix@@',
+        type : 'textfield'
+    },
+    {
+        name : 'postfix',
+        label : '@@form.calculationfield.postfix@@',
+        type : 'textfield'
+    },
+    {
+        name : 'useThousandSeparator',
+        label : '@@form.calculationfield.useThousandSeparator@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        label : '@@form.calculationfield.ui@@',
+        type : 'header'
+    },
+    {
+        name : 'hidden',
+        label : '@@form.calculationfield.hidden@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'readonlyLabel',
+        label : '@@form.calculationfield.readonlyLabel@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        label : '@@form.calculationfield.workflow@@',
+        type : 'header'
+    },
+    {
+        name : 'workflowVariable',
+        label : '@@form.calculationfield.workflowVariable@@',
+        type : 'textfield'
+    }]
+}]
