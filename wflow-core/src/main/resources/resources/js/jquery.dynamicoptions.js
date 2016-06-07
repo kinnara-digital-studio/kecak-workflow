@@ -98,6 +98,7 @@
         var values = getValues(o.paramName);
         
         if ($(target).is("select")) {
+            var selectId = $(this).attr("id");
             if ($(target).closest(".form-cell, .subform-cell").find('select.dynamic_option_container').length == 0) {
                 $(target).after('<div class="ui-screen-hidden"><select class="dynamic_option_container" style="display:none;">'+$(target).html()+'</select></div>');
             }
@@ -113,6 +114,9 @@
                         $(option).attr("selected", "selected");
                     }
                 }
+
+                $(target).trigger('chosen:updated');
+
             });
         } else { 
             
