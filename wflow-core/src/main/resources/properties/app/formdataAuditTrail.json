@@ -1,0 +1,73 @@
+[{
+    title : '@@app.fd.audit.trail.config@@',
+    properties : [
+        {
+            name : 'captureLoad',
+            label : '@@app.fd.audit.trail.captureLoad@@',
+            type : 'checkbox',
+            value : 'true',
+            options : [{
+                value : 'true',
+                label : ''
+            }]
+        },
+        {
+            name : 'captureSave',
+            label : '@@app.fd.audit.trail.captureSave@@',
+            type : 'checkbox',
+            value : 'true',
+            options : [{
+                value : 'true',
+                label : ''
+            }]
+        },
+        {
+            name : 'captureSavedDatainJson',
+            label : '@@app.fd.audit.trail.captureSavedDatainJson@@',
+            type : 'checkbox',
+            value : 'true',
+            options : [{
+                value : 'true',
+                label : ''
+            }],
+            control_field: 'captureSave',
+            control_value: 'true',
+            control_use_regex: 'false'
+        },
+        {
+            name : 'captureDelete',
+            label : '@@app.fd.audit.trail.captureDelete@@',
+            type : 'checkbox',
+            value : 'true',
+            options : [{
+                value : 'true',
+                label : ''
+            }]
+        },
+        {
+            name : 'captureMode',
+            label : '@@app.fd.audit.trail.captureMode@@',
+            type : 'radio',
+            value : 'all',
+            options : [{
+                value : 'all',
+                label : '@@app.fd.audit.trail.captureMode.all@@'
+            },
+            {
+                value : 'selected',
+                label : '@@app.fd.audit.trail.captureMode.selected@@'
+            }]
+        },
+        {
+            name : 'formDefIds',
+            label : '@@app.fd.audit.trail.formDefIds@@',
+            type : 'multiselect',
+            size : '10',
+            options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options',
+            required : 'true',
+            control_field: 'captureMode',
+            control_value: 'selected',
+            control_use_regex: 'false'
+        }
+    ]
+}]
