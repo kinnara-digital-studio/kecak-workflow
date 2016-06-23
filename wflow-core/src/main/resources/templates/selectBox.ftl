@@ -46,19 +46,21 @@
         </script>
     </#if>
     
-    <script type="text/javascript">
-    	$(document).ready(function(){
-	        var config = {
-			  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select'           : {},
-			  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-no-single' : {disable_search_threshold:10},
-			  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-width'     : {width:"95%"}
-			}
-			
-			for (var selector in config) {
-			  $(selector).chosen({width : "${element.properties.size!}%"});
-			}
-		});
-    </script>
+    <#if element.properties.modernStyle! == 'true' >
+	    <script type="text/javascript">
+	    	$(document).ready(function(){
+		        var config = {
+				  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select'           : {},
+				  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-no-single' : {disable_search_threshold:10},
+				  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-width'     : {width:"95%"}
+				}
+				
+				for (var selector in config) {
+				  $(selector).chosen({width : "${element.properties.size!}%"});
+				}
+			});
+	    </script>
+	</#if>
 </div>
