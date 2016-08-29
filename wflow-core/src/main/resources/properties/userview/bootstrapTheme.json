@@ -1,0 +1,87 @@
+[{
+    title : '@@userviewmenu.bootstraptheme.config@@',
+    properties : [
+    {
+        name : 'homeLinkLabel',
+        label : '@@userviewmenu.bootstraptheme.homeLinkLabel@@',
+        value : 'Home',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'shortcutLinkLabel',
+        label : '@@userviewmenu.bootstraptheme.shortcutLinkLabel@@',
+        value : 'Shortcut',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'shortcut',
+        label : '@@userviewmenu.bootstraptheme.shortcut@@',
+        description : '@@userviewmenu.bootstraptheme.shortcut.desc@@',
+        type : 'grid',
+        columns : [{
+            key : 'label',
+            label : '@@userviewmenu.bootstraptheme.label@@'
+        },
+        {
+            key : 'href',
+            label : '@@userviewmenu.bootstraptheme.href@@'
+        },
+        {
+            key : 'target',
+            label : '@@userviewmenu.bootstraptheme.target@@',
+            options : [
+                {value: '', label: ''},
+                {value: '_blank', label: '@@userviewmenu.bootstraptheme.target.newTab@@'},
+            ]
+        }]
+    },
+    {
+        name : 'homeAttractBanner',
+        label : '@@userviewmenu.bootstraptheme.homeAttractBanner@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'editUserProfileLinkLabel',
+        label : '@@userviewmenu.bootstraptheme.editUserProfileLinkLabel@@',
+        value : 'Edit Profile',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'editUserProfileLink',
+        label : '@@userviewmenu.bootstraptheme.editUserProfileLink@@',
+        type : 'textfield'
+    },
+    {
+        name : 'loginLinkLabel',
+        label : '@@userviewmenu.bootstraptheme.loginLinkLabel@@',
+        value : 'Login',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'logoutLinkLabel',
+        label : '@@userviewmenu.bootstraptheme.loginLinkLabel@@',
+        value : 'Logout',
+        type : 'textfield',
+        required : 'true'
+    }]
+},
+{
+    title : '@@userviewmenu.bootstraptheme.configureCustomUi@@',
+    properties : [{
+        name : 'css',
+        label : '@@userviewmenu.bootstraptheme.customCss@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userviewmenu.bootstraptheme.customJavascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    }]
+}]

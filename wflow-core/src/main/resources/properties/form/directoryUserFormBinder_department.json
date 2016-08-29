@@ -1,0 +1,46 @@
+[{
+    title : '@@form.directorybinder.department.advanced@@',
+    properties : [
+    {
+        name : 'departmentId',
+        label : '@@form.directorybinder.department.field.departmentId@@',
+        type : 'textfield',
+        value : 'departmentId',
+        required : 'true'
+    },
+    {
+        name : 'departmentName',
+        label : '@@form.directorybinder.department.field.departmentName@@',
+        type : 'textfield',
+        value : 'departmentName',
+        required : 'true'
+    },
+    {
+        name : 'departmentDesc',
+        label : '@@form.directorybinder.department.field.departmentDesc@@',
+        type : 'textfield',
+        value : 'departmentDesc',
+        required : 'true'
+    },
+    {
+        name : 'organization',
+        label : '@@form.directorybinder.department.field.organization@@',
+        type : 'textfield',
+        value : 'organization',
+        required : 'true'
+    },
+    {
+        name : 'parent',
+        label : '@@form.directorybinder.department.field.parent@@',
+        type : 'textfield',
+        value : 'parent',
+        required : 'true'
+    },
+    {
+        name : 'hod',
+        label : '@@form.directorybinder.department.field.hod@@',
+        type : 'textfield',
+        value : 'hod',
+        required : 'true'
+    }]
+}]

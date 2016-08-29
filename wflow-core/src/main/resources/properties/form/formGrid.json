@@ -1,0 +1,236 @@
+[{
+    title : '@@form.formgrid.editFormGrid@@',
+    properties : [{
+        name : 'id',
+        label : '@@form.formgrid.id@@',
+        type : 'textfield',
+        required : 'True',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@form.formgrid.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@form.formgrid.label@@',
+        type : 'textfield',
+        value : 'Grid'
+    },
+    %s,
+    {
+        name : 'options',
+        label : '@@form.formgrid.columns@@',
+        description : '@@form.formgrid.columns.desc@@',
+        type : 'grid',
+        columns : [{
+            key : 'value',
+            label : '@@form.formgrid.value@@'
+        },
+        {
+            key : 'label',
+            label : '@@form.formgrid.label@@'
+        },
+        {
+            key : 'formatType',
+            label : '@@form.formgrid.formatType@@',
+            options : [{
+                value : 'text',
+                label : '@@form.formgrid.formatType.text@@'
+            },
+            {
+                value : 'html',
+                label : '@@form.formgrid.formatType.html@@'
+            },
+            {
+                value : 'decimal',
+                label : '@@form.formgrid.formatType.decimal@@'
+            },
+            {
+                value : 'date',
+                label : '@@form.formgrid.formatType.date@@'
+            },
+            {
+                value : 'file',
+                label : '@@form.formgrid.formatType.file@@'
+            },
+            {
+                value : 'image',
+                label : '@@form.formgrid.formatType.image@@'
+            },
+            {
+                value : 'options',
+                label : '@@form.formgrid.formatType.options@@'
+            }]
+        },
+        {
+            key : 'format',
+            label : '@@form.formgrid.format@@'
+        },
+        {
+            key : 'width',
+            label : '@@form.formgrid.width@@'
+        }]
+    }]
+},
+{
+    title : '@@form.formgrid.ui@@',
+    properties : [{
+        label : '@@form.formgrid.sorting@@',
+        type : 'header'
+    },
+    {
+        name : 'enableSorting',
+        label : '@@form.formgrid.enableSorting@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'sortField',
+        label : '@@form.formgrid.sortField@@',
+        type : 'textfield',
+        description : '@@form.formgrid.sortField.desc@@',
+        value : 'sort'
+    },
+    {
+        label : '@@form.formgrid.form@@',
+        type : 'header'
+    },
+    {
+        name : 'submit-label-normal',
+        label : '@@form.formgrid.submitButtonLabel.normal@@',
+        type : 'textfield'
+    },
+    {
+        name : 'submit-label-readonly',
+        label : '@@form.formgrid.submitButtonLabel.readonly@@',
+        type : 'textfield'
+    },
+    {
+        name : 'readonlyLabel',
+        label : '@@form.formgrid.readonlyLabel@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'height',
+        label : '@@form.formgrid.popupWindowHeight@@',
+        type : 'textfield',
+        value : '500'
+    },
+    {
+        name : 'width',
+        label : '@@form.formgrid.popupWindowWidth@@',
+        type : 'textfield',
+        value : '900'
+    },
+    {
+        label : '@@form.formgrid.grid@@',
+        type : 'header'
+    },
+    {
+        name : 'readonly',
+        label : '@@form.formgrid.readonly@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'disabledAdd',
+        label : '@@form.formgrid.disabledAdd@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'disabledDelete',
+        label : '@@form.formgrid.disabledDelete@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'deleteMessage',
+        label : '@@form.formgrid.deleteMessage@@',
+        type : 'textfield',
+        value : '@@form.formgrid.deleteMessage.value@@'
+    },
+    {
+        name : 'showRowNumber',
+        label : '@@form.formgrid.showRowNumber@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    }]
+},
+{
+    title : '@@form.formgrid.validationAndData@@',
+    properties : [{
+        label : '@@form.formgrid.validation@@',
+        type : 'header'
+    },
+    {
+        name : 'validator',
+        label : '@@form.formgrid.validator@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormMultiRowValidator',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'uniqueKey',
+        label : '@@form.formgrid.uniqueKey@@',
+        description : '@@form.formgrid.uniqueKey.desc@@',
+        type : 'textfield'
+    },
+    {
+        name : 'validateMinRow',
+        label : '@@form.formgrid.validateMinRow@@',
+        type : 'textfield'
+    },
+    {
+        name : 'validateMaxRow',
+        label : '@@form.formgrid.validateMaxRow@@',
+        type : 'textfield'
+    },
+    {
+        name : 'errorMessage',
+        label : '@@form.formgrid.errorMessage@@',
+        type : 'textfield',
+        value : '@@form.formgrid.invalidNumberOfRow@@'
+    },
+    {
+        label : '@@form.formgrid.dataBinder@@',
+        type : 'header'
+    },
+    {
+        name : 'loadBinder',
+        label : '@@form.formgrid.loadBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormLoadMultiRowElementBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'storeBinder',
+        label : '@@form.formgrid.storeBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormStoreMultiRowElementBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    }]
+}]

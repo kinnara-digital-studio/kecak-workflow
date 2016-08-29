@@ -2809,7 +2809,7 @@ CREATE TABLE `dir_role` (
 
 LOCK TABLES `dir_role` WRITE;
 /*!40000 ALTER TABLE `dir_role` DISABLE KEYS */;
-INSERT INTO `dir_role` VALUES ('ROLE_ADMIN','Admin','Administrator'),('ROLE_USER','User','Normal User');
+INSERT INTO `dir_role` VALUES ('ROLE_ADMIN','Admin','Administrator'),('ROLE_USER','User','Normal User'),('ROLE_MANAGER', 'Manager', 'Manager Apps'),('ROLE_MONITORING', 'Monitoring', 'Monitoring Apps');
 /*!40000 ALTER TABLE `dir_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2839,8 +2839,28 @@ CREATE TABLE `dir_user` (
 
 LOCK TABLES `dir_user` WRITE;
 /*!40000 ALTER TABLE `dir_user` DISABLE KEYS */;
-INSERT INTO `dir_user` VALUES ('admin','admin','21232f297a57a5a743894a0e4a801fc3','Admin','Admin',NULL,1,'0',NULL);
+INSERT INTO `dir_user` VALUES ('admin','admin','3F3E6296C5974ED9C4AFF2BBB89256D0','Admin','Admin',NULL,1,'0',NULL);
 /*!40000 ALTER TABLE `dir_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table 'dir_user_salt'
+--
+CREATE TABLE `dir_user_salt` (
+	`id` VARCHAR(255) NOT NULL,
+	`userId` VARCHAR(255) NULL DEFAULT NULL,
+	`randomSalt` VARCHAR(255) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `dir_user_salt`
+--
+
+LOCK TABLES `dir_user_salt` WRITE;
+/*!40000 ALTER TABLE `dir_user_salt` DISABLE KEYS */;
+INSERT INTO `dir_user_salt` VALUES ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','C2117FD9E043CD845C5D1A533FB2E580');
+/*!40000 ALTER TABLE `dir_user_salt` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

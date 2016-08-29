@@ -1,0 +1,42 @@
+[{
+    title : '@@userviewmenu.graytheme.config@@',
+    properties : [{
+        name : 'logoUrl',
+        label : '@@userviewmenu.graytheme.logoUrl@@',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'logoWidth',
+        label : '@@userviewmenu.graytheme.logoWidth@@',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'logoHeight',
+        label : '@@userviewmenu.graytheme.logoHeight@@',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userviewmenu.graytheme.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+},
+{
+    title : '@@userviewmenu.graytheme.configureCustomUi@@',
+    properties : [{
+        name : 'css',
+        label : '@@userviewmenu.graytheme.customCss@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userviewmenu.graytheme.customJavascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    }]
+}]

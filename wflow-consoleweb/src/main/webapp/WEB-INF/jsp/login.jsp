@@ -28,14 +28,10 @@
 		<link rel="icon" href="${pageContext.request.contextPath}/images/favicon.ico" type="image/x-icon">
 	</head>
 	<body class="gray-bg">
-    	<div class="middle-box text-center loginscreen animated fadeInDown">
+    	<div class="middle-box text-center loginscreen animated fadeInDown" style="padding-top: 100px;">
         	<div>
-        		
-            	<div>
-					<img class="animated flip" src="${pageContext.request.contextPath}/images/logo-login.png"/>
-				</div>
-            	<h2>Login.</h2>
-            	<c:if test="${not empty param.error && not empty sessionScope['SPRING_SECURITY_LAST_EXCEPTION']}">
+            	<h2>Kecak Workflow.</h2>
+            	<c:if test="${!empty param.login_error}">
 					<div class="alert alert-danger">
 						<c:out value="${sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message}" />
 					</div>

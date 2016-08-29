@@ -192,6 +192,23 @@ SET ANSI_NULLS ON
 ;
 SET QUOTED_IDENTIFIER ON
 ;
+
+CREATE TABLE [dir_user_salt](
+	[id] [nvarchar](255) NOT NULL,
+	[userId] [nvarchar](255) NULL,
+	[randomSalt] [nvarchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, IGNORE_DUP_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+;
+SET ANSI_NULLS ON
+;
+SET QUOTED_IDENTIFIER ON
+;
+
 CREATE TABLE [SHKGroupTable](
 	[groupid] [nvarchar](100) NOT NULL,
 	[description] [nvarchar](254) NULL,
@@ -3104,9 +3121,13 @@ ALTER TABLE [SHKActivityDataWOB] CHECK CONSTRAINT [SHKActivityDataWOB_Activity]
 -- INSERT DATA --
 
 INSERT INTO dir_role (id,name,description) VALUES ('ROLE_ADMIN','Admin','Administrator');
-INSERT INTO dir_role (id,name,description) VALUES ('ROLE_USER','User','Normal User');
+INSERT INTO dir_role (id,name,description) VALUES ('ROLE_USER','User','Normal User'); 
+INSERT INTO dir_role (id,name,description) VALUES ('ROLE_MANAGER', 'Manager', 'Manager Apps');
+INSERT INTO dir_role (id,name,description) VALUES ('ROLE_MONITORING', 'Monitoring', 'Monitoring Apps'); 
 
-INSERT INTO dir_user (id,username,password,firstName,lastName,email,active,timeZone) VALUES ('admin','admin','admin','Admin','admin','admin@email.domain',1,'0');
+INSERT INTO dir_user (id,username,password,firstName,lastName,email,active,timeZone) VALUES ('admin','admin','3F3E6296C5974ED9C4AFF2BBB89256D0','Admin','admin','admin@email.domain',1,'0');
+
+INSERT INTO dir_user_salt (id,userId,randomSalt) VALUES ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','C2117FD9E043CD845C5D1A533FB2E580');
 
 INSERT INTO dir_user_role (roleId,userId) VALUES ('ROLE_ADMIN','admin');
 

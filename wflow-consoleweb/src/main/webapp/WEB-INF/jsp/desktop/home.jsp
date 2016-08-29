@@ -21,17 +21,19 @@
                     <div id="categories" class="menu-link-admin">
                         <a href="#" onclick="return loadPublishedApps()" id="category-published-apps" class="category"><fmt:message key="appCenter.label.publishedApps"/></a>
                         <c:if test="${isAdmin && !empty marketplaceUrl && marketplaceUrl != '???appCenter.link.marketplace.url???'}">
-                            <c:choose>
-                                <c:when test="${empty marketplaceTarget || marketplaceTarget == '???appCenter.link.marketplace.target???'}">
-                                    <a href="#" onclick="return loadMarketplaceApps()" id="category-marketplace-apps" class="category"><fmt:message key="appCenter.label.marketplace"/></a>
-                                </c:when>
-                                <c:when test="${marketplaceTarget == '_popup'}">
-                                    <a href="#" onclick="return loadMarketplace()" id="category-marketplace-apps" class="category"><fmt:message key="appCenter.label.marketplace"/></a>
-                                </c:when>
-                                <c:otherwise>
-                                    <a href="${marketplaceUrl}" target="${marketplaceTarget}" id="category-marketplace-apps" class="category"><fmt:message key="appCenter.label.marketplace"/></a>
-                                </c:otherwise>
-                            </c:choose>
+                            <!--  
+	                            <c:choose>
+	                                <c:when test="${empty marketplaceTarget || marketplaceTarget == '???appCenter.link.marketplace.target???'}">
+	                                    <a href="#" onclick="return loadMarketplaceApps()" id="category-marketplace-apps" class="category"><fmt:message key="appCenter.label.marketplace"/></a>
+	                                </c:when>
+	                                <c:when test="${marketplaceTarget == '_popup'}">
+	                                    <a href="#" onclick="return loadMarketplace()" id="category-marketplace-apps" class="category"><fmt:message key="appCenter.label.marketplace"/></a>
+	                                </c:when>
+	                                <c:otherwise>
+	                                    <a href="${marketplaceUrl}" target="${marketplaceTarget}" id="category-marketplace-apps" class="category"><fmt:message key="appCenter.label.marketplace"/></a>
+	                                </c:otherwise>
+	                            </c:choose>
+                            -->
                         </c:if>
                     </div>
                 </c:if>
@@ -67,13 +69,13 @@
 
 <c:set var="mobileDisabled" value="<%= MobileUtil.isMobileDisabled() %>"/>
 <script>
-    <c:if test="${!mobileDisabled}">
-    var mobileLinkTitle = "<fmt:message key="appCenter.label.mobileEdition"/>";
-    var mobileLink = "<a href='${pageContext.request.contextPath}/web/mobile' id='header-mobile' onclick='return Mobile.viewMobileSite(\"${pageContext.request.contextPath}/home/\", \"${pageContext.request.contextPath}/web/mobile\")'><i class='icon-mobile-phone'>&nbsp;</i>" + mobileLinkTitle + "</a>";
-    $("#header-links").prepend(mobileLink + " ");
-    var url = "${pageContext.request.contextPath}/web/mobile";
-    Mobile.directToMobileSite(url);
-    </c:if>
+    //<c:if test="${!mobileDisabled}">
+    //var mobileLinkTitle = "<fmt:message key="appCenter.label.mobileEdition"/>";
+    //var mobileLink = "<a href='${pageContext.request.contextPath}/web/mobile' id='header-mobile' onclick='return Mobile.viewMobileSite(\"${pageContext.request.contextPath}/home/\", \"${pageContext.request.contextPath}/web/mobile\")'><i class='icon-mobile-phone'>&nbsp;</i>" + mobileLinkTitle + "</a>";
+    //$("#header-links").prepend(mobileLink + " ");
+    //var url = "${pageContext.request.contextPath}/web/mobile";
+    //Mobile.directToMobileSite(url);
+    //</c:if>
 
     var marketplacePopup = function(marketplaceUrl) {
         var marketplaceAppPopupDialog = new PopupDialog("${pageContext.request.contextPath}/web/console/home", " ");

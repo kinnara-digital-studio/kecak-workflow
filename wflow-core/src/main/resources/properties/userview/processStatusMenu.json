@@ -1,0 +1,146 @@
+[{
+    title : '@@userview.processStatus.edit@@',
+    properties : [{
+        name : 'id',
+        label : 'Id',
+        type : 'hidden'
+    },
+    {
+        name : 'customId',
+        label : '@@userview.runprocess.customId@@',
+        type : 'textfield',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@userview.runprocess.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@userview.runprocess.label@@',
+        type : 'textfield',
+        required : 'True',
+        value : '@@userview.processStatus.label.value@@'
+    },
+    {
+        name : 'recordId',
+        label : '@@userview.processStatus.recordId@@',
+        description : '@@userview.processStatus.recordId.desc@@',
+        type : 'textField',
+        required : 'true',
+        value:'#requestParam.id#'
+    },
+    {
+        name : 'viewPermission',
+        label : '@@userview.processStatus.viewPermission@@',
+        type : 'checkbox',
+        value : 'requester',
+        options : [{
+            value : 'requester',
+            label : '@@userview.processStatus.viewPermission.requester@@',
+        },
+        {
+            value : 'performers',
+            label : '@@userview.processStatus.viewPermission.performers@@',
+        },
+        {
+            value : 'admin',
+            label : '@@userview.processStatus.viewPermission.admin@@',
+        },
+        {
+            value : 'group',
+            label : '@@userview.processStatus.viewPermission.group@@',
+        },
+        {
+            value : 'department',
+            label : '@@userview.processStatus.viewPermission.department@@',
+        }],
+        required : 'true'
+    },
+    {
+        name : 'groupIds',
+        label : '@@userview.processStatus.viewPermission.group@@',
+        type : 'multiselect',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.UserOptionsBinder/service?action=getGroupOptions',
+        required : 'true',
+        control_field: 'viewPermission',
+        control_value: 'group'
+    },
+    {
+        name : 'departmentIds',
+        label : '@@userview.processStatus.viewPermission.department@@',
+        type : 'multiselect',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.UserOptionsBinder/service?action=getDeptOptions',
+        required : 'true',
+        control_field: 'viewPermission',
+        control_value: 'department'
+    }]
+},
+{
+    title : '@@userview.slareportmenu.ui@@',
+    properties : [{
+        name : 'customHeader',
+        label : '@@userview.slareportmenu.customHeader@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userview.slareportmenu.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'showProcessName',
+        label : '@@userview.processStatus.showProcessName@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : '',
+        }]
+    },
+    {
+        name : 'usernameFormat',
+        label : '@@userview.processStatus.usernameFormat@@',
+        type : 'selectbox',
+        value : 'name',
+        options : [{
+            value : '',
+            label : '@@userview.processStatus.usernameFormat.username@@',
+        },
+        {
+            value : 'name',
+            label : '@@userview.processStatus.usernameFormat.name@@',
+        },
+        {
+            value : 'combine',
+            label : '@@userview.processStatus.usernameFormat.combine@@',
+        }]
+    },
+    {
+        name : 'additionalInfo',
+        label : '@@userview.processStatus.additionalInfo@@',
+        type : 'checkbox',
+        options : [{
+            value : 'sla',
+            label : '@@userview.processStatus.additional.serviceLevelMonitor@@',
+        },
+        {
+            value : 'duedate',
+            label : '@@userview.processStatus.additional.dueDate@@',
+        },
+        {
+            value : 'delay',
+            label : '@@userview.processStatus.additional.delay@@',
+        },
+        {
+            value : 'custom',
+            label : '@@userview.processStatus.additional.custom@@',
+        }]
+    },
+    {
+        name : 'customInfo',
+        label : '@@userview.processStatus.additional.custom@@',
+        type : 'codeeditor',
+        mode : 'html',
+        control_field: 'additionalInfo',
+        control_value: 'custom'
+    }]
+}]

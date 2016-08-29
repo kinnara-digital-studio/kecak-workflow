@@ -1,0 +1,58 @@
+[{
+    title : '@@datalist.sbdlft.config@@',
+    properties : [{
+        name : 'multiple',
+        label : '@@datalist.sbdlft.type@@',
+        type : 'selectbox',
+        value : '',
+        options : [{
+            value : 'autocomplete',
+            label : '@@datalist.sbdlft.type.autoComplete@@'
+        },
+        {
+            value : 'true',
+            label : '@@datalist.sbdlft.type.multiSelectbox@@'
+        },
+        {
+            value : '',
+            label : '@@datalist.sbdlft.type.selectbox@@'
+        },
+        {
+            value : 'textfield',
+            label : '@@datalist.sbdlft.type.textField@@'
+        }]
+    },
+    {
+        name : 'size',
+        label : '@@datalist.sbdlft.size@@',
+        type : 'textfield',
+    },
+    {
+        name:'defaultValue',
+        label:'@@datalist.sbdlft.defaultValue@@',
+        type:'textfield'
+    },
+    {
+        name : 'options',
+        label : '@@datalist.sbdlft.options@@',
+        type : 'grid',
+        columns : [{
+            key : 'value',
+            label : '@@datalist.sbdlft.value@@'
+        },
+        {
+            key : 'label',
+            label : '@@datalist.sbdlft.label@@'
+        }]
+    }]
+},
+{
+    title : '@@datalist.sbdlft.chooseOptionsBinder@@',
+    properties : [{
+        name : 'optionsBinder',
+        label : '@@datalist.sbdlft.optionsBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormLoadOptionsBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    }]
+}]

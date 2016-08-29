@@ -1,0 +1,19 @@
+[{
+    title : '@@datalist.dateformatter.config@@',
+    properties : [{
+        name : 'dataFormat',
+        label : '@@datalist.dateformatter.dataFormat@@',
+        description : '@@datalist.dateformatter.dataFormat.desc@@',
+        type : 'textfield',
+        value : 'yyyy-MM-dd',
+        required : 'true'
+    },
+    {
+        name : 'displayFormat',
+        label : '@@datalist.dateformatter.displayFormat@@',
+        description : '@@datalist.dateformatter.displayFormat.desc@@',
+        type : 'textfield',
+        value : 'dd/MM/yyyy',
+        required : 'true'
+    }]
+}]

@@ -1,0 +1,49 @@
+[{
+    title : '@@generator.datalist.config@@',
+    properties : [{
+        name : 'listId',
+        label : '@@generator.datalist.listId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.datalist.listId.invalidId@@',
+        value : 'list_[formId]'
+    },
+    {
+        name : 'listName',
+        label : '@@generator.datalist.listName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.datalist.listName.value@@'
+    },
+    {
+        name : 'columns',
+        label : '@@generator.datalist.columns@@',
+        required : 'true',
+        type : 'multiselect',
+        size : '10',
+        options_ajax : '[CONTEXT_PATH]/web/json/app[APP_PATH]/form/[formId]/columns',
+        value : '[default_selected_columns]'
+    }]
+},
+{
+    title : '@@generator.datalist.advanced@@',
+    properties : [
+    {
+        name : 'filters',
+        label : '@@generator.datalist.filters@@',
+        type : 'multiselect',
+        size : '10',
+        options_ajax : '[CONTEXT_PATH]/web/json/app[APP_PATH]/form/[formId]/columns'
+    },
+    {
+        name : 'autoConfigure',
+        label : '@@generator.datalist.autoConfigureForOptionsField@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    }]
+}]

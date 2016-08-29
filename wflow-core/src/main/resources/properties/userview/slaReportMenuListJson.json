@@ -1,0 +1,46 @@
+({
+    "id" : "slareport",
+    "name" : "SlaReport",
+    "pageSize" : 10,
+    "order" : "name",
+    "orderBy" : "1",
+    "actions" : [],
+    "rowActions" : [],
+    "filters" : [],
+    "binder" : {
+        "className" : "",
+        "properties" : {}
+    },
+    "columns" : [%s,
+    {
+        "id" : "column_1",
+        "label" : "@@userview.slareportmenu.minDelay@@",
+        "name" : "minDelay",
+        "sortable" : "false"
+    },
+    {
+        "id" : "column_2",
+        "label" : "@@userview.slareportmenu.maxDelay@@",
+        "name" : "maxDelay",
+        "sortable" : "false"
+    },
+    {
+        "id" : "column_3",
+        "label" : "@@userview.slareportmenu.ratioOnTime@@",
+        "name" : "ratioOnTime",
+        "sortable" : "false"
+    },
+    {
+        "id" : "column_4",
+        "label" : "@@userview.slareportmenu.ratioWithDelay@@",
+        "name" : "ratioWithDelay",
+        "sortable" : "false"
+    },
+    {
+        "id" : "column_5",
+        "label" : "@@userview.slareportmenu.indicator@@",
+        "name" : "indicator",
+        "sortable" : "false",
+        "renderHtml" : "true",
+    }]
+})

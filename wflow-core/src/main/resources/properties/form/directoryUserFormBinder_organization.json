@@ -1,0 +1,25 @@
+[{
+    title : '@@form.directorybinder.organization.advanced@@',
+    properties : [
+    {
+        name : 'organizationId',
+        label : '@@form.directorybinder.organization.field.organizationId@@',
+        type : 'textfield',
+        value : 'organizationId',
+        required : 'true'
+    },
+    {
+        name : 'organizationName',
+        label : '@@form.directorybinder.organization.field.organizationName@@',
+        type : 'textfield',
+        value : 'organizationName',
+        required : 'true'
+    },
+    {
+        name : 'organizationDesc',
+        label : '@@form.directorybinder.organization.field.organizationDesc@@',
+        type : 'textfield',
+        value : 'organizationDesc',
+        required : 'true'
+    }]
+}]

@@ -1,0 +1,67 @@
+
+    {
+        title : '@@form.multiPagedForm.page@@ %s',
+        properties : [
+            {
+                label : '@@form.multiPagedForm.general@@',
+                type : 'header'
+            },
+            {
+                name:'page%s_label',
+                label:'@@form.multiPagedForm.label@@',
+                type:'textfield',
+                value : 'Page %s',
+                required : 'true'
+            },
+            {
+                name : 'page%s_formDefId',
+                label : '@@form.multiPagedForm.formDefId@@',
+                type : 'selectbox',
+                required : 'true',
+                options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options'
+            },
+            {
+                name:'page%s_readonly',
+                label:'@@form.multiPagedForm.readonly@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                label : '@@form.multiPagedForm.dataLinkageAndValidation@@',
+                type : 'header'
+            },
+            {
+                name:'page%s_parentSubFormId',
+                label:'@@form.multiPagedForm.parentField@@',
+                type:'textfield',
+                value : 'page%s_key',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.multiPagedForm.invalidId@@'
+            },
+            {
+                name:'page%s_subFormParentId',
+                label:'@@form.multiPagedForm.subformField@@',
+                type:'textfield',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.multiPagedForm.invalidId@@'
+            },
+            {
+                name:'page%s_validate',
+                label:'@@form.multiPagedForm.validateWhenChangePage@@',
+                type:'checkbox',
+                value:'true',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            }
+        ]
+    }

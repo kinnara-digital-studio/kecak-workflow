@@ -1,0 +1,24 @@
+[{
+    title : '@@form.groupoptionsbinder.config@@',
+    properties : [{
+        name : 'orgId',
+        label : '@@form.groupoptionsbinder.orgId@@',
+        type : 'selectbox',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.GroupOptionsBinder/service?action=getOptions'
+    },
+    {
+        name : 'addEmptyOption',
+        label : '@@form.groupoptionsbinder.addEmptyOption@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'emptyLabel',
+        label : '@@form.groupoptionsbinder.emptyLabel@@',
+        type : 'textfield'
+    }]
+}]

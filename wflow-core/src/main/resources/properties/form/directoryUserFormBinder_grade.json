@@ -1,0 +1,32 @@
+[{
+    title : '@@form.directorybinder.grade.advanced@@',
+    properties : [
+    {
+        name : 'gradeId',
+        label : '@@form.directorybinder.grade.field.gradeId@@',
+        type : 'textfield',
+        value : 'gradeId',
+        required : 'true'
+    },
+    {
+        name : 'gradeName',
+        label : '@@form.directorybinder.grade.field.gradeName@@',
+        type : 'textfield',
+        value : 'gradeName',
+        required : 'true'
+    },
+    {
+        name : 'gradeDesc',
+        label : '@@form.directorybinder.grade.field.gradeDesc@@',
+        type : 'textfield',
+        value : 'gradeDesc',
+        required : 'true'
+    },
+    {
+        name : 'organization',
+        label : '@@form.directorybinder.grade.field.organization@@',
+        type : 'textfield',
+        value : 'organization',
+        required : 'true'
+    }]
+}]

@@ -1,0 +1,42 @@
+[{
+    title : '@@userview.portaltheme.config@@',
+    properties : [{
+        name : 'customHeader',
+        label : '@@userview.portaltheme.customHeader@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userview.portaltheme.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customBanner',
+        label : '@@userview.portaltheme.customBanner@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'sideBar',
+        label : '@@userview.portaltheme.sidebar@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+},
+{
+    title : '@@userview.portaltheme.configureCustomUi@@',
+    properties : [{
+        name : 'css',
+        label : '@@userview.portaltheme.customCss@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userview.portaltheme.customJavascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    }]
+}]

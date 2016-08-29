@@ -1,0 +1,142 @@
+[{
+    title : '@@form.popupselectbox.editPopupSelectBox@@',
+    properties : [{
+            name : 'id',
+            label : '@@form.popupselectbox.id@@',
+            type : 'textfield',
+            required : 'True',
+            regex_validation : '^[a-zA-Z0-9_]+$',
+            validation_message : '@@form.popupselectbox.invalidId@@'
+        },
+        {
+            name : 'label',
+            label : '@@form.popupselectbox.label@@',
+            type : 'textfield',
+            value : 'PopupSelectBox'
+        },
+        {
+            name : 'listId',
+            label : '@@form.popupselectbox.listId@@',
+            description : '@@form.popupselectbox.listId.desc@@',
+            type : 'selectbox',
+            required : 'True',
+            options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/datalist/options'
+        },
+        {
+            name:'displayField',
+            label:'@@form.popupselectbox.displayField@@',
+            type : 'textfield',
+            required: 'true'
+        }
+    ]
+},
+{
+    title : '@@form.popupselectbox.advancedOptions@@',
+    properties : [
+        {
+            label : '@@form.popupselectbox.data@@',
+            type : 'header'
+        },
+        {
+            name : 'value',
+            description : '@@form.popupselectbox.value.desc@@',
+            label : '@@form.popupselectbox.value@@',
+            type : 'textfield'
+        },
+        {
+            name:'idField',
+            label:'@@form.popupselectbox.idField@@',
+            type : 'textfield'
+        },
+        {
+            name : 'multiple',
+            label : '@@form.popupselectbox.multipleSelection@@',
+            type : 'checkbox',
+            value : 'true',
+            options : [{
+                    value : 'true',
+                    label : ''
+                }]
+        },
+        {
+            name : 'requestParams',
+            label : '@@form.popupselectbox.requestParam@@',
+            type : 'grid',
+            columns : [{
+                key : 'param',
+                label : '@@form.popupselectbox.Parameter@@'
+            },
+            {
+                key : 'field',
+                label : '@@form.popupselectbox.field@@'
+            },
+            {
+                key : 'defaultValue',
+                label : '@@form.popupselectbox.defaultValue@@'
+            }]
+        },
+        {
+            name : 'validator',
+            label : '@@form.popupselectbox.validator@@',
+            type : 'elementselect',
+            options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormValidator',
+            url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+        },
+        {
+            label : '@@form.popupselectbox.ui@@',
+            type : 'header'
+        },
+        {
+            name:'readonly',
+            label:'@@form.popupselectbox.readonly@@',
+            type:'checkbox',
+            value:'false',
+            options:[
+                {
+                    value:'true',
+                    label:''
+                }
+            ]
+        },
+        {
+            name:'readonlyLabel',
+            label:'@@form.popupselectbox.readonlyLabel@@',
+            type:'checkbox',
+            value:'false',
+            options:[
+                {
+                    value:'true',
+                    label:''
+                }
+            ]
+        },
+        {
+            name:'buttonLabel',
+            label:'@@form.popupselectbox.buttonLabel@@',
+            type : 'textfield',
+            value : 'Select',
+            required: 'true'
+        },
+        {
+            name : 'height',
+            label : '@@form.popupselectbox.popupWindowHeight@@',
+            type : 'textfield',
+            value : '500'
+        },
+        {
+            name : 'width',
+            label : '@@form.popupselectbox.popupWindowWidth@@',
+            type : 'textfield',
+            value : '900'
+        },
+        {
+            label : '@@form.popupselectbox.workflow@@',
+            type : 'header'
+        },
+        {
+            name : 'workflowVariable',
+            label : '@@form.popupselectbox.workflowVariable@@',
+            type : 'textfield'
+        }
+    ]
+}]

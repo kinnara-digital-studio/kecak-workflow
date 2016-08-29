@@ -1,0 +1,130 @@
+[
+    {
+        title:'@@form.multiPagedForm.edit@@',
+        properties:[
+            {
+                name:'id',
+                label:'@@form.multiPagedForm.id@@',
+                type:'textfield',
+                required:'True',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.multiPagedForm.invalidId@@'
+            },
+            {
+                name:'label',
+                label:'@@form.multiPagedForm.label@@',
+                type:'textfield'
+            },
+            {
+                name:'numberOfPage',
+                label:'@@form.multiPagedForm.numberOfPage@@',
+                type : 'elementselect',
+                value : '2',
+                options : [
+                    {value : '2' , label : '2'},
+                    {value : '3' , label : '3'},
+                    {value : '4' , label : '4'},
+                    {value : '5' , label : '5'},
+                    {value : '6' , label : '6'},
+                    {value : '7' , label : '7'},
+                    {value : '8' , label : '8'},
+                    {value : '9' , label : '9'},
+                    {value : '10' , label : '10'},
+                    {value : '11' , label : '11'},
+                    {value : '12' , label : '12'},
+                    {value : '13' , label : '13'},
+                    {value : '14' , label : '14'},
+                    {value : '15' , label : '15'}
+                ],
+                url : '[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/org.joget.plugin.enterprise.MultiPagedForm/service?action=getJson',
+                keep_value_on_change : 'true'
+            }
+        ]
+    },
+    {
+        title:'@@form.multiPagedForm.advancedOptions@@',
+        properties:[
+            {
+                label : '@@form.multiPagedForm.data@@',
+                type : 'header'
+            },
+            {
+                name:'partiallyStore',
+                label:'@@form.multiPagedForm.partiallyStore@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'storeMainFormOnPartiallyStore',
+                label:'@@form.multiPagedForm.storeMainFormOnPartiallyStore@@',
+                type:'checkbox',
+                value:'true',
+                control_field: 'partiallyStore',
+                control_value: 'true',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                label : '@@form.multiPagedForm.ui@@',
+                type : 'header'
+            },
+            {
+                name:'displayMode',
+                label:'@@form.multiPagedForm.displayMode@@',
+                type:'selectbox',
+                value : 'wizard',
+                options : [
+                    {
+                        value : 'wizard',
+                        label : '@@form.multiPagedForm.displayMode.wizard@@'
+                    },
+                    {
+                        value : 'tab',
+                        label : '@@form.multiPagedForm.displayMode.tab@@'
+                    }
+                ]
+            },
+            {
+                name:'prevButtonlabel',
+                label:'@@form.multiPagedForm.prevButtonlabel@@',
+                value : 'Prev',
+                type:'textfield'
+            },
+            {
+                name:'nextButtonlabel',
+                label:'@@form.multiPagedForm.nextButtonlabel@@',
+                value : 'Next',
+                type:'textfield'
+            },
+            {
+                name:'onlyAllowSubmitOnLastPage',
+                label:'@@form.multiPagedForm.onlyAllowSubmitOnLastPage@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name : 'css',
+                label : '@@form.multiPagedForm.css@@',
+                type : 'textarea',
+                cols : '60',
+                rows : '15'
+            }
+        ]
+    }
+]

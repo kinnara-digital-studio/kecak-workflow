@@ -1,0 +1,180 @@
+[
+    {
+        title:'@@form.ajaxsubform.editAjaxSubform@@',
+        properties:[
+            {
+                name:'id',
+                label:'@@form.ajaxsubform.id@@',
+                type:'textfield',
+                required:'True',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.ajaxsubform.invalidId@@'
+            },
+            {
+                name:'label',
+                label:'@@form.ajaxsubform.label@@',
+                type:'textfield'
+            },
+            {
+                name : 'formDefId',
+                label : '@@form.ajaxsubform.form@@',
+                type : 'selectbox',
+                required:'True',
+                options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options'
+            }
+        ]
+    },
+    {
+        title : '@@form.ajaxsubform.ui@@',
+        properties : [
+            {
+                label : '@@form.ajaxsubform.general@@',
+                type : 'header'
+            },
+            {
+                name:'ajax',
+                label:'@@form.ajaxsubform.ajax@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'readonly',
+                label:'@@form.ajaxsubform.readonly@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'readonlyLabel',
+                label:'@@form.ajaxsubform.readonlyLabel@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'noframe',
+                label:'@@form.ajaxsubform.noframe@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                label : '@@form.ajaxsubform.ui.collapsible@@',
+                type : 'header'
+            },
+            {
+                name:'collapsible',
+                label:'@@form.ajaxsubform.collapsible@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'collapsibleLabelExpanded',
+                label:'@@form.ajaxsubform.collapsibleLabel.expanded@@',
+                type:'textfield',
+                value:'Hide Details'
+            },
+            {
+                name:'collapsibleLabelCollapsed',
+                label:'@@form.ajaxsubform.collapsibleLabel.collapsed@@',
+                type:'textfield',
+                value:'View Details'
+            },
+            {
+                name:'collapsibleExpanded',
+                label:'@@form.ajaxsubform.expanded@@',
+                type:'checkbox',
+                value:'true',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'hideEmpty',
+                label:'@@form.ajaxsubform.hideEmpty@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'noLoad',
+                label:'@@form.ajaxsubform.noLoad@@',
+                type:'checkbox',
+                value:'',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        title:'@@form.ajaxsubform.data@@',
+        properties:[
+            {
+                label : '@@form.ajaxsubform.dataLinkage@@',
+                type : 'header'
+            },
+            {
+                name:'parentSubFormId',
+                label:'@@form.ajaxsubform.parentField@@',
+                type:'textfield'
+            },
+            {
+                name:'subFormParentId',
+                label:'@@form.ajaxsubform.subformField@@',
+                type:'textfield'
+            },
+            {
+                label : '@@form.ajaxsubform.binder@@',
+                type : 'header'
+            },
+            {
+                name : 'storeBinder',
+                label : '@@form.ajaxsubform.storeBinder@@',
+                type : 'elementselect',
+                options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormStoreElementBinder',
+                url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions',
+                value:'org.joget.apps.form.lib.WorkflowFormBinder',
+                required: 'True'
+            }
+        ]
+    }
+]

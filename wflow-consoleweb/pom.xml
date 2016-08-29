@@ -108,9 +108,54 @@
             <artifactId>cache-api</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>2.15.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-stream</artifactId>
+			<version>2.15.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+			<version>2.15.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-camel</artifactId>
+			<version>5.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-pool</artifactId>
+			<version>5.11.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring</artifactId>
+			<version>2.15.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-mail</artifactId>
+			<version>2.15.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-test-spring</artifactId>
+			<version>2.15.2</version>
+		</dependency>
     </dependencies>
     <build>
-        <finalName>jw</finalName>
+        <finalName>kecak</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -215,7 +260,7 @@
                 <version>1.0</version>
                 <configuration>
                     <port>8080</port>
-                    <warSourceDirectory>${project.basedir}/target/jw</warSourceDirectory>
+                    <warSourceDirectory>${project.basedir}/target/kecak</warSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>

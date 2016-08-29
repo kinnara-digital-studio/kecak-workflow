@@ -1,0 +1,285 @@
+[{
+    title : '@@form.listgrid.editListGrid@@',
+    properties : [{
+        name : 'id',
+        label : '@@form.listgrid.id@@',
+        type : 'textfield',
+        required : 'True',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@form.listgrid.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@form.listgrid.label@@',
+        type : 'textfield',
+        value : '@@form.listgrid.label.value@@'
+    },
+    {
+        name : 'listId',
+        label : '@@form.listgrid.listId@@',
+        description : '@@form.listgrid.listId.desc@@',
+        type : 'selectbox',
+        required : 'True',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app/%s/%s/datalist/options'
+    },
+    {
+        name : 'options',
+        label : '@@form.listgrid.columns@@',
+        description : '@@form.listgrid.columns.desc@@',
+        type : 'grid',
+        columns : [{
+            key : 'value',
+            label : '@@form.listgrid.value@@'
+        },
+        {
+            key : 'label',
+            label : '@@form.listgrid.label@@'
+        },
+        {
+            key : 'editable',
+            label : '@@form.listgrid.editable@@',
+            options : [{
+                value : 'no',
+                label : '@@form.listgrid.editable.no@@'
+            },
+            {
+                value : 'yes',
+                label : '@@form.listgrid.editable.yes@@'
+            }]
+        },
+        {
+            key : 'formatType',
+            label : '@@form.listgrid.formatType@@',
+            options : [{
+                value : 'text',
+                label : '@@form.listgrid.formatType.text@@'
+            },
+            {
+                value : 'html',
+                label : '@@form.listgrid.formatType.html@@'
+            },
+            {
+                value : 'decimal',
+                label : '@@form.listgrid.formatType.decimal@@'
+            },
+            {
+                value : 'date',
+                label : '@@form.listgrid.formatType.date@@'
+            },
+            {
+                value : 'file',
+                label : '@@form.listgrid.formatType.file@@'
+            },
+            {
+                value : 'image',
+                label : '@@form.listgrid.formatType.image@@'
+            },
+            {
+                value : 'options',
+                label : '@@form.listgrid.formatType.options@@'
+            }]
+        },
+        {
+            key : 'format',
+            label : '@@form.listgrid.format@@'
+        },
+        {
+            key : 'width',
+            label : '@@form.listgrid.width@@'
+        }]
+    }]
+},
+{
+    title : '@@form.listgrid.ui@@',
+    properties : [{
+        label : '@@form.listgrid.sorting@@',
+        type : 'header'
+    },
+    {
+        name : 'enableSorting',
+        label : '@@form.listgrid.enableSorting@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'sortField',
+        label : '@@form.listgrid.sortField@@',
+        type : 'textfield',
+        description : '@@form.listgrid.sortField.desc@@',
+        value : 'sort'
+    },
+    {
+        label : '@@form.listgrid.list@@',
+        type : 'header'
+    },
+    {
+        name : 'buttonLabel',
+        label : '@@form.listgrid.buttonLabel@@',
+        type : 'textfield'
+    },
+    {
+        label : '@@form.listgrid.form@@',
+        type : 'header'
+    },
+    %s,
+    {
+        name : 'submit-label-normal',
+        label : '@@form.listgrid.submitButtonLabel.normal@@',
+        type : 'textfield'
+    },
+    {
+        name : 'submit-label-readonly',
+        label : '@@form.listgrid.submitButtonLabel.readonly@@',
+        type : 'textfield'
+    },
+    {
+        name : 'readonlyLabel',
+        label : '@@form.listgrid.readonlyLabel@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        label : '@@form.listgrid.grid@@',
+        type : 'header'
+    },
+    {
+        name : 'readonly',
+        label : '@@form.listgrid.readonly@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'disabledAdd',
+        label : '@@form.listgrid.disabledAdd@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'disabledDelete',
+        label : '@@form.listgrid.disabledDelete@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'deleteMessage',
+        label : '@@form.listgrid.deleteMessage@@',
+        type : 'textfield',
+        value : '@@form.formgrid.deleteMessage.value@@'
+    },
+    {
+        name : 'showRowNumber',
+        label : '@@form.listgrid.showRowNumber@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'height',
+        label : '@@form.listgrid.popupWindowHeight@@',
+        type : 'textfield',
+        value : '500'
+    },
+    {
+        name : 'width',
+        label : '@@form.listgrid.popupWindowWidth@@',
+        type : 'textfield',
+        value : '900'
+    }]
+},
+{
+    title : '@@form.listgrid.validationAndData@@',
+    properties : [{
+        label : '@@form.listgrid.validation@@',
+        type : 'header'
+    },
+    {
+        name : 'validator',
+        label : '@@form.listgrid.validator@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormMultiRowValidator',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'uniqueKey',
+        label : '@@form.listgrid.uniqueKey@@',
+        description : '@@form.listgrid.uniqueKey.desc@@',
+        type : 'textfield'
+    },
+    {
+        name : 'validateMinRow',
+        label : '@@form.listgrid.validateMinRow@@',
+        type : 'textfield'
+    },
+    {
+        name : 'validateMaxRow',
+        label : '@@form.listgrid.validateMaxRow@@',
+        type : 'textfield'
+    },
+    {
+        name : 'errorMessage',
+        label : '@@form.listgrid.errorMessage@@',
+        type : 'textfield',
+        value : '@@form.listgrid.invalidNumberOfRow@@'
+    },
+    {
+        label : '@@form.listgrid.data@@',
+        type : 'header'
+    },
+    {
+        name : 'loadBinder',
+        label : '@@form.listgrid.loadBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormLoadMultiRowElementBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'storeBinder',
+        label : '@@form.listgrid.storeBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormStoreMultiRowElementBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    }]
+},	
+{
+    title : '@@form.listgrid.advanced@@',
+    properties : [{
+        name : 'requestParams',
+        label : '@@form.listgrid.requestParam@@',
+        type : 'grid',
+        columns : [{
+            key : 'param',
+            label : '@@form.listgrid.Parameter@@'
+        },
+        {
+            key : 'field',
+            label : '@@form.listgrid.field@@'
+        },
+        {
+            key : 'defaultValue',
+            label : '@@form.listgrid.defaultValue@@'
+        }]
+    }]
+}]

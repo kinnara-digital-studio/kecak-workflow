@@ -1,0 +1,32 @@
+[{
+    title : '@@datalist.ddlft.config@@',
+    properties : [
+    {
+        name:'defaultValue',
+        label:'@@datalist.ddlft.defaultValue@@',
+        type:'textfield'
+    },
+    {
+        name : 'format',
+        label : '@@datalist.ddlft.format@@',
+        description : '@@datalist.ddlft.format.desc@@',
+        type : 'textfield',
+        value : 'mm/dd/yy',
+        required : 'true'
+    },
+    {
+        name : 'formatJava',
+        label : '@@datalist.ddlft.formatJava@@',
+        description : '@@datalist.ddlft.formatJava.desc@@',
+        type : 'textfield',
+        value : 'MM/dd/yyyy',
+        required : 'true'
+    },
+    {
+        name : 'yearRange',
+        label : '@@datalist.ddlft.yearRange@@',
+        type : 'textfield',
+        value : 'c-10:c+10',
+        required : 'true'
+    }]
+}]

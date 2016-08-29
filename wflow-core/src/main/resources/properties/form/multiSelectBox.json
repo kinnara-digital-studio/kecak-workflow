@@ -1,0 +1,128 @@
+[{
+        title : '@@form.multiselectbox.editMultiSelectBox@@',
+        properties : [{
+                name : 'id',
+                label : '@@form.multiselectbox.id@@',
+                type : 'textfield',
+                required : 'True',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.multiselectbox.invalidId@@'
+            },
+            {
+                name : 'label',
+                label : '@@form.multiselectbox.label@@',
+                type : 'textfield',
+                value : 'MultiSelectBox'
+            },
+            {
+                name : 'options',
+                label : '@@form.multiselectbox.options@@',
+                type : 'grid',
+                columns : [{
+                        key : 'value',
+                        label : '@@form.multiselectbox.value@@'
+                    },
+                    {
+                        key : 'label',
+                        label : '@@form.multiselectbox.label@@'
+                    },
+                    {
+                        key : 'grouping',
+                        label : '@@form.multiselectbox.grouping@@'
+                    }]
+            },
+            {
+                name : 'optionsBinder',
+                label : '@@form.multiselectbox.chooseOptionsBinder@@',
+                type : 'elementselect',
+                options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormLoadOptionsBinder',
+                url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+            }]
+    },
+    {
+        title : '@@form.multiselectbox.advancedOptions@@',
+        properties : [
+            {
+                label : '@@form.popupselectbox.data@@',
+                type : 'header'
+            },
+            {
+                name : 'value',
+                description : '@@form.popupselectbox.value.desc@@',
+                label : '@@form.popupselectbox.value@@',
+                type : 'textfield'
+            },
+            {
+                name : 'multiple',
+                label : '@@form.multiselectbox.multipleSelection@@',
+                type : 'checkbox',
+                value : 'true',
+                options : [{
+                        value : 'true',
+                        label : ''
+                    }]
+            },
+            {
+                label : '@@form.multiselectbox.dependency@@',
+                type : 'header'
+            },
+            {
+                name : 'controlField',
+                label : '@@form.multiselectbox.controlField@@',
+                type : 'textfield'
+            },
+            {
+                label : '@@form.multiselectbox.ui@@',
+                type : 'header'
+            },
+            {
+                name : 'width',
+                label : '@@form.multiselectbox.width@@',
+                type : 'textfield',
+                value : '40%'
+            },
+            {
+                name:'readonly',
+                label:'@@form.multiselectbox.readonly@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'readonlyLabel',
+                label:'@@form.multiselectbox.readonlyLabel@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                label : '@@form.multiselectbox.validation@@',
+                type : 'header'
+            },
+            {
+                name : 'validator',
+                label : '@@form.multiselectbox.validator@@',
+                type : 'elementselect',
+                options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormValidator',
+                url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+            },
+            {
+                label : '@@form.multiselectbox.workflow@@',
+                type : 'header'
+            },
+            {
+                name : 'workflowVariable',
+                label : '@@form.multiselectbox.workflowVariable@@',
+                type : 'textfield'
+            }]
+    }]

@@ -1,0 +1,52 @@
+[{
+    title : '@@form.richtexteditorfield.edit@@',
+    properties : [{
+        name : 'id',
+        label : '@@form.richtexteditorfield.id@@',
+        type : 'textfield',
+        required : 'True',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@form.richtexteditorfield.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@form.richtexteditorfield.label@@',
+        type : 'textfield',
+        value : 'Rich Text Editor'
+    }]
+},
+{
+    title : '@@form.richtexteditorfield.advancedOptions@@',
+    properties : [{
+        label : '@@form.richtexteditorfield.data@@',
+        type : 'header'
+    },
+    {
+        name : 'value',
+        label : '@@form.richtexteditorfield.value@@',
+        rows : '5',
+        cols : '60',
+        type : 'textarea'
+    },
+    {
+        name : 'validator',
+        label : '@@form.richtexteditorfield.validator@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormValidator',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        label : '@@form.richtexteditorfield.ui@@',
+        type : 'header'
+    },
+    {
+        name : 'readonly',
+        label : '@@form.richtexteditorfield.readonly@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    }]
+}]

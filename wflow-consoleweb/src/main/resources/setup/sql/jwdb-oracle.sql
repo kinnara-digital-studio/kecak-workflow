@@ -9,8 +9,11 @@
 	"PUBLISHED" NUMBER(1,0), 
 	"DATECREATED" TIMESTAMP (6), 
 	"DATEMODIFIED" TIMESTAMP (6),
-	"LICENSE" VARCHAR2(4000)
+	"LICENSE" VARCHAR2(4000),
+	"DESCRIPTION" VARCHAR2(4000),
+	"META" VARCHAR2(4000)
    ) ;
+   
 --------------------------------------------------------
 --  DDL for Table APP_DATALIST
 --------------------------------------------------------
@@ -320,6 +323,17 @@
 	"LOCALE" VARCHAR2(255 CHAR), 
 	"ACTIVE" NUMBER(10,0)
    ) ;
+   
+--------------------------------------------------------
+--  DDL for Table DIR_USER_SALT
+--------------------------------------------------------
+
+  CREATE TABLE "DIR_USER_SALT" 
+   (	"ID" VARCHAR2(255 CHAR), 
+	"USERID" VARCHAR2(255 CHAR), 
+	"RANDOMSALT" VARCHAR2(255 CHAR)
+   ) ;   
+   
 --------------------------------------------------------
 --  DDL for Table DIR_USER_EXTRA
 --------------------------------------------------------
@@ -1498,16 +1512,6 @@
 ---------------------------------------------------
 
 ---------------------------------------------------
---   DATA FOR TABLE DIR_USER_ROLE
---   FILTER = none used
----------------------------------------------------
-Insert into DIR_USER_ROLE (ROLEID,USERID) values ('ROLE_ADMIN','001');
-
----------------------------------------------------
---   END DATA FOR TABLE DIR_USER_ROLE
----------------------------------------------------
-
----------------------------------------------------
 --   DATA FOR TABLE SHKSTATEEVENTAUDITS
 --   FILTER = none used
 ---------------------------------------------------
@@ -1594,7 +1598,8 @@ Insert into DIR_USER_ROLE (ROLEID,USERID) values ('ROLE_ADMIN','001');
 ---------------------------------------------------
 Insert into DIR_ROLE (ID,NAME,DESCRIPTION) values ('ROLE_ADMIN','Admin','Administrator');
 Insert into DIR_ROLE (ID,NAME,DESCRIPTION) values ('ROLE_USER','User','Normal User');
-
+Insert into DIR_ROLE (ID,NAME,DESCRIPTION) values ('ROLE_MANAGER','Manager','Manager Apps');
+Insert into DIR_ROLE (ID,NAME,DESCRIPTION) values ('ROLE_MONITORING','Monitoring','Monitoring Apps');
 ---------------------------------------------------
 --   END DATA FOR TABLE DIR_ROLE
 ---------------------------------------------------
@@ -2036,10 +2041,31 @@ Insert into OBJECTID (NEXTOID) values (1000200);
 --   DATA FOR TABLE DIR_USER
 --   FILTER = none used
 ---------------------------------------------------
-Insert into DIR_USER (ID,USERNAME,PASSWORD,FIRSTNAME,LASTNAME,EMAIL,TIMEZONE,ACTIVE) values ('001','admin','21232f297a57a5a743894a0e4a801fc3','Admin','admin','admin@email.domain','8',1);
+Insert into DIR_USER (ID,USERNAME,PASSWORD,FIRSTNAME,LASTNAME,EMAIL,TIMEZONE,ACTIVE) values ('admin','admin','3F3E6296C5974ED9C4AFF2BBB89256D0','Admin','Admin','admin@email.domain','0',1);
 
 ---------------------------------------------------
 --   END DATA FOR TABLE DIR_USER
+---------------------------------------------------
+
+---------------------------------------------------
+--   DATA FOR TABLE DIR_USER_ROLE
+--   FILTER = none used
+---------------------------------------------------
+Insert into DIR_USER_ROLE (ROLEID,USERID) values ('ROLE_ADMIN','admin');
+
+---------------------------------------------------
+--   END DATA FOR TABLE DIR_USER_ROLE
+---------------------------------------------------
+
+
+---------------------------------------------------
+--   DATA FOR TABLE DIR_USER_SALT
+--   FILTER = none used
+---------------------------------------------------
+Insert into DIR_USER_SALT (ID,USERID,RANDOMSALT) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','C2117FD9E043CD845C5D1A533FB2E580');
+
+---------------------------------------------------
+--   END DATA FOR TABLE DIR_USER_SALT
 ---------------------------------------------------
 
 ---------------------------------------------------

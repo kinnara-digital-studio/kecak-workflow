@@ -174,6 +174,48 @@
 		    <artifactId>joda-time</artifactId>
 		    <version>2.2</version>
 		</dependency>
+		<!-- http://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>3.12</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>3.12</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml-schemas</artifactId>
+		    <version>3.12</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.googlecode.juniversalchardet</groupId>
+		    <artifactId>juniversalchardet</artifactId>
+		    <version>1.0.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.axis</groupId>
+		    <artifactId>axis</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.axis</groupId>
+		    <artifactId>axis-jaxrpc</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.axis</groupId>
+		    <artifactId>axis-saaj</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>axis</groupId>
+		    <artifactId>axis-wsdl4j</artifactId>
+		    <version>1.5.1</version>
+		</dependency>
+		
     </dependencies>
     <distributionManagement>
         <repository>

@@ -1,0 +1,37 @@
+[{
+    title : '@@userview.slareportmenu.edit@@',
+    properties : [{
+        name : 'id',
+        label : 'Id',
+        type : 'hidden'
+    },
+    {
+        name : 'customId',
+        label : '@@userview.slareportmenu.customId@@',
+        type : 'textfield',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@userview.slareportmenu.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@userview.slareportmenu.label@@',
+        type : 'textfield',
+        required : 'True',
+        value : '@@userview.slareportmenu.slaReport@@'
+    }]
+},
+{
+    title : '@@userview.slareportmenu.ui@@',
+    properties : [{
+        name : 'customHeader',
+        label : '@@userview.slareportmenu.customHeader@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userview.slareportmenu.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+}]

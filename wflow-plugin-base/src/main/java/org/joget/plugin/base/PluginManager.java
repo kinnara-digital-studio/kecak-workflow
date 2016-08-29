@@ -902,7 +902,7 @@ public class PluginManager implements ApplicationContextAware {
                     data.put("request", request);
                 } else {
                     Map<String, String> r = new HashMap<String, String>();
-                    r.put("contextPath", "/jw");
+                    r.put("contextPath", "/kecak");
                     data.put("request", r);
                 }
             } catch (NoClassDefFoundError e) {

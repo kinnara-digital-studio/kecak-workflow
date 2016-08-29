@@ -1,0 +1,24 @@
+[{
+    title : '@@form.departmentoptionsbinder.config@@',
+    properties : [{
+        name : 'orgId',
+        label : '@@form.departmentoptionsbinder.orgId@@',
+        type : 'selectbox',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.DepartmentOptionsBinder/service?action=getOptions'
+    },
+    {
+        name : 'addEmptyOption',
+        label : '@@form.departmentoptionsbinder.addEmptyOption@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'emptyLabel',
+        label : '@@form.departmentoptionsbinder.emptyLabel@@',
+        type : 'textfield'
+    }]
+}]

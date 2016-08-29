@@ -1,0 +1,16 @@
+[{
+    title : '@@form.equalvaluevalidator.config@@',
+    properties : [
+    {
+        name : 'fieldId',
+        label : '@@form.equalvaluevalidator.fieldId@@',
+        type : 'textfield',
+        required : 'True'
+    },
+    {
+        name : 'errorMsg',
+        label : '@@form.equalvaluevalidator.errorMsg@@',
+        type : 'textfield',
+        required : 'True'
+    }]
+}]

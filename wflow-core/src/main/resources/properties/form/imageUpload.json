@@ -1,0 +1,135 @@
+[{
+    title : '@@form.imageupload.editimageupload@@',
+    properties : [{
+        name : 'id',
+        label : '@@form.imageupload.id@@',
+        type : 'textfield',
+        required : 'True',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@form.imageupload.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@form.imageupload.label@@',
+        type : 'textfield',
+        required : 'True',
+        value : 'imageupload'
+    }]
+},
+{
+    title : '@@form.imageupload.ui@@',
+    properties : [{
+        label : '@@form.imageupload.general@@',
+        type : 'header'
+    },
+    {
+        name : 'readonly',
+        label : '@@form.imageupload.readonly@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        label : '@@form.imageupload.imageDisplay@@',
+        type : 'header'
+    },
+    {
+        name : 'width',
+        label : '@@form.imageupload.width@@',
+        type : 'textfield',
+        required : 'True',
+        value : '60',
+        regex_validation : '^[0-9]+$',
+        validation_message : '@@form.imageupload.invalidSize@@'
+    },
+    {
+        name : 'height',
+        label : '@@form.imageupload.height@@',
+        type : 'textfield',
+        required : 'True',
+        value : '60',
+        regex_validation : '^[0-9]+$',
+        validation_message : '@@form.imageupload.invalidSize@@'
+    },
+    {
+        name : 'createThumbnail',
+        label : '@@form.imageupload.createThumbnail@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    }]
+},
+{
+    title : '@@form.fileupload.advancedOptions@@',
+    properties : [{
+        label : '@@form.imageupload.chooseValidator@@',
+        type : 'header'
+    },
+    {
+        name : 'validator',
+        label : '@@form.imageupload.validator@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormValidator',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'maxSize',
+        label : '@@form.imageupload.maxSize@@',
+        type : 'textfield',
+        regex_validation : '^[0-9]+$',
+        validation_message : '@@form.imageupload.invalidSize@@'
+    },
+    {
+        name : 'maxSizeMsg',
+        label : '@@form.imageupload.maxSize.msg@@',
+        type : 'textfield',
+        value : '@@form.imageupload.maxSize.msg.fileTooBig@@'
+    },
+    {
+        name : 'fileType',
+        label : '@@form.imageupload.fileType@@',
+        type : 'textfield',
+        required : 'True',
+        value : '.jpeg;.jpg;.gif;.png'
+    },
+    {
+        name : 'fileTypeMsg',
+        label : '@@form.imageupload.fileType.msg@@',
+        type : 'textfield',
+        value : '@@form.imageupload.fileType.msg.invalidFileType@@'
+    },
+    {
+        label : '@@form.section.permission@@',
+        type : 'header'
+    },
+    {
+        name:'permissionType',
+        label:'@@form.section.permission@@',
+        type:'selectbox',
+        value : '',
+        options : [{
+            value : '', label : '@@form.fileupload.permission.loggedInUsers@@'
+        },{
+            value : 'public', label : '@@form.fileupload.permission.public@@'
+        },{
+            value : 'custom', label : '@@form.fileupload.permission.custom@@'
+        }]
+    },
+    {
+        name:'permissionPlugin',
+        label:'@@form.fileupload.customPermission@@',
+        type:'elementselect',
+        control_field: 'permissionType',
+        control_value: 'custom',
+        control_use_regex: 'false',
+        required : 'true',
+        options_ajax:'[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormPermission',
+        url:'[CONTEXT_PATH]/web/property/json/getPropertyOptions'
+    }]
+}]

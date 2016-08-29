@@ -1,0 +1,137 @@
+[{
+    title : '@@form.directorybinder.user.advanced@@',
+    properties : [
+    {
+        name : 'username',
+        label : '@@form.directorybinder.user.field.username@@',
+        type : 'textfield',
+        value : 'username',
+        required : 'true'
+    },
+    {
+        name : 'firstName',
+        label : '@@form.directorybinder.user.field.firstName@@',
+        type : 'textfield',
+        value : 'firstName',
+        required : 'true'
+    },
+    {
+        name : 'lastName',
+        label : '@@form.directorybinder.user.field.lastName@@',
+        type : 'textfield',
+        value : 'lastName',
+        required : 'true'
+    },
+    {
+        name : 'email',
+        label : '@@form.directorybinder.user.field.email@@',
+        type : 'textfield',
+        value : 'email',
+        required : 'true'
+    },
+    {
+        name : 'password',
+        label : '@@form.directorybinder.user.field.password@@',
+        type : 'textfield',
+        value : 'password',
+        required : 'true'
+    },
+    {
+        name : 'active',
+        label : '@@form.directorybinder.user.field.active@@',
+        type : 'textfield',
+        value : 'active',
+        required : 'true'
+    },
+    {
+        name : 'timeZone',
+        label : '@@form.directorybinder.user.field.timeZone@@',
+        type : 'textfield',
+        value : 'timeZone',
+        required : 'true'
+    },
+    {
+        name : 'locale',
+        label : '@@form.directorybinder.user.field.locale@@',
+        type : 'textfield',
+        value : 'locale',
+        required : 'true'
+    },
+    {
+        name : 'userRoles',
+        label : '@@form.directorybinder.user.field.userRoles@@',
+        type : 'textfield',
+        value : 'userRoles',
+        required : 'true'
+    },
+    {
+        name : 'groups',
+        label : '@@form.directorybinder.user.field.groups@@',
+        type : 'textfield',
+        value : 'groups',
+        required : 'true'
+    },
+    {
+        name : 'employeeCode',
+        label : '@@form.directorybinder.user.field.employeeCode@@',
+        type : 'textfield',
+        value : 'employeeCode',
+        required : 'true'
+    },
+    {
+        name : 'jobTitle',
+        label : '@@form.directorybinder.user.field.jobTitle@@',
+        type : 'textfield',
+        value : 'jobTitle',
+        required : 'true'
+    },
+    {
+        name : 'organization',
+        label : '@@form.directorybinder.user.field.organization@@',
+        type : 'textfield',
+        value : 'organization',
+        required : 'true'
+    },
+    {
+        name : 'department',
+        label : '@@form.directorybinder.user.field.department@@',
+        type : 'textfield',
+        value : 'department',
+        required : 'true'
+    },
+    {
+        name : 'isHod',
+        label : '@@form.directorybinder.user.field.isHod@@',
+        type : 'textfield',
+        value : 'isHod',
+        required : 'true'
+    },
+    {
+        name : 'grade',
+        label : '@@form.directorybinder.user.field.grade@@',
+        type : 'textfield',
+        value : 'grade',
+        required : 'true'
+    },
+    {
+        name : 'startDate',
+        label : '@@form.directorybinder.user.field.startDate@@',
+        type : 'textfield',
+        value : 'startDate',
+        required : 'true'
+    },
+    {
+        name : 'endDate',
+        label : '@@form.directorybinder.user.field.endDate@@',
+        type : 'textfield',
+        value : 'endDate',
+        required : 'true'
+    },
+    {
+        name : 'reportTo',
+        label : '@@form.directorybinder.user.field.reportTo@@',
+        type : 'textfield',
+        value : 'reportTo',
+        required : 'true'
+    }]
+}]

@@ -1,0 +1,365 @@
+[{
+    title : '@@generator.approval.process.config@@',
+    properties : [
+    {
+        name : 'categoryLabel',
+        label : '@@generator.approval.process.categoryLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.categoryLabel.value@@'
+    },
+    {
+        name : 'inboxMenuLabel',
+        label : '@@generator.approval.process.inbox.menuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.inbox.menuLabel.value@@'
+    },
+    {
+        name : 'startProcessMenuLabel',
+        label : '@@generator.approval.process.startProcess.menuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.startProcess.menuLabel.value@@'
+    },
+    {
+        name : 'processName',
+        label : '@@generator.approval.process.processName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.processName.value@@'
+    },
+    {
+        name : 'listId',
+        label : '@@generator.approval.process.list@@',
+        type : 'selectbox',
+        value: '[default_listId]',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/datalist/options'
+    },
+    {
+        name : 'userviewId',
+        label : '@@generator.approval.process.userview@@',
+        type : 'selectbox',
+        value: '[default_userviewId]',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/userview/options'
+    }]
+},
+{
+    title : '@@generator.approval.process.advanced@@',
+    properties : [
+    {
+        label : '@@generator.approval.process.list.createOptions@@',
+        type : 'header',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'newListId',
+        label : '@@generator.datalist.listId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.datalist.listId.invalidId@@',
+        value : 'list_[formId]',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        name : 'newListName',
+        label : '@@generator.datalist.listName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.datalist.listName.value@@',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        name : 'newListColumns',
+        label : '@@generator.datalist.columns@@',
+        required : 'true',
+        type : 'multiselect',
+        size : '10',
+        options_ajax : '[CONTEXT_PATH]/web/json/app[APP_PATH]/form/[formId]/columns',
+        value : '[default_selected_columns]',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        label : '@@generator.approval.process.createOptions@@',
+        type : 'header',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewNewId',
+        label : '@@generator.approval.process.userview.id@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.userview.id.value@@',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.approval.process.userview.id.invalidId@@',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewName',
+        label : '@@generator.approval.process.userview.name@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.userview.name.value@@',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewDesc',
+        label : '@@generator.approval.process.userview.description@@',
+        type : 'textarea',
+        rows : "3",
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        label : '@@generator.approval.process.useriewMenu.options@@',
+        type : 'header'
+    },
+    {
+        name : 'inboxMenuId',
+        label : '@@generator.approval.process.inbox.menuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.approval.process.menuId.invalidId@@',
+        value : '[formId]_inbox'
+    },
+    {
+        name : 'startProcessMenuId',
+        label : '@@generator.approval.process.startProcess.menuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.approval.process.menuId.invalidId@@',
+        value : '[formId]_submit'
+    },
+    {
+        label : '@@generator.approval.process.label.participants@@',
+        type : 'header'
+    },
+    {
+        name : 'pa_approver_label',
+        label : '@@generator.approval.process.label.pa_approver_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.pa_approver_label.value@@'
+    },
+    {
+        name : 'pa_applicant_label',
+        label : '@@generator.approval.process.label.pa_applicant_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.pa_applicant_label.value@@'
+    },
+    {
+        label : '@@generator.approval.process.label.activities@@',
+        type : 'header'
+    },
+    {
+        name : 'act_clarification_label',
+        label : '@@generator.approval.process.label.act_clarification_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.act_clarification_label.value@@'
+    },
+    {
+        name : 'act_approval_label',
+        label : '@@generator.approval.process.label.act_approval_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.act_approval_label.value@@'
+    },
+    {
+        label : '@@generator.approval.process.label.tools@@',
+        type : 'header'
+    },
+    {
+        name : 'tool_update_status_label',
+        label : '@@generator.approval.process.label.tool_update_status_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.tool_update_status_label.value@@'
+    },
+    {
+        name : 'tool_email_on_received_label',
+        label : '@@generator.approval.process.label.tool_email_on_received_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.tool_email_on_received_label.value@@'
+    },
+    {
+        name : 'tool_email_on_approved_label',
+        label : '@@generator.approval.process.label.tool_email_on_approved_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.tool_email_on_approved_label.value@@'
+    },
+    {
+        name : 'tool_email_on_rejected_label',
+        label : '@@generator.approval.process.label.tool_email_on_rejected_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.label.tool_email_on_rejected_label.value@@'
+    },
+    {
+        label : '@@generator.approval.process.emails@@',
+        type : 'header'
+    },
+    {
+        name : 'email_on_received_subject',
+        label : '@@generator.approval.process.email.email_received_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.email.email_received_subject.value@@'
+    },
+    {
+        name : 'email_on_received_message',
+        label : '@@generator.approval.process.email.email_received_message@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.email.email_received_message.value@@'
+    },
+    {
+        name : 'email_on_approved_subject',
+        label : '@@generator.approval.process.email.email_approved_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.email.email_approved_subject.value@@'
+    },
+    {
+        name : 'email_on_approved_message',
+        label : '@@generator.approval.process.email.email_approved_message@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.email.email_approved_message.value@@'
+    },
+    {
+        name : 'email_on_rejected_subject',
+        label : '@@generator.approval.process.email.email_rejected_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.email.email_rejected_subject.value@@'
+    },
+    {
+        name : 'email_on_rejected_message',
+        label : '@@generator.approval.process.email.email_rejected_message@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.email.email_rejected_message.value@@'
+    },
+    {
+        label : '@@generator.approval.process.formsName@@',
+        type : 'header'
+    },
+    {
+        name : 'approval',
+        label : '@@generator.approval.process.form.approval@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.approval.value@@'
+    },
+    {
+        name : 'approval_action',
+        label : '@@generator.approval.process.form.approval_action@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.approval_action.value@@'
+    },
+    {
+        name : 'clarification',
+        label : '@@generator.approval.process.form.clarification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.clarification.value@@'
+    },
+    {
+        label : '@@generator.approval.process.fieldsLabel@@',
+        type : 'header'
+    },
+    {
+        name : 'approver_label',
+        label : '@@generator.approval.process.form.approver@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.approver.value@@'
+    },
+    {
+        name : 'approval_date_label',
+        label : '@@generator.approval.process.form.approval_date@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.approval_date.value@@'
+    },
+    {
+        name : 'status_label',
+        label : '@@generator.approval.process.form.status@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.status.value@@'
+    },
+    {
+        name : 'remarks_label',
+        label : '@@generator.approval.process.form.remarks@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.remarks.value@@'
+    },
+    {
+        label : '@@generator.approval.process.sectionsLabel@@',
+        type : 'header'
+    },
+    {
+        name : 'approval_section_label',
+        label : '@@generator.approval.process.form.approval_section@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.approval_section.value@@'
+    },
+    {
+        name : 'approval_trail_section_label',
+        label : '@@generator.approval.process.form.approval_trail_section@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.approval_trail_section.value@@'
+    },
+    {
+        label : '@@generator.approval.process.statusValue@@',
+        type : 'header'
+    },
+    {
+        name : 'status_approved',
+        label : '@@generator.approval.process.form.status.approved@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.status.approved.value@@'
+    },
+    {
+        name : 'status_clarification',
+        label : '@@generator.approval.process.form.status.clarification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.status.clarification.value@@'
+    },
+    {
+        name : 'status_rejected',
+        label : '@@generator.approval.process.form.status.rejected@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.approval.process.form.status.rejected.value@@'
+    }]
+}]

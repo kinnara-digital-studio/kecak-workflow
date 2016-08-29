@@ -1,0 +1,33 @@
+[{
+    title : '@@userview.jrjo.config@@',
+    properties : [{
+        name : 'jdbcDriver',
+        label : '@@userview.jrjo.driver@@',
+        description : '@@userview.jrjo.driver.desc@@',
+        type : 'textfield',
+        value : 'com.mysql.jdbc.Driver',
+        required : 'true'
+    },{
+        name : 'jdbcUrl',
+        label : '@@userview.jrjo.url@@',
+        type : 'textfield',
+        value : 'jdbc:mysql://localhost/jwdb?characterEncoding=UTF8',
+        required : 'true'
+    },{
+        name : 'jdbcUser',
+        label : '@@userview.jrjo.username@@',
+        type : 'textfield',
+        value : 'root'
+    },{
+        name : 'jdbcPassword',
+        label : '@@userview.jrjo.password@@',
+        type : 'password',
+        value : ''
+    }],
+    buttons : [{
+        name : 'testConnection',    
+        label : '@@datalist.jdbcDataListBinder.testConnection@@',
+        ajax_url : '[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/org.joget.plugin.enterprise.JdbcDataListBinder/service?action=testConnection',
+        fields : ['jdbcDriver', 'jdbcUrl', 'jdbcUser', 'jdbcPassword']
+    }]
+}]

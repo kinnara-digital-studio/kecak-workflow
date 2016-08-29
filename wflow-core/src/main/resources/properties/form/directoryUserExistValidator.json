@@ -1,0 +1,39 @@
+[{
+    title : '@@form.directoryuserexistvalidator.config@@',
+    properties : [
+    {
+        name : 'type',
+        label : '@@form.directoryuserexistvalidator.type@@',
+        type : 'selectbox',
+        value : '',
+        options : [
+            { value : 'department' , label : '@@form.directoryuserexistvalidator.type.department@@'},
+            { value : 'grade' , label : '@@form.directoryuserexistvalidator.type.grade@@'},
+            { value : 'group' , label : '@@form.directoryuserexistvalidator.type.group@@'},
+            { value : 'organization' , label : '@@form.directoryuserexistvalidator.type.org@@'},
+            { value : '' , label : '@@form.directoryuserexistvalidator.type.user@@'}
+        ]
+    },
+    {
+        name : 'field',
+        label : '@@form.directoryuserexistvalidator.field@@',
+        type : 'selectbox',
+        value : '',
+        options_ajax_on_change : 'type',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.DirectoryUserExistValidator/service?action=getField'
+    },
+    {
+        name : 'emptyMsg',
+        label : '@@form.directoryuserexistvalidator.emptyMsg@@',
+        type : 'textfield',
+        required : 'True',
+        value : '@@form.directoryuserexistvalidator.missingValue@@'
+    },
+    {
+        name : 'errorMsg',
+        label : '@@form.directoryuserexistvalidator.errorMsg@@',
+        type : 'textfield',
+        required : 'True',
+        value : '@@form.directoryuserexistvalidator.valueExist@@'
+    }]
+}]

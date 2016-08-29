@@ -1,0 +1,106 @@
+[{
+    title : '@@userview.jasperReports.config@@',
+    properties : [{
+        name : 'id',
+        label : 'Id',
+        type : 'hidden'
+    },
+    {
+        name : 'customId',
+        label : '@@userview.jasperReports.customId@@',
+        type : 'textfield',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@userview.jasperReports.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@userview.jasperReports.label@@',
+        type : 'textfield',
+        value : '@@userview.jasperReports.jasperReport@@',
+        required:'True'
+    },
+    {
+        name : 'output',
+        label : '@@userview.jasperReports.output@@',
+        type : 'selectbox',
+        value : 'html',
+        options : [{
+            value : 'html',
+            label : 'HTML'
+        }]
+    },
+    {
+        name : 'export',
+        label : '@@userview.jasperReports.export@@',
+        type : 'checkbox',
+        options : [{
+            value : 'pdf',
+            label : 'PDF'
+        },{
+            value : 'xls',
+            label : 'Excel'
+        }]
+    },
+    {
+        name : 'jrxml',
+        label : '@@userview.jasperReports.jrxml@@',
+        type : 'codeeditor',
+        mode : 'xml'
+    },
+    {
+        name : 'use_virtualizer',
+        label : '@@userview.jasperReports.use_virtualizer@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    }]
+},
+{
+    title : '@@userview.jasperReports.configureDatasource@@',
+    properties : [{
+        name : 'datasource',
+        label : '@@userview.jasperReports.datasource@@',
+        type : 'elementselect',
+        options : [{
+            value : '',
+            label : '@@userview.jasperReports.defaultDatasource@@'
+        },{
+            value : 'org.joget.plugin.enterprise.JasperReportsJdbcOptions',
+            label : '@@userview.jasperReports.customDatasource@@'
+        }],
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    }]
+},
+{
+    title : '@@userview.jasperReports.reportParameters@@',
+    properties : [{
+        name : 'parameters',
+        label : '@@userview.jasperReports.parameters@@',
+        type : 'grid',
+        columns : [{
+            key : 'name',
+            label : '@@userview.jasperReports.parameter.name@@'
+        },
+        {
+            key : 'value',
+            label : '@@userview.jasperReports.parameter.value@@'
+        }]
+    }]
+},
+{
+    title : '@@userview.jasperReports.ui@@',
+    properties : [{
+        name : 'customHeader',
+        label : '@@userview.jasperReports.customHeader@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userview.jasperReports.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+}]

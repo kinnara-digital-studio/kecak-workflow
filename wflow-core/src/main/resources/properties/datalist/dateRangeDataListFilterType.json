@@ -1,0 +1,60 @@
+[{
+    title : '@@datalist.drdlft.config@@',
+    properties : [{
+        name : 'showFieldLabel',
+        label : '@@datalist.drdlft.showFieldLabel@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            label : '',
+            value : 'true'
+        }]
+    },
+    {
+        name:'fromDefaultValue',
+        label:'@@datalist.drdlft.formDefaultValue@@',
+        type:'textfield'
+    },
+    {
+        name:'toDefaultValue',
+        label:'@@datalist.drdlft.toDefaultValue@@',
+        type:'textfield'
+    },
+    {
+        name : 'fromLabel',
+        label : '@@datalist.drdlft.fromLabel@@',
+        type : 'textfield',
+        value : 'From',
+        required : 'true'
+    },
+    {
+        name : 'toLabel',
+        label : '@@datalist.drdlft.toLabel@@',
+        type : 'textfield',
+        value : 'To',
+        required : 'true'
+    },
+    {
+        name : 'format',
+        label : '@@datalist.drdlft.format@@',
+        description : '@@datalist.drdlft.format.desc@@',
+        type : 'textfield',
+        value : 'mm/dd/yy',
+        required : 'true',
+    },
+    {
+        name : 'formatJava',
+        label : '@@datalist.drdlft.formatJava@@',
+        description : '@@datalist.drdlft.formatJava.desc@@',
+        type : 'textfield',
+        value : 'MM/dd/yyyy',
+        required : 'true'
+    },
+    {
+        name : 'yearRange',
+        label : '@@datalist.drdlft.yearRange@@',
+        type : 'textfield',
+        value : 'c-10:c+10',
+        required : 'true'
+    }]
+}]

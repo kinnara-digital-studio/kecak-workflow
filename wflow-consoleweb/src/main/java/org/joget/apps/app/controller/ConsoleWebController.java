@@ -90,6 +90,7 @@ import org.joget.commons.util.HostManager;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.PagingUtils;
 import org.joget.commons.util.PasswordGeneratorUtil;
+import org.joget.commons.util.PasswordValidator;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
@@ -149,7 +150,6 @@ import org.springframework.web.util.HtmlUtils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-@SuppressWarnings("restriction")
 @Controller
 public class ConsoleWebController {
 
@@ -918,6 +918,16 @@ public class ConsoleWebController {
                     }
                 }
                 
+                //Check Password Empty
+                if (PasswordValidator.isPasswordEmpty(user.getPassword())) {
+                    errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotEmpty"));
+                } else {
+                	if (!PasswordValidator.validate(user.getPassword())) {
+                        errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotValid"));
+                	}
+                }
+                
+                
                 errors.addAll(validateEmploymentDate(employeeStartDate, employeeEndDate));
 
                 if (errors.isEmpty()) {
@@ -954,12 +964,19 @@ public class ConsoleWebController {
                 }
             } else {
                 user.setUsername(user.getId());
+                String currPassword = user.getPassword();
                 
                 if (us != null) {
                     Collection<String> validationErrors = us.validateUserOnUpdate(user);
                     if (validationErrors != null && !validationErrors.isEmpty()) {
                         errors.addAll(validationErrors);
                     }
+                }
+                
+                if (!PasswordValidator.isPasswordEmpty(currPassword)) {
+                	if (!PasswordValidator.validate(currPassword)) {
+                        errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotValid"));
+                	}
                 }
                 
                 errors.addAll(validateEmploymentDate(employeeStartDate, employeeEndDate));
@@ -1005,7 +1022,6 @@ public class ConsoleWebController {
                     if (passwordUpdated) {
                     	UserSalt currentUserSalt = userSaltDao.getUserSaltByUserId(u.getUsername());
                     	if (currentUserSalt == null) {
-                        	
                     		userSalt.setId(UUID.randomUUID().toString());
                     		userSaltDao.addUserSalt(userSalt);
                     	} else {

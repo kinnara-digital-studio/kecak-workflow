@@ -1,0 +1,219 @@
+[{
+    title : '@@form.advancedgrid.editAdvancedGrid@@',
+    properties : [{
+        name : 'id',
+        label : '@@form.formgrid.id@@',
+        type : 'textfield',
+        required : 'True',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@form.formgrid.invalidId@@'
+    },
+    {
+        name : 'label',
+        label : '@@form.formgrid.label@@',
+        type : 'textfield',
+        value : 'Grid'
+    },
+    {
+        name : 'formDefId',
+        label : '@@form.formgrid.formId@@',
+        type : 'selectbox',
+        required : 'True',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options'
+    },
+    {
+        name : 'options',
+        label : '@@form.formgrid.columns@@',
+        description : '@@form.formgrid.columns.desc@@',
+        type : 'grid',
+        columns : [{
+            key : 'value',
+            label : '@@form.formgrid.value@@'
+        },
+        {
+            key : 'label',
+            label : '@@form.formgrid.label@@'
+        },
+        {
+            key : 'width',
+            label : '@@form.formgrid.width@@'
+        }]
+    }]
+},
+{
+    title : '@@form.formgrid.ui@@',
+    properties : [
+    {
+        label : '@@form.formgrid.grid@@',
+        type : 'header'
+    },
+    {
+        name : 'search',
+        label : '@@form.advancedgrid.search@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'readonly',
+        label : '@@form.formgrid.readonly@@',
+        type : 'checkbox',
+        value : 'False',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'disabledAdd',
+        label : '@@form.formgrid.disabledAdd@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'disabledDelete',
+        label : '@@form.formgrid.disabledDelete@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'sortIndx',
+        label : '@@form.advancedgrid.sortIndx@@',
+        type : 'textfield'
+    },
+    {
+        name : 'sortDir',
+        label : '@@form.advancedgrid.sortDir@@',
+        type : 'checkbox',
+        options : [{
+            value : 'up',
+            label : ''
+        }],
+        control_field: 'sortIndx',
+        control_value: '^.+$',
+        control_use_regex: 'true'
+    },
+    {
+        name : 'deleteMessage',
+        label : '@@form.formgrid.deleteMessage@@',
+        type : 'textfield',
+        value : 'Delete row?'
+    },
+    {
+        name : 'showRowNumber',
+        label : '@@form.formgrid.showRowNumber@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        label : '@@form.advancedgrid.editing@@',
+        type : 'header'
+    },
+    {
+        name : 'keyToSave',
+        label : '@@form.advancedgrid.saveKey@@',
+        type : 'selectbox',
+        value : '9',
+        options : [{
+            value : '13',
+            label : '@@form.advancedgrid.saveKey.enter@@'
+        },
+        {
+            value : '9',
+            label : '@@form.advancedgrid.saveKey.tab@@'
+        }]
+    },
+    {
+        name : 'hint',
+        label : '@@form.advancedgrid.hint@@',
+        type : 'textfield',
+        value : '@@form.advancedgrid.hint.text@@'
+    },
+    {
+        label : '@@form.advancedgrid.paging@@',
+        type : 'header'
+    },
+    {
+        name : 'recordPerPage',
+        label : '@@form.advancedgrid.recordPerPage@@',
+        type : 'textfield',
+        required : 'True',
+        value : '20'
+    },
+    {
+        name : 'pagingOptions',
+        label : '@@form.advancedgrid.pageOptions@@',
+        type : 'textfield',
+        required : 'True',
+        value : '10,20,50,100'
+    }]
+},
+{
+    title : '@@form.formgrid.validationAndData@@',
+    properties : [{
+        label : '@@form.formgrid.validation@@',
+        type : 'header'
+    },
+    {
+        name : 'validator',
+        label : '@@form.formgrid.validator@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormMultiRowValidator',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'uniqueKey',
+        label : '@@form.formgrid.uniqueKey@@',
+        description : '@@form.formgrid.uniqueKey.desc@@',
+        type : 'textfield'
+    },
+    {
+        name : 'validateMinRow',
+        label : '@@form.formgrid.validateMinRow@@',
+        type : 'textfield'
+    },
+    {
+        name : 'validateMaxRow',
+        label : '@@form.formgrid.validateMaxRow@@',
+        type : 'textfield'
+    },
+    {
+        name : 'errorMessage',
+        label : '@@form.formgrid.errorMessage@@',
+        type : 'textfield',
+        value : '@@form.formgrid.invalidNumberOfRow@@'
+    },
+    {
+        label : '@@form.formgrid.dataBinder@@',
+        type : 'header'
+    },
+    {
+        name : 'loadBinder',
+        label : '@@form.formgrid.loadBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormLoadMultiRowElementBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    },
+    {
+        name : 'storeBinder',
+        label : '@@form.formgrid.storeBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormStoreMultiRowElementBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    }]
+}]

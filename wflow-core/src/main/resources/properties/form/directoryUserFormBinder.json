@@ -1,0 +1,31 @@
+[{
+    title : '@@form.directorybinder.config@@',
+    properties : [
+    {
+        name : 'type',
+        label : '@@form.directorybinder.type@@',
+        type : 'elementselect',
+        url : '[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/org.joget.plugin.enterprise.DirectoryUserFormBinder/service?action=getJson',
+        value : '',
+        options : [{
+            value : '',
+            label : '@@form.directorybinder.type.user@@'
+        },
+        {
+            value : 'group',
+            label : '@@form.directorybinder.type.group@@'
+        },
+        {
+            value : 'organization',
+            label : '@@form.directorybinder.type.organization@@'
+        },
+        {
+            value : 'department',
+            label : '@@form.directorybinder.type.department@@'
+        },
+        {
+            value : 'grade',
+            label : '@@form.directorybinder.type.grade@@'
+        }]
+    }]
+}]

@@ -71,8 +71,8 @@ button:hover, input[type=button]:hover, #builder-body .element-options button:ho
     display: table;
 }
 #builder-logo {
-    background: url(../images/v3/builder/logo.png) no-repeat;
-    background-size: cover;
+    /*background: url(../images/v3/builder/logo.png) no-repeat;
+    background-size: cover;*/
     width: 68px;
     height: 24px;
     float: left;

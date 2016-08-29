@@ -1,0 +1,751 @@
+[{
+    title : '@@generator.assignment.process.config@@',
+    properties : [
+    {
+        name : 'categoryLabel',
+        label : '@@generator.assignment.process.userview.categoryLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.categoryLabel.value@@'
+    },
+    {
+        name : 'inboxMenuLabel',
+        label : '@@generator.assignment.process.userview.inboxMenuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.inboxMenuLabel.value@@'
+    },
+    {
+        name : 'startProcessMenuLabel',
+        label : '@@generator.assignment.process.userview.startProcessMenuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.startProcessMenuLabel.value@@'
+    },
+    {
+        name : 'mySubmissionMenuLabel',
+        label : '@@generator.assignment.process.userview.mySubmissionMenuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.mySubmissionMenuLabel.value@@'
+    },
+    {
+        name : 'participatedMenuLabel',
+        label : '@@generator.assignment.process.userview.participatedMenuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.participatedMenuLabel.value@@'
+    },
+    {
+        name : 'processName',
+        label : '@@generator.assignment.process.processName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.processName.value@@'
+    },
+    {
+        name : 'userviewId',
+        label : '@@generator.assignment.process.userview@@',
+        type : 'selectbox',
+        value: '[default_userviewId]',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/userview/options'
+    },
+    {
+        name : 'listColumns',
+        label : '@@generator.assignment.process.datalist.columns@@',
+        required : 'true',
+        type : 'multiselect',
+        size : '3',
+        options_ajax : '[CONTEXT_PATH]/web/json/app[APP_PATH]/form/[formId]/columns',
+        value : '[default_selected_columns]',
+    }]
+},
+{
+    title : '@@generator.assignment.process.advanced@@',
+    properties : [
+    {
+        label : '@@generator.assignment.process.form.createOptions@@',
+        type : 'header',
+    },    
+    {
+        name : 'form_main_name',
+        label : '@@generator.assignment.process.form.form_main_name@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.form.form_main_name.value@@',
+    },    
+    {
+        name : 'form_action_name',
+        label : '@@generator.assignment.process.form.form_action_name@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.form.form_action_name.value@@',
+    },
+    {
+        label : '@@generator.assignment.process.inboxlist.createOptions@@',
+        type : 'header',
+    },    
+    {
+        name : 'inboxListId',
+        label : '@@generator.datalist.listId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.datalist.listId.invalidId@@',
+        value : 'list_[formId]_inbox',
+    },
+    {
+        name : 'inboxListName',
+        label : '@@generator.datalist.listName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.inboxlist.listName@@',
+    },
+    {
+        label : '@@generator.assignment.process.mySubmissionlist.createOptions@@',
+        type : 'header',
+    },    
+    {
+        name : 'mySubmissionListId',
+        label : '@@generator.datalist.listId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.datalist.listId.invalidId@@',
+        value : 'list_[formId]_mySubmission',
+    },
+    {
+        name : 'mySubmissionListName',
+        label : '@@generator.datalist.listName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.mySubmissionlist.listName@@',
+    },
+    {
+        name : 'viewLabel',
+        label : '@@generator.assignment.process.mySubmissionlist.viewLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.mySubmissionlist.viewLabel.value@@',
+    },
+    {
+        label : '@@generator.assignment.process.participatedlist.createOptions@@',
+        type : 'header',
+    },    
+    {
+        name : 'participatedListId',
+        label : '@@generator.datalist.listId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.datalist.listId.invalidId@@',
+        value : 'list_[formId]_participated',
+    },
+    {
+        name : 'participatedListName',
+        label : '@@generator.datalist.listName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.participatedlist.listName@@',
+    },
+    {
+        label : '@@generator.assignment.process.createOptions@@',
+        type : 'header',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewNewId',
+        label : '@@generator.assignment.process.userview.id@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.id.value@@',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.assignment.process.userview.id.invalidId@@',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewName',
+        label : '@@generator.assignment.process.userview.name@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.userview.name.value@@',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewDesc',
+        label : '@@generator.assignment.process.userview.description@@',
+        type : 'textarea',
+        rows : "3",
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        label : '@@generator.assignment.process.useriewMenu.options@@',
+        type : 'header'
+    },
+    {
+        name : 'inboxMenuId',
+        label : '@@generator.assignment.process.userview.inboxMenuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.assignment.process.menuId.invalidId@@',
+        value : '@@generator.assignment.process.userview.inboxMenuId.value@@'
+    },
+    {
+        name : 'startProcessMenuId',
+        label : '@@generator.assignment.process.userview.startProcessMenuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.assignment.process.menuId.invalidId@@',
+        value : '@@generator.assignment.process.userview.startProcessMenuId.value@@'
+    },
+    {
+        name : 'mySubmissionMenuId',
+        label : '@@generator.assignment.process.userview.mySubmissionMenuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.assignment.process.menuId.invalidId@@',
+        value : '@@generator.assignment.process.userview.mySubmissionMenuId.value@@'
+    },
+    {
+        name : 'participatedMenuId',
+        label : '@@generator.assignment.process.userview.participatedMenuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.assignment.process.menuId.invalidId@@',
+        value : '@@generator.assignment.process.userview.participatedMenuId.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.par@@',
+        type : 'header'
+    },
+    {
+        name : 'par_applicant',
+        label : '@@generator.assignment.process.par.applicant@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.par.applicant.value@@'
+    },
+    {
+        name : 'par_applicantHod',
+        label : '@@generator.assignment.process.par.applicantHod@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.par.applicantHod.value@@'
+    },
+    {
+        name : 'par_assignee',
+        label : '@@generator.assignment.process.par.assignee@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.par.assignee.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.act@@',
+        type : 'header'
+    },
+    {
+        name : 'act_assign',
+        label : '@@generator.assignment.process.act.assign@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.act.assign.value@@'
+    },
+    {
+        name : 'act_resolve',
+        label : '@@generator.assignment.process.act.resolve@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.act.resolve.value@@'
+    },
+    {
+        name : 'act_clarify',
+        label : '@@generator.assignment.process.act.clarify@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.act.clarify.value@@'
+    },
+    {
+        name : 'act_verify',
+        label : '@@generator.assignment.process.act.verify@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.act.verify.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.tool@@',
+        type : 'header'
+    },
+    {
+        name : 'tool_new_submission_notification',
+        label : '@@generator.assignment.process.tool.new_submission_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.new_submission_notification.value@@'
+    },
+    {
+        name : 'tool_new_assignment_notification',
+        label : '@@generator.assignment.process.tool.new_assignment_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.new_assignment_notification.value@@'
+    },
+    {
+        name : 'tool_rejected_notification',
+        label : '@@generator.assignment.process.tool.rejected_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.rejected_notification.value@@'
+    },
+    {
+        name : 'tool_assignment_rejected_notification',
+        label : '@@generator.assignment.process.tool.assignment_rejected_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.assignment_rejected_notification.value@@'
+    },
+    {
+        name : 'tool_assignment_due_notification',
+        label : '@@generator.assignment.process.tool.assignment_due_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.assignment_due_notification.value@@'
+    },
+    {
+        name : 'tool_resolved_notification',
+        label : '@@generator.assignment.process.tool.resolved_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.resolved_notification.value@@'
+    },
+    {
+        name : 'tool_reopened_notification',
+        label : '@@generator.assignment.process.tool.reopened_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.reopened_notification.value@@'
+    },
+    {
+        name : 'tool_closed_notification',
+        label : '@@generator.assignment.process.tool.closed_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.closed_notification.value@@'
+    },
+    {
+        name : 'tool_clarification_needed_notification',
+        label : '@@generator.assignment.process.tool.clarification_needed_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.clarification_needed_notification.value@@'
+    },
+    {
+        name : 'tool_updated_notification',
+        label : '@@generator.assignment.process.tool.updated_notification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.updated_notification.value@@'
+    },
+    {
+        name : 'tool_activity_trail_update',
+        label : '@@generator.assignment.process.tool.activity_trail_update@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.tool.activity_trail_update.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.status@@',
+        type : 'header'
+    },
+    {
+        name : 'status_new',
+        label : '@@generator.assignment.process.status.new@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.new.value@@'
+    },
+    {
+        name : 'status_closed',
+        label : '@@generator.assignment.process.status.closed@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.closed.value@@'
+    },
+    {
+        name : 'status_resolved',
+        label : '@@generator.assignment.process.status.resolved@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.resolved.value@@'
+    },
+    {
+        name : 'status_reopened',
+        label : '@@generator.assignment.process.status.reopened@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.reopened.value@@'
+    },
+    {
+        name : 'status_assigned',
+        label : '@@generator.assignment.process.status.assigned@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.assigned.value@@'
+    },
+    {
+        name : 'status_reassigned',
+        label : '@@generator.assignment.process.status.reassigned@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.reassigned.value@@'
+    },
+    {
+        name : 'status_assignment_rejected',
+        label : '@@generator.assignment.process.status.assignment_rejected@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.assignment_rejected.value@@'
+    },
+    {
+        name : 'status_rejected',
+        label : '@@generator.assignment.process.status.rejected@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.rejected.value@@'
+    },
+    {
+        name : 'status_clarification_needed',
+        label : '@@generator.assignment.process.status.clarification_needed@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.clarification_needed.value@@'
+    },
+    {
+        name : 'status_assignment_due',
+        label : '@@generator.assignment.process.status.assignment_due@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.assignment_due.value@@'
+    },
+    {
+        name : 'msg_system_activity',
+        label : '@@generator.assignment.process.msg.system_activity@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.msg.system_activity.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.action@@',
+        type : 'header'
+    },
+    {
+        name : 'status_closed_label',
+        label : '@@generator.assignment.process.status.closed_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.closed_label.value@@'
+    },
+    {
+        name : 'status_resolved_label',
+        label : '@@generator.assignment.process.status.resolved_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.resolved_label.value@@'
+    },
+    {
+        name : 'status_reopened_label',
+        label : '@@generator.assignment.process.status.reopened_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.reopened_label.value@@'
+    },
+    {
+        name : 'status_assigned_label',
+        label : '@@generator.assignment.process.status.assigned_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.assigned_label.value@@'
+    },
+    {
+        name : 'status_reassigned_label',
+        label : '@@generator.assignment.process.status.reassigned_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.reassigned_label.value@@'
+    },
+    {
+        name : 'status_assignment_rejected_label',
+        label : '@@generator.assignment.process.status.assignment_rejected_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.assignment_rejected_label.value@@'
+    },
+    {
+        name : 'status_rejected_label',
+        label : '@@generator.assignment.process.status.rejected_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.rejected_label.value@@'
+    },
+    {
+        name : 'status_clarification_needed_label',
+        label : '@@generator.assignment.process.status.clarification_needed_label@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.status.clarification_needed_label.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.field@@',
+        type : 'header'
+    },
+    {
+        name : 'field_username',
+        label : '@@generator.assignment.process.field.username@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.username.value@@'
+    },
+    {
+        name : 'field_action',
+        label : '@@generator.assignment.process.field.action@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.action.value@@'
+    },
+    {
+        name : 'field_remarks',
+        label : '@@generator.assignment.process.field.remarks@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.remarks.value@@'
+    },
+    {
+        name : 'field_date',
+        label : '@@generator.assignment.process.field.date@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.date.value@@'
+    },
+    {
+        name : 'field_caseNo',
+        label : '@@generator.assignment.process.field.caseNo@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.caseNo.value@@'
+    },
+    {
+        name : 'field_assignTo',
+        label : '@@generator.assignment.process.field.assignTo@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.assignTo.value@@'
+    },
+    {
+        name : 'field_duedate',
+        label : '@@generator.assignment.process.field.duedate@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.duedate.value@@'
+    },
+    {
+        name : 'field_status',
+        label : '@@generator.assignment.process.field.status@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.field.status.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.section@@',
+        type : 'header'
+    },
+    {
+        name : 'section_activity_trail',
+        label : '@@generator.assignment.process.section.activity_trail@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.section.activity_trail.value@@'
+    },
+    {
+        name : 'section_assignment',
+        label : '@@generator.assignment.process.section.assignment@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.section.assignment.value@@'
+    },
+    {
+        name : 'section_clarification',
+        label : '@@generator.assignment.process.section.clarification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.section.clarification.value@@'
+    },
+    {
+        name : 'section_resolveAssignment',
+        label : '@@generator.assignment.process.section.resolveAssignment@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.section.resolveAssignment.value@@'
+    },
+    {
+        name : 'section_verification',
+        label : '@@generator.assignment.process.section.verification@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.section.verification.value@@'
+    },
+    {
+        label : '@@generator.assignment.process.emails@@',
+        type : 'header'
+    },
+    {
+        name : 'resolved_notification_subject',
+        label : '@@generator.assignment.process.email.resolved_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.resolved_notification_subject.value@@'
+    },
+    {
+        name : 'resolved_notification_message',
+        label : '@@generator.assignment.process.email.resolved_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.resolved_notification_message.value@@'
+    },
+    {
+        name : 'reopened_notification_subject',
+        label : '@@generator.assignment.process.email.reopened_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.reopened_notification_subject.value@@'
+    },
+    {
+        name : 'reopened_notification_message',
+        label : '@@generator.assignment.process.email.reopened_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.reopened_notification_message.value@@'
+    },
+    {
+        name : 'closed_notification_subject',
+        label : '@@generator.assignment.process.email.closed_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.closed_notification_subject.value@@'
+    },
+    {
+        name : 'closed_notification_message',
+        label : '@@generator.assignment.process.email.closed_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.closed_notification_message.value@@'
+    },
+    {
+        name : 'new_submission_notification_subject',
+        label : '@@generator.assignment.process.email.new_submission_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.new_submission_notification_subject.value@@'
+    },
+    {
+        name : 'new_submission_notification_message',
+        label : '@@generator.assignment.process.email.new_submission_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.new_submission_notification_message.value@@'
+    },
+    {
+        name : 'clarification_needed_notification_subject',
+        label : '@@generator.assignment.process.email.clarification_needed_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.clarification_needed_notification_subject.value@@'
+    },
+    {
+        name : 'clarification_needed_notification_message',
+        label : '@@generator.assignment.process.email.clarification_needed_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.clarification_needed_notification_message.value@@'
+    },
+    {
+        name : 'updated_notification_subject',
+        label : '@@generator.assignment.process.email.updated_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.updated_notification_subject.value@@'
+    },
+    {
+        name : 'updated_notification_message',
+        label : '@@generator.assignment.process.email.updated_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.updated_notification_message.value@@'
+    },
+    {
+        name : 'new_assignment_notification_subject',
+        label : '@@generator.assignment.process.email.new_assignment_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.new_assignment_notification_subject.value@@'
+    },
+    {
+        name : 'new_assignment_notification_message',
+        label : '@@generator.assignment.process.email.new_assignment_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.new_assignment_notification_message.value@@'
+    },
+    {
+        name : 'assignment_due_notification_subject',
+        label : '@@generator.assignment.process.email.assignment_due_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.assignment_due_notification_subject.value@@'
+    },
+    {
+        name : 'assignment_due_notification_message',
+        label : '@@generator.assignment.process.email.assignment_due_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.assignment_due_notification_message.value@@'
+    },
+    {
+        name : 'assignment_rejected_notification_subject',
+        label : '@@generator.assignment.process.email.assignment_rejected_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.assignment_rejected_notification_subject.value@@'
+    },
+    {
+        name : 'assignment_rejected_notification_message',
+        label : '@@generator.assignment.process.email.assignment_rejected_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.assignment_rejected_notification_message.value@@'
+    },
+    {
+        name : 'rejected_notification_subject',
+        label : '@@generator.assignment.process.email.rejected_notification_subject@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.assignment.process.email.rejected_notification_subject.value@@'
+    },
+    {
+        name : 'rejected_notification_message',
+        label : '@@generator.assignment.process.email.rejected_notification_message@@',
+        type : 'codeeditor',
+        required : 'true',
+        value : '@@generator.assignment.process.email.rejected_notification_message.value@@'
+    }]
+}]

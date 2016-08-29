@@ -3,7 +3,7 @@ UserviewBuilder = {
     tinymceUrl : '',
     saveUrl : '',
     previewUrl : '',
-    contextPath : '/jw',
+    contextPath : '/kecak',
     appId: '',
     userviewUrl: '',
     

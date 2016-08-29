@@ -1,0 +1,90 @@
+[
+    {
+        title : '@@form.timepicker.editTimePicker@@',
+        properties : [
+            {
+                name : 'id',
+                label : '@@form.timepicker.id@@',
+                type : 'textfield',
+                required : 'True',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.timepicker.invalidId@@'
+            },
+            {
+                name : 'label',
+                label : '@@form.timepicker.label@@',
+                type : 'textfield',
+                required : 'True',
+                value : 'Time Picker'
+            }
+        ]
+    },
+    {
+        title : '@@form.timepicker.advancedOptions@@',
+        properties : [
+            {
+                label : '@@form.timepicker.data@@',
+                type : 'header'
+            },
+            {
+                name : 'value',
+                label : '@@form.timepicker.value@@',
+                type : 'textfield'
+            },
+            {
+                name : 'format24hr',
+                label : '@@form.timepicker.24hr@@',
+                type : 'checkbox',
+                value : 'true',
+                options : [{
+                    value : 'true',
+                    label : ''
+                }]
+            },
+            {
+                label : '@@form.timepicker.validation@@',
+                type : 'header'
+            },
+            {
+                name : 'validator',
+                label : '@@form.timepicker.validator@@',
+                type : 'elementselect',
+                options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormValidator',
+                url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+            },
+            {
+                label : '@@form.timepicker.ui@@',
+                type : 'header'
+            },
+            {
+                name : 'readonly',
+                label : '@@form.timepicker.readonly@@',
+                type : 'checkbox',
+                value : 'False',
+                options : [{
+                value : 'true',
+                    label : ''
+                }]
+            },
+            {
+                name : 'readonlyLabel',
+                label : '@@form.timepicker.readonlyLabel@@',
+                type : 'checkbox',
+                value : 'False',
+                options : [{
+                    value : 'true',
+                    label : ''
+                }]
+            },
+            {
+                label : '@@form.timepicker.workflow@@',
+                type : 'header'
+            },
+            {
+                name : 'workflowVariable',
+                label : '@@form.timepicker.workflowVariable@@',
+                type : 'textfield'
+            }
+        ]
+    }
+]

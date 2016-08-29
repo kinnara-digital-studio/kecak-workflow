@@ -1,0 +1,33 @@
+[{
+    title : '@@userview.moderntheme.config@@',
+    properties : [{
+        name : 'css',
+        label : '@@userview.moderntheme.css@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userview.moderntheme.javascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    },
+    {
+        name : 'customHeader',
+        label : '@@userview.moderntheme.customHeader@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userview.moderntheme.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'sideBar',
+        label : '@@userview.moderntheme.sidebar@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+}]

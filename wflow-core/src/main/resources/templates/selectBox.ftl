@@ -17,20 +17,7 @@
     <#else>
         <select class="chosen-select" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled </#if>>
             <#list options as option>
-                <option value="${option.value!?html}" grouping="${option.grouping!?html}" 
-						<#if values?? && values?seq_contains(option.value!)>
-							selected
-						</#if>
-						<#if element.properties.readonly! == 'true'>
-							disabled
-						</#if> 
-						<#if element.customProperties?? >
-							<#list element.data as data>
-								data-${data.key!?html}=${data.value!?html}
-							</#list>
-						</#if> >
-					${option.label!?html}
-				</option>
+                <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if> <#if element.properties.readonly! == 'true'>disabled</#if>>${option.label!?html}</option>
             </#list>
         </select>
     </#if>

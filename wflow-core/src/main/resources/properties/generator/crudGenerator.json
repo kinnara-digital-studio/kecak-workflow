@@ -1,0 +1,144 @@
+[{
+    title : '@@generator.crud.config@@',
+    properties : [
+    {
+        name : 'categoryLabel',
+        label : '@@generator.crud.categoryLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.crud.categoryLabel.value@@'
+    },
+    {
+        name : 'menuLabel',
+        label : '@@generator.crud.menuLabel@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.crud.menuLabel.value@@'
+    },
+    {
+        name : 'listId',
+        label : '@@generator.crud.list@@',
+        type : 'selectbox',
+        value: '[default_listId]',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/datalist/options'
+    },
+    {
+        name : 'userviewId',
+        label : '@@generator.crud.userview@@',
+        type : 'selectbox',
+        value: '[default_userviewId]',
+        options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/userview/options'
+    }]
+},
+{
+    title : '@@generator.crud.advanced@@',
+    properties : [
+    {
+        name : 'menuId',
+        label : '@@generator.crud.menuId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.crud.menuId.invalidId@@',
+        value : '[formId]_crud'
+    },
+    {
+        name : 'showDelete',
+        label : '@@generator.crud.showDelete@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'showRowCount',
+        label : '@@generator.crud.showRowCount@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        label : '@@generator.crud.list.createOptions@@',
+        type : 'header',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'newListId',
+        label : '@@generator.datalist.listId@@',
+        type : 'textfield',
+        required : 'true',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.datalist.listId.invalidId@@',
+        value : 'list_[formId]',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        name : 'newListName',
+        label : '@@generator.datalist.listName@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.datalist.listName.value@@',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        name : 'newListColumns',
+        label : '@@generator.datalist.columns@@',
+        required : 'true',
+        type : 'multiselect',
+        size : '10',
+        options_ajax : '[CONTEXT_PATH]/web/json/app[APP_PATH]/form/[formId]/columns',
+        value : '[default_selected_columns]',
+        control_field: 'listId',
+        control_value: '',
+        control_use_regex: 'false',
+    },
+    {
+        label : '@@generator.crud.userview.createOptions@@',
+        type : 'header',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewNewId',
+        label : '@@generator.crud.userview.id@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.crud.userview.id.value@@',
+        regex_validation : '^[a-zA-Z0-9_]+$',
+        validation_message : '@@generator.crud.userview.id.invalidId@@',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewName',
+        label : '@@generator.crud.userview.name@@',
+        type : 'textfield',
+        required : 'true',
+        value : '@@generator.crud.userview.name.value@@',
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    },    
+    {
+        name : 'userviewDesc',
+        label : '@@generator.crud.userview.description@@',
+        type : 'textarea',
+        rows : "3",
+        control_field: 'userviewId',
+        control_value: '',
+        control_use_regex: 'false',
+    }]
+}]

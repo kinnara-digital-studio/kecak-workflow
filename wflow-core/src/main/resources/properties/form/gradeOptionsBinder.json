@@ -1,0 +1,24 @@
+[{
+    title : '@@form.gradeoptionsbinder.config@@',
+    properties : [{
+        name : 'orgId',
+        label : '@@form.gradeoptionsbinder.orgId@@',
+        type : 'selectbox',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.GradeOptionsBinder/service?action=getOptions'
+    },
+    {
+        name : 'addEmptyOption',
+        label : '@@form.gradeoptionsbinder.addEmptyOption@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'emptyLabel',
+        label : '@@form.gradeoptionsbinder.emptyLabel@@',
+        type : 'textfield'
+    }]
+}]

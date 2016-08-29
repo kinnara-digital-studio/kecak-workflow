@@ -1,0 +1,113 @@
+[
+    {
+        title:'@@form.statusTrail.edit@@',
+        properties:[
+            {
+                name:'id',
+                label:'@@form.subform.id@@',
+                type:'textfield',
+                required:'True',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@form.subform.invalidId@@'
+            },
+            {
+                name:'label',
+                label:'@@form.subform.label@@',
+                type:'textfield',
+                value : '@@form.statusTrail.label.value@@'
+            },
+            {
+                name : 'formDefId',
+                label : '@@form.subform.formId@@',
+                type : 'selectbox',
+                required : 'true',
+                options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options'
+            },
+            {
+                name : 'columnsMappings',
+                label : '@@form.formgrid.columns@@',
+                description : '@@form.formgrid.columns.desc@@',
+                type : 'gridfixedrow',
+                columns : [{
+                    key : 'key',
+                    label : '@@form.statusTrail.column@@'
+                },{
+                    key : 'value',
+                    label : '@@form.formgrid.value@@'
+                },
+                {
+                    key : 'label',
+                    label : '@@form.formgrid.label@@'
+                },
+                {
+                    key : 'width',
+                    label : '@@form.formgrid.width@@'
+                }],
+                rows : [{
+                    label : '@@form.statusTrail.username@@'
+                },
+                {
+                    label : '@@form.statusTrail.status@@'
+                },
+                {
+                    label : '@@form.statusTrail.message@@'
+                },
+                {
+                    label : '@@form.statusTrail.date@@'
+                }],
+                value : [{
+                    'label' : '@@form.statusTrail.username@@'
+                },
+                {
+                    'label' : '@@form.statusTrail.status@@'
+                },
+                {
+                    'label' : '@@form.statusTrail.message@@'
+                },
+                {
+                    'label' : '@@form.statusTrail.date@@',
+                    'value' : 'dateCreated'
+                }]
+            },
+            {
+                name : 'foreignKey',
+                label : '@@form.mulitrowformbinder.foreignKey@@',
+                type : 'textfield',
+                required : 'True'
+            }
+        ]
+    },
+    {
+        title:'@@form.subform.ui@@',
+        properties:[
+            {
+                label : '@@form.subform.general@@',
+                type : 'header'
+            },
+            {
+                name:'readonly',
+                label:'@@form.subform.readonly@@',
+                type:'checkbox',
+                value:'False',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
+                name:'noframe',
+                label:'@@form.subform.noframe@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            }
+        ]
+    }
+]

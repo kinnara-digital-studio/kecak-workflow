@@ -1,0 +1,341 @@
+[
+    {
+        title:'@@userview.sqlchartmenu.editSqlChart@@',
+        properties:[
+            {
+                name : 'id',
+                label : 'Id',
+                type : 'hidden'
+            },
+            {
+                name : 'customId',
+                label : '@@userview.sqlchartmenu.customId@@',
+                type : 'textfield',
+                regex_validation : '^[a-zA-Z0-9_]+$',
+                validation_message : '@@userview.sqlchartmenu.invalidId@@'
+            },
+            {
+                name : 'label',
+                label : '@@userview.sqlchartmenu.label@@',
+                type : 'textfield',
+                required : 'True',
+                value : '@@userview.sqlchartmenu.sqlChart@@'
+            },
+            {
+                name:'chartType',
+                label:'@@userview.sqlchartmenu.chartType@@',
+                type:'selectbox',
+                options:[
+                    {
+                        value:'area',
+                        label:'@@userview.sqlchartmenu.areaChart@@'
+                    },
+                    {
+                        value:'bar',
+                        label:'@@userview.sqlchartmenu.barChart@@'
+                    },
+                    {
+                        value:'bubble',
+                        label:'@@userview.sqlchartmenu.bubbleChart@@'
+                    },
+                    {
+                        value:'candlestick',
+                        label:'@@userview.sqlchartmenu.candlestickChart@@'
+                    },
+                    {
+                        value:'donut',
+                        label:'@@userview.sqlchartmenu.donutChart@@'
+                    },
+                    {
+                        value:'line',
+                        label:'@@userview.sqlchartmenu.lineChart@@'
+                    },
+                    {
+                        value:'ohlc',
+                        label:'@@userview.sqlchartmenu.ohlcChart@@'
+                    },
+                    {
+                        value:'pie',
+                        label:'@@userview.sqlchartmenu.pieChart@@'
+                    },
+                    {
+                        value:'xy',
+                        label:'@@userview.sqlchartmenu.xyChart@@'
+                    }
+                ],
+                required:'True'
+            },
+            {
+                name : 'title',
+                label : '@@userview.sqlchartmenu.chartTitle@@',
+                type : 'textfield',
+                value : '@@userview.sqlchartmenu.chartTitle@@'
+            }
+        ]
+    },
+    {
+        title:'@@userview.sqlchartmenu.chartOptions@@',
+        properties:[
+            {
+                name : 'categoryAxisLabel',
+                label : '@@userview.sqlchartmenu.x-axisLabel@@',
+                type : 'textfield',
+                value : '@@userview.sqlchartmenu.category@@',
+                control_field: 'chartType',
+                control_value: 'bar|xy|area|bubble|line|candlestick|ohlc',
+                control_use_regex: 'true',
+                required : 'true'
+            },
+            {
+                name : 'xAxisDisplayAS',
+                label : '@@userview.sqlchartmenu.xAxisDisplayAS@@',
+                type : 'selectbox',
+                value : '',
+                options:[
+                    {
+                        value:'',
+                        label:'@@userview.sqlchartmenu.xAxisDisplayAS.category@@'
+                    },
+                    {
+                        value:'number',
+                        label:'@@userview.sqlchartmenu.xAxisDisplayAS.number@@'
+                    },
+                    {
+                        value:'date',
+                        label:'@@userview.sqlchartmenu.xAxisDisplayAS.date@@'
+                    }
+                ],
+                control_field: 'chartType',
+                control_value: 'bar|xy|area|line',
+                control_use_regex: 'true'
+            },
+            {
+                name : 'dateFormat',
+                label : '@@userview.sqlchartmenu.dateFormat@@',
+                type : 'textfield',
+                control_field: 'chartType',
+                control_value: 'candlestick|ohlc',
+                control_use_regex: 'true'
+            },
+            {
+                name : 'dateFormat',
+                label : '@@userview.sqlchartmenu.dateFormat@@',
+                type : 'textfield',
+                control_field: 'xAxisDisplayAS',
+                control_value: 'date',
+                control_use_regex: 'false'
+            },
+            {
+                name : 'valueAxisLabel',
+                label : '@@userview.sqlchartmenu.y-axisLabel@@',
+                type : 'textfield',
+                value : '@@userview.sqlchartmenu.value@@',
+                control_field: 'chartType',
+                control_value: 'bar|xy|area|bubble|line|candlestick|ohlc',
+                control_use_regex: 'true',
+                required : 'true'
+            },
+            {
+                name : 'yaxisPrefix',
+                label : '@@userview.sqlchartmenu.yaxisPrefix@@',
+                type : 'textfield',
+                control_field: 'chartType',
+                control_value: 'bar|xy|area|line|candlestick|ohlc',
+                control_use_regex: 'true',
+            },
+            {
+                name:'showValue',
+                label:'@@userview.sqlchartmenu.showValue@@',
+                type:'radio',
+                options:[
+                    {
+                        value:'',
+                        label:'@@userview.sqlchartmenu.showValue.percentage@@'
+                    },
+                    {
+                        value:'true',
+                        label:'@@userview.sqlchartmenu.showValue.value@@'
+                    }
+                ],
+                control_field: 'chartType',
+                control_value: 'pie|donut',
+                control_use_regex: 'true'
+            },
+            {
+                name:'showLegend',
+                label:'@@userview.sqlchartmenu.showLegend@@',
+                type:'checkbox',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ],
+                control_field: 'chartType',
+                control_value: 'area|bar|donut|line|pie|xy',
+                control_use_regex: 'true',
+                value:'true'
+            },
+            {
+                name : 'showValueLabel',
+                label : '@@userview.sqlchartmenu.showValueLabel@@',
+                type:'checkbox',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ],
+                value: 'true',
+                control_field: 'chartType',
+                control_value: 'bar|xy|area|line|candlestick|ohlc',
+                control_use_regex: 'true'
+            },
+            {
+                name : 'stack',
+                label : '@@userview.sqlchartmenu.stack@@',
+                type:'checkbox',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ],
+                control_field: 'chartType',
+                control_value: 'bar|xy',
+                control_use_regex: 'true'
+            },
+            {
+                name : 'horizontal',
+                label : '@@userview.sqlchartmenu.horizontal@@',
+                type:'checkbox',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ],
+                control_field: 'chartType',
+                control_value: 'bar',
+                control_use_regex: 'false'
+            },
+            {
+                name : 'chartWidth',
+                label : '@@userview.sqlchartmenu.chartWidth@@',
+                type : 'textfield',
+                value : '100%',
+                required:'true'
+            },
+            {
+                name : 'chartHeight',
+                label : '@@userview.sqlchartmenu.chartHeight@@',
+                type : 'textfield',
+                value : '80%',
+                required:'true'
+            },
+            {
+                name : 'colors',
+                label : '@@userview.sqlchartmenu.colors@@',
+                type : 'textarea'
+            }
+        ]
+    },
+    {
+        title:'@@userview.sqlchartmenu.sql@@',
+        properties:[
+            {
+                name:'query',
+                label:'@@userview.sqlchartmenu.sqlQuery@@',
+                type : 'codeeditor',
+                mode : 'sql',
+                required:'True'
+            }
+        ]
+    },
+    {
+        title : '@@userview.sqlchartmenu.ui@@',
+        properties : [
+            {
+                name : 'customHeader',
+                label : '@@userview.sqlchartmenu.customHeader@@',
+                type : 'codeeditor',
+                mode : 'html'
+            },
+            {
+                name : 'customFooter',
+                label : '@@userview.sqlchartmenu.customFooter@@',
+                type : 'codeeditor',
+                mode : 'html'
+            }]
+    },
+    {
+        title : '@@userview.sqlchartmenu.advanced@@',
+        properties : [
+            {
+                label : '@@userview.sqlchartmenu.configureDatabase@@',
+                type : 'header',
+            }, 
+            {
+                name : 'datasource',
+                label : '@@datalist.jdbcDataListBinder.datasource@@',
+                description : '@@datalist.jdbcDataListBinder.datasource.desc@@',
+                type : 'selectbox',
+                options : [{
+                    value : 'custom',
+                    label : '@@datalist.jdbcDataListBinder.customDatasource@@'
+                },{
+                    value : 'default',
+                    label : '@@datalist.jdbcDataListBinder.defaultDatasource@@'
+                }],
+                value : 'default'
+            },
+            {
+                name:'driverClassName',
+                label:'@@userview.sqlchartmenu.databaseType@@',
+                description : '@@datalist.jdbcDataListBinder.driver.desc@@',
+                type : 'textfield',
+                value : 'com.mysql.jdbc.Driver',
+                control_field: 'datasource',
+                control_value: 'custom',
+                control_use_regex: 'false',
+                required : 'true'
+            },
+            {
+                name:'url',
+                label:'@@userview.sqlchartmenu.targetUrl@@',
+                type:'textfield',
+                control_field: 'datasource',
+                control_value: 'custom',
+                control_use_regex: 'false',
+                required : 'true'
+            },
+            {
+                name:'username',
+                label:'@@userview.sqlchartmenu.username@@',
+                type:'textfield',
+                control_field: 'datasource',
+                control_value: 'custom',
+                control_use_regex: 'false',
+                required : 'true'
+            },
+            {
+                name:'password',
+                label:'@@userview.sqlchartmenu.password@@',
+                type:'password',
+                control_field: 'datasource',
+                control_value: 'custom',
+                control_use_regex: 'false',
+                required : 'true'
+            },
+            {
+                label : '@@userview.sqlchartmenu.userviewKeyDataFilter@@',
+                type : 'header',
+            }, 
+            {
+                name : 'keyName',
+                label : '@@userview.sqlchartmenu.userviewKeyName@@',
+                type : 'textfield'
+            }
+        ]
+    }    
+]

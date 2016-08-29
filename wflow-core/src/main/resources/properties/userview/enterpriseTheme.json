@@ -1,0 +1,36 @@
+[{
+    title : '@@userviewmenu.enterprisetheme.config@@',
+    properties : [{
+        name : 'customHeader',
+        label : '@@userviewmenu.enterprisetheme.customHeader@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userviewmenu.enterprisetheme.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customBanner',
+        label : '@@userviewmenu.enterprisetheme.customBanner@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+},
+{
+    title : '@@userviewmenu.enterprisetheme.configureCustomUi@@',
+    properties : [{
+        name : 'css',
+        label : '@@userviewmenu.enterprisetheme.customCss@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userviewmenu.enterprisetheme.customJavascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    }]
+}]

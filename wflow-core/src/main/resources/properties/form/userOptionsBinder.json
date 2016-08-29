@@ -1,0 +1,76 @@
+[{
+    title : '@@form.useroptionsbinder.config@@',
+    properties : [{
+        name : 'orgId',
+        label : '@@form.useroptionsbinder.orgId@@',
+        type : 'selectbox',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.UserOptionsBinder/service?action=getOptions'
+    },
+    {
+        name : 'deptId',
+        label : '@@form.useroptionsbinder.deptId@@',
+        type : 'selectbox',
+        options_ajax_on_change : 'orgId',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.UserOptionsBinder/service?action=getDeptOptions'
+    },
+    {
+        name : 'groupId',
+        label : '@@form.useroptionsbinder.groupId@@',
+        type : 'selectbox',
+        options_ajax_on_change : 'orgId',
+        options_ajax : '[CONTEXT_PATH]/web/json/plugin/org.joget.plugin.enterprise.UserOptionsBinder/service?action=getGroupOptions'
+    },
+    {
+        name : 'addEmptyOption',
+        label : '@@form.useroptionsbinder.addEmptyOption@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
+        name : 'emptyLabel',
+        label : '@@form.useroptionsbinder.emptyLabel@@',
+        type : 'textfield'
+    },
+    {
+        name : 'optionLabel',
+        label : '@@form.useroptionsbinder.optionLabel@@',
+        type : 'selectbox',
+        options : [{
+            value : '',
+            label : '@@form.useroptionsbinder.optionLabel.fullnameWithUsername@@'
+        },
+        {
+            value : 'username',
+            label : '@@form.useroptionsbinder.optionLabel.username@@'
+        },
+        {
+            value : 'fullname',
+            label : '@@form.useroptionsbinder.optionLabel.fullname@@'
+        }]
+    },
+    {
+        name : 'grouping',
+        label : '@@form.useroptionsbinder.grouping@@',
+        type : 'selectbox',
+        options : [{
+            value : '',
+            label : '@@form.useroptionsbinder.grouping.none@@'
+        },
+        {
+            value : 'org',
+            label : '@@form.useroptionsbinder.grouping.organization@@'
+        },
+        {
+            value : 'dept',
+            label : '@@form.useroptionsbinder.grouping.department@@'
+        },
+        {
+            value : 'grade',
+            label : '@@form.useroptionsbinder.grouping.grade@@'
+        }]
+    }%s]
+}]

@@ -1,0 +1,32 @@
+[{
+    title : '@@form.directorybinder.group.advanced@@',
+    properties : [
+    {
+        name : 'groupId',
+        label : '@@form.directorybinder.group.field.groupId@@',
+        type : 'textfield',
+        value : 'groupId',
+        required : 'true'
+    },
+    {
+        name : 'groupName',
+        label : '@@form.directorybinder.group.field.groupName@@',
+        type : 'textfield',
+        value : 'groupName',
+        required : 'true'
+    },
+    {
+        name : 'groupDesc',
+        label : '@@form.directorybinder.group.field.groupDesc@@',
+        type : 'textfield',
+        value : 'groupDesc',
+        required : 'true'
+    },
+    {
+        name : 'organization',
+        label : '@@form.directorybinder.group.field.organization@@',
+        type : 'textfield',
+        value : 'organization',
+        required : 'true'
+    }]
+}]

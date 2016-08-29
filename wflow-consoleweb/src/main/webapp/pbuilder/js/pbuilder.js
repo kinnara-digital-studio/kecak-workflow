@@ -814,8 +814,8 @@ ProcessBuilder.Util = {
 
 /* Utility Functions */
 ProcessBuilder.ApiClient = {
-    baseUrl: "/jw",
-    designerBaseUrl: "/jw",
+    baseUrl: "/kecak",
+    designerBaseUrl: "/kecak",
     appId: "",
     appVersion: "",
     appName: null,

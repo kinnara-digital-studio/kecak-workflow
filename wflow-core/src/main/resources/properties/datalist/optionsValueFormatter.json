@@ -1,0 +1,26 @@
+[{
+    title : '@@datalist.ovf.config@@',
+    properties : [{
+        name : 'options',
+        label : '@@datalist.ovf.options@@',
+        type : 'grid',
+        columns : [{
+            key : 'value',
+            label : '@@datalist.ovf.value@@'
+        },
+        {
+            key : 'label',
+            label : '@@datalist.ovf.label@@'
+        }]
+    }]
+},
+{
+    title : '@@datalist.ovf.chooseOptionsBinder@@',
+    properties : [{
+        name : 'optionsBinder',
+        label : '@@datalist.ovf.optionsBinder@@',
+        type : 'elementselect',
+        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormLoadOptionsBinder',
+        url : '[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions'
+    }]
+}]

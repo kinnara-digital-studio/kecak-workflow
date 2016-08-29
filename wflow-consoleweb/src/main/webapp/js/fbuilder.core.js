@@ -3,7 +3,7 @@ FormBuilder = {
     propertyDialog: null, // property dialog popup object
     elementPropertyDefinitions: new Object(), // map of property dialog definitions for each element class
     elementTemplates: new Object(), // map of HTML templates for each element class
-    contextPath: "/jw",
+    contextPath: "/kecak",
     elementPreviewUrl: "/web/fbuilder/element/preview",
     formPreviewUrl: "/web/fbuilder/form/preview/",
     tinymceUrl: "/js/tiny_mce/tiny_mce.js",

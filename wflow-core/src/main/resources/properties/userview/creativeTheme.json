@@ -1,0 +1,62 @@
+[{
+    title : '@@userviewmenu.creativetheme.config@@',
+    properties : [{
+        name : 'logoUrl',
+        label : '@@userviewmenu.creativetheme.logoUrl@@',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'logoWidth',
+        label : '@@userviewmenu.creativetheme.logoWidth@@',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'logoHeight',
+        label : '@@userviewmenu.creativetheme.logoHeight@@',
+        type : 'textfield',
+        required : 'true'
+    },
+    {
+        name : 'topNavigator',
+        label : '@@userviewmenu.creativetheme.topNavigator@@',
+        type : 'grid',
+        required : 'True',
+        columns : [{
+            key : 'label',
+            label : '@@userviewmenu.creativetheme.label@@'
+        },
+        {
+            key : 'href',
+            label : '@@userviewmenu.creativetheme.href@@'
+        }]
+    },
+    {
+        name : 'homeAttractBanner',
+        label : '@@userviewmenu.creativetheme.homeAttractBanner@@',
+        type : 'codeeditor',
+        mode : 'html'
+    },
+    {
+        name : 'customFooter',
+        label : '@@userviewmenu.creativetheme.customFooter@@',
+        type : 'codeeditor',
+        mode : 'html'
+    }]
+},
+{
+    title : '@@userviewmenu.creativetheme.configureCustomUi@@',
+    properties : [{
+        name : 'css',
+        label : '@@userviewmenu.creativetheme.customCss@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userviewmenu.creativetheme.customJavascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    }]
+}]

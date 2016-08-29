@@ -115,7 +115,7 @@
                                 <div class="form-row">
                                     <label for="dbName"><%= ResourceBundleUtil.getMessage("setup.datasource.label.dbName")%></label>
                                     <span class="form-input">
-                                        <input type="text" size="40" id="dbName" name="dbName" value="jwdb"/>
+                                        <input type="text" size="40" id="dbName" name="dbName" value="kecakdb"/>
                                     </span>
                                 </div>
                                 <div class="form-row">
@@ -141,7 +141,7 @@
                                 <div class="form-row">
                                     <label for="jdbcUrl"><%= ResourceBundleUtil.getMessage("setup.datasource.label.jdbcUrl")%></label>
                                     <span class="form-input">
-                                        <input type="text" size="40" id="jdbcUrl" name="jdbcUrl" value="jdbc:mysql://localhost:3306/jwdb?characterEncoding=UTF-8"/>
+                                        <input type="text" size="40" id="jdbcUrl" name="jdbcUrl" value="jdbc:mysql://localhost:3306/kecakdb?characterEncoding=UTF-8"/>
                                         <input type="hidden" size="40" id="jdbcFullUrl" name="jdbcFullUrl" value=""/>
                                     </span>
                                 </div>
@@ -159,12 +159,6 @@
                                 </div>
                             </div>
                             <div id="advancedSetup" class="main-row-content">
-                                <div class="form-row">
-                                    <label for="sampleApps"><%= ResourceBundleUtil.getMessage("setup.datasource.label.sampleApps")%></label>                                     
-                                    <span class="form-input">
-                                        <input type="checkbox" id="sampleApps" name="sampleApps" value="true" checked />
-                                    </span>
-                                </div>
                                 <div class="form-row">
                                     <label for="sampleUsers"><%= ResourceBundleUtil.getMessage("setup.datasource.label.sampleUsers")%></label>                                     
                                     <span class="form-input">

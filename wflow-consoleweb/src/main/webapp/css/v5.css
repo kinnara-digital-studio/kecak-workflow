@@ -237,7 +237,7 @@ a {
 
 /*--- Button Styles --*/
 button, input[type=button], .ui-widget button, input.button-gray, .form-buttons .button input, .form-button, .row-button input, .smallbutton, #nv .nv-button, #nv .nv-button-small {
-    background: rgb(39, 174, 96);
+    background: rgb(69,145,167);
     font-family: Arial;
     text-decoration: none;
     box-shadow: none;
@@ -285,7 +285,7 @@ button:hover, input[type=button]:hover, #menu .dropdown-btn input:hover, .form-b
 #main-header {
     display: none;
     min-height: 41px;    
-    background: #222; //#547980;
+    background: #4591a7; //#547980;
     border-bottom: solid 1px #ddd;
     position: fixed;
     top: 0px;
@@ -519,7 +519,7 @@ body#appcenter .published-apps{
     padding: 20px 31px 20px 50px;
     font-size: 30px;
     font-family: Quattrocento;
-    background: #e7fab6;
+    background: #f7f7f7;
     width: 100%;
 }
 #main-content ul {
@@ -628,7 +628,7 @@ body#appcenter .published-apps{
     padding-left: 22px;
 }
 #main-content #search .filterlabel {
-    padding: 5px;
+    padding-left: 5px;
     font-size: 16px;
     position: absolute;
     left: 0px;

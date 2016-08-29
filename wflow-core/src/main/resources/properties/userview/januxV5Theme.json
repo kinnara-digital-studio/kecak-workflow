@@ -1,0 +1,104 @@
+[{
+    title : '@@theme.janux.config@@',
+    properties : [
+    {
+        name : 'colorScheme',
+        label : '@@userviewmenu.corporatiTheme.colorScheme@@',
+        type : 'selectbox',
+        options : [{
+            value : '',
+            label : '@@theme.janux.color.dark@@'
+        },{
+            value : 'sky',
+            label : '@@theme.janux.color.sky@@'
+        },{
+            value : 'leaf',
+            label : '@@theme.janux.color.leaf@@'
+        },{
+            value : 'light',
+            label : '@@theme.janux.color.light@@'
+        }]
+    },
+    {
+        name : 'fav_icon',
+        label : '@@theme.janux.favIcon@@',
+        type : 'textfield'
+    },
+    {
+        name : 'css',
+        label : '@@userviewmenu.bootstraptheme.customCss@@',
+        type : 'codeeditor',
+        mode : 'css'
+    },
+    {
+        name : 'js',
+        label : '@@userviewmenu.bootstraptheme.customJavascript@@',
+        type : 'codeeditor',
+        mode : 'javascript'
+    }]
+},
+{
+    title : '@@theme.janux.advanced@@',
+    properties : [
+    {
+        name : 'profile',
+        label : '@@theme.janux.disabledProfile@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },   
+    {
+        name : 'inbox',
+        label : '@@theme.janux.inbox@@',
+        type : 'selectbox',
+        options : [{
+            value : '',
+            label : '@@theme.janux.inbox.no@@'
+        },{
+            value : 'all',
+            label : '@@theme.janux.inbox.all@@'
+        },{
+            value : 'current',
+            label : '@@theme.janux.inbox.current@@'
+        }]
+    },    
+    {
+        name : 'shortcutLinkLabel',
+        label : '@@userviewmenu.bootstraptheme.shortcutLinkLabel@@',
+        value : '@@theme.janux.shortcut@@',
+        type : 'textfield'
+    },
+    {
+        name : 'shortcut',
+        label : '@@userviewmenu.bootstraptheme.shortcut@@',
+        description : '@@userviewmenu.bootstraptheme.shortcut.desc@@',
+        type : 'grid',
+        columns : [{
+            key : 'label',
+            label : '@@userviewmenu.bootstraptheme.label@@'
+        },
+        {
+            key : 'href',
+            label : '@@userviewmenu.bootstraptheme.href@@'
+        },
+        {
+            key : 'target',
+            label : '@@userviewmenu.bootstraptheme.target@@',
+            options : [
+                {value: '', label: ''},
+                {value: '_blank', label: '@@userviewmenu.bootstraptheme.target.newTab@@'},
+            ]
+        }]
+    },
+    {
+        name : 'removeAssignmentTitle',
+        label : '@@theme.janux.removeAssignmentTitle@@',
+        type : 'checkbox',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    }]
+}]

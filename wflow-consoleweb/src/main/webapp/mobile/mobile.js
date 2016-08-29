@@ -1,6 +1,6 @@
 var Mobile = {
 
-    contextPath: "/jw",
+    contextPath: "/kecak",
     
     viewFullSite: function(path, href) {
         $.cookie("desktopSite", "true", {
