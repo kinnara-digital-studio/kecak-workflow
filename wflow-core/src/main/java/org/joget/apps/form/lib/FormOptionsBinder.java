@@ -136,18 +136,33 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
                 results = formDataDao.find(formDefId, tableName, condition, conditionParams, labelColumn, false, null, null);
 
                 if (results != null) {
+                	//Determine id column. Setting to default if not specified
+                    String idColumn = (String) getProperty("idColumn");
+                    idColumn = (idColumn == null || "".equals(idColumn)) ? FormUtil.PROPERTY_ID : idColumn;
+                    
+                    String groupingColumn = (String) getProperty("groupingColumn");
+                    
+                	// remove duplicate based on label (because list is sorted by label by default)
+                    if("true".equals(getProperty("removeDuplicates"))) {
+                    	FormRowSet newResults = new FormRowSet();
+	                	String currentValue = null;
+	                	for(FormRow row : results) {
+	                		String label = row.getProperty(labelColumn);
+	                		if(currentValue == null || !currentValue.equals(label)) {
+	                			currentValue = label;
+	                			newResults.add(row);
+	                		}
+	                	}
+	                	
+	                	results = newResults;
+                    }
+                	
                     if ("true".equals(getPropertyString("addEmptyOption"))) {
                         FormRow emptyRow = new FormRow();
                         emptyRow.setProperty(FormUtil.PROPERTY_VALUE, "");
                         emptyRow.setProperty(FormUtil.PROPERTY_LABEL, getPropertyString("emptyLabel"));
                         filtered.add(emptyRow);
                     }
-
-                    //Determine id column. Setting to default if not specified
-                    String idColumn = (String) getProperty("idColumn");
-                    idColumn = (idColumn == null || "".equals(idColumn)) ? FormUtil.PROPERTY_ID : idColumn;
-
-                    String groupingColumn = (String) getProperty("groupingColumn");
 
                     // loop thru results to set value and label
                     for (FormRow row : results) {
