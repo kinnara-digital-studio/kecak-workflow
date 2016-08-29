@@ -36,6 +36,17 @@
         }]
     },
     {
+    	name : 'removeDuplicates',
+    	label : 'Remove Duplicates',
+    	description : 'Remove duplicate by label values',
+    	type : 'checkbox',
+    	value : 'false',
+    	options : [{
+    		value : 'true',
+    		label : ''
+    	}]
+    },
+    {
         name : 'emptyLabel',
         label : '@@form.defaultformoptionbinder.emptyLabel@@',
         type : 'textfield'
