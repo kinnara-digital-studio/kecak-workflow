@@ -80,15 +80,6 @@
     {
         label : '@@form.selectbox.ui@@',
         type : 'header'
-    }, {
-        name : 'modernStyle',
-        label : 'Use Modern Style',
-        type : 'checkbox',
-        value : 'true',
-        options : [{
-            value : 'true',
-            label : ''
-        }]
     },
     {
         name : 'size',

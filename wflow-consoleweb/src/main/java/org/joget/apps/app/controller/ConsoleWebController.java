@@ -41,7 +41,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.AbstractDocument.Content;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.spring.SpringCamelContext;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.comparator.NameFileComparator;
@@ -76,7 +79,14 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.generator.service.GeneratorUtil;
+import org.joget.apps.route.KecakRouteManager;
+import org.joget.apps.scheduler.SchedulerManager;
+import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
+import org.joget.apps.scheduler.model.SchedulerDetails;
+import org.joget.apps.scheduler.model.TriggerTypes;
 import org.joget.apps.userview.service.UserviewService;
+import org.joget.commons.spring.model.EmailApprovalContent;
+import org.joget.commons.spring.model.EmailApprovalContentDao;
 import org.joget.commons.spring.model.ResourceBundleMessage;
 import org.joget.commons.spring.model.ResourceBundleMessageDao;
 import org.joget.commons.spring.model.Setting;
@@ -131,9 +141,13 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -150,8 +164,12 @@ import org.springframework.web.util.HtmlUtils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
+@SuppressWarnings("restriction")
 @Controller
 public class ConsoleWebController {
+	
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleWebController.class);
+
 
     public static final String APP_ZIP_PREFIX = "APP_";
     @Autowired
@@ -181,6 +199,8 @@ public class ConsoleWebController {
     ExtDirectoryManager directoryManager;
     @Autowired
     ResourceBundleMessageDao rbmDao;
+    @Autowired
+    EmailApprovalContentDao eaContentDao;
     @Autowired
     Validator validator;
     @Autowired
@@ -213,7 +233,13 @@ public class ConsoleWebController {
     LocaleResolver localeResolver;
     @Autowired
     JdbcDataListDao jdbcDataListDao;
-
+    @Autowired
+    KecakRouteManager kecakRouteManager;
+    @Autowired
+    SchedulerManager schedulerManager; 
+    @Autowired
+    SchedulerDetailsDao schedulerDetailsDao;  
+    
     @RequestMapping({"/index", "/", "/home"})
     public String index() {
         String landingPage = WorkflowUtil.getSystemSetupValue("landingPage");
@@ -3610,7 +3636,7 @@ public class ConsoleWebController {
     }
 
     @RequestMapping(value = "/console/setting/general/submit", method = RequestMethod.POST)
-    public String consoleSettingGeneralSubmit(HttpServletRequest request, ModelMap map) {
+    public String consoleSettingGeneralSubmit(HttpServletRequest request, ModelMap map) throws Exception {
     	String currentUsername = WorkflowUtil.getCurrentUsername();
     	List<String> settingsIsNotNull = new ArrayList<String>();
 
@@ -3680,7 +3706,21 @@ public class ConsoleWebController {
         pluginManager.refresh();
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
-
+        
+        kecakRouteManager.stopContext();
+        Thread.sleep(3000);
+        kecakRouteManager.startContext();
+        
+        SchedulerDetails details = new SchedulerDetails();
+		details.setGroupJobName("testJob03-g1");
+		details.setJobName("jobGroup1");
+		details.setJobClassName("org.joget.apps.scheduler.HelloJob");
+		details.setTriggerName("hello03-g1");
+		details.setGroupTriggerName("triggerGroup1");
+		details.setTriggerTypes(TriggerTypes.Simple);
+		details.setInterval(new Long(5));
+		schedulerManager.saveOrUpdateJobDetails(details);
+        
         return "redirect:/web/console/setting/general";
     }
 
@@ -4150,6 +4190,309 @@ public class ConsoleWebController {
         return "console/dialogClose";
     }
 
+    @RequestMapping("/console/setting/eaContent")
+    public String consoleSettingEmailApprovalContent(ModelMap map) {
+        return "console/setting/eaContent";
+    }
+    
+    @RequestMapping("/console/setting/eaContent/create")
+    public String consoleSettingEmailApprovalContentCreate(ModelMap map) {
+    	EmailApprovalContent eaContent = new EmailApprovalContent();
+        map.addAttribute("eaContent", eaContent);
+        return "console/setting/eaContentCreate";
+    }
+    
+    @RequestMapping("/console/setting/eaContent/edit/(*:id)")
+    public String consoleSettingEmailApprovalContentEdit(ModelMap map, @RequestParam("id") String id) {
+    	EmailApprovalContent eaContent = eaContentDao.getEmailApprovalContentById(id);
+        map.addAttribute("eaContent", eaContent);
+        return "console/setting/eaContentEdit";
+    }
+    
+    @RequestMapping(value = "/console/setting/eaContent/delete", method = RequestMethod.POST)
+    public String consoleSettingEmailApprovalContentDelete(@RequestParam(value = "ids") String ids) {
+        StringTokenizer strToken = new StringTokenizer(ids, ",");
+        while (strToken.hasMoreTokens()) {
+            String id = (String) strToken.nextElement();
+            EmailApprovalContent eaContent = eaContentDao.getEmailApprovalContentById(id);
+            eaContentDao.delete(eaContent);
+        }
+        return "console/dialogClose";
+    }
+    
+	@RequestMapping("/json/console/setting/eaContent/list")
+    public void consoleSettingEmailApprovalContentListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
+    		@RequestParam(value = "processId", required = false) String processId, @RequestParam(value = "sort", required = false) String sort, 
+    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
+    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+		String condition = "";
+        List<String> param = new ArrayList<String>();
+
+        if (processId != null && processId.trim().length() != 0) {
+            if (!condition.isEmpty()) {
+                condition += " and";
+            }
+            condition += " (e.processId like ? or e.activityId like ?)";
+            param.add("%" + processId + "%");
+            param.add("%" + processId + "%");
+        }
+
+        if (condition.length() > 0) {
+            condition = "WHERE " + condition;
+        }
+
+        List<EmailApprovalContent> emailApprovalContentList = eaContentDao.getEmailApprovalContents(condition, param.toArray(new String[param.size()]), 
+        		sort, desc, start, rows);
+        
+        Long count = eaContentDao.count(condition, param.toArray(new String[param.size()]));
+        
+    	JSONObject jsonObject = new JSONObject();
+        if (emailApprovalContentList != null && emailApprovalContentList.size() > 0) {
+            for (EmailApprovalContent eaContent : emailApprovalContentList) {
+				Map<String, Object> data = new HashMap<String, Object>();
+                data.put("id", eaContent.getId());
+                data.put("processId", eaContent.getProcessId());
+                data.put("activityId", eaContent.getActivityId());
+                data.put("content", eaContent.getContent());
+                data.put("createdate", eaContent.getDateCreated() == null ?"":eaContent.getDateCreated());
+                data.put("modifiedate", eaContent.getDateModified() == null ?"":eaContent.getDateModified());
+                jsonObject.accumulate("data", data);
+            }
+        }
+
+        jsonObject.accumulate("total", count);
+        jsonObject.accumulate("start", start);
+        jsonObject.accumulate("sort", sort);
+        jsonObject.accumulate("desc", desc);
+
+        AppUtil.writeJson(writer, jsonObject, callback);
+    }
+    
+	@RequestMapping(value = "/console/setting/eaContent/submit/(*:action)", method = RequestMethod.POST)
+    public String consoleSettingEmailApprovalContentSubmit(ModelMap map, @RequestParam("action") String action, @ModelAttribute("eaContent") EmailApprovalContent eaContent, BindingResult result) {
+        // validation
+        validator.validate(eaContent, result);
+        Date now = new Date();
+    	String currUsername = workflowUserManager.getCurrentUsername();
+    	
+        boolean invalid = result.hasErrors();
+        if (!invalid) {
+            // check error
+            Collection<String> errors = new ArrayList<String>();
+
+            if ("create".equals(action)) {
+                // check exist
+                if (eaContentDao.getEmailApprovalContent(eaContent.getProcessId(), eaContent.getActivityId()) != null) {
+                    errors.add("console.app.message.error.label.exists");
+                } else {
+                	eaContent.setDateCreated(now);
+                	eaContent.setCreatedBy(currUsername);
+                	eaContent.setDateModified(now);
+                	eaContent.setModifiedBy(currUsername);
+                	
+                	eaContentDao.saveOrUpdate(eaContent);
+                    invalid = false;
+                }
+            } else {
+                EmailApprovalContent o = eaContentDao.getEmailApprovalContentById(eaContent.getId());
+                o.setContent(eaContent.getContent());
+                o.setDateModified(now);
+            	o.setModifiedBy(currUsername);
+            	
+                eaContentDao.saveOrUpdate(o);
+                invalid = false;
+            }
+
+            if (!errors.isEmpty()) {
+                map.addAttribute("errors", errors);
+                invalid = true;
+            }
+        }
+
+        if (invalid) {
+            map.addAttribute("eaContent", eaContent);
+            if ("create".equals(action)) {
+                return "console/setting/eaContentCreate";
+            } else {
+                return "console/setting/eaContentEdit";
+            }
+        } else {
+            String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
+            String url = contextPath + "/web/console/setting/eaContent";
+            map.addAttribute("url", url);
+            return "console/dialogClose";
+        }
+    }
+	
+	@RequestMapping("/console/setting/scheduler")
+    public String consoleSettingSchedulerContent(ModelMap map) {
+        return "console/setting/scheduler";
+    }
+	
+	@RequestMapping("/console/setting/scheduler/create")
+    public String consoleSettingSchedulerCreate(ModelMap map) {
+    	SchedulerDetails schedulerDetails = new SchedulerDetails();
+        map.addAttribute("schedulerDetails", schedulerDetails);
+        return "console/setting/schedulerCreate";
+    }
+	
+	@RequestMapping(value = "/console/setting/scheduler/submit/(*:action)", method = RequestMethod.POST)
+    public String consoleSettingSchedulerSubmit(ModelMap map, @RequestParam("action") String action, @ModelAttribute("schedulerDetails") SchedulerDetails schedulerDetails, BindingResult result) {
+        // validation
+        validator.validate(schedulerDetails, result);
+        Date now = new Date();
+    	String currUsername = workflowUserManager.getCurrentUsername();
+    	
+        boolean invalid = result.hasErrors();
+        if (!invalid) {
+            // check error
+            Collection<String> errors = new ArrayList<String>();
+
+            if ("create".equals(action)) {
+                // check exist
+            	SchedulerDetails currentByJob = schedulerDetailsDao.getSchedulerDetailsByJob(schedulerDetails.getJobName(), schedulerDetails.getGroupJobName());
+            	SchedulerDetails currentByTrigger = schedulerDetailsDao.getSchedulerDetailsByTrigger(schedulerDetails.getTriggerName(), schedulerDetails.getGroupTriggerName());
+                if (currentByJob != null || currentByTrigger != null) {
+                    errors.add("console.app.message.error.label.exists");
+                } else {
+                	schedulerDetails.setDateCreated(now);
+                	schedulerDetails.setCreatedBy(currUsername);
+                	schedulerDetails.setDateModified(now);
+                	schedulerDetails.setModifiedBy(currUsername);
+                	schedulerDetails.setTriggerTypes(TriggerTypes.CRON);
+                	try {
+    					schedulerManager.saveOrUpdateJobDetails(schedulerDetails);
+                        invalid = false;
+    				} catch (Exception e) {
+    					invalid = true;
+    					errors.add("console.app.message.error.label.exception");
+    					e.printStackTrace();
+    					LOGGER.error(e.getMessage());
+    				}					
+                }
+            } else {
+            	SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
+            	details.setCronExpression(schedulerDetails.getCronExpression());
+            	details.setJobClassName(schedulerDetails.getJobClassName());
+            	details.setDateModified(now);
+            	details.setModifiedBy(currUsername);
+            	
+            	try {
+					schedulerManager.updateJobDetails(details);
+                    invalid = false;
+				} catch (Exception e) {
+					invalid = true;
+					errors.add("console.app.message.error.label.exception");
+					e.printStackTrace();
+					LOGGER.error(e.getMessage());
+				}
+            }
+
+            if (!errors.isEmpty()) {
+                map.addAttribute("errors", errors);
+                invalid = true;
+            }
+        }
+
+        if (invalid) {
+            map.addAttribute("schedulerDetails", schedulerDetails);
+            if ("create".equals(action)) {
+                return "console/setting/schedulerCreate";
+            } else {
+                return "console/setting/easchedulerEdit";
+            }
+        } else {
+            String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
+            String url = contextPath + "/web/console/setting/scheduler";
+            map.addAttribute("url", url);
+            return "console/dialogClose";
+        }
+    }
+	
+	@RequestMapping("/json/console/setting/scheduler/list")
+    public void consoleSettingSchedulerListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
+    		@RequestParam(value = "jobName", required = false) String jobName, @RequestParam(value = "sort", required = false) String sort, 
+    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
+    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+		String condition = "";
+        List<String> param = new ArrayList<String>();
+
+        if (jobName != null && jobName.trim().length() != 0) {
+            if (!condition.isEmpty()) {
+                condition += " and";
+            }
+            condition += " (e.jobName like ? )";
+            param.add("%" + jobName + "%");
+        }
+
+        if (condition.length() > 0) {
+            condition = "WHERE " + condition;
+        }
+
+        List<SchedulerDetails> schedulerList = schedulerDetailsDao.getSchedulerDetails(condition, param.toArray(new String[param.size()]), 
+        		sort, desc, start, rows);
+        
+        Long count = schedulerDetailsDao.count(condition, param.toArray(new String[param.size()]));
+        
+    	JSONObject jsonObject = new JSONObject();
+        if (schedulerList != null && schedulerList.size() > 0) {
+            for (SchedulerDetails details : schedulerList) {
+				Map<String, Object> data = new HashMap<String, Object>();
+                data.put("id", details.getId());
+                data.put("jobName", details.getJobName());
+                data.put("groupJobName", details.getGroupJobName());
+                data.put("triggerName", details.getTriggerName());
+                data.put("groupTriggerName", details.getGroupTriggerName());
+                data.put("jobClassName", details.getJobClassName());
+                data.put("modifiedate", details.getDateModified() == null ?"":details.getDateModified());
+                jsonObject.accumulate("data", data);
+            }
+        }
+
+        jsonObject.accumulate("total", count);
+        jsonObject.accumulate("start", start);
+        jsonObject.accumulate("sort", sort);
+        jsonObject.accumulate("desc", desc);
+
+        AppUtil.writeJson(writer, jsonObject, callback);
+    }
+	
+	@RequestMapping(value = "/console/setting/scheduler/delete", method = RequestMethod.POST)
+    public String consoleSettingSchedulerDelete(@RequestParam(value = "ids") String ids) {
+        StringTokenizer strToken = new StringTokenizer(ids, ",");
+        while (strToken.hasMoreTokens()) {
+            String id = (String) strToken.nextElement();
+            SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(id);
+            schedulerManager.deleteJob(details);
+        }
+        return "console/dialogClose";
+    }
+	
+	@RequestMapping(value = "/console/setting/scheduler/firenow", method = RequestMethod.POST)
+    public String consoleSettingSchedulerFireNow(@RequestParam(value = "ids") String ids) {
+        StringTokenizer strToken = new StringTokenizer(ids, ",");
+        while (strToken.hasMoreTokens()) {
+            String id = (String) strToken.nextElement();
+            SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(id);
+            try {
+				schedulerManager.fireNow(details);
+			} catch (SchedulerException e) {
+				LOGGER.error("Unable to fire "+"["+details.getJobName()+"] "+e.getMessage());
+				continue;
+			}
+        }
+        return "console/dialogClose";
+    }
+	
+	@RequestMapping("/console/setting/scheduler/edit/(*:id)")
+    public String consoleSettingSchedulerEdit(ModelMap map, @RequestParam("id") String id) {
+        SchedulerDetails schedulerDetails = schedulerDetailsDao.getSchedulerDetailsById(id);
+        map.addAttribute("schedulerDetails", schedulerDetails);
+        return "console/setting/schedulerEdit";
+    }
+	
     @RequestMapping("/console/monitor/running")
     public String consoleMonitorRunning(ModelMap map) {
         Collection<AppDefinition> appDefinitionList = appDefinitionDao.findLatestVersions(null, null, null, "name", false, null, null);

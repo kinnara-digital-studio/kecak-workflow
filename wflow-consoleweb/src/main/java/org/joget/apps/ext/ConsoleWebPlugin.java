@@ -59,8 +59,6 @@ public class ConsoleWebPlugin extends ExtDefaultPlugin implements PluginWebSuppo
             content = getLogin();
         } else if ("home".equals(spot)) {
             content = getHome();
-        } else if ("welcome".equals(spot)) {
-            content = getWelcome();
         } else {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
@@ -117,27 +115,7 @@ public class ConsoleWebPlugin extends ExtDefaultPlugin implements PluginWebSuppo
      */
     protected String getHome() {
         return "";
-    }
-
-    /**
-     * Welcome content in the home page.
-     * @return 
-     */
-    protected String getWelcome() {
-        String content = "<div id=\"getting-started\">"
-                + "<iframe id=\"frame\" style=\"display:none; height:200px; width:100%; overflow:hidden;\" src=\"http://www.kecak.org/updates/welcome?src=v5\" frameborder=\"0\"></iframe>"
-                + "<a href=\"http://www.kecak.net/help?src=wmc\" target=\"www.kecak.org\" id=\"link\"></a>"
-                + "</div>"
-                + "<div class=\"clear\"></div>"
-                + "<script type=\"text/javascript\">"
-                + "var image = new Image();"
-                + "image.src = \"http://www.kecak.net/images/welcome.png\";"
-                + "$(image).load(function(){"
-                + "$('#link').hide();$('#frame').show();"
-                + "});"
-                + "</script>";
-        return content;
-    }
+    }    
     
     /**
      * Returns information regarding an app.

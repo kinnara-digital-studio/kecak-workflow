@@ -99,6 +99,7 @@
             <list>
                 <value>/org/joget/commons/spring/model/Setting.hbm.xml</value>
                 <value>/org/joget/commons/spring/model/ResourceBundleMessage.hbm.xml</value>
+            	<value>/org/joget/commons/spring/model/EmailApprovalContent.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -116,6 +117,10 @@
         <property name="cache">
             <ref local="resourceBundleMessageCache" />
         </property>
+    </bean>
+    
+    <bean id="emailApprovalContentDao" class="org.joget.commons.spring.model.EmailApprovalContentDao" depends-on="staticInitOfDynamicDataSourceManager">
+        <property name="sessionFactory" ref="setupSessionFactory"/>
     </bean>
 
     <bean id="resourceBundleUtil" class="org.joget.commons.util.ResourceBundleUtil">
