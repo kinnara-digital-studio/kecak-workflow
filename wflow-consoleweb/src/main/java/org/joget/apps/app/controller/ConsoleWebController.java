@@ -3709,17 +3709,8 @@ public class ConsoleWebController {
         
         kecakRouteManager.stopContext();
         Thread.sleep(3000);
-        kecakRouteManager.startContext();
         
-        SchedulerDetails details = new SchedulerDetails();
-		details.setGroupJobName("testJob03-g1");
-		details.setJobName("jobGroup1");
-		details.setJobClassName("org.joget.apps.scheduler.HelloJob");
-		details.setTriggerName("hello03-g1");
-		details.setGroupTriggerName("triggerGroup1");
-		details.setTriggerTypes(TriggerTypes.Simple);
-		details.setInterval(new Long(5));
-		schedulerManager.saveOrUpdateJobDetails(details);
+        kecakRouteManager.startContext();
         
         return "redirect:/web/console/setting/general";
     }
