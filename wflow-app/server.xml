@@ -44,13 +44,13 @@
               factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
               pathname="conf/tomcat-users.xml" />
 			  
-	<Resource name="jdbc/JwDB" global="jdbc/JwDB"
+	<Resource name="jdbc/kecakdb" global="jdbc/kecakdb"
 			auth="Container"
 			type="javax.sql.DataSource"
 			driverClassName="com.mysql.jdbc.Driver"
-			url="jdbc:mysql://localhost:3306/jwdb"
+			url="jdbc:mysql://localhost:3306/kecakdb"
 			username="root"
-			password=""
+			password="3nengtri"
 			maxActive="100"
 			maxIdle="20"
 			minIdle="5"

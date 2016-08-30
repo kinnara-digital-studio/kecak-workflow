@@ -79,16 +79,8 @@
     </bean>
 	
 	<!--
-    <bean id="setupDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="jwdb"/>
-        <property name="lookupOnStartup" value="false"/>
-        <property name="cache" value="true" />
-        <property name="proxyInterface"  value="javax.sql.DataSource" />
-    </bean>
-	
-	
 	<bean id="setupDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:jboss/LocalKecakDb"/>
+        <property name="jndiName" value="java:comp/env/jdbc/LocalKecakDB"/>
     </bean>
 	-->
 	

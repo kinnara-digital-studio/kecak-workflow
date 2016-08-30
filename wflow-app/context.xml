@@ -34,5 +34,5 @@
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
 	
-	<ResourceLink name="jdbc/LocalKecakDb" global="jdbc/kecakdb" auth="Container" type="javax.sql.DataSource" />
+	<ResourceLink name="jdbc/LocalKecakDB" global="jdbc/kecakdb" auth="Container" type="javax.sql.DataSource" />
 </Context>
