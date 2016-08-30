@@ -76,6 +76,21 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
                 rowSet = new FormRowSet();
                 rowSet.add(result);
             }
+            
+        	// remove duplicate based on label (because list is sorted by label by default)
+            if("true".equals(getProperty("removeDuplicates")) && rowSet != null) {
+            	FormRowSet newResults = new FormRowSet();
+            	String currentValue = null;
+            	for(FormRow row : rowSet) {
+            		String label = row.getProperty(FormUtil.PROPERTY_LABEL);
+            		if(currentValue == null || !currentValue.equals(label)) {
+            			currentValue = label;
+            			newResults.add(row);
+            		}
+            	}
+            	
+            	rowSet = newResults;
+            }
         }
 
         return rowSet;
