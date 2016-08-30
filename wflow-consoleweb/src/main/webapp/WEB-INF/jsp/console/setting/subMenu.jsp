@@ -7,3 +7,5 @@
 <li id="nav-setting-directory"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/directory"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.directory"/></a></li>
 <li id="nav-setting-plugin"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/plugin"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.plugin"/></a></li>
 <li id="nav-setting-message"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/message"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.message"/></a></li>
+<li id="nav-setting-eaContent"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/eaContent"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.eaContent"/></a></li>
+<li id="nav-setting-schedulerContent"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/scheduler"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.scheduler"/></a></li>

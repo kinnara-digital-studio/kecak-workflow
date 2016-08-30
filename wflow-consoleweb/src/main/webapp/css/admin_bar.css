@@ -213,7 +213,7 @@ body.embeded #adminBar {
 
 /*-- Dark theme admin bar --*/
 #adminBar {
-    background: #222 url(../images/v3/logo_white.png) no-repeat 8px 7px;
+    background: #222 no-repeat 8px 7px;
     box-shadow: #000 0px -1px 1px 1px;
 }
 #adminBar .adminBarButton {

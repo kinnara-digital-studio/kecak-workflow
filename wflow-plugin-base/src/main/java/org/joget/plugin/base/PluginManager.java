@@ -1190,4 +1190,20 @@ public class PluginManager implements ApplicationContextAware {
         this.applicationContext = appContext;
         refresh();
     }
+    
+    public Class<?> findClass (String name) {
+    	Class<?> result = null;
+    	BundleContext context = felix.getBundleContext();
+    	for (Bundle bundle : context.getBundles()) {
+            try {
+                Class<?> _class = bundle.loadClass(name);
+                result = (_class);
+            } catch (ClassNotFoundException e) {
+                // No problem, this bundle doesn't have the class
+            }
+        }
+    	
+    	return result;
+    	
+    }
 }

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="org.joget.apps"/>
+
+	<!-- Scheduler -->
+    <bean id="schedulerLogDao" class="org.joget.apps.scheduler.dao.SchedulerLogDao" depends-on="staticInitOfDynamicDataSourceManager">
+        <property name="sessionFactory" ref="setupSessionFactory"/>
+    </bean>
+    
+    <bean id="schedulerDetailsDao" class="org.joget.apps.scheduler.dao.SchedulerDetailsDao" depends-on="staticInitOfDynamicDataSourceManager">
+        <property name="sessionFactory" ref="setupSessionFactory"/>
+    </bean>
+    
+    <bean id="schedulerManager" class="org.joget.apps.scheduler.SchedulerManager" init-method="initManager">
+    	<property name="schedulerFactory" ref="schedulerFactory"/>
+    	<property name="schedulerJobListener" ref="schedulerJobListener"/>
+    	<property name="schedulerDetailsDao" ref="schedulerDetailsDao"></property>
+    </bean>
+    
+    <bean id="schedulerJobListener" class="org.joget.apps.scheduler.SchedulerJobListener">
+    	<property name="schedulerLogDao" ref="schedulerLogDao"/>
+    </bean>
+    
+    <bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<property name="autoStartup" value="true" />
+		<property name="waitForJobsToCompleteOnShutdown" value="true" />
+
+		<property name="quartzProperties">
+			<props>
+				<prop key="org.quartz.scheduler.instanceName">kecakNonClusterScheduler</prop>
+				<prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+				<prop key="org.quartz.scheduler.instanceId">AUTO</prop>
+				<prop key="org.quartz.scheduler.interruptJobsOnShutdown">true</prop>
+				<prop key="org.quartz.scheduler.interruptJobsOnShutdownWithWait">true</prop>
+
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+				
+				<!--Job Store -->
+				<prop key="org.quartz.jobStore.driverDelegateClass">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</prop>
+				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
+				<prop key="org.quartz.jobStore.tablePrefix">QRTZ_</prop>
+				<prop key="org.quartz.jobStore.isClustered">true</prop>
+				<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
+				
+				<!-- DataSource -->
+				<prop key="org.quartz.jobStore.dataSource">quartzDS</prop>
+				<prop key="org.quartz.dataSource.quartzDS.URL">jdbc:mysql://localhost:3306/kecakdb?characterEncoding=UTF-8</prop>
+				<prop key="org.quartz.dataSource.quartzDS.driver">com.mysql.jdbc.Driver</prop>
+				<prop key="org.quartz.dataSource.quartzDS.user">root</prop>
+				<prop key="org.quartz.dataSource.quartzDS.password">3nengtri</prop>
+				<prop key="org.quartz.dataSource.quartzDS.maxConnections">5</prop>
+				<prop key="org.quartz.dataSource.quartzDS.validationQuery">select 0 from dual</prop>
+			</props>
+		</property>
+	</bean>
+    <!-- END OF SCHEDULER -->
+</beans>

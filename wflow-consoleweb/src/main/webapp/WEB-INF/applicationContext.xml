@@ -141,13 +141,7 @@
         <property name="forceHttps" value="false" />
     </bean>
 
-	<bean id="emailApprovalProcessor" class="org.joget.apps.processor.EmailApprovalProcessor"/>
-	
-    <camelContext xmlns="http://camel.apache.org/schema/spring">
-    	<package>org.joget.apps.route</package>
-	</camelContext>
-    
+    <import resource="classpath:camelApplicationContext.xml" />
     <import resource="classpath:webApplicationContext.xml" />
-    
-    
+        
 </beans>
