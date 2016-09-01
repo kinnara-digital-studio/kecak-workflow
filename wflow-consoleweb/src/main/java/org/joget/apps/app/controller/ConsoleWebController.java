@@ -82,7 +82,9 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.route.KecakRouteManager;
 import org.joget.apps.scheduler.SchedulerManager;
 import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
+import org.joget.apps.scheduler.dao.SchedulerLogDao;
 import org.joget.apps.scheduler.model.SchedulerDetails;
+import org.joget.apps.scheduler.model.SchedulerLog;
 import org.joget.apps.scheduler.model.TriggerTypes;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.spring.model.EmailApprovalContent;
@@ -239,6 +241,8 @@ public class ConsoleWebController {
     SchedulerManager schedulerManager; 
     @Autowired
     SchedulerDetailsDao schedulerDetailsDao;  
+    @Autowired
+    SchedulerLogDao schedulerLogDao;
     
     @RequestMapping({"/index", "/", "/home"})
     public String index() {
@@ -4856,6 +4860,67 @@ public class ConsoleWebController {
         jsonObject.write(writer);
     }
 
+    @RequestMapping("/console/monitor/scheduler")
+    public String consoleMonitorScheduler(ModelMap map) {
+        return "console/monitor/scheduler";
+    }
+    
+    @RequestMapping("/console/monitor/scheduler/view/(*:id)")
+    public String consoleMonitorSchedulerView(ModelMap map, @RequestParam("id") String id) {
+    	SchedulerLog schedulerLog = schedulerLogDao.getSchedulerLogById(id);
+        map.addAttribute("schedulerLog", schedulerLog);
+        return "console/monitor/schedulerView";
+    }
+    
+   	@RequestMapping("/json/console/monitor/scheduler/list")
+    public void consoleMonitorSchedulerListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
+    		@RequestParam(value = "jobName", required = false) String jobName, @RequestParam(value = "sort", required = false) String sort, 
+    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
+    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+		String condition = "";
+        List<String> param = new ArrayList<String>();
+
+        if (jobName != null && jobName.trim().length() != 0) {
+            if (!condition.isEmpty()) {
+                condition += " and";
+            }
+            condition += " (e.jobName like ? )";
+            param.add("%" + jobName + "%");
+        }
+
+        if (condition.length() > 0) {
+            condition = "WHERE " + condition;
+        }
+
+        List<SchedulerLog> logs = schedulerLogDao.getSchedulerLogs(condition, param.toArray(new String[param.size()]), 
+        		sort, desc, start, rows);
+        
+        Long count = schedulerLogDao.count(condition, param.toArray(new String[param.size()]));
+        
+    	JSONObject jsonObject = new JSONObject();
+        if (logs != null && logs.size() > 0) {
+            for (SchedulerLog log : logs) {
+				Map<String, Object> data = new HashMap<String, Object>();
+                data.put("id", log.getId());
+                data.put("jobName", log.getJobName());
+                data.put("jobClassName", log.getJobClassName());
+                data.put("finishTime", log.getFinishTime());
+                data.put("jobStatus", log.getJobStatus().name());
+                data.put("message", log.getMessage());
+                jsonObject.accumulate("data", data);
+            }
+        }
+
+        jsonObject.accumulate("total", count);
+        jsonObject.accumulate("start", start);
+        jsonObject.accumulate("sort", sort);
+        jsonObject.accumulate("desc", desc);
+
+        AppUtil.writeJson(writer, jsonObject, callback);
+    }
+	
+    
     @RequestMapping("/console/i18n/(*:name)")
     public String consoleI18n(ModelMap map, HttpServletResponse response, @RequestParam("name") String name) throws IOException {
         Properties keys = new Properties();

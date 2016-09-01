@@ -11,3 +11,4 @@
     <li id="nav-monitor-log"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/monitor/logs"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.logs"/></a></li>
 </c:if>
 <%--<li id="nav-monitor-sla"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/monitor/sla"><span class="nav-steps">&nbsp;</span><fmt:message key="wflowAdmin.sla.list.label.title"/></a></li>--%>
+<li id="nav-monitor-scheduler"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/monitor/scheduler"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.scheduler"/></a></li>
