@@ -20,15 +20,15 @@
                 <legend><fmt:message key="console.setting.eaContent.common.label.details"/></legend>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.processId"/></label>
-                    <span class="form-input"><form:input path="processId" cssErrorClass="form-input-error" /> *</span>
+                    <span class="form-input"><form:input path="processId" cssErrorClass="form-input-error" size="30"/> *</span>
                 </div>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.activityId"/></label>
-                    <span class="form-input"><form:input path="activityId" cssErrorClass="form-input-error" /> *</span>
+                    <span class="form-input"><form:input path="activityId" cssErrorClass="form-input-error" size="30" /> *</span>
                 </div>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.content"/></label>
-                    <span class="form-input"><form:textarea path="content" cssErrorClass="form-input-error" /> *</span>
+                    <span class="form-input"><form:textarea path="content" cssErrorClass="form-input-error" rows="10" cols="40"/> *</span>
                 </div>
             </fieldset>
             <div class="form-buttons">
@@ -40,8 +40,8 @@
 
     <script type="text/javascript">
         function validateField(){
-        	var processIdMatch = /^[0-9a-zA-Z_-]+$/.test($("#processId").attr("value"));
-        	var activityIdMatch = /^[0-9a-zA-Z_-]+$/.test($("#activityId").attr("value"));
+        	var processIdMatch = /^[0-9a-zA-Z:_-]+$/.test($("#processId").attr("value"));
+        	var activityIdMatch = /^[0-9a-zA-Z:_-]+$/.test($("#activityId").attr("value"));
         	
             if(!processIdMatch && activityIdMatch){
                 var alertString = '<fmt:message key="console.setting.eaContent.error.label.processIdInvalid"/>';
