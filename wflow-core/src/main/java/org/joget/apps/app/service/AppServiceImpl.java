@@ -88,6 +88,8 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,6 +103,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service("appService")
 public class AppServiceImpl implements AppService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(AppServiceImpl.class);
+	
     @Autowired
     FormService formService;
     @Autowired
@@ -1233,6 +1237,8 @@ public class AppServiceImpl implements AppService {
         if (form != null) {
             try {
                 formData = formService.submitForm(form, formData, ignoreValidation);
+                LOGGER.info("1240 : "+formData.getRequestParams());
+                
                 FormUtil.executePostFormSubmissionProccessor(form, formData);
             } catch (Exception ex) {
                 String formId = FormUtil.getElementParameterName(form);
@@ -1358,6 +1364,9 @@ public class AppServiceImpl implements AppService {
         if (form != null) {
             String formDefId = form.getPropertyString(FormUtil.PROPERTY_ID);
             String tableName = form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
+            LOGGER.info("1367 : "+formDefId);            
+            LOGGER.info("1368 : "+tableName);
+
             return storeFormData(formDefId, tableName, rows, primaryKeyValue);
         }
         return null;
@@ -1439,7 +1448,7 @@ public class AppServiceImpl implements AppService {
             
             // save data
             formDataDao.saveOrUpdate(formDefId, tableName, results);
-            LogUtil.debug(getClass().getName(), "  -- Saved form data row [" + primaryKeyValue + "] for form [" + formDefId + "] from table [" + tableName + "]");
+            LogUtil.info(getClass().getName(), "  -- Saved form data row [" + primaryKeyValue + "] for form [" + formDefId + "] from table [" + tableName + "]");
             
             FileUtil.storeFileFromFormRowSet(results, tableName, primaryKeyValue);
         }

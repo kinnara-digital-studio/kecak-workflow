@@ -67,7 +67,7 @@ a {
 #nav span.nav-steps {
     padding: 1px 6px 2px 4px;
     color: #333;
-    background: none repeat scroll 0% 0% #8FBC8F;
+    background: none repeat scroll 0% 0% #4591a7;
     margin-right: 6px;
     border-radius: 40px;
     width: 12px;
@@ -80,7 +80,7 @@ a {
     background: #fff;
 }
 #nav #nav-list li.nav-selected {
-    background: none repeat scroll 0% 0% #8FBC8F;
+    background: none repeat scroll 0% 0% #4591a7;
     width: 95%;
 }
 #nav #nav-list li {
@@ -89,7 +89,7 @@ a {
     overflow: hidden;
 }
 #nav #nav-list li:hover {
-    background: #8FBC8F;
+    background: #4591a7;
     width: 95%;
 }
 #nav #nav-list #nav-apps-link {
