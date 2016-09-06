@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service("formService")
 public class FormServiceImpl implements FormService {
-	
+		
 	@Autowired
 	SetupManager setupManager;
 
@@ -394,7 +394,8 @@ public class FormServiceImpl implements FormService {
         }
     }
     
-    private void handleFiles (FormData formData) {
+    @SuppressWarnings("static-access")
+	private void handleFiles (FormData formData) {
     	String basePath = SetupManager.getBaseDirectory();
         String dataFileBasePath = setupManager.getSettingValue("dataFileBasePath");
         if (dataFileBasePath != null && dataFileBasePath.length() > 0) {

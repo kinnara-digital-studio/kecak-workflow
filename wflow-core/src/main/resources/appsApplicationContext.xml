@@ -130,6 +130,7 @@
                 <value>/org/joget/apps/app/model/SchedulerLog.hbm.xml</value>
                 <value>/org/joget/apps/app/model/SchedulerDetails.hbm.xml</value>
                 
+                <value>/org/joget/apps/app/model/Property.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -269,12 +270,22 @@
 				
 				<!-- DataSource -->
 				<prop key="org.quartz.jobStore.dataSource">quartzDS</prop>
+				
+				<!--  
 				<prop key="org.quartz.dataSource.quartzDS.URL">jdbc:mysql://localhost:3306/kecakdb?characterEncoding=UTF-8</prop>
 				<prop key="org.quartz.dataSource.quartzDS.driver">com.mysql.jdbc.Driver</prop>
 				<prop key="org.quartz.dataSource.quartzDS.user">root</prop>
 				<prop key="org.quartz.dataSource.quartzDS.password">3nengtri</prop>
 				<prop key="org.quartz.dataSource.quartzDS.maxConnections">5</prop>
 				<prop key="org.quartz.dataSource.quartzDS.validationQuery">select 0 from dual</prop>
+				-->
+				
+				<prop key="org.quartz.dataSource.quartzDS.URL">${quartzDS.URL}</prop>
+				<prop key="org.quartz.dataSource.quartzDS.driver">${quartzDS.driver}</prop>
+				<prop key="org.quartz.dataSource.quartzDS.user">${quartzDS.user}</prop>
+				<prop key="org.quartz.dataSource.quartzDS.password">${quartzDS.password}</prop>
+				<prop key="org.quartz.dataSource.quartzDS.maxConnections">${quartzDS.maxConnections}</prop>
+				<prop key="org.quartz.dataSource.quartzDS.validationQuery">${quartzDS.validationQuery}</prop>
 			</props>
 		</property>
 	</bean>
@@ -285,6 +296,7 @@
         <aop:advisor advice-ref="txAdvice" pointcut="execution(* org.joget.report.dao.*Dao.*(..))" order="1" />
         <aop:advisor advice-ref="txAdvice" pointcut="execution(* org.joget.apps.form.dao.*Dao.*(..))" order="1" />
         <aop:advisor advice-ref="txAdvice" pointcut="execution(* org.joget.apps.scheduler.dao.*Dao.*(..))" order="1" />
+        <aop:advisor advice-ref="txAdvice" pointcut="execution(* org.joget.apps.property.dao.*Dao.*(..))" order="1" />
         <aop:advisor advice-ref="sqlFilterAspect" pointcut="execution(* org.joget.workflow.model.service.WorkflowManager.*(..))" order="1" />
         <aop:advisor advice-ref="auditTrailInterceptor" pointcut="execution(* org.joget.workflow.model.service.WorkflowManager.*(..)) and !(execution(* org.joget..*.get*(..)) or execution(* org.joget..*.set*(..)) or execution(* org.joget..*.is*(..)) or execution(* org.joget..*.internal*(..)))" order="2" />
         <aop:advisor advice-ref="auditTrailInterceptor" pointcut="execution(* org.joget.directory.dao.*Dao.*(..)) and !(execution(* org.joget..*.get*(..)) or execution(* org.joget..*.set*(..)))" order="1" />

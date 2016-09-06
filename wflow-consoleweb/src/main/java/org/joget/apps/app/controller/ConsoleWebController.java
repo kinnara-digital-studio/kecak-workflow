@@ -79,6 +79,9 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.generator.service.GeneratorUtil;
+import org.joget.apps.property.PropertiesTemplate;
+import org.joget.apps.property.dao.PropertyDao;
+import org.joget.apps.property.model.Property;
 import org.joget.apps.route.KecakRouteManager;
 import org.joget.apps.scheduler.SchedulerManager;
 import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
@@ -243,6 +246,10 @@ public class ConsoleWebController {
     SchedulerDetailsDao schedulerDetailsDao;  
     @Autowired
     SchedulerLogDao schedulerLogDao;
+    @Autowired
+    PropertiesTemplate applicationProperties;
+    @Autowired
+    PropertyDao propertyDao;
     
     @RequestMapping({"/index", "/", "/home"})
     public String index() {
@@ -4187,7 +4194,7 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/setting/eaContent")
     public String consoleSettingEmailApprovalContent(ModelMap map) {
-        return "console/setting/eaContent";
+    	return "console/setting/eaContent";
     }
     
     @RequestMapping("/console/setting/eaContent/create")
@@ -4395,7 +4402,7 @@ public class ConsoleWebController {
             if ("create".equals(action)) {
                 return "console/setting/schedulerCreate";
             } else {
-                return "console/setting/easchedulerEdit";
+                return "console/setting/schedulerEdit";
             }
         } else {
             String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
@@ -4486,6 +4493,153 @@ public class ConsoleWebController {
         SchedulerDetails schedulerDetails = schedulerDetailsDao.getSchedulerDetailsById(id);
         map.addAttribute("schedulerDetails", schedulerDetails);
         return "console/setting/schedulerEdit";
+    }
+	
+	@RequestMapping("/console/setting/property")
+    public String consoleSettingProperty(ModelMap map) {
+        return "console/setting/property";
+    }
+	
+	@RequestMapping("/json/console/setting/property/list")
+    public void consoleSettingPropertyListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
+    		@RequestParam(value = "propertyLabel", required = false) String propertyLabel, @RequestParam(value = "sort", required = false) String sort, 
+    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
+    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+		String condition = "";
+        List<String> param = new ArrayList<String>();
+
+        if (propertyLabel != null && propertyLabel.trim().length() != 0) {
+            if (!condition.isEmpty()) {
+                condition += " and";
+            }
+            condition += " (e.propertyLabel like ? )";
+            param.add("%" + propertyLabel + "%");
+        }
+
+        if (condition.length() > 0) {
+            condition = "WHERE " + condition;
+        }
+
+        List<Property> properties = propertyDao.getProperties(condition, param.toArray(new String[param.size()]), 
+        		sort, desc, start, rows);
+        
+        Long count = propertyDao.count(condition, param.toArray(new String[param.size()]));
+        
+    	JSONObject jsonObject = new JSONObject();
+        if (properties != null && properties.size() > 0) {
+            for (Property property : properties) {
+				Map<String, Object> data = new HashMap<String, Object>();
+                data.put("id", property.getId());
+                data.put("propertyLabel", property.getPropertyLabel());
+                data.put("propertyValue", property.getPropertyValue());
+                jsonObject.accumulate("data", data);
+            }
+        }
+
+        jsonObject.accumulate("total", count);
+        jsonObject.accumulate("start", start);
+        jsonObject.accumulate("sort", sort);
+        jsonObject.accumulate("desc", desc);
+
+        AppUtil.writeJson(writer, jsonObject, callback);
+    }
+	
+	@RequestMapping("/console/setting/property/create")
+    public String consoleSettingPropertyCreate(ModelMap map) {
+    	Property property = new Property();
+        map.addAttribute("property", property);
+        return "console/setting/propertyCreate";
+    }
+	
+	@RequestMapping("/console/setting/property/edit/(*:id)")
+    public String consoleSettingPropertyEdit(ModelMap map, @RequestParam("id") String id) {
+        Property property = propertyDao.getPropertyById(id);
+        map.addAttribute("property", property);
+        return "console/setting/propertyEdit";
+    }
+	
+	@RequestMapping(value = "/console/setting/property/delete", method = RequestMethod.POST)
+    public String consoleSettingPropertyDelete(@RequestParam(value = "ids") String ids) throws IOException {
+        StringTokenizer strToken = new StringTokenizer(ids, ",");
+        while (strToken.hasMoreTokens()) {
+            String id = (String) strToken.nextElement();
+            Property property = propertyDao.getPropertyById(id);
+            propertyDao.delete(property);
+        }
+        applicationProperties.refresh();
+        return "console/dialogClose";
+    }
+	
+	@RequestMapping(value = "/console/setting/property/submit/(*:action)", method = RequestMethod.POST)
+    public String consoleSettingPropertySubmit(ModelMap map, @RequestParam("action") String action, @ModelAttribute("property") Property property, BindingResult result) {
+        // validation
+        validator.validate(property, result);
+        Date now = new Date();
+    	String currUsername = workflowUserManager.getCurrentUsername();
+    	
+        boolean invalid = result.hasErrors();
+        if (!invalid) {
+            // check error
+            Collection<String> errors = new ArrayList<String>();
+
+            if ("create".equals(action)) {
+                // check exist
+            	Property currentProperty = propertyDao.getPropertyByLabel(property.getPropertyLabel());
+                if (currentProperty != null) {
+                    errors.add("console.app.message.error.label.exists");
+                } else {
+                	property.setDateCreated(now);
+                	property.setCreatedBy(currUsername);
+                	property.setDateModified(now);
+                	property.setModifiedBy(currUsername);
+                	try {
+                		propertyDao.saveOrUpdate(property);
+                		applicationProperties.refresh();
+                        invalid = false;
+    				} catch (Exception e) {
+    					invalid = true;
+    					errors.add("console.app.message.error.label.exception");
+    					e.printStackTrace();
+    					LOGGER.error(e.getMessage());
+    				}					
+                }
+            } else {
+            	Property existingProperty = propertyDao.getPropertyById(property.getId());
+            	existingProperty.setPropertyValue(property.getPropertyValue());
+            	existingProperty.setDateModified(now);
+            	existingProperty.setModifiedBy(currUsername);
+            	try {
+            		propertyDao.saveOrUpdate(existingProperty);
+            		applicationProperties.refresh();
+                    invalid = false;
+				} catch (Exception e) {
+					invalid = true;
+					errors.add("console.app.message.error.label.exception");
+					e.printStackTrace();
+					LOGGER.error(e.getMessage());
+				}
+            }
+
+            if (!errors.isEmpty()) {
+                map.addAttribute("errors", errors);
+                invalid = true;
+            }
+        }
+
+        if (invalid) {
+            map.addAttribute("property", property);
+            if ("create".equals(action)) {
+                return "console/setting/propertyCreate";
+            } else {
+                return "console/setting/propertyEdit";
+            }
+        } else {
+            String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
+            String url = contextPath + "/web/console/setting/property";
+            map.addAttribute("url", url);
+            return "console/dialogClose";
+        }
     }
 	
     @RequestMapping("/console/monitor/running")

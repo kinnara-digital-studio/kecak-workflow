@@ -141,6 +141,25 @@
         <property name="forceHttps" value="false" />
     </bean>
 
+	<!-- START OF PROPERTY -->
+    <bean id="propertyDao" class="org.joget.apps.property.dao.PropertyDao">
+        <property name="sessionFactory" ref="appSessionFactory"/>
+    </bean>
+    
+    <bean id="propertiesLoader" class="org.joget.apps.property.DataSourcePropertiesLoader">
+		<property name="locations">
+		    <list>  
+		      <value>classpath:config/quartz-setup.properties</value>
+		    </list> 
+		</property>
+		<property name="propertyDao" ref="propertyDao" />
+	</bean>
+	
+	<bean id="applicationProperties" class="org.joget.apps.property.PropertiesTemplate">
+		<property name="propertiesLoader" ref="propertiesLoader" />
+	</bean>
+    <!-- END OF PROPERTY -->
+    
     <import resource="classpath:camelApplicationContext.xml" />
     <import resource="classpath:webApplicationContext.xml" />
         

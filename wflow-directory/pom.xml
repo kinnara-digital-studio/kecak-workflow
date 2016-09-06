@@ -5,7 +5,6 @@
     <artifactId>wflow-directory</artifactId>
     <name>wflow-directory</name>
     <version>5.0-SNAPSHOT</version>
-    <url>http://www.joget.org</url>
     <build>
         <plugins>
             <plugin>
@@ -63,14 +62,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <distributionManagement>
-        <repository>
-            <id>internal</id>
-            <url>dav:http://dev.joget.org/archiva/repository/internal/</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <url>http://dev.joget.org/archiva/repository/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

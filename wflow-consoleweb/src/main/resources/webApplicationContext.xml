@@ -15,11 +15,10 @@
     <!-- START web relevant bean-->
     <context:annotation-config/>
     <context:component-scan base-package="org.joget"/>
+    <context:property-placeholder location="classpath:config/quartz-setup.properties"/>
     
-    <bean id="configurationLoader"
-            class="org.springmodules.validation.bean.conf.loader.annotation.AnnotationBeanValidationConfigurationLoader"/>
-    <bean id="validator" class="org.springmodules.validation.bean.BeanValidator"
-            p:configurationLoader-ref="configurationLoader"/>
+    <bean id="configurationLoader" class="org.springmodules.validation.bean.conf.loader.annotation.AnnotationBeanValidationConfigurationLoader"/>
+    <bean id="validator" class="org.springmodules.validation.bean.BeanValidator" p:configurationLoader-ref="configurationLoader"/>
 
     <bean class="org.joget.commons.spring.web.ParameterizedAnnotationMethodHandlerAdapter"/>
     <bean id="multipartHandlerInterceptor" class="org.joget.commons.spring.web.MultipartHandlerInterceptor" />

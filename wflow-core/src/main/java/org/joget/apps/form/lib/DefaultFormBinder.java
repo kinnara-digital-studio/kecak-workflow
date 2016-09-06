@@ -1,6 +1,7 @@
 package org.joget.apps.form.lib;
 
 import java.util.Collection;
+
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.form.model.AbstractSubForm;
 import org.joget.apps.form.model.Element;
@@ -16,7 +17,7 @@ import org.joget.apps.form.service.FormUtil;
  *
  */
 public class DefaultFormBinder extends FormBinder implements FormLoadBinder, FormStoreBinder {
-
+	
     public String getName() {
         return "Default Form Binder";
     }
@@ -74,6 +75,7 @@ public class DefaultFormBinder extends FormBinder implements FormLoadBinder, For
             // store form data
             AppService appService = (AppService) FormUtil.getApplicationContext().getBean("appService");
             String primaryKeyValue = form.getPrimaryKeyValue(formData);
+
             rows = appService.storeFormData(form, rows, primaryKeyValue);
         }
         return rows;

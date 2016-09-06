@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 public class EmailApprovalProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailApprovalProcessor.class);
+    
 	public static final String MAIL_SUBJECT_PATTERN = "{unuse}processId:{processId}";
 	public static final String FROM = "from";
 	
@@ -115,7 +116,6 @@ public class EmailApprovalProcessor {
 				emailContentPattern = emailContentPattern.replaceAll("\\r?\\n", "");
 				
 				String patternRegex = createRegex(emailContentPattern);
-				LOGGER.info("Content Pattern :"+patternRegex);
 				
 				Pattern pattern = Pattern.compile("\\{([a-zA-Z0-9_]+)\\}");
 		        Matcher matcher = pattern.matcher(emailContentPattern);
@@ -132,13 +132,14 @@ public class EmailApprovalProcessor {
 		            while (matcher.find()) {
 		                String key = matcher.group(1);
 		                String value = matcher2.group(count);
-		                LOGGER.info("key:["+key+"] value:["+value+"]");
 		                if (key.startsWith("var_")) {
 		                    key = key.replaceAll("var_", "");
+			                LOGGER.info("variable_key:["+key+"] value:["+value+"]");
 		                    variables.put(key, value.trim());
 		                } else if (key.startsWith("form_")) {
 		                    key = key.replaceAll("form_", "");
 		                    formData.addRequestParameterValues(key, new String[] {value});
+			                LOGGER.info("form_key:["+key+"] value:["+value+"]");
 		                }
 		                count++;
 		            }
