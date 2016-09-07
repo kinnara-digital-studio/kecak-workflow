@@ -73,6 +73,17 @@
         type : 'header'
     },
     {
+    	name : 'removeDuplicates',
+    	label : '@@form.selectbox.removeDuplicates@@',
+    	description : '@@form.selectbox.removeDuplicates.description@@',
+    	type : 'checkbox',
+    	value : 'false',
+    	options : [{
+    		value : 'true',
+    		label : ''
+    	}]
+    },
+    {
         name : 'controlField',
         label : '@@form.selectbox.controlField@@',
         type : 'textfield'
@@ -82,8 +93,18 @@
         type : 'header'
     },
     {
+        name : 'modernStyle',
+        label : '@@form.selectbox.modernStyle@@',
+        type : 'checkbox',
+        value : 'true',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },
+    {
         name : 'size',
-        label : 'Width (%)',
+        label : '@@form.selectbox.size@@',
         type : 'textfield',
         value : '20'
     },
