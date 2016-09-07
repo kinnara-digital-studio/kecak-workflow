@@ -262,7 +262,7 @@
 				<prop key="org.quartz.threadPool.threadCount">5</prop>
 				
 				<!--Job Store -->
-				<prop key="org.quartz.jobStore.driverDelegateClass">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</prop>
+				<prop key="org.quartz.jobStore.driverDelegateClass">${quartz.jobStore.driverDelegateClass}</prop>
 				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
 				<prop key="org.quartz.jobStore.tablePrefix">QRTZ_</prop>
 				<prop key="org.quartz.jobStore.isClustered">true</prop>
