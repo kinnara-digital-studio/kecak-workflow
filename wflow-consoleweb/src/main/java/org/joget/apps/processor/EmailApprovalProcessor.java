@@ -84,6 +84,7 @@ public class EmailApprovalProcessor {
 	
 	@SuppressWarnings("unchecked")
 	public void parseEmailContent(String processId, String username, String emailContent) {
+		LOGGER.info("[EMAIL CONTENT]:"+emailContent);
 		String content = emailContent.replaceAll("\\r?\\n", "__");
 		
 		String processDefId = null;
