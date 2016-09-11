@@ -88,8 +88,6 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,8 +100,6 @@ import org.springframework.web.multipart.MultipartFile;
 @SuppressWarnings("restriction")
 @Service("appService")
 public class AppServiceImpl implements AppService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AppServiceImpl.class);
 	
     @Autowired
     FormService formService;
@@ -1236,9 +1232,7 @@ public class AppServiceImpl implements AppService {
     public FormData submitForm(Form form, FormData formData, boolean ignoreValidation) {
         if (form != null) {
             try {
-                formData = formService.submitForm(form, formData, ignoreValidation);
-                LOGGER.info("1240 : "+formData.getRequestParams());
-                
+                formData = formService.submitForm(form, formData, ignoreValidation);                
                 FormUtil.executePostFormSubmissionProccessor(form, formData);
             } catch (Exception ex) {
                 String formId = FormUtil.getElementParameterName(form);
@@ -1364,9 +1358,7 @@ public class AppServiceImpl implements AppService {
         if (form != null) {
             String formDefId = form.getPropertyString(FormUtil.PROPERTY_ID);
             String tableName = form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
-            LOGGER.info("1367 : "+formDefId);            
-            LOGGER.info("1368 : "+tableName);
-
+            
             return storeFormData(formDefId, tableName, rows, primaryKeyValue);
         }
         return null;

@@ -216,7 +216,7 @@
                     <div class="form-row">
                         <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailAccount"/></label>
                         <span class="form-input">
-                            <input id="emailAccount" type="email" name="emailAccount" value="<c:out value="${settingMap['emailAccount']}"/>"/>
+                            <input id="emailAccount" type="text" name="emailAccount" value="<c:out value="${settingMap['emailAccount']}"/>"/>
                         </span>
                     </div>
                 </span>

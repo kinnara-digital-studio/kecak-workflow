@@ -107,6 +107,12 @@ public class EmailApprovalProcessor {
         	
         EmailApprovalContent emailApprovalContent = null;
         if (processDefId != null && activityDefId != null) {
+        	int startIndex = processDefId.indexOf("#");
+    		int length = processDefId.indexOf("#", startIndex+1);
+    		if (startIndex > -1) {
+    			String processVersion = processDefId.substring(startIndex+1, length);
+    			processDefId = processDefId.replace("#"+processVersion+"#", "#latest#");
+    		}
     		emailApprovalContent = emailApprovalContentDao.getEmailApprovalContent(processDefId, activityDefId);
         }
 		

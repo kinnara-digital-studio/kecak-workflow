@@ -40,8 +40,8 @@
 
     <script type="text/javascript">
         function validateField(){
-        	var processIdMatch = /^[0-9a-zA-Z:_-]+$/.test($("#processId").attr("value"));
-        	var activityIdMatch = /^[0-9a-zA-Z:_-]+$/.test($("#activityId").attr("value"));
+        	var processIdMatch = /^[0-9a-zA-Z:#_-]+$/.test($("#processId").attr("value"));
+        	var activityIdMatch = /^[0-9a-zA-Z:#_-]+$/.test($("#activityId").attr("value"));
         	
             if(!processIdMatch && activityIdMatch){
                 var alertString = '<fmt:message key="console.setting.eaContent.error.label.processIdInvalid"/>';
