@@ -2,15 +2,24 @@ package org.joget.apps.app.lib;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.activation.FileDataSource;
 import javax.mail.internet.MimeUtility;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
@@ -18,11 +27,8 @@ import org.apache.commons.mail.HtmlEmail;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FileUtil;
-import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.DynamicDataSourceManager;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.PluginThread;
@@ -37,6 +43,7 @@ import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONObject;
+import org.springframework.beans.BeansException;
 
 public class EmailTool extends DefaultApplicationPlugin implements PluginWebSupport {
 
@@ -77,6 +84,11 @@ public class EmailTool extends DefaultApplicationPlugin implements PluginWebSupp
         WorkflowAssignment wfAssignment = (WorkflowAssignment) properties.get("workflowAssignment");
         AppDefinition appDef = (AppDefinition) properties.get("appDef");
 
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        DataSource ds = (DataSource) AppUtil.getApplicationContext().getBean("setupDataSource");
+                
         try {
             Map<String, String> replaceMap = null;
             if ("true".equalsIgnoreCase(isHtml)) {
@@ -158,38 +170,52 @@ public class EmailTool extends DefaultApplicationPlugin implements PluginWebSupp
             
             //handle file attachment
             String formDefId = (String) properties.get("formDefId");
-            Object[] fields = null;
-            if (properties.get("fields") instanceof Object[]){
-                fields = (Object[]) properties.get("fields");
-            }
-            if (formDefId != null && !formDefId.isEmpty() && fields != null && fields.length > 0) {
+            
+            if (formDefId != null && !formDefId.isEmpty()) {
                 AppService appService = (AppService) AppUtil.getApplicationContext().getBean("appService");
                 
                 FormData formData = new FormData();
                 String primaryKey = appService.getOriginProcessId(wfAssignment.getProcessId());
-                formData.setPrimaryKeyValue(primaryKey);
-                Form loadForm = appService.viewDataForm(appDef.getId(), appDef.getVersion().toString(), formDefId, null, null, null, formData, null, null);
                 
-                for (Object o : fields) {
-                    @SuppressWarnings("rawtypes")
-					Map mapping = (HashMap) o;
-                    String fieldId = mapping.get("field").toString();
-                        
-                    try {
-                        Element el = FormUtil.findElement(fieldId, loadForm, formData);
-                        
-                        String value = FormUtil.getElementPropertyValue(el, formData);
-                        if (value != null && !value.isEmpty()) {
-                            File file = FileUtil.getFile(value, loadForm, primaryKey);
+                String tableName = appService.getFormTableName(appDef, formDefId);
+                String foreignKeyId = (String) properties.get("foreignKeyId");
+                String foreignKeyValue = (String) properties.get("foreignKeyValue");
+                boolean loadByForeignKey = false;
+                if((foreignKeyId!=null && !foreignKeyId.equals("")) &&
+                        (foreignKeyValue!=null && !foreignKeyValue.equals(""))){
+                    loadByForeignKey = true;
+                    primaryKey = foreignKeyValue;
+                }
+                
+                // Load file name in DB
+                    // Build Query First
+                    StringBuilder sql = new StringBuilder("SELECT id ");
+                    sql.append(" FROM app_fd_").append(tableName).append(" ");
+                    sql.append(" WHERE ");
+                    if(loadByForeignKey){
+                        sql.append("c_").append(foreignKeyId).append(" ");
+                    }else{
+                        sql.append("id").append(" ");
+                    }
+                    sql.append("= ").append("?");
+                    
+                    // Create DB Connection
+                    con = ds.getConnection();
+                    ps = con.prepareStatement(sql.toString());
+//                    LogUtil.info(this.getClass().getName(), sql.toString());
+                    ps.setString(1, primaryKey);
+                    rs = ps.executeQuery();
+                    while(rs.next()){
+                        String uploadPath = FileUtil.getUploadPath(tableName, rs.getString("id"));
+                        File dir = new File(uploadPath);
+                        for(File file : dir.listFiles()){
                             if (file != null) {
                                 FileDataSource fds = new FileDataSource(file);
                                 email.attach(fds, MimeUtility.encodeText(file.getName()), "");
                             }
                         }
-                    } catch(Exception e){
-                        LogUtil.info(EmailTool.class.getName(), "Attached file fail from field \"" + fieldId + "\" in form \"" + formDefId + "\"");
+//                        LogUtil.info(this.getClass().getName(), "UPLOAD PATH: "+uploadPath);
                     }
-                }
             }
             
             Object[] files = null;
@@ -216,9 +242,12 @@ public class EmailTool extends DefaultApplicationPlugin implements PluginWebSupp
                             email.attach(u, MimeUtility.encodeText(fileName), "");
                         }
                         
-                    } catch(Exception e){
+                    } catch(UnsupportedEncodingException e){
                         LogUtil.info(EmailTool.class.getName(), "Attached file fail from path \"" + path + "\"");
-                        e.printStackTrace();
+                    } catch (EmailException e) {
+                        LogUtil.info(EmailTool.class.getName(), "Attached file fail from path \"" + path + "\"");
+                    } catch (MalformedURLException e) {
+                        LogUtil.info(EmailTool.class.getName(), "Attached file fail from path \"" + path + "\"");
                     }
                 }
             }
@@ -238,8 +267,32 @@ public class EmailTool extends DefaultApplicationPlugin implements PluginWebSupp
             emailThread.setDaemon(true);
             emailThread.start();
 
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             LogUtil.error(EmailTool.class.getName(), e, "");
+        } catch (EmailException e) {
+            LogUtil.error(EmailTool.class.getName(), e, "");
+        } catch (PluginException e) {
+            LogUtil.error(EmailTool.class.getName(), e, "");
+        } catch (BeansException e) {
+            LogUtil.error(EmailTool.class.getName(), e, "");
+        } catch (SQLException e) {
+            LogUtil.error(EmailTool.class.getName(), e, "");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(EmailTool.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(EmailTool.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return null;

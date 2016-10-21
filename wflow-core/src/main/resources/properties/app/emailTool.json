@@ -119,13 +119,16 @@
         options_ajax:'[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options',
     },
     {
-        name:'fields',
-        label:'@@app.emailtool.fields@@',
-        type:'grid',
-        columns:[{
-            key:'field',
-            label:'@@app.emailtool.fieldId@@'
-        }]
+        name: 'foreignKeyId',
+        label:'@@app.emailtool.foreignKey@@',
+        desc: '@@app.emailtool.foreignKey.desc@@',
+        type: 'textfield'
+    },
+    {
+        name: 'foreignKeyValue',
+        label:'@@app.emailtool.foreignKeyValue@@',
+        desc: '@@app.emailtool.foreignKey.desc@@',
+        type: 'textfield'
     },
     {
         name:'files',
