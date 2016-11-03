@@ -167,9 +167,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 @SuppressWarnings("restriction")
 @Controller
 public class ConsoleWebController {
-	
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleWebController.class);
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleWebController.class);
 
     public static final String APP_ZIP_PREFIX = "APP_";
     @Autowired
@@ -211,23 +210,23 @@ public class ConsoleWebController {
     FormService formService;
     @Autowired
     SetupManager setupManager;
-	@Resource
+    @Resource
     AppDefinitionDao appDefinitionDao;
-	@Resource
+    @Resource
     FormDefinitionDao formDefinitionDao;
-	@Resource
+    @Resource
     PackageDefinitionDao packageDefinitionDao;
-	@Resource
+    @Resource
     MessageDao messageDao;
-	@Resource
+    @Resource
     EnvironmentVariableDao environmentVariableDao;
-	@Resource
+    @Resource
     PluginDefaultPropertiesDao pluginDefaultPropertiesDao;
-	@Resource
+    @Resource
     UserviewDefinitionDao userviewDefinitionDao;
-	@Resource
+    @Resource
     DatalistDefinitionDao datalistDefinitionDao;
-	@Resource
+    @Resource
     FormDataDao formDataDao;
     @Autowired
     LocaleResolver localeResolver;
@@ -236,16 +235,16 @@ public class ConsoleWebController {
     @Autowired
     KecakRouteManager kecakRouteManager;
     @Autowired
-    SchedulerManager schedulerManager; 
+    SchedulerManager schedulerManager;
     @Autowired
-    SchedulerDetailsDao schedulerDetailsDao;  
+    SchedulerDetailsDao schedulerDetailsDao;
     @Autowired
     SchedulerLogDao schedulerLogDao;
     @Autowired
     PropertiesTemplate applicationProperties;
     @Autowired
     PropertyDao propertyDao;
-    
+
     @RequestMapping({"/index", "/", "/home"})
     public String index() {
         String landingPage = WorkflowUtil.getSystemSetupValue("landingPage");
@@ -305,7 +304,7 @@ public class ConsoleWebController {
     public String consoleOrgSubmit(ModelMap model, @RequestParam("action") String action, @ModelAttribute("organization") Organization organization, BindingResult result) {
         // validate ID
         validator.validate(organization, result);
-        
+
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
@@ -316,13 +315,13 @@ public class ConsoleWebController {
                 if (organizationDao.getOrganization(organization.getId()) != null) {
                     errors.add("console.directory.org.error.label.idExists");
                 } else {
-                	invalid = !organizationDao.addOrganization(organization);
+                    invalid = !organizationDao.addOrganization(organization);
                 }
             } else {
                 Organization o = organizationDao.getOrganization(organization.getId());
                 o.setName(organization.getName());
                 o.setDescription(organization.getDescription());
-            	invalid = !organizationDao.updateOrganization(o);
+                invalid = !organizationDao.updateOrganization(o);
             }
 
             if (!errors.isEmpty()) {
@@ -805,12 +804,12 @@ public class ConsoleWebController {
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
-        
+
         return "console/directory/userList";
     }
 
-	@SuppressWarnings("unchecked")
-	@RequestMapping("/console/directory/user/create")
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/console/directory/user/create")
     public String consoleUserCreate(ModelMap model) {
         Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
@@ -821,7 +820,7 @@ public class ConsoleWebController {
         status.put("1", "Active");
         status.put("0", "Inactive");
         model.addAttribute("status", status);
-        
+
         UserSecurity us = DirectoryUtil.getUserSecurity();
         if (us != null) {
             model.addAttribute("userFormFooter", us.getUserCreationFormFooter());
@@ -831,8 +830,8 @@ public class ConsoleWebController {
 
         User user = new User();
         user.setActive(1);
-		@SuppressWarnings("rawtypes")
-		Set roles = new HashSet();
+        @SuppressWarnings("rawtypes")
+        Set roles = new HashSet();
         roles.add(roleDao.getRole("ROLE_USER"));
         user.setRoles(roles);
         //user.setTimeZone(TimeZoneUtil.getServerTimeZone());
@@ -842,7 +841,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/console/directory/user/view/(*:id)")
+    @RequestMapping("/console/directory/user/view/(*:id)")
     public String consoleUserView(ModelMap model, @RequestParam("id") String id) {
         User user = directoryManager.getUserById(id);
 
@@ -866,7 +865,7 @@ public class ConsoleWebController {
                 roles = roles.substring(0, roles.length() - 2);
             }
             model.addAttribute("roles", roles);
-            
+
             UserSecurity us = DirectoryUtil.getUserSecurity();
             if (us != null) {
                 model.addAttribute("addOnButtons", us.getUserDetailsButtons(user));
@@ -908,19 +907,19 @@ public class ConsoleWebController {
         model.addAttribute("employeeStartDate", employment.getStartDate());
         model.addAttribute("employeeEndDate", employment.getEndDate());
         model.addAttribute("employeeDepartmentHod", (employment.getHods() != null && employment.getHods().size() > 0) ? "yes" : "no");
-        
+
         UserSecurity us = DirectoryUtil.getUserSecurity();
         if (us != null) {
             model.addAttribute("userFormFooter", us.getUserEditingFormFooter(user));
         } else {
             model.addAttribute("userFormFooter", "");
         }
-        
+
         return "console/directory/userEdit";
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/console/directory/user/submit/(*:action)", method = RequestMethod.POST)
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @RequestMapping(value = "/console/directory/user/submit/(*:action)", method = RequestMethod.POST)
     public String consoleUserSubmit(ModelMap model, @RequestParam("action") String action, @ModelAttribute("user") User user, BindingResult result,
             @RequestParam(value = "employeeCode", required = false) String employeeCode, @RequestParam(value = "employeeRole", required = false) String employeeRole,
             @RequestParam(value = "employeeOrganization", required = false) String employeeOrganization, @RequestParam(value = "employeeDepartment", required = false) String employeeDepartment,
@@ -931,35 +930,32 @@ public class ConsoleWebController {
 
         UserSecurity us = DirectoryUtil.getUserSecurity();
         UserSalt userSalt = new UserSalt();
-        
+
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
             Collection<String> errors = new ArrayList<String>();
-            
+
             if ("create".equals(action)) {
                 // check username exist
                 if (directoryManager.getUserByUsername(user.getUsername()) != null || (us != null && us.isDataExist(user.getUsername()))) {
                     errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.usernameExists"));
                 }
-                
+
                 if (us != null) {
                     Collection<String> validationErrors = us.validateUserOnInsert(user);
                     if (validationErrors != null && !validationErrors.isEmpty()) {
                         errors.addAll(validationErrors);
                     }
                 }
-                
+
                 //Check Password Empty
                 if (PasswordValidator.isPasswordEmpty(user.getPassword())) {
                     errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotEmpty"));
-                } else {
-                	if (!PasswordValidator.validate(user.getPassword())) {
-                        errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotValid"));
-                	}
+                } else if (!PasswordValidator.validate(user.getPassword())) {
+                    errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotValid"));
                 }
-                
-                
+
                 errors.addAll(validateEmploymentDate(employeeStartDate, employeeEndDate));
 
                 if (errors.isEmpty()) {
@@ -971,11 +967,11 @@ public class ConsoleWebController {
                         } else {
                             //md5 password
                             //user.setPassword(StringUtil.md5Base16(user.getPassword()));
-                        	HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
-                        	userSalt.setId(UUID.randomUUID().toString());
-                		    userSalt.setRandomSalt(hashSalt.getSalt());
-                        	
-                		    user.setPassword(hashSalt.getHash());
+                            HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
+                            userSalt.setId(UUID.randomUUID().toString());
+                            userSalt.setRandomSalt(hashSalt.getSalt());
+
+                            user.setPassword(hashSalt.getHash());
                         }
                     }
 
@@ -997,31 +993,31 @@ public class ConsoleWebController {
             } else {
                 user.setUsername(user.getId());
                 String currPassword = user.getPassword();
-                
+
                 if (us != null) {
                     Collection<String> validationErrors = us.validateUserOnUpdate(user);
                     if (validationErrors != null && !validationErrors.isEmpty()) {
                         errors.addAll(validationErrors);
                     }
                 }
-                
+
                 if (!PasswordValidator.isPasswordEmpty(currPassword)) {
-                	if (!PasswordValidator.validate(currPassword)) {
+                    if (!PasswordValidator.validate(currPassword)) {
                         errors.add(ResourceBundleUtil.getMessage("console.directory.user.error.label.passwordNotValid"));
-                	}
+                    }
                 }
-                
+
                 errors.addAll(validateEmploymentDate(employeeStartDate, employeeEndDate));
-                
+
                 if (errors.isEmpty()) {
                     boolean passwordReset = false;
                     boolean passwordUpdated = false;
-                    
+
                     User u = userDao.getUserById(user.getId());
                     u.setFirstName(user.getFirstName());
                     u.setLastName(user.getLastName());
                     u.setEmail(user.getEmail());
-                    
+
                     if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
                         u.setConfirmPassword(user.getPassword());
                         if (us != null) {
@@ -1030,12 +1026,12 @@ public class ConsoleWebController {
                         } else {
                             //md5 password
                             //u.setPassword(StringUtil.md5Base16(user.getPassword()));
-                        	passwordUpdated = true;
-                        	HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
-                		    u.setPassword(hashSalt.getHash());
-                		  
-                		    userSalt.setUserId(u.getUsername());
-                		    userSalt.setRandomSalt(hashSalt.getSalt());
+                            passwordUpdated = true;
+                            HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
+                            u.setPassword(hashSalt.getHash());
+
+                            userSalt.setUserId(u.getUsername());
+                            userSalt.setRandomSalt(hashSalt.getSalt());
 
                         }
                     }
@@ -1052,16 +1048,16 @@ public class ConsoleWebController {
 
                     invalid = !userDao.updateUser(u);
                     if (passwordUpdated) {
-                    	UserSalt currentUserSalt = userSaltDao.getUserSaltByUserId(u.getUsername());
-                    	if (currentUserSalt == null) {
-                    		userSalt.setId(UUID.randomUUID().toString());
-                    		userSaltDao.addUserSalt(userSalt);
-                    	} else {
-                    		userSalt.setId(currentUserSalt.getId());
-                    		userSaltDao.updateUserSalt(userSalt);
-                    	}
+                        UserSalt currentUserSalt = userSaltDao.getUserSaltByUserId(u.getUsername());
+                        if (currentUserSalt == null) {
+                            userSalt.setId(UUID.randomUUID().toString());
+                            userSaltDao.addUserSalt(userSalt);
+                        } else {
+                            userSalt.setId(currentUserSalt.getId());
+                            userSaltDao.updateUserSalt(userSalt);
+                        }
                     }
-                    
+
                     if (us != null && !invalid) {
                         us.updateUserPostProcessing(u);
                         if (passwordReset) {
@@ -1098,7 +1094,7 @@ public class ConsoleWebController {
             model.addAttribute("employeeStartDate", employeeStartDate);
             model.addAttribute("employeeEndDate", employeeEndDate);
             model.addAttribute("employeeDepartmentHod", employeeDepartmentHod);
-            
+
             if (us != null) {
                 if ("create".equals(action)) {
                     model.addAttribute("userFormFooter", us.getUserCreationFormFooter());
@@ -1108,7 +1104,7 @@ public class ConsoleWebController {
             } else {
                 model.addAttribute("userFormFooter", "");
             }
-            
+
             if ("create".equals(action)) {
                 return "console/directory/userCreate";
             } else {
@@ -1116,7 +1112,7 @@ public class ConsoleWebController {
             }
         } else {
             String prevDepartmentId = null;
-            
+
             //set employment detail
             Employment employment = null;
             if ("create".equals(action)) {
@@ -1128,7 +1124,7 @@ public class ConsoleWebController {
                     employment = new Employment();
                 }
             }
-            
+
             prevDepartmentId = employment.getDepartmentId();
 
             employment.setUserId(user.getId());
@@ -1168,12 +1164,10 @@ public class ConsoleWebController {
                     }
                 }
                 employmentDao.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
-            } else {
-                if (prevDepartmentId != null) {
-                    User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
-                    if (prevHod != null && prevHod.getId().equals(user.getId())) {
-                        employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
-                    }
+            } else if (prevDepartmentId != null) {
+                User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+                if (prevHod != null && prevHod.getId().equals(user.getId())) {
+                    employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                 }
             }
 
@@ -1188,18 +1182,18 @@ public class ConsoleWebController {
     @RequestMapping(value = "/console/directory/user/delete", method = RequestMethod.POST)
     public String consoleUserDelete(@RequestParam(value = "ids") String ids) {
         String currentUsername = workflowUserManager.getCurrentUsername();
-        
+
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-            
+
             if (id != null && !id.equals(currentUsername)) {
                 userDao.deleteUser(id);
                 UserSalt userSalt = userSaltDao.getUserSaltByUserId(id);
                 if (userSalt != null) {
-                	userSaltDao.deleteUserSalt(userSalt.getId());
+                    userSaltDao.deleteUserSalt(userSalt.getId());
                 }
-                
+
                 UserSecurity us = DirectoryUtil.getUserSecurity();
                 if (us != null) {
                     us.deleteUserPostProcessing(id);
@@ -1264,16 +1258,16 @@ public class ConsoleWebController {
         return "console/directory/userList";
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping("/console/profile")
-    public String profile(ModelMap map, HttpServletResponse response) throws IOException{
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @RequestMapping("/console/profile")
+    public String profile(ModelMap map, HttpServletResponse response) throws IOException {
         User user = userDao.getUser(workflowUserManager.getCurrentUsername());
-        
+
         if (user == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        
+
         map.addAttribute("user", user);
         map.addAttribute("timezones", TimeZoneUtil.getList());
 
@@ -1288,11 +1282,11 @@ public class ConsoleWebController {
             for (int x = 0; x < localeList.length; x++) {
                 String code = localeList[x].toString();
                 if (locales.contains(code)) {
-                    localeStringList.put(code, code + " - " +localeList[x].getDisplayName(LocaleContextHolder.getLocale()));
+                    localeStringList.put(code, code + " - " + localeList[x].getDisplayName(LocaleContextHolder.getLocale()));
                 }
             }
         }
-        
+
         UserSecurity us = DirectoryUtil.getUserSecurity();
         if (us != null) {
             map.addAttribute("policies", us.passwordPolicies());
@@ -1308,21 +1302,21 @@ public class ConsoleWebController {
         return "console/profile";
     }
 
-    @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
-	@RequestMapping(value = "/console/profile/submit", method = RequestMethod.POST)
+    @SuppressWarnings({"unused", "unchecked", "rawtypes"})
+    @RequestMapping(value = "/console/profile/submit", method = RequestMethod.POST)
     public String profileSubmit(ModelMap model, HttpServletRequest request, HttpServletResponse response, @ModelAttribute("user") User user, BindingResult result) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         User currentUser = userDao.getUser(workflowUserManager.getCurrentUsername());
-        
+
         if (currentUser == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        
+
         Collection<String> errors = new ArrayList<String>();
         Collection<String> passwordErrors = new ArrayList<String>();
-        
+
         boolean authenticated = false;
-        
+
         if (!currentUser.getUsername().equals(user.getUsername())) {
             HttpSession session = request.getSession(false);
             if (session != null) {
@@ -1336,8 +1330,7 @@ public class ConsoleWebController {
             } catch (Exception e) {
             }
         }
-        
-        
+
         UserSecurity us = DirectoryUtil.getUserSecurity();
 
         if (!authenticated) {
@@ -1351,7 +1344,7 @@ public class ConsoleWebController {
             }
 
             if (user.getPassword() != null && !user.getPassword().isEmpty() && us != null) {
-                passwordErrors = us.validatePassword(user.getUsername(), user.getOldPassword(), user.getPassword(), user.getConfirmPassword());   
+                passwordErrors = us.validatePassword(user.getUsername(), user.getOldPassword(), user.getPassword(), user.getConfirmPassword());
             }
         }
 
@@ -1378,7 +1371,7 @@ public class ConsoleWebController {
             }
             model.addAttribute("enableUserLocale", enableUserLocale);
             model.addAttribute("localeStringList", localeStringList);
-            
+
             if (us != null) {
                 model.addAttribute("policies", us.passwordPolicies());
                 model.addAttribute("userProfileFooter", us.getUserProfileFooter(currentUser));
@@ -1388,32 +1381,30 @@ public class ConsoleWebController {
             }
 
             return "console/profile";
-        } else {
-            if (currentUser.getUsername().equals(user.getUsername())) {
-                currentUser.setFirstName(user.getFirstName());
-                currentUser.setLastName(user.getLastName());
-                currentUser.setEmail(user.getEmail());
-                currentUser.setTimeZone(user.getTimeZone());
-                currentUser.setLocale(user.getLocale());
-                UserSalt userSalt = userSaltDao.getUserSaltByUserId(currentUser.getUsername());
-                
-                if (user.getPassword() != null && user.getConfirmPassword() != null && user.getPassword().length() > 0 && user.getPassword().equals(user.getConfirmPassword())) {
-                    if (us != null) {
-                        currentUser.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
-                    } else {
-                        //currentUser.setPassword(StringUtil.md5Base16(user.getPassword()));
-                    	HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
-                    	userSalt.setRandomSalt(hashSalt.getSalt());
-                    	
-                    	currentUser.setPassword(hashSalt.getHash());
-                    }
-                    currentUser.setConfirmPassword(user.getPassword());
-                }
-                userDao.updateUser(currentUser);
-                userSaltDao.updateUserSalt(userSalt);
+        } else if (currentUser.getUsername().equals(user.getUsername())) {
+            currentUser.setFirstName(user.getFirstName());
+            currentUser.setLastName(user.getLastName());
+            currentUser.setEmail(user.getEmail());
+            currentUser.setTimeZone(user.getTimeZone());
+            currentUser.setLocale(user.getLocale());
+            UserSalt userSalt = userSaltDao.getUserSaltByUserId(currentUser.getUsername());
+
+            if (user.getPassword() != null && user.getConfirmPassword() != null && user.getPassword().length() > 0 && user.getPassword().equals(user.getConfirmPassword())) {
                 if (us != null) {
-                    us.updateUserProfilePostProcessing(currentUser);
+                    currentUser.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
+                } else {
+                    //currentUser.setPassword(StringUtil.md5Base16(user.getPassword()));
+                    HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
+                    userSalt.setRandomSalt(hashSalt.getSalt());
+
+                    currentUser.setPassword(hashSalt.getHash());
                 }
+                currentUser.setConfirmPassword(user.getPassword());
+            }
+            userDao.updateUser(currentUser);
+            userSaltDao.updateUserSalt(userSalt);
+            if (us != null) {
+                us.updateUserProfilePostProcessing(currentUser);
             }
         }
 
@@ -1430,10 +1421,10 @@ public class ConsoleWebController {
     @RequestMapping("/console/app/create")
     public String consoleAppCreate(ModelMap model) {
         model.addAttribute("appDefinition", new AppDefinition());
-        
+
         Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
         model.addAttribute("appList", appDefinitionList);
-        
+
         return "console/apps/appCreate";
     }
 
@@ -1449,7 +1440,7 @@ public class ConsoleWebController {
             if (copyAppId != null && !copyAppId.isEmpty()) {
                 copy = appService.getAppDefinition(copyAppId, null);
             }
-            
+
             Collection<String> errors = appService.createAppDefinition(appDefinition, copy);
             if (!errors.isEmpty()) {
                 model.addAttribute("errors", errors);
@@ -1460,7 +1451,7 @@ public class ConsoleWebController {
         if (invalid) {
             Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
             model.addAttribute("appList", appDefinitionList);
-        
+
             return "console/apps/appCreate";
         } else {
             String appId = appDefinition.getId();
@@ -1471,8 +1462,8 @@ public class ConsoleWebController {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping("/json/console/app/list")
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @RequestMapping("/json/console/app/list")
     public void consoleAppListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
         Collection<AppDefinition> appDefinitionList = appDefinitionDao.findLatestVersions(null, null, name, sort, desc, start, rows);
@@ -1502,7 +1493,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/version/list")
+    @RequestMapping("/json/console/app/(*:appId)/version/list")
     public void consoleAppVersionListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         Collection<AppDefinition> appDefList = appDefinitionDao.findVersions(appId, sort, desc, start, rows);
         Long count = appDefinitionDao.countVersions(appId);
@@ -1511,7 +1502,7 @@ public class ConsoleWebController {
         if (appDefList != null && appDefList.size() > 0) {
             for (AppDefinition appDef : appDefList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("version", appDef.getVersion().toString());
                 data.put("published", (appDef.isPublished()) ? "<div class=\"tick\"></div>" : "");
                 data.put("dateCreated", TimeZoneUtil.convertToTimeZone(appDef.getDateCreated(), null, AppUtil.getAppDateFormat()));
@@ -1555,7 +1546,7 @@ public class ConsoleWebController {
 
         return "console/apps/dialogClose";
     }
-    
+
     @RequestMapping(value = "/console/app/(*:appId)/(~:version)/note/submit", method = RequestMethod.POST)
     @Transactional
     public String consoleAppNote(@RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "description") String description) {
@@ -1566,7 +1557,7 @@ public class ConsoleWebController {
             appDefinitionDao.saveOrUpdate(appDef);
         }
 
-        return "redirect:/web/console/app/"+appId+"/"+version+"/properties";
+        return "redirect:/web/console/app/" + appId + "/" + version + "/properties";
     }
 
     @RequestMapping(value = "/console/app/(*:appId)/(~:version)/unpublish", method = RequestMethod.POST)
@@ -1598,7 +1589,7 @@ public class ConsoleWebController {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-            
+
             // determine output filename
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String timestamp = sdf.format(new Date());
@@ -1629,15 +1620,15 @@ public class ConsoleWebController {
     @RequestMapping(value = "/console/app/import/submit", method = RequestMethod.POST)
     public String consoleAppImportSubmit(ModelMap map) throws IOException {
         Collection<String> errors = new ArrayList<String>();
-        
+
         MultipartFile appZip = null;
-        
+
         try {
             appZip = FileStore.getFile("appZip");
         } catch (FileLimitException e) {
             errors.add(ResourceBundleUtil.getMessage("general.error.fileSizeTooLarge", new Object[]{FileStore.getFileSizeLimit()}));
         }
-        
+
         AppDefinition appDef = null;
         try {
             if (appZip != null) {
@@ -1670,7 +1661,7 @@ public class ConsoleWebController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        
+
         response.setContentType("application/xml; charset=utf-8");
         PackageDefinition packageDef = appDef.getPackageDefinition();
         if (packageDef != null) {
@@ -1711,10 +1702,10 @@ public class ConsoleWebController {
     @RequestMapping(value = "/json/console/app/(*:appId)/(~:version)/package/deploy", method = RequestMethod.POST)
     public void consolePackageDeploy(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, HttpServletRequest request) throws JSONException, IOException {
         String error = null;
-        
+
         appService.getAppDefinition(appId, version);
         MultipartFile packageXpdl = null;
-        
+
         try {
             packageXpdl = FileStore.getFile("packageXpdl");
         } catch (FileLimitException e) {
@@ -1760,14 +1751,14 @@ public class ConsoleWebController {
         map.addAttribute("appVersion", appDef.getVersion());
         map.addAttribute("appDefinition", appDef);
         MultipartFile packageXpdl;
-        
+
         try {
             packageXpdl = FileStore.getFile("packageXpdl");
         } catch (FileLimitException e) {
             map.addAttribute("errorMessage", ResourceBundleUtil.getMessage("general.error.fileSizeTooLarge", new Object[]{FileStore.getFileSizeLimit()}));
             return "console/apps/packageUpload";
         }
-        
+
         try {
             if (packageXpdl == null || packageXpdl.isEmpty()) {
                 throw new RuntimeException("Package XPDL is empty");
@@ -1844,7 +1835,7 @@ public class ConsoleWebController {
 
         //remove route
         @SuppressWarnings("rawtypes")
-		Iterator iterator = activityList.iterator();
+        Iterator iterator = activityList.iterator();
         while (iterator.hasNext()) {
             WorkflowActivity activity = (WorkflowActivity) iterator.next();
             if (activity.getType().equals(WorkflowActivity.TYPE_ROUTE)) {
@@ -2049,7 +2040,7 @@ public class ConsoleWebController {
         jsonObject.accumulate("auto", autoContinue);
         AppUtil.writeJson(writer, jsonObject, callback);
     }
-    
+
     @RequestMapping(value = "/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/activity/(*:activityDefId)/draft", method = RequestMethod.POST)
     public void consoleActivitySaveAsDraftSubmit(Writer writer, @RequestParam(value = "callback", required = false) String callback, @RequestParam("appId") String appId, @RequestParam(required = false) String version, @RequestParam String processDefId, @RequestParam String activityDefId, @RequestParam String disable) throws JSONException, IOException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
@@ -2116,8 +2107,8 @@ public class ConsoleWebController {
         return "console/apps/activityFormRemoveSuccess";
     }
 
-	@SuppressWarnings("deprecation")
-	@RequestMapping("/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/activity/(*:activityDefId)/plugin/configure")
+    @SuppressWarnings("deprecation")
+    @RequestMapping("/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/activity/(*:activityDefId)/plugin/configure")
     public String consoleActivityPluginConfigure(ModelMap map, HttpServletRequest request, @RequestParam("appId") String appId, @RequestParam(required = false) String version, @RequestParam String processDefId, @RequestParam String activityDefId) throws IOException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
         PackageDefinition packageDef = appDef.getPackageDefinition();
@@ -2130,7 +2121,7 @@ public class ConsoleWebController {
             if (activityPlugin.getPluginProperties() != null && activityPlugin.getPluginProperties().trim().length() > 0) {
                 if (!(plugin instanceof PropertyEditable)) {
                     @SuppressWarnings("rawtypes")
-					Map propertyMap = new HashMap();
+                    Map propertyMap = new HashMap();
                     propertyMap = CsvUtil.getPluginPropertyMap(activityPlugin.getPluginProperties());
                     map.addAttribute("propertyMap", propertyMap);
                 } else {
@@ -2143,8 +2134,8 @@ public class ConsoleWebController {
 
                 if (pluginDefaultProperties != null) {
                     if (!(plugin instanceof PropertyEditable)) {
-                        @SuppressWarnings({ "rawtypes" })
-						Map defaultPropertyMap = new HashMap();
+                        @SuppressWarnings({"rawtypes"})
+                        Map defaultPropertyMap = new HashMap();
 
                         String properties = pluginDefaultProperties.getPluginProperties();
                         if (properties != null && properties.trim().length() > 0) {
@@ -2179,8 +2170,8 @@ public class ConsoleWebController {
         if (activityPlugin != null) {
             if (pluginProperties == null) {
                 //request params
-                @SuppressWarnings({ "unchecked", "rawtypes" })
-				Map<String, String> propertyMap = new HashMap();
+                @SuppressWarnings({"unchecked", "rawtypes"})
+                Map<String, String> propertyMap = new HashMap();
                 Enumeration<String> e = request.getParameterNames();
                 while (e.hasMoreElements()) {
                     String paramName = e.nextElement();
@@ -2196,10 +2187,10 @@ public class ConsoleWebController {
                 try {
                     CSVWriter writer = new CSVWriter(sw);
                     @SuppressWarnings("rawtypes")
-					Iterator it = propertyMap.entrySet().iterator();
+                    Iterator it = propertyMap.entrySet().iterator();
                     while (it.hasNext()) {
-                        @SuppressWarnings({ "unchecked", "rawtypes" })
-						Map.Entry<String, String> pairs = (Map.Entry) it.next();
+                        @SuppressWarnings({"unchecked", "rawtypes"})
+                        Map.Entry<String, String> pairs = (Map.Entry) it.next();
                         writer.writeNext(new String[]{pairs.getKey(), pairs.getValue()});
                     }
                     writer.close();
@@ -2245,7 +2236,7 @@ public class ConsoleWebController {
 
         //remove route & tool
         @SuppressWarnings("rawtypes")
-		Iterator iterator = activityList.iterator();
+        Iterator iterator = activityList.iterator();
         while (iterator.hasNext()) {
             WorkflowActivity activity = (WorkflowActivity) iterator.next();
             if ((activity.getType().equals(WorkflowActivity.TYPE_ROUTE)) || (activity.getType().equals(WorkflowActivity.TYPE_TOOL))) {
@@ -2269,7 +2260,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/console/app/(*:param_appId)/(~:param_version)/processes/(*:param_processDefId)/participant/(*:param_participantId)/submit/(*:param_type)", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/app/(*:param_appId)/(~:param_version)/processes/(*:param_processDefId)/participant/(*:param_participantId)/submit/(*:param_type)", method = RequestMethod.POST)
     public String consoleParticipantSubmit(
             ModelMap map,
             HttpServletRequest request,
@@ -2291,8 +2282,8 @@ public class ConsoleWebController {
         if (PackageParticipant.TYPE_PLUGIN.equals(type)) {
             if (pluginProperties == null) {
                 //request params
-                @SuppressWarnings({ "rawtypes" })
-				Map<String, String> propertyMap = new HashMap();
+                @SuppressWarnings({"rawtypes"})
+                Map<String, String> propertyMap = new HashMap();
                 Enumeration<String> e = request.getParameterNames();
                 while (e.hasMoreElements()) {
                     String paramName = e.nextElement();
@@ -2308,10 +2299,10 @@ public class ConsoleWebController {
                 try {
                     CSVWriter writer = new CSVWriter(sw);
                     @SuppressWarnings("rawtypes")
-					Iterator it = propertyMap.entrySet().iterator();
+                    Iterator it = propertyMap.entrySet().iterator();
                     while (it.hasNext()) {
-                        @SuppressWarnings({ "rawtypes" })
-						Map.Entry<String, String> pairs = (Map.Entry) it.next();
+                        @SuppressWarnings({"rawtypes"})
+                        Map.Entry<String, String> pairs = (Map.Entry) it.next();
                         writer.writeNext(new String[]{pairs.getKey(), pairs.getValue()});
                     }
                     writer.close();
@@ -2326,21 +2317,21 @@ public class ConsoleWebController {
                 if (participantExisting != null && PackageParticipant.TYPE_PLUGIN.equals(participantExisting.getType())) {
                     oldJson = participantExisting.getPluginProperties();
                 }
-                
+
                 participant.setPluginProperties(PropertyUtil.propertiesJsonStoreProcessing(oldJson, pluginProperties));
             }
         } else if ((PackageParticipant.TYPE_GROUP.equals(type) || PackageParticipant.TYPE_USER.equals(type)) && packageDef != null) {
             //Using Set to prevent duplicate value
             @SuppressWarnings("rawtypes")
-			Set values = new HashSet();
+            Set values = new HashSet();
             StringTokenizer valueToken = new StringTokenizer(value, ",");
             while (valueToken.hasMoreTokens()) {
                 values.add((String) valueToken.nextElement());
             }
-            
+
             PackageParticipant participantExisting = packageDef.getPackageParticipant(processDefId, participantId);
             if (participantExisting != null && participantExisting.getValue() != null) {
-                
+
                 StringTokenizer existingValueToken = (type.equals(participantExisting.getType())) ? new StringTokenizer(participantExisting.getValue().replaceAll(";", ","), ",") : null;
                 while (existingValueToken != null && existingValueToken.hasMoreTokens()) {
                     values.add((String) existingValueToken.nextElement());
@@ -2350,7 +2341,7 @@ public class ConsoleWebController {
             //Convert Set to String
             value = "";
             @SuppressWarnings("rawtypes")
-			Iterator i = values.iterator();
+            Iterator i = values.iterator();
             while (i.hasNext()) {
                 value += i.next().toString() + ',';
             }
@@ -2377,7 +2368,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("deprecation")
-	@RequestMapping("/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/participant/(*:participantId)/plugin/configure")
+    @RequestMapping("/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/participant/(*:participantId)/plugin/configure")
     public String consoleParticipantPluginConfigure(
             ModelMap map,
             HttpServletRequest request,
@@ -2395,20 +2386,18 @@ public class ConsoleWebController {
 
         if (value != null && value.trim().length() > 0) {
             plugin = pluginManager.getPlugin(value);
-        } else {
-            if (packageDef != null) {
-                PackageParticipant participant = packageDef.getPackageParticipant(processDefId, participantId);
-                plugin = pluginManager.getPlugin(participant.getValue());
+        } else if (packageDef != null) {
+            PackageParticipant participant = packageDef.getPackageParticipant(processDefId, participantId);
+            plugin = pluginManager.getPlugin(participant.getValue());
 
-                if (participant.getPluginProperties() != null && participant.getPluginProperties().trim().length() > 0) {
-                    if (!(plugin instanceof PropertyEditable)) {
-                        @SuppressWarnings("rawtypes")
-						Map propertyMap = new HashMap();
-                        propertyMap = CsvUtil.getPluginPropertyMap(participant.getPluginProperties());
-                        map.addAttribute("propertyMap", propertyMap);
-                    } else {
-                        map.addAttribute("properties", PropertyUtil.propertiesJsonLoadProcessing(participant.getPluginProperties()));
-                    }
+            if (participant.getPluginProperties() != null && participant.getPluginProperties().trim().length() > 0) {
+                if (!(plugin instanceof PropertyEditable)) {
+                    @SuppressWarnings("rawtypes")
+                    Map propertyMap = new HashMap();
+                    propertyMap = CsvUtil.getPluginPropertyMap(participant.getPluginProperties());
+                    map.addAttribute("propertyMap", propertyMap);
+                } else {
+                    map.addAttribute("properties", PropertyUtil.propertiesJsonLoadProcessing(participant.getPluginProperties()));
                 }
             }
         }
@@ -2419,7 +2408,7 @@ public class ConsoleWebController {
             if (pluginDefaultProperties != null) {
                 if (!(plugin instanceof PropertyEditable)) {
                     @SuppressWarnings("rawtypes")
-					Map defaultPropertyMap = new HashMap();
+                    Map defaultPropertyMap = new HashMap();
 
                     String properties = pluginDefaultProperties.getPluginProperties();
                     if (properties != null && properties.trim().length() > 0) {
@@ -2444,7 +2433,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/participant/(*:participantId)/remove", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/app/(*:appId)/(~:version)/processes/(*:processDefId)/participant/(*:participantId)/remove", method = RequestMethod.POST)
     @Transactional
     public String consoleParticipantRemove(ModelMap map,
             @RequestParam String appId,
@@ -2463,7 +2452,7 @@ public class ConsoleWebController {
             if (participantExisting != null && participantExisting.getValue() != null) {
                 //Using Set to prevent duplicate value
                 @SuppressWarnings("rawtypes")
-				Set values = new HashSet();
+                Set values = new HashSet();
                 StringTokenizer existingValueToken = new StringTokenizer(participantExisting.getValue().replaceAll(";", ","), ",");
                 while (existingValueToken.hasMoreTokens()) {
                     String temp = (String) existingValueToken.nextElement();
@@ -2475,7 +2464,7 @@ public class ConsoleWebController {
                 //Convert Set to String
                 String result = "";
                 @SuppressWarnings("rawtypes")
-				Iterator i = values.iterator();
+                Iterator i = values.iterator();
                 while (i.hasNext()) {
                     result += i.next().toString() + ',';
                 }
@@ -2516,10 +2505,10 @@ public class ConsoleWebController {
 
         DatalistDefinition datalistDefinition = new DatalistDefinition();
         map.addAttribute("datalistDefinition", datalistDefinition);
-        
+
         Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
         map.addAttribute("appList", appDefinitionList);
-        
+
         return "console/apps/datalistCreate";
     }
 
@@ -2530,7 +2519,7 @@ public class ConsoleWebController {
             AppDefinition copyAppDef = appService.getAppDefinition(copyAppId, null);
             copy = datalistDefinitionDao.loadById(copyListId, copyAppDef);
         }
-        
+
         AppDefinition appDef = appService.getAppDefinition(appId, version);
         map.addAttribute("appId", appId);
         map.addAttribute("appVersion", appDef.getVersion());
@@ -2565,7 +2554,7 @@ public class ConsoleWebController {
         if (invalid) {
             Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
             map.addAttribute("appList", appDefinitionList);
-        
+
             return "console/apps/datalistCreate";
         } else {
             return "console/apps/datalistSaved";
@@ -2573,7 +2562,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/datalist/list")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/datalist/list")
     public void consoleDatalistListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "filter", required = false) String filterString, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
 
@@ -2589,7 +2578,7 @@ public class ConsoleWebController {
         if (datalistDefinitionList != null && datalistDefinitionList.size() > 0) {
             for (DatalistDefinition datalistDefinition : datalistDefinitionList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("id", datalistDefinition.getId());
                 data.put("name", datalistDefinition.getName());
                 data.put("description", datalistDefinition.getDescription());
@@ -2619,7 +2608,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/datalist/options")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/datalist/options")
     public void consoleDatalistOptionsJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
         Collection<DatalistDefinition> datalistDefinitionList = null;
@@ -2634,13 +2623,13 @@ public class ConsoleWebController {
 
         JSONArray jsonArray = new JSONArray();
         @SuppressWarnings("rawtypes")
-		Map blank = new HashMap();
+        Map blank = new HashMap();
         blank.put("value", "");
         blank.put("label", "");
         jsonArray.put(blank);
         for (DatalistDefinition datalistDef : datalistDefinitionList) {
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("value", datalistDef.getId());
             data.put("label", datalistDef.getName());
             jsonArray.put(data);
@@ -2672,10 +2661,10 @@ public class ConsoleWebController {
 
         UserviewDefinition userviewDefinition = new UserviewDefinition();
         map.addAttribute("userviewDefinition", userviewDefinition);
-        
+
         Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
         map.addAttribute("appList", appDefinitionList);
-        
+
         return "console/apps/userviewCreate";
     }
 
@@ -2686,7 +2675,7 @@ public class ConsoleWebController {
             AppDefinition copyAppDef = appService.getAppDefinition(copyAppId, null);
             copy = userviewDefinitionDao.loadById(copyUserviewId, copyAppDef);
         }
-        
+
         AppDefinition appDef = appService.getAppDefinition(appId, version);
         map.addAttribute("appId", appId);
         map.addAttribute("appVersion", appDef.getVersion());
@@ -2721,7 +2710,7 @@ public class ConsoleWebController {
         if (invalid) {
             Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
             map.addAttribute("appList", appDefinitionList);
-        
+
             return "console/apps/userviewCreate";
         } else {
             return "console/apps/userviewSaved";
@@ -2729,7 +2718,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/userview/list")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/userview/list")
     public void consoleUserviewListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "filter", required = false) String filterString, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
 
@@ -2745,7 +2734,7 @@ public class ConsoleWebController {
         if (userviewDefinitionList != null && userviewDefinitionList.size() > 0) {
             for (UserviewDefinition userviewDefinition : userviewDefinitionList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("id", userviewDefinition.getId());
                 data.put("name", userviewDefinition.getName());
                 data.put("description", userviewDefinition.getDescription());
@@ -2773,9 +2762,9 @@ public class ConsoleWebController {
         }
         return "console/dialogClose";
     }
-    
+
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/userview/options")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/userview/options")
     public void consoleUserviewOptionsJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
         Collection<UserviewDefinition> userviewDefinitionList = null;
@@ -2790,13 +2779,13 @@ public class ConsoleWebController {
 
         JSONArray jsonArray = new JSONArray();
         @SuppressWarnings("rawtypes")
-		Map blank = new HashMap();
+        Map blank = new HashMap();
         blank.put("value", "");
         blank.put("label", "");
         jsonArray.put(blank);
         for (UserviewDefinition userviewDef : userviewDefinitionList) {
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("value", userviewDef.getId());
             data.put("label", userviewDef.getName());
             jsonArray.put(data);
@@ -2905,7 +2894,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/message/list")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/message/list")
     public void consoleMessageListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "filter", required = false) String filterString, @RequestParam(value = "locale", required = false) String locale, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
 
@@ -2925,7 +2914,7 @@ public class ConsoleWebController {
         if (messageList != null && messageList.size() > 0) {
             for (Message message : messageList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("id", message.getId());
                 data.put("messageKey", message.getMessageKey());
                 data.put("locale", message.getLocale());
@@ -2978,7 +2967,7 @@ public class ConsoleWebController {
             }
             // validate locale input
             SecurityUtil.validateStringInput(locale);
-            
+
             // determine output filename
             String filename = appDef.getId() + "_" + appDef.getVersion() + "_" + locale + ".po";
 
@@ -3010,17 +2999,17 @@ public class ConsoleWebController {
     @RequestMapping(value = "/console/app/(*:appId)/(~:version)/message/importpo/submit", method = RequestMethod.POST)
     public String consoleAppMessageInportPOUpload(ModelMap map, @RequestParam String appId, @RequestParam(required = false) String version) throws Exception {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
-        
+
         Setting setting = SetupManager.getSettingByProperty("systemLocale");
         String systemLocale = (setting != null) ? setting.getValue() : null;
         if (systemLocale == null || systemLocale.equalsIgnoreCase("")) {
             systemLocale = "en_US";
         }
-        
+
         String errorMsg = null;
-        
+
         MultipartFile multiPartfile = null;
-        
+
         try {
             multiPartfile = FileStore.getFile("localeFile");
         } catch (FileLimitException e) {
@@ -3034,7 +3023,7 @@ public class ConsoleWebController {
                 errorMsg = ResourceBundleUtil.getMessage("console.app.message.import.po.error.invalidPoFile");
             }
         }
-        
+
         if (errorMsg != null) {
             map.addAttribute("appId", appDef.getId());
             map.addAttribute("appVersion", appDef.getVersion());
@@ -3043,7 +3032,7 @@ public class ConsoleWebController {
 
             return "console/apps/messageImportPO";
         }
-        
+
         String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
         String url = contextPath + "/web/console/app/" + appDef.getId() + "/" + appDef.getVersion() + "/properties?tab=message";
         map.addAttribute("url", url);
@@ -3125,7 +3114,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/envVariable/list")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/envVariable/list")
     public void consoleEnvVariableListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "filter", required = false) String filterString, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
 
@@ -3141,7 +3130,7 @@ public class ConsoleWebController {
         if (environmentVariableList != null && environmentVariableList.size() > 0) {
             for (EnvironmentVariable environmentVariable : environmentVariableList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("id", environmentVariable.getId());
                 data.put("value", environmentVariable.getValue());
                 data.put("remarks", environmentVariable.getRemarks());
@@ -3181,7 +3170,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("deprecation")
-	@RequestMapping("/console/app/(*:appId)/(~:version)/pluginDefault/config")
+    @RequestMapping("/console/app/(*:appId)/(~:version)/pluginDefault/config")
     public String consoleAppPluginDefaultConfig(ModelMap map, HttpServletRequest request, @RequestParam String appId, @RequestParam(required = false) String version, @RequestParam("id") String id, @RequestParam(required = false) String action) throws UnsupportedEncodingException, IOException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
         map.addAttribute("appId", appDef.getId());
@@ -3191,11 +3180,11 @@ public class ConsoleWebController {
         Plugin plugin = pluginManager.getPlugin(id);
 
         PluginDefaultProperties pluginDefaultProperties = pluginDefaultPropertiesDao.loadById(id, appDef);
-        
+
         if (pluginDefaultProperties != null && pluginDefaultProperties.getPluginProperties() != null && pluginDefaultProperties.getPluginProperties().trim().length() > 0) {
             if (!(plugin instanceof PropertyEditable)) {
                 @SuppressWarnings("rawtypes")
-				Map propertyMap = new HashMap();
+                Map propertyMap = new HashMap();
                 propertyMap = CsvUtil.getPluginPropertyMap(pluginDefaultProperties.getPluginProperties());
                 map.addAttribute("propertyMap", propertyMap);
             } else {
@@ -3248,8 +3237,8 @@ public class ConsoleWebController {
 
         if (pluginProperties == null) {
             //request params
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-			Map<String, String> propertyMap = new HashMap();
+            @SuppressWarnings({"rawtypes", "unchecked"})
+            Map<String, String> propertyMap = new HashMap();
             Enumeration<String> e = request.getParameterNames();
             while (e.hasMoreElements()) {
                 String paramName = e.nextElement();
@@ -3265,10 +3254,10 @@ public class ConsoleWebController {
             try {
                 CSVWriter writer = new CSVWriter(sw);
                 @SuppressWarnings("rawtypes")
-				Iterator it = propertyMap.entrySet().iterator();
+                Iterator it = propertyMap.entrySet().iterator();
                 while (it.hasNext()) {
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
-					Map.Entry<String, String> pairs = (Map.Entry) it.next();
+                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    Map.Entry<String, String> pairs = (Map.Entry) it.next();
                     writer.writeNext(new String[]{pairs.getKey(), pairs.getValue()});
                 }
                 writer.close();
@@ -3293,7 +3282,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/pluginDefault/list")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/pluginDefault/list")
     public void consolePluginDefaultListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "filter", required = false) String filterString, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
 
@@ -3309,7 +3298,7 @@ public class ConsoleWebController {
         if (pluginDefaultPropertiesList != null && pluginDefaultPropertiesList.size() > 0) {
             for (PluginDefaultProperties pluginDefaultProperties : pluginDefaultPropertiesList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("id", pluginDefaultProperties.getId());
                 Plugin p = pluginManager.getPlugin(pluginDefaultProperties.getId());
                 data.put("pluginName", p.getI18nLabel());
@@ -3361,7 +3350,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/forms")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/forms")
     public void consoleFormListJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
         Collection<FormDefinition> formDefinitionList = null;
@@ -3374,7 +3363,7 @@ public class ConsoleWebController {
         JSONObject jsonObject = new JSONObject();
         for (FormDefinition formDef : formDefinitionList) {
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("id", formDef.getId());
             data.put("name", formDef.getName());
             data.put("tableName", formDef.getTableName());
@@ -3392,7 +3381,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/app/(*:appId)/(~:version)/forms/options")
+    @RequestMapping("/json/console/app/(*:appId)/(~:version)/forms/options")
     public void consoleFormOptionsJson(Writer writer, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
         Collection<FormDefinition> formDefinitionList = null;
@@ -3407,13 +3396,13 @@ public class ConsoleWebController {
 
         JSONArray jsonArray = new JSONArray();
         @SuppressWarnings("rawtypes")
-		Map blank = new HashMap();
+        Map blank = new HashMap();
         blank.put("value", "");
         blank.put("label", "");
         jsonArray.put(blank);
         for (FormDefinition formDef : formDefinitionList) {
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("value", formDef.getId());
             data.put("label", formDef.getName());
             jsonArray.put(data);
@@ -3430,10 +3419,10 @@ public class ConsoleWebController {
         model.addAttribute("formDefinition", new FormDefinition());
         model.addAttribute("activityDefId", activityDefId);
         model.addAttribute("processDefId", processDefId);
-        
+
         Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
         model.addAttribute("appList", appDefinitionList);
-        
+
         return "console/apps/formCreate";
     }
 
@@ -3486,7 +3475,7 @@ public class ConsoleWebController {
         if (invalid) {
             Collection<AppDefinition> appDefinitionList = appService.getUnprotectedAppList();
             model.addAttribute("appList", appDefinitionList);
-        
+
             return "console/apps/formCreate";
         } else {
             if (activityDefId != null && activityDefId.trim().length() > 0 && processDefId != null && processDefId.trim().length() > 0) {
@@ -3516,7 +3505,7 @@ public class ConsoleWebController {
         String result = checkVersionExist(map, appId, version);
         if (result != null) {
             return result;
-        }        
+        }
         AppDefinition appDef = appService.getAppDefinition(appId, version);
 
         // load existing form definition and update fields
@@ -3593,23 +3582,23 @@ public class ConsoleWebController {
 
         String masterLoginUsername = SetupManager.getSettingValue("masterLoginUsername");
         String masterLoginPassword = SetupManager.getSettingValue("masterLoginPassword");
-        
-        if ((masterLoginUsername != null && masterLoginUsername.trim().length() > 0) &&
-                (masterLoginPassword != null && masterLoginPassword.length() > 0)) {
-        	//decryt masterLoginPassword
+
+        if ((masterLoginUsername != null && masterLoginUsername.trim().length() > 0)
+                && (masterLoginPassword != null && masterLoginPassword.length() > 0)) {
+            //decryt masterLoginPassword
             masterLoginPassword = SecurityUtil.decrypt(masterLoginPassword);
-            
-        	User master = new User();
+
+            User master = new User();
             master.setUsername(masterLoginUsername.trim());
             master.setPassword(StringUtil.md5Base16(masterLoginPassword));
-            
-        	settingMap.put(SetupManager.MASTER_LOGIN_HASH, master.getLoginHash().toUpperCase());
+
+            settingMap.put(SetupManager.MASTER_LOGIN_HASH, master.getLoginHash().toUpperCase());
         }
 
         Locale[] localeList = Locale.getAvailableLocales();
         Map<String, String> localeStringList = new TreeMap<String, String>();
         for (int x = 0; x < localeList.length; x++) {
-            localeStringList.put(localeList[x].toString(), localeList[x].toString() + " - " +localeList[x].getDisplayName(LocaleContextHolder.getLocale()));
+            localeStringList.put(localeList[x].toString(), localeList[x].toString() + " - " + localeList[x].getDisplayName(LocaleContextHolder.getLocale()));
         }
 
         map.addAttribute("serverTZ", TimeZoneUtil.getServerTimeZoneID());
@@ -3620,7 +3609,7 @@ public class ConsoleWebController {
         // additional UserSecurity settings
         UserSecurity us = DirectoryUtil.getUserSecurity();
         map.addAttribute("userSecurity", us);
-        
+
         return "console/setting/general";
     }
 
@@ -3630,11 +3619,11 @@ public class ConsoleWebController {
             password = SetupManager.getSettingValue(SetupManager.MASTER_LOGIN_PASSWORD);
             password = SecurityUtil.decrypt(password);
         }
-        
+
         User user = userDao.getUser(username);
         //user.setUsername(username);
         //user.setPassword(StringUtil.md5Base16(password));
-        
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.accumulate("hash", user != null ? user.getLoginHash() : "");
 
@@ -3643,8 +3632,8 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/setting/general/submit", method = RequestMethod.POST)
     public String consoleSettingGeneralSubmit(HttpServletRequest request, ModelMap map) throws Exception {
-    	String currentUsername = WorkflowUtil.getCurrentUsername();
-    	List<String> settingsIsNotNull = new ArrayList<String>();
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        List<String> settingsIsNotNull = new ArrayList<String>();
 
         List<String> booleanSettingsList = new ArrayList<String>();
         booleanSettingsList.add("deleteProcessOnCompletion");
@@ -3659,7 +3648,7 @@ public class ConsoleWebController {
 
         //request params
         @SuppressWarnings("rawtypes")
-		Enumeration e = request.getParameterNames();
+        Enumeration e = request.getParameterNames();
         while (e.hasMoreElements()) {
             String paramName = (String) e.nextElement();
             String paramValue = request.getParameter(paramName);
@@ -3677,16 +3666,16 @@ public class ConsoleWebController {
             } else {
                 setting.setValue(paramValue);
             }
-            
+
             if (SetupManager.MASTER_LOGIN_PASSWORD.equals(paramName)) {
                 if (SetupManager.SECURE_VALUE.equals(paramValue)) {
-                	String currentMasterLoginPassword = SetupManager.getSettingValueFromDb(SetupManager.MASTER_LOGIN_PASSWORD);
+                    String currentMasterLoginPassword = SetupManager.getSettingValueFromDb(SetupManager.MASTER_LOGIN_PASSWORD);
                     setting.setValue(currentMasterLoginPassword);
                 } else {
                     setting.setValue(SecurityUtil.encrypt(paramValue));
                 }
             }
-            
+
             if (HostManager.isVirtualHostEnabled() && ("dataFileBasePath".equals(paramName) || "designerwebBaseUrl".equals(paramName))) {
                 setting.setValue("");
             }
@@ -3712,12 +3701,12 @@ public class ConsoleWebController {
         pluginManager.refresh();
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
-        
+
         kecakRouteManager.stopContext();
         Thread.sleep(3000);
-        
+
         kecakRouteManager.startContext();
-        
+
         return "redirect:/web/console/setting/general";
     }
 
@@ -3755,22 +3744,22 @@ public class ConsoleWebController {
             SecurityUtil.validateStringInput(profileName);
             //get 
             String secureValue = DynamicDataSourceManager.getProperty(DynamicDataSourceManager.SECURE_FIELD);
-            
+
             DynamicDataSourceManager.createProfile(profileName);
             DynamicDataSourceManager.changeProfile(profileName);
 
             //request params
             @SuppressWarnings("rawtypes")
-			Enumeration e = request.getParameterNames();
+            Enumeration e = request.getParameterNames();
             while (e.hasMoreElements()) {
                 String paramName = (String) e.nextElement();
                 if (!paramName.equals("profileName")) {
                     String paramValue = request.getParameter(paramName);
-                    
+
                     if (DynamicDataSourceManager.SECURE_FIELD.equals(paramName) && DynamicDataSourceManager.SECURE_VALUE.equals(paramValue)) {
                         paramValue = secureValue;
                     }
-                    
+
                     DynamicDataSourceManager.writeProperty(paramName, paramValue);
                 }
             }
@@ -3789,16 +3778,16 @@ public class ConsoleWebController {
     public String consoleSetupDatasourceSubmit(HttpServletRequest request, ModelMap map) {
         //request params
         @SuppressWarnings("rawtypes")
-		Enumeration e = request.getParameterNames();
+        Enumeration e = request.getParameterNames();
         while (e.hasMoreElements()) {
             String paramName = (String) e.nextElement();
             if (!paramName.equals("profileName")) {
                 String paramValue = request.getParameter(paramName);
-                
+
                 if (DynamicDataSourceManager.SECURE_FIELD.equals(paramName) && DynamicDataSourceManager.SECURE_VALUE.equals(paramValue)) {
                     paramValue = DynamicDataSourceManager.getProperty(DynamicDataSourceManager.SECURE_FIELD);
                 }
-                
+
                 DynamicDataSourceManager.writeProperty(paramName, paramValue);
             }
         }
@@ -3818,7 +3807,7 @@ public class ConsoleWebController {
         //get directory manager plugin list
         Collection<Plugin> pluginList = pluginManager.list();
         @SuppressWarnings("rawtypes")
-		Iterator i = pluginList.iterator();
+        Iterator i = pluginList.iterator();
         while (i.hasNext()) {
             Plugin plugin = (Plugin) i.next();
             if (!(plugin instanceof DirectoryManagerPlugin)) {
@@ -3831,7 +3820,7 @@ public class ConsoleWebController {
         } else if (settingMap.get("directoryManagerImpl") != null) {
             className = settingMap.get("directoryManagerImpl");
         }
-        
+
         if (className != null && !className.isEmpty()) {
             Plugin plugin = pluginManager.getPlugin(className);
             if (plugin != null) {
@@ -3852,10 +3841,10 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("deprecation")
-	@RequestMapping("/console/setting/directoryManagerImpl/config")
+    @RequestMapping("/console/setting/directoryManagerImpl/config")
     public String consoleSettingDirectoryManagerImplConfig(ModelMap map, @RequestParam("directoryManagerImpl") String directoryManagerImpl, HttpServletRequest request) throws IOException {
         Plugin plugin = pluginManager.getPlugin(directoryManagerImpl);
-        
+
         if (plugin != null) {
             String properties = "";
             if (directoryManagerImpl != null && directoryManagerImpl.equals(DirectoryUtil.getOverriddenDirectoryManagerClassName())) {
@@ -3866,7 +3855,7 @@ public class ConsoleWebController {
 
             if (!(plugin instanceof PropertyEditable)) {
                 @SuppressWarnings("rawtypes")
-				Map propertyMap = new HashMap();
+                Map propertyMap = new HashMap();
                 propertyMap = CsvUtil.getPluginPropertyMap(properties);
                 map.addAttribute("propertyMap", propertyMap);
             } else {
@@ -3881,7 +3870,7 @@ public class ConsoleWebController {
 
             String url = request.getContextPath() + "/web/console/setting/directoryManagerImpl/config/submit?id=" + directoryManagerImpl;
             map.addAttribute("actionUrl", url);
-            
+
             return "console/plugin/pluginConfig";
         } else {
             return "error404";
@@ -3891,8 +3880,8 @@ public class ConsoleWebController {
     @RequestMapping(value = "/console/setting/directoryManagerImpl/config/submit", method = RequestMethod.POST)
     public String consoleSettingDirectoryManagerImplConfigSubmit(ModelMap map, @RequestParam("id") String id, @RequestParam(value = "pluginProperties", required = false) String pluginProperties, HttpServletRequest request) {
         String currentUsername = WorkflowUtil.getCurrentUsername();
-    	@SuppressWarnings("unused")
-		Plugin plugin = (Plugin) pluginManager.getPlugin(id);
+        @SuppressWarnings("unused")
+        Plugin plugin = (Plugin) pluginManager.getPlugin(id);
 
         String settingName = "";
         if (id != null && id.equals(DirectoryUtil.getOverriddenDirectoryManagerClassName())) {
@@ -3900,7 +3889,7 @@ public class ConsoleWebController {
         } else {
             settingName = DirectoryUtil.IMPL_PROPERTIES;
         }
-        
+
         //save plugin
         Setting setting = SetupManager.getSettingByProperty("directoryManagerImpl");
         if (setting == null) {
@@ -3920,8 +3909,8 @@ public class ConsoleWebController {
 
         if (pluginProperties == null) {
             //request params
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-			Map<String, String> propertyMap = new HashMap();
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            Map<String, String> propertyMap = new HashMap();
             Enumeration<String> e = request.getParameterNames();
             while (e.hasMoreElements()) {
                 String paramName = e.nextElement();
@@ -3937,10 +3926,10 @@ public class ConsoleWebController {
             try {
                 CSVWriter writer = new CSVWriter(sw);
                 @SuppressWarnings("rawtypes")
-				Iterator it = propertyMap.entrySet().iterator();
+                Iterator it = propertyMap.entrySet().iterator();
                 while (it.hasNext()) {
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
-					Map.Entry<String, String> pairs = (Map.Entry) it.next();
+                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    Map.Entry<String, String> pairs = (Map.Entry) it.next();
                     writer.writeNext(new String[]{pairs.getKey(), pairs.getValue()});
                 }
                 writer.close();
@@ -3982,7 +3971,7 @@ public class ConsoleWebController {
     @RequestMapping(value = "/console/setting/plugin/upload/submit", method = RequestMethod.POST)
     public String consoleSettingPluginUploadSubmit(ModelMap map, HttpServletRequest request) throws IOException {
         MultipartFile pluginFile;
-        
+
         try {
             pluginFile = FileStore.getFile("pluginFile");
         } catch (FileLimitException e) {
@@ -4085,7 +4074,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/setting/message/list")
+    @RequestMapping("/json/console/setting/message/list")
     public void consoleSettingMessageListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "filter", required = false) String filterString, @RequestParam(value = "locale", required = false) String locale, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
         String condition = "";
@@ -4116,7 +4105,7 @@ public class ConsoleWebController {
         if (messageList != null && messageList.size() > 0) {
             for (ResourceBundleMessage message : messageList) {
                 @SuppressWarnings("rawtypes")
-				Map data = new HashMap();
+                Map data = new HashMap();
                 data.put("id", message.getId());
                 data.put("key", message.getKey());
                 data.put("locale", message.getLocale());
@@ -4157,10 +4146,10 @@ public class ConsoleWebController {
         if (systemLocale == null || systemLocale.equalsIgnoreCase("")) {
             systemLocale = "en_US";
         }
-        
+
         String errorMsg = null;
         MultipartFile multiPartfile = null;
-        
+
         try {
             multiPartfile = FileStore.getFile("localeFile");
         } catch (FileLimitException e) {
@@ -4174,13 +4163,13 @@ public class ConsoleWebController {
                 errorMsg = ResourceBundleUtil.getMessage("console.setting.message.import.error.invalidPoFile");
             }
         }
-        
+
         if (errorMsg != null) {
             map.addAttribute("errorMessage", errorMsg);
             map.addAttribute("localeList", getSortedLocalList());
             return "console/setting/messageImport";
         }
-        
+
         String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
         String url = contextPath + "/web/console/setting/message";
         map.addAttribute("url", url);
@@ -4189,23 +4178,23 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/setting/eaContent")
     public String consoleSettingEmailApprovalContent(ModelMap map) {
-    	return "console/setting/eaContent";
+        return "console/setting/eaContent";
     }
-    
+
     @RequestMapping("/console/setting/eaContent/create")
     public String consoleSettingEmailApprovalContentCreate(ModelMap map) {
-    	EmailApprovalContent eaContent = new EmailApprovalContent();
+        EmailApprovalContent eaContent = new EmailApprovalContent();
         map.addAttribute("eaContent", eaContent);
         return "console/setting/eaContentCreate";
     }
-    
+
     @RequestMapping("/console/setting/eaContent/edit/(*:id)")
     public String consoleSettingEmailApprovalContentEdit(ModelMap map, @RequestParam("id") String id) {
-    	EmailApprovalContent eaContent = eaContentDao.getEmailApprovalContentById(id);
+        EmailApprovalContent eaContent = eaContentDao.getEmailApprovalContentById(id);
         map.addAttribute("eaContent", eaContent);
         return "console/setting/eaContentEdit";
     }
-    
+
     @RequestMapping(value = "/console/setting/eaContent/delete", method = RequestMethod.POST)
     public String consoleSettingEmailApprovalContentDelete(@RequestParam(value = "ids") String ids) {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
@@ -4216,14 +4205,14 @@ public class ConsoleWebController {
         }
         return "console/dialogClose";
     }
-    
-	@RequestMapping("/json/console/setting/eaContent/list")
-    public void consoleSettingEmailApprovalContentListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
-    		@RequestParam(value = "processId", required = false) String processId, @RequestParam(value = "sort", required = false) String sort, 
-    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
-    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
-		String condition = "";
+    @RequestMapping("/json/console/setting/eaContent/list")
+    public void consoleSettingEmailApprovalContentListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback,
+            @RequestParam(value = "processId", required = false) String processId, @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+        String condition = "";
         List<String> param = new ArrayList<String>();
 
         if (processId != null && processId.trim().length() != 0) {
@@ -4239,21 +4228,21 @@ public class ConsoleWebController {
             condition = "WHERE " + condition;
         }
 
-        List<EmailApprovalContent> emailApprovalContentList = eaContentDao.getEmailApprovalContents(condition, param.toArray(new String[param.size()]), 
-        		sort, desc, start, rows);
-        
+        List<EmailApprovalContent> emailApprovalContentList = eaContentDao.getEmailApprovalContents(condition, param.toArray(new String[param.size()]),
+                sort, desc, start, rows);
+
         Long count = eaContentDao.count(condition, param.toArray(new String[param.size()]));
-        
-    	JSONObject jsonObject = new JSONObject();
+
+        JSONObject jsonObject = new JSONObject();
         if (emailApprovalContentList != null && emailApprovalContentList.size() > 0) {
             for (EmailApprovalContent eaContent : emailApprovalContentList) {
-				Map<String, Object> data = new HashMap<String, Object>();
+                Map<String, Object> data = new HashMap<String, Object>();
                 data.put("id", eaContent.getId());
                 data.put("processId", eaContent.getProcessId());
                 data.put("activityId", eaContent.getActivityId());
                 data.put("content", eaContent.getContent());
-                data.put("createdate", eaContent.getDateCreated() == null ?"":eaContent.getDateCreated());
-                data.put("modifiedate", eaContent.getDateModified() == null ?"":eaContent.getDateModified());
+                data.put("createdate", eaContent.getDateCreated() == null ? "" : eaContent.getDateCreated());
+                data.put("modifiedate", eaContent.getDateModified() == null ? "" : eaContent.getDateModified());
                 jsonObject.accumulate("data", data);
             }
         }
@@ -4265,14 +4254,14 @@ public class ConsoleWebController {
 
         AppUtil.writeJson(writer, jsonObject, callback);
     }
-    
-	@RequestMapping(value = "/console/setting/eaContent/submit/(*:action)", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/setting/eaContent/submit/(*:action)", method = RequestMethod.POST)
     public String consoleSettingEmailApprovalContentSubmit(ModelMap map, @RequestParam("action") String action, @ModelAttribute("eaContent") EmailApprovalContent eaContent, BindingResult result) {
         // validation
         validator.validate(eaContent, result);
         Date now = new Date();
-    	String currUsername = workflowUserManager.getCurrentUsername();
-    	
+        String currUsername = workflowUserManager.getCurrentUsername();
+
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
@@ -4283,20 +4272,20 @@ public class ConsoleWebController {
                 if (eaContentDao.getEmailApprovalContent(eaContent.getProcessId(), eaContent.getActivityId()) != null) {
                     errors.add("console.app.message.error.label.exists");
                 } else {
-                	eaContent.setDateCreated(now);
-                	eaContent.setCreatedBy(currUsername);
-                	eaContent.setDateModified(now);
-                	eaContent.setModifiedBy(currUsername);
-                	
-                	eaContentDao.saveOrUpdate(eaContent);
+                    eaContent.setDateCreated(now);
+                    eaContent.setCreatedBy(currUsername);
+                    eaContent.setDateModified(now);
+                    eaContent.setModifiedBy(currUsername);
+
+                    eaContentDao.saveOrUpdate(eaContent);
                     invalid = false;
                 }
             } else {
                 EmailApprovalContent o = eaContentDao.getEmailApprovalContentById(eaContent.getId());
                 o.setContent(eaContent.getContent());
                 o.setDateModified(now);
-            	o.setModifiedBy(currUsername);
-            	
+                o.setModifiedBy(currUsername);
+
                 eaContentDao.saveOrUpdate(o);
                 invalid = false;
             }
@@ -4321,26 +4310,26 @@ public class ConsoleWebController {
             return "console/dialogClose";
         }
     }
-	
-	@RequestMapping("/console/setting/scheduler")
+
+    @RequestMapping("/console/setting/scheduler")
     public String consoleSettingSchedulerContent(ModelMap map) {
         return "console/setting/scheduler";
     }
-	
-	@RequestMapping("/console/setting/scheduler/create")
+
+    @RequestMapping("/console/setting/scheduler/create")
     public String consoleSettingSchedulerCreate(ModelMap map) {
-    	SchedulerDetails schedulerDetails = new SchedulerDetails();
+        SchedulerDetails schedulerDetails = new SchedulerDetails();
         map.addAttribute("schedulerDetails", schedulerDetails);
         return "console/setting/schedulerCreate";
     }
-	
-	@RequestMapping(value = "/console/setting/scheduler/submit/(*:action)", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/setting/scheduler/submit/(*:action)", method = RequestMethod.POST)
     public String consoleSettingSchedulerSubmit(ModelMap map, @RequestParam("action") String action, @ModelAttribute("schedulerDetails") SchedulerDetails schedulerDetails, BindingResult result) {
         // validation
         validator.validate(schedulerDetails, result);
         Date now = new Date();
-    	String currUsername = workflowUserManager.getCurrentUsername();
-    	
+        String currUsername = workflowUserManager.getCurrentUsername();
+
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
@@ -4348,42 +4337,42 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check exist
-            	SchedulerDetails currentByJob = schedulerDetailsDao.getSchedulerDetailsByJob(schedulerDetails.getJobName(), schedulerDetails.getGroupJobName());
-            	SchedulerDetails currentByTrigger = schedulerDetailsDao.getSchedulerDetailsByTrigger(schedulerDetails.getTriggerName(), schedulerDetails.getGroupTriggerName());
+                SchedulerDetails currentByJob = schedulerDetailsDao.getSchedulerDetailsByJob(schedulerDetails.getJobName(), schedulerDetails.getGroupJobName());
+                SchedulerDetails currentByTrigger = schedulerDetailsDao.getSchedulerDetailsByTrigger(schedulerDetails.getTriggerName(), schedulerDetails.getGroupTriggerName());
                 if (currentByJob != null || currentByTrigger != null) {
                     errors.add("console.app.message.error.label.exists");
                 } else {
-                	schedulerDetails.setDateCreated(now);
-                	schedulerDetails.setCreatedBy(currUsername);
-                	schedulerDetails.setDateModified(now);
-                	schedulerDetails.setModifiedBy(currUsername);
-                	schedulerDetails.setTriggerTypes(TriggerTypes.CRON);
-                	try {
-    					schedulerManager.saveOrUpdateJobDetails(schedulerDetails);
+                    schedulerDetails.setDateCreated(now);
+                    schedulerDetails.setCreatedBy(currUsername);
+                    schedulerDetails.setDateModified(now);
+                    schedulerDetails.setModifiedBy(currUsername);
+                    schedulerDetails.setTriggerTypes(TriggerTypes.CRON);
+                    try {
+                        schedulerManager.saveOrUpdateJobDetails(schedulerDetails);
                         invalid = false;
-    				} catch (Exception e) {
-    					invalid = true;
-    					errors.add("console.app.message.error.label.exception");
-    					e.printStackTrace();
-    					LOGGER.error(e.getMessage());
-    				}					
+                    } catch (Exception e) {
+                        invalid = true;
+                        errors.add("console.app.message.error.label.exception");
+                        e.printStackTrace();
+                        LOGGER.error(e.getMessage());
+                    }
                 }
             } else {
-            	SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
-            	details.setCronExpression(schedulerDetails.getCronExpression());
-            	details.setJobClassName(schedulerDetails.getJobClassName());
-            	details.setDateModified(now);
-            	details.setModifiedBy(currUsername);
-            	
-            	try {
-					schedulerManager.updateJobDetails(details);
+                SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
+                details.setCronExpression(schedulerDetails.getCronExpression());
+                details.setJobClassName(schedulerDetails.getJobClassName());
+                details.setDateModified(now);
+                details.setModifiedBy(currUsername);
+
+                try {
+                    schedulerManager.updateJobDetails(details);
                     invalid = false;
-				} catch (Exception e) {
-					invalid = true;
-					errors.add("console.app.message.error.label.exception");
-					e.printStackTrace();
-					LOGGER.error(e.getMessage());
-				}
+                } catch (Exception e) {
+                    invalid = true;
+                    errors.add("console.app.message.error.label.exception");
+                    e.printStackTrace();
+                    LOGGER.error(e.getMessage());
+                }
             }
 
             if (!errors.isEmpty()) {
@@ -4406,14 +4395,14 @@ public class ConsoleWebController {
             return "console/dialogClose";
         }
     }
-	
-	@RequestMapping("/json/console/setting/scheduler/list")
-    public void consoleSettingSchedulerListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
-    		@RequestParam(value = "jobName", required = false) String jobName, @RequestParam(value = "sort", required = false) String sort, 
-    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
-    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
-		String condition = "";
+    @RequestMapping("/json/console/setting/scheduler/list")
+    public void consoleSettingSchedulerListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback,
+            @RequestParam(value = "jobName", required = false) String jobName, @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+        String condition = "";
         List<String> param = new ArrayList<String>();
 
         if (jobName != null && jobName.trim().length() != 0) {
@@ -4428,22 +4417,22 @@ public class ConsoleWebController {
             condition = "WHERE " + condition;
         }
 
-        List<SchedulerDetails> schedulerList = schedulerDetailsDao.getSchedulerDetails(condition, param.toArray(new String[param.size()]), 
-        		sort, desc, start, rows);
-        
+        List<SchedulerDetails> schedulerList = schedulerDetailsDao.getSchedulerDetails(condition, param.toArray(new String[param.size()]),
+                sort, desc, start, rows);
+
         Long count = schedulerDetailsDao.count(condition, param.toArray(new String[param.size()]));
-        
-    	JSONObject jsonObject = new JSONObject();
+
+        JSONObject jsonObject = new JSONObject();
         if (schedulerList != null && schedulerList.size() > 0) {
             for (SchedulerDetails details : schedulerList) {
-				Map<String, Object> data = new HashMap<String, Object>();
+                Map<String, Object> data = new HashMap<String, Object>();
                 data.put("id", details.getId());
                 data.put("jobName", details.getJobName());
                 data.put("groupJobName", details.getGroupJobName());
                 data.put("triggerName", details.getTriggerName());
                 data.put("groupTriggerName", details.getGroupTriggerName());
                 data.put("jobClassName", details.getJobClassName());
-                data.put("modifiedate", details.getDateModified() == null ?"":details.getDateModified());
+                data.put("modifiedate", details.getDateModified() == null ? "" : details.getDateModified());
                 jsonObject.accumulate("data", data);
             }
         }
@@ -4455,8 +4444,8 @@ public class ConsoleWebController {
 
         AppUtil.writeJson(writer, jsonObject, callback);
     }
-	
-	@RequestMapping(value = "/console/setting/scheduler/delete", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/setting/scheduler/delete", method = RequestMethod.POST)
     public String consoleSettingSchedulerDelete(@RequestParam(value = "ids") String ids) {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
@@ -4466,42 +4455,42 @@ public class ConsoleWebController {
         }
         return "console/dialogClose";
     }
-	
-	@RequestMapping(value = "/console/setting/scheduler/firenow", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/setting/scheduler/firenow", method = RequestMethod.POST)
     public String consoleSettingSchedulerFireNow(@RequestParam(value = "ids") String ids) {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
             SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(id);
             try {
-				schedulerManager.fireNow(details);
-			} catch (SchedulerException e) {
-				LOGGER.error("Unable to fire "+"["+details.getJobName()+"] "+e.getMessage());
-				continue;
-			}
+                schedulerManager.fireNow(details);
+            } catch (SchedulerException e) {
+                LOGGER.error("Unable to fire " + "[" + details.getJobName() + "] " + e.getMessage());
+                continue;
+            }
         }
         return "console/dialogClose";
     }
-	
-	@RequestMapping("/console/setting/scheduler/edit/(*:id)")
+
+    @RequestMapping("/console/setting/scheduler/edit/(*:id)")
     public String consoleSettingSchedulerEdit(ModelMap map, @RequestParam("id") String id) {
         SchedulerDetails schedulerDetails = schedulerDetailsDao.getSchedulerDetailsById(id);
         map.addAttribute("schedulerDetails", schedulerDetails);
         return "console/setting/schedulerEdit";
     }
-	
-	@RequestMapping("/console/setting/property")
+
+    @RequestMapping("/console/setting/property")
     public String consoleSettingProperty(ModelMap map) {
         return "console/setting/property";
     }
-	
-	@RequestMapping("/json/console/setting/property/list")
-    public void consoleSettingPropertyListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
-    		@RequestParam(value = "propertyLabel", required = false) String propertyLabel, @RequestParam(value = "sort", required = false) String sort, 
-    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
-    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
-		String condition = "";
+    @RequestMapping("/json/console/setting/property/list")
+    public void consoleSettingPropertyListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback,
+            @RequestParam(value = "propertyLabel", required = false) String propertyLabel, @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+        String condition = "";
         List<String> param = new ArrayList<String>();
 
         if (propertyLabel != null && propertyLabel.trim().length() != 0) {
@@ -4516,15 +4505,15 @@ public class ConsoleWebController {
             condition = "WHERE " + condition;
         }
 
-        List<Property> properties = propertyDao.getProperties(condition, param.toArray(new String[param.size()]), 
-        		sort, desc, start, rows);
-        
+        List<Property> properties = propertyDao.getProperties(condition, param.toArray(new String[param.size()]),
+                sort, desc, start, rows);
+
         Long count = propertyDao.count(condition, param.toArray(new String[param.size()]));
-        
-    	JSONObject jsonObject = new JSONObject();
+
+        JSONObject jsonObject = new JSONObject();
         if (properties != null && properties.size() > 0) {
             for (Property property : properties) {
-				Map<String, Object> data = new HashMap<String, Object>();
+                Map<String, Object> data = new HashMap<String, Object>();
                 data.put("id", property.getId());
                 data.put("propertyLabel", property.getPropertyLabel());
                 data.put("propertyValue", property.getPropertyValue());
@@ -4539,22 +4528,22 @@ public class ConsoleWebController {
 
         AppUtil.writeJson(writer, jsonObject, callback);
     }
-	
-	@RequestMapping("/console/setting/property/create")
+
+    @RequestMapping("/console/setting/property/create")
     public String consoleSettingPropertyCreate(ModelMap map) {
-    	Property property = new Property();
+        Property property = new Property();
         map.addAttribute("property", property);
         return "console/setting/propertyCreate";
     }
-	
-	@RequestMapping("/console/setting/property/edit/(*:id)")
+
+    @RequestMapping("/console/setting/property/edit/(*:id)")
     public String consoleSettingPropertyEdit(ModelMap map, @RequestParam("id") String id) {
         Property property = propertyDao.getPropertyById(id);
         map.addAttribute("property", property);
         return "console/setting/propertyEdit";
     }
-	
-	@RequestMapping(value = "/console/setting/property/delete", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/setting/property/delete", method = RequestMethod.POST)
     public String consoleSettingPropertyDelete(@RequestParam(value = "ids") String ids) throws IOException {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
@@ -4565,14 +4554,14 @@ public class ConsoleWebController {
         applicationProperties.refresh();
         return "console/dialogClose";
     }
-	
-	@RequestMapping(value = "/console/setting/property/submit/(*:action)", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/setting/property/submit/(*:action)", method = RequestMethod.POST)
     public String consoleSettingPropertySubmit(ModelMap map, @RequestParam("action") String action, @ModelAttribute("property") Property property, BindingResult result) {
         // validation
         validator.validate(property, result);
         Date now = new Date();
-    	String currUsername = workflowUserManager.getCurrentUsername();
-    	
+        String currUsername = workflowUserManager.getCurrentUsername();
+
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
@@ -4580,40 +4569,40 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check exist
-            	Property currentProperty = propertyDao.getPropertyByLabel(property.getPropertyLabel());
+                Property currentProperty = propertyDao.getPropertyByLabel(property.getPropertyLabel());
                 if (currentProperty != null) {
                     errors.add("console.app.message.error.label.exists");
                 } else {
-                	property.setDateCreated(now);
-                	property.setCreatedBy(currUsername);
-                	property.setDateModified(now);
-                	property.setModifiedBy(currUsername);
-                	try {
-                		propertyDao.saveOrUpdate(property);
-                		applicationProperties.refresh();
+                    property.setDateCreated(now);
+                    property.setCreatedBy(currUsername);
+                    property.setDateModified(now);
+                    property.setModifiedBy(currUsername);
+                    try {
+                        propertyDao.saveOrUpdate(property);
+                        applicationProperties.refresh();
                         invalid = false;
-    				} catch (Exception e) {
-    					invalid = true;
-    					errors.add("console.app.message.error.label.exception");
-    					e.printStackTrace();
-    					LOGGER.error(e.getMessage());
-    				}					
+                    } catch (Exception e) {
+                        invalid = true;
+                        errors.add("console.app.message.error.label.exception");
+                        e.printStackTrace();
+                        LOGGER.error(e.getMessage());
+                    }
                 }
             } else {
-            	Property existingProperty = propertyDao.getPropertyById(property.getId());
-            	existingProperty.setPropertyValue(property.getPropertyValue());
-            	existingProperty.setDateModified(now);
-            	existingProperty.setModifiedBy(currUsername);
-            	try {
-            		propertyDao.saveOrUpdate(existingProperty);
-            		applicationProperties.refresh();
+                Property existingProperty = propertyDao.getPropertyById(property.getId());
+                existingProperty.setPropertyValue(property.getPropertyValue());
+                existingProperty.setDateModified(now);
+                existingProperty.setModifiedBy(currUsername);
+                try {
+                    propertyDao.saveOrUpdate(existingProperty);
+                    applicationProperties.refresh();
                     invalid = false;
-				} catch (Exception e) {
-					invalid = true;
-					errors.add("console.app.message.error.label.exception");
-					e.printStackTrace();
-					LOGGER.error(e.getMessage());
-				}
+                } catch (Exception e) {
+                    invalid = true;
+                    errors.add("console.app.message.error.label.exception");
+                    e.printStackTrace();
+                    LOGGER.error(e.getMessage());
+                }
             }
 
             if (!errors.isEmpty()) {
@@ -4636,7 +4625,7 @@ public class ConsoleWebController {
             return "console/dialogClose";
         }
     }
-	
+
     @RequestMapping("/console/monitor/running")
     public String consoleMonitorRunning(ModelMap map) {
         Collection<AppDefinition> appDefinitionList = appDefinitionDao.findLatestVersions(null, null, null, "name", false, null, null);
@@ -4645,7 +4634,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/monitor/running/list")
+    @RequestMapping("/json/console/monitor/running/list")
     public void consoleMonitorRunningListJson(Writer writer, @RequestParam(value = "appId", required = false) String appId, @RequestParam(value = "processId", required = false) String processId, @RequestParam(value = "processName", required = false) String processName, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         if ("startedTime".equals(sort)) {
             sort = "Started";
@@ -4661,7 +4650,7 @@ public class ConsoleWebController {
             double serviceLevelMonitor = workflowManager.getServiceLevelMonitorForRunningProcess(workflowProcess.getInstanceId());
 
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("id", workflowProcess.getInstanceId());
             data.put("name", workflowProcess.getName());
             data.put("state", workflowProcess.getState());
@@ -4696,7 +4685,7 @@ public class ConsoleWebController {
 
         AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(processId);
         map.addAttribute("appDef", appDef);
-        
+
         return "console/monitor/runningProcess";
     }
 
@@ -4720,7 +4709,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/monitor/completed/list")
+    @RequestMapping("/json/console/monitor/completed/list")
     public void consoleMonitorCompletedListJson(Writer writer, @RequestParam(value = "appId", required = false) String appId, @RequestParam(value = "processId", required = false) String processId, @RequestParam(value = "processName", required = false) String processName, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
         if ("startedTime".equals(sort)) {
             sort = "Started";
@@ -4736,7 +4725,7 @@ public class ConsoleWebController {
             double serviceLevelMonitor = workflowManager.getServiceLevelMonitorForRunningProcess(workflowProcess.getInstanceId());
 
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("id", workflowProcess.getInstanceId());
             data.put("name", workflowProcess.getName());
             data.put("state", workflowProcess.getState());
@@ -4770,7 +4759,7 @@ public class ConsoleWebController {
 
         AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(processId);
         map.addAttribute("appDef", appDef);
-        
+
         return "console/monitor/completedProcess";
     }
 
@@ -4788,7 +4777,7 @@ public class ConsoleWebController {
     public String consoleMonitorProcessViewGraph(ModelMap map, @RequestParam("id") String processId) {
         return consoleMonitorProcessGraph(map, processId, true);
     }
-    
+
     @RequestMapping("/console/monitor/process/graph/(*:id)")
     public String consoleMonitorProcessGraph(ModelMap map, @RequestParam("id") String processId, Boolean useOldViewer) {
         // get process info
@@ -4824,7 +4813,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/monitor/activity/list")
+    @RequestMapping("/json/console/monitor/activity/list")
     public void activityList(Writer writer, @RequestParam(value = "processId", required = false) String processId, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws JSONException {
 
         List<WorkflowActivity> activityList = (List<WorkflowActivity>) workflowManager.getActivityList(processId, start, rows, sort, desc);
@@ -4834,7 +4823,7 @@ public class ConsoleWebController {
         for (WorkflowActivity workflowActivity : activityList) {
             double serviceLevelMonitor = workflowManager.getServiceLevelMonitorForRunningActivity(workflowActivity.getId());
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("id", workflowActivity.getId());
             data.put("name", workflowActivity.getName());
             data.put("state", workflowActivity.getState());
@@ -4884,7 +4873,6 @@ public class ConsoleWebController {
 //                map.addAttribute("formId", form.getFormId());
 //            }
 //        }
-
         map.addAttribute("processStatus", processStatus);
         return "console/monitor/activity";
     }
@@ -4929,7 +4917,7 @@ public class ConsoleWebController {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-                
+
         ServletOutputStream stream = response.getOutputStream();
 
         String decodedFileName = fileName;
@@ -4964,7 +4952,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	@RequestMapping("/json/console/monitor/logs/list")
+    @RequestMapping("/json/console/monitor/logs/list")
     public void consoleMonitorLogsJson(HttpServletResponse response, Writer writer, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws JSONException, IOException {
         if (HostManager.isVirtualHostEnabled()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -4982,7 +4970,7 @@ public class ConsoleWebController {
                     Date current = new Date();
 
                     if ("catalina.out".equals(lowercaseFN) || (lowercaseFN.indexOf(".log") > 0 && !lowercaseFN.startsWith("admin") && !lowercaseFN.startsWith("host-manager") && !lowercaseFN.startsWith("manager"))
-                        && (lastModified.getTime() > (current.getTime() - (5*1000*60*60*24))) && file.length() > 0) {
+                            && (lastModified.getTime() > (current.getTime() - (5 * 1000 * 60 * 60 * 24))) && file.length() > 0) {
                         fileList.add(file);
                     }
                 }
@@ -4994,7 +4982,7 @@ public class ConsoleWebController {
 
         for (File file : files) {
             @SuppressWarnings("rawtypes")
-			Map data = new HashMap();
+            Map data = new HashMap();
             data.put("filename", file.getName());
             data.put("filesize", file.length());
             data.put("date", TimeZoneUtil.convertToTimeZone(new Date(file.lastModified()), null, AppUtil.getAppDateFormat()));
@@ -5013,21 +5001,21 @@ public class ConsoleWebController {
     public String consoleMonitorScheduler(ModelMap map) {
         return "console/monitor/scheduler";
     }
-    
+
     @RequestMapping("/console/monitor/scheduler/view/(*:id)")
     public String consoleMonitorSchedulerView(ModelMap map, @RequestParam("id") String id) {
-    	SchedulerLog schedulerLog = schedulerLogDao.getSchedulerLogById(id);
+        SchedulerLog schedulerLog = schedulerLogDao.getSchedulerLogById(id);
         map.addAttribute("schedulerLog", schedulerLog);
         return "console/monitor/schedulerView";
     }
-    
-   	@RequestMapping("/json/console/monitor/scheduler/list")
-    public void consoleMonitorSchedulerListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback, 
-    		@RequestParam(value = "jobName", required = false) String jobName, @RequestParam(value = "sort", required = false) String sort, 
-    		@RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start, 
-    		@RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
 
-		String condition = "";
+    @RequestMapping("/json/console/monitor/scheduler/list")
+    public void consoleMonitorSchedulerListJson(Writer writer, @RequestParam(value = "callback", required = false) String callback,
+            @RequestParam(value = "jobName", required = false) String jobName, @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "desc", required = false) Boolean desc, @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "rows", required = false) Integer rows) throws IOException, JSONException {
+
+        String condition = "";
         List<String> param = new ArrayList<String>();
 
         if (jobName != null && jobName.trim().length() != 0) {
@@ -5042,15 +5030,15 @@ public class ConsoleWebController {
             condition = "WHERE " + condition;
         }
 
-        List<SchedulerLog> logs = schedulerLogDao.getSchedulerLogs(condition, param.toArray(new String[param.size()]), 
-        		sort, desc, start, rows);
-        
+        List<SchedulerLog> logs = schedulerLogDao.getSchedulerLogs(condition, param.toArray(new String[param.size()]),
+                sort, desc, start, rows);
+
         Long count = schedulerLogDao.count(condition, param.toArray(new String[param.size()]));
-        
-    	JSONObject jsonObject = new JSONObject();
+
+        JSONObject jsonObject = new JSONObject();
         if (logs != null && logs.size() > 0) {
             for (SchedulerLog log : logs) {
-				Map<String, Object> data = new HashMap<String, Object>();
+                Map<String, Object> data = new HashMap<String, Object>();
                 data.put("id", log.getId());
                 data.put("jobName", log.getJobName());
                 data.put("jobClassName", log.getJobClassName());
@@ -5068,8 +5056,7 @@ public class ConsoleWebController {
 
         AppUtil.writeJson(writer, jsonObject, callback);
     }
-	
-    
+
     @RequestMapping("/console/i18n/(*:name)")
     public String consoleI18n(ModelMap map, HttpServletResponse response, @RequestParam("name") String name) throws IOException {
         Properties keys = new Properties();
@@ -5119,7 +5106,7 @@ public class ConsoleWebController {
     }
 
     @SuppressWarnings("unchecked")
-	protected Map<String, String> getPluginType() {
+    protected Map<String, String> getPluginType() {
         Map<String, String> pluginTypeMap = new ListOrderedMap();
         pluginTypeMap.put("org.joget.plugin.base.AuditTrailPlugin", ResourceBundleUtil.getMessage("setting.plugin.auditTrail"));
         pluginTypeMap.put("org.joget.apps.datalist.model.DataListAction", ResourceBundleUtil.getMessage("setting.plugin.datalistAction"));
@@ -5142,12 +5129,12 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewPermission", ResourceBundleUtil.getMessage("setting.plugin.userviewPermission"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewTheme", ResourceBundleUtil.getMessage("setting.plugin.userviewTheme"));
         pluginTypeMap.put("org.joget.plugin.base.PluginWebSupport", ResourceBundleUtil.getMessage("setting.plugin.webService"));
-        
+
         return PagingUtils.sortMapByValue(pluginTypeMap, false);
     }
 
     @SuppressWarnings("unchecked")
-	protected Map<String, String> getPluginTypeForDefaultProperty() {
+    protected Map<String, String> getPluginTypeForDefaultProperty() {
         Map<String, String> pluginTypeMap = new ListOrderedMap();
         pluginTypeMap.put("org.joget.plugin.base.AuditTrailPlugin", ResourceBundleUtil.getMessage("setting.plugin.auditTrail"));
         pluginTypeMap.put("org.joget.workflow.model.DeadlinePlugin", ResourceBundleUtil.getMessage("setting.plugin.deadline"));
@@ -5169,7 +5156,7 @@ public class ConsoleWebController {
     }
 
     protected String checkVersionExist(ModelMap map, String appId, String version) {
-        ConsoleWebPlugin consoleWebPlugin = (ConsoleWebPlugin)pluginManager.getPlugin(ConsoleWebPlugin.class.getName());
+        ConsoleWebPlugin consoleWebPlugin = (ConsoleWebPlugin) pluginManager.getPlugin(ConsoleWebPlugin.class.getName());
 
         // get app info
         String appInfo = consoleWebPlugin.getAppInfo(appId, version);
@@ -5180,27 +5167,28 @@ public class ConsoleWebController {
         //LogUtil.debug(getClass().getName(), "App info: " + consoleWebPlugin.getAppInfo(appId, version));
         return page;
     }
-    
-    protected Collection<String> validateEmploymentDate (String employeeStartDate, String employeeEndDate) {
-        Collection<String> errors = new ArrayList<String> ();
+
+    protected Collection<String> validateEmploymentDate(String employeeStartDate, String employeeEndDate) {
+        Collection<String> errors = new ArrayList<String>();
         String format = "yyyy-MM-dd";
-        
+
         //validate start date and end date
         if (!DateUtil.validateDateFormat(employeeStartDate, format)) {
             errors.add(ResourceBundleUtil.getMessage("console.directory.employment.error.startDate.invalid"));
         }
-        
+
         if (!DateUtil.validateDateFormat(employeeEndDate, format)) {
             errors.add(ResourceBundleUtil.getMessage("console.directory.employment.error.endDate.invalid"));
         }
-        
+
         if (!DateUtil.compare(employeeStartDate, employeeEndDate, format)) {
             errors.add(ResourceBundleUtil.getMessage("console.directory.employment.error.startdate.endDate.compare"));
         }
-        
+
         return errors;
     }
-    @RequestMapping(value="/console/app/(*:appId)/(~:version)/userview/(*:userviewId)/screenshot/submit", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/console/app/(*:appId)/(~:version)/userview/(*:userviewId)/screenshot/submit", method = RequestMethod.POST)
     public void consoleUserviewScreenshotSubmit(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "userviewId") String userviewId) throws IOException {
 
         // check to ensure that userview is published
@@ -5208,44 +5196,44 @@ public class ConsoleWebController {
         if (!appDef.isPublished()) {
             return;
         }
-        
+
         // get base64 encoded image in POST body
         String imageBase64 = request.getParameter("base64data");
         imageBase64 = imageBase64.substring("data:image/png;base64,".length());
-        
+
         // convert into bytes
-        byte[] decodedBytes = Base64.decodeBase64(imageBase64.getBytes());        
-        
+        byte[] decodedBytes = Base64.decodeBase64(imageBase64.getBytes());
+
         // save into image file
         String appVersion = (version != null && !version.isEmpty()) ? appDef.getVersion().toString() : "";
         String filename = appDef.getId() + "_" + appVersion + "_" + userviewId + ".png";
-        
+
         String basePath = SetupManager.getBaseDirectory();
         String dataFileBasePath = SetupManager.getSettingValue("dataFileBasePath");
         if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
-        	basePath = dataFileBasePath;
+            basePath = dataFileBasePath;
         }
         String path = basePath + "app_screenshots";
         new File(path).mkdirs();
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
         File f = new File(path, filename);
         ImageIO.write(image, "png", f);
-        
+
         LogUtil.debug(getClass().getName(), "Created screenshot for userview " + userviewId + " in " + appId);
     }
 
-    @RequestMapping(value="/userview/screenshot/(*:appId)/(*:userviewId)")
+    @RequestMapping(value = "/userview/screenshot/(*:appId)/(*:userviewId)")
     public void consoleUserviewScreenshot(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version, @RequestParam(value = "userviewId") String userviewId) throws IOException {
         version = (version != null) ? version : "";
         String filename = appId + "_" + version + "_" + userviewId + ".png";
-        
+
         String basePath = SetupManager.getBaseDirectory();
         String dataFileBasePath = SetupManager.getSettingValue("dataFileBasePath");
         if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
-        	basePath = dataFileBasePath;
+            basePath = dataFileBasePath;
         }
         String path = basePath + "app_screenshots";
-        
+
         InputStream imageInput;
         File f = new File(path, filename);
         if (!f.exists()) {
@@ -5254,7 +5242,7 @@ public class ConsoleWebController {
         } else {
             imageInput = new FileInputStream(f);
         }
-        
+
         response.setContentType("image/png");
         OutputStream out = response.getOutputStream();
         byte[] bbuf = new byte[65536];
@@ -5267,10 +5255,10 @@ public class ConsoleWebController {
         } finally {
             in.close();
             out.flush();
-            out.close();        
+            out.close();
         }
-    }        
-    
+    }
+
     @RequestMapping("/console/app/(*:appId)/(~:version)/navigator")
     public String consoleAppNavigator(ModelMap map, @RequestParam(value = "appId") String appId, @RequestParam(value = "version", required = false) String version) {
         AppDefinition appDef = appService.getAppDefinition(appId, version);
@@ -5292,27 +5280,27 @@ public class ConsoleWebController {
 
         return "console/apps/navigator";
     }
-    
-    @RequestMapping({"/desktop","/desktop/home"})
+
+    @RequestMapping({"/desktop", "/desktop/home"})
     public String desktopHome() {
         return "desktop/home";
     }
-    
+
     @RequestMapping("/desktop/apps")
     public String desktopApps(ModelMap model) {
         // get published apps
         Collection<AppDefinition> publishedList = appDefinitionDao.findPublishedApps("name", Boolean.FALSE, null, null);
-        
+
         // get app def ids of published apps
         Collection<String> publishedIdSet = new HashSet<String>();
-        for (AppDefinition appDef: publishedList) {
+        for (AppDefinition appDef : publishedList) {
             publishedIdSet.add(appDef.getAppId());
         }
-        
+
         // get list of unpublished apps
         Collection<AppDefinition> unpublishedList = new ArrayList<AppDefinition>();
         Collection<AppDefinition> appDefinitionList = appDefinitionDao.findLatestVersions(null, null, null, "name", Boolean.FALSE, null, null);
-        for (Iterator<AppDefinition> i=appDefinitionList.iterator(); i.hasNext();) {
+        for (Iterator<AppDefinition> i = appDefinitionList.iterator(); i.hasNext();) {
             AppDefinition appDef = i.next();
             if (!publishedIdSet.contains(appDef.getAppId())) {
                 unpublishedList.add(appDef);
@@ -5323,7 +5311,7 @@ public class ConsoleWebController {
         model.addAttribute("appUnpublishedList", unpublishedList);
         return "desktop/apps";
     }
-    
+
     @RequestMapping("/desktop/app/import")
     public String desktopAppImport() {
         return "desktop/apps/import";
@@ -5332,9 +5320,9 @@ public class ConsoleWebController {
     @RequestMapping(value = "/desktop/app/import/submit", method = RequestMethod.POST)
     public String desktopAppImportSubmit(ModelMap map) throws IOException {
         Collection<String> errors = new ArrayList<String>();
-        
+
         MultipartFile appZip = null;
-        
+
         try {
             appZip = FileStore.getFile("appZip");
         } catch (FileLimitException e) {
@@ -5360,11 +5348,11 @@ public class ConsoleWebController {
             map.addAttribute("isPublished", appDef.isPublished());
             return "desktop/apps/packageUploadSuccess";
         }
-    }    
+    }
 
     @RequestMapping({"/desktop/marketplace/app"})
     public String marketplaceApp() {
         return "desktop/marketplaceApp";
     }
-    
+
 }

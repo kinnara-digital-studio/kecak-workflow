@@ -13,12 +13,12 @@
 
     <!-- Set the property implementation the profile property manager uses -->
     <bean id="profilePropertyManager" class="org.joget.commons.util.DatasourceProfilePropertyManager">
-    	<property name="propertyClass" value="java.util.Properties"/>
+        <property name="propertyClass" value="java.util.Properties"/>
     </bean>
 
     <!-- DynamicDataSourceManager will have its property set via @Autowired -->
     <bean id="staticInitOfDynamicDataSourceManager" class="org.joget.commons.util.DynamicDataSourceManager" >
-    	<constructor-arg ref="profilePropertyManager"/>
+        <constructor-arg ref="profilePropertyManager"/>
     </bean>
     
     <bean id="hostManager" class="org.joget.commons.util.HostManager" depends-on="staticInitOfDynamicDataSourceManager">
@@ -62,27 +62,27 @@
         <aop:advisor advice-ref="txAdvice" pointcut="execution(* org.joget.commons.spring.model.*Dao.*(..))" order="1" />
     </aop:config>
 
+    
+<!--<bean id="setupDataSource" class="org.joget.commons.util.DynamicDataSource" destroy-method="close" depends-on="staticInitOfDynamicDataSourceManager">
+    <property name="transactionManager" ref="atomikosTransactionManager" />
+    <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+    <property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl" />
+    <property name="username" value="root" />
+    <property name="password" value="" />
+    <property name="minEvictableIdleTimeMillis" value="10000" />
+    <property name="timeBetweenEvictionRunsMillis" value="10000" />
+    <property name="numTestsPerEvictionRun" value="-1" />
+    <property name="minIdle" value="1" />
+    <property name="maxActive" value="-1" />
+    <property name="maxWait" value="10000" />
+    <property name="datasourceName" value="workflow" />
+</bean>-->
+    
 	
-    <bean id="setupDataSource" class="org.joget.commons.util.DynamicDataSource" destroy-method="close" depends-on="staticInitOfDynamicDataSourceManager">
-        <property name="transactionManager" ref="atomikosTransactionManager" />
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://127.0.0.1:3306/jwdb?characterEncoding=UTF-8" />
-        <property name="username" value="root" />
-        <property name="password" value="" />
-        <property name="minEvictableIdleTimeMillis" value="10000" />
-        <property name="timeBetweenEvictionRunsMillis" value="10000" />
-        <property name="numTestsPerEvictionRun" value="-1" />
-        <property name="minIdle" value="1" />
-        <property name="maxActive" value="-1" />
-        <property name="maxWait" value="10000" />
-        <property name="datasourceName" value="workflow" />
-    </bean>
-	
-	<!--
-	<bean id="setupDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <bean id="setupDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/LocalKecakDB"/>
     </bean>
-	-->
+	
 	
     <!-- Hibernate SessionFactory -->
     <bean id="setupSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" autowire-candidate="false" depends-on="staticInitOfDynamicDataSourceManager">
@@ -91,7 +91,7 @@
             <list>
                 <value>/org/joget/commons/spring/model/Setting.hbm.xml</value>
                 <value>/org/joget/commons/spring/model/ResourceBundleMessage.hbm.xml</value>
-            	<value>/org/joget/commons/spring/model/EmailApprovalContent.hbm.xml</value>
+                <value>/org/joget/commons/spring/model/EmailApprovalContent.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -134,7 +134,7 @@
         <property name="configLocation">
             <value>classpath:ehcache.xml</value>
         </property>
-   </bean>
+    </bean>
 
     <bean id="resourceBundleMessageCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
         <property name="cacheManager" ref="cacheManager"/>
@@ -146,12 +146,12 @@
     </bean>
     
     <bean id="nonceGenerator" class="org.joget.commons.util.NonceGeneratorImpl">
-		<property name="cache">
-			<ref local="resourceBundleMessageCache" />
-		</property>
-	</bean>
+        <property name="cache">
+            <ref local="resourceBundleMessageCache" />
+        </property>
+    </bean>
 	
-	<bean id="securityUtil" class="org.joget.commons.util.SecurityUtil">
+    <bean id="securityUtil" class="org.joget.commons.util.SecurityUtil">
         <property name="dataEncryption" ref="dataEncryption" />
         <property name="nonceGenerator" ref="nonceGenerator" />
     </bean>
