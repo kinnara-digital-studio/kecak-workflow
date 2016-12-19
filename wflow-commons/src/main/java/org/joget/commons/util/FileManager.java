@@ -10,7 +10,11 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -18,37 +22,40 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Utility methods used by the system to manager temporary files
- * 
+ *
  */
 public class FileManager {
-	
-    public final static Integer THUMBNAIL_SIZE = 60; 
-    public final static String THUMBNAIL_EXT = ".thumb.jpg"; 
-    
+
+    public final static Integer THUMBNAIL_SIZE = 60;
+    public final static String THUMBNAIL_EXT = ".thumb.jpg";
+
     /**
      * Gets directory path to temporary files folder
-     * @return 
+     *
+     * @return
      */
     public static String getBaseDirectory() {
-    	String basePath = SetupManager.getBaseDirectory();
+        String basePath = SetupManager.getBaseDirectory();
         String dataFileBasePath = SetupManager.getSettingValue("dataFileBasePath");
         if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
-        	basePath = dataFileBasePath;
+            basePath = dataFileBasePath;
         }
         return basePath + File.separator + "app_tempfile" + File.separator;
     }
-    
+
     /**
      * Stores files post to the HTTP request to temporary files folder
+     *
      * @param file
      * @return the relative path of the stored temporary file, NULL if failure.
      */
     @SuppressWarnings("finally")
-	public static String storeFile(MultipartFile file) {
+    public static String storeFile(MultipartFile file) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             String id = UuidGenerator.getInstance().getUuid();
             FileOutputStream out = null;
-            String path =  id + File.separator;
+            BufferedOutputStream bos = null;
+            String path = id + File.separator;
             String filename = path;
             try {
                 filename += URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
@@ -56,14 +63,22 @@ public class FileManager {
                 if (!uploadFile.isDirectory()) {
                     //create directories if not exist
                     new File(getBaseDirectory(), path).mkdirs();
-
                     // write file
                     out = new FileOutputStream(uploadFile);
+                    // Add Buffering
+                    bos = new BufferedOutputStream(out);
+                    // write file
                     out.write(file.getBytes());
                 }
             } catch (Exception ex) {
                 LogUtil.error(FileManager.class.getName(), ex, "");
             } finally {
+                if(bos!=null){
+                    try {
+                        bos.close();
+                    } catch (IOException ex) {
+                    }
+                }
                 if (out != null) {
                     try {
                         out.close();
@@ -75,15 +90,16 @@ public class FileManager {
         }
         return null;
     }
-    
+
     @SuppressWarnings("finally")
-	public static String storeFile(MultipartFile file, String basePath) {
+    public static String storeFile(MultipartFile file, String basePath) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-        	basePath = basePath + File.separator + "app_tempfile" + File.separator;
-        	
-            String id = UuidGenerator.getInstance().getUuid(); 
+            basePath = basePath + File.separator + "app_tempfile" + File.separator;
+
+            String id = UuidGenerator.getInstance().getUuid();
             FileOutputStream out = null;
-            String path =  id + File.separator;
+            BufferedOutputStream bos = null;
+            String path = id + File.separator;
             String filename = path;
             try {
                 filename += URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
@@ -91,14 +107,22 @@ public class FileManager {
                 if (!uploadFile.isDirectory()) {
                     //create directories if not exist
                     new File(basePath, path).mkdirs();
-
                     // write file
                     out = new FileOutputStream(uploadFile);
+                    // Add Buffering
+                    bos = new BufferedOutputStream(out);
+                    // write file
                     out.write(file.getBytes());
                 }
             } catch (Exception ex) {
                 LogUtil.error(FileManager.class.getName(), ex, "");
             } finally {
+                if(bos!=null){
+                    try {
+                        bos.close();
+                    } catch (IOException ex) {
+                    }
+                }
                 if (out != null) {
                     try {
                         out.close();
@@ -110,11 +134,12 @@ public class FileManager {
         }
         return null;
     }
-    
+
     /**
      * Gets the temporary file from temporary files folder by relative path
+     *
      * @param path
-     * @return 
+     * @return
      */
     public static File getFileByPath(String path) {
         if (path != null) {
@@ -123,19 +148,21 @@ public class FileManager {
                 if (file.exists() && !file.isDirectory()) {
                     return file;
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return null;
     }
-    
+
     /**
      * Deletes the temporary file from temporary files folder by relative path
-     * @param path 
+     *
+     * @param path
      */
     public static void deleteFileByPath(String path) {
         File file = getFileByPath(path);
         File directory = file.getParentFile();
-        
+
         if (file != null && file.exists()) {
             file.delete();
         }
@@ -144,29 +171,32 @@ public class FileManager {
             directory.delete();
         }
     }
-    
+
     /**
      * Deletes a file
-     * @param file 
+     *
+     * @param file
      */
     public static void deleteFile(File file) {
         if (!file.exists()) {
             return;
         }
-        
-        if (file.isDirectory()){
-            for (File f : file.listFiles()){
+
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
                 deleteFile(f);
             }
         }
         file.delete();
     }
-    
+
     /**
-     * Generates a thumbnail of a image file in temporary files folder by relative path
+     * Generates a thumbnail of a image file in temporary files folder by
+     * relative path
+     *
      * @param path
      * @param thumbWidth
-     * @param thumbHeight 
+     * @param thumbHeight
      */
     public static void createThumbnail(String path, Integer thumbWidth, Integer thumbHeight) {
         if (thumbWidth == null) {
@@ -175,10 +205,10 @@ public class FileManager {
         if (thumbHeight == null) {
             thumbHeight = THUMBNAIL_SIZE;
         }
-        
+
         BufferedOutputStream out = null;
 
-        try{
+        try {
             File imageFile = new File(getBaseDirectory(), URLDecoder.decode(path, "UTF-8"));
             Image image = Toolkit.getDefaultToolkit().getImage(imageFile.getAbsolutePath());
             MediaTracker mediaTracker = new MediaTracker(new Container());
@@ -199,7 +229,7 @@ public class FileManager {
             Graphics2D graphics2D = thumbImage.createGraphics();
             graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             graphics2D.drawImage(image, 0, 0, thumbWidth, thumbHeight, null);
-            
+
             out = new BufferedOutputStream(new FileOutputStream(imageFile.getAbsolutePath() + THUMBNAIL_EXT));
             ImageIO.write(thumbImage, "jpeg", out);
 
@@ -216,5 +246,5 @@ public class FileManager {
             }
         }
     }
-    
+
 }
