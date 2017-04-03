@@ -129,10 +129,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext-asian</artifactId>
 			<version>2.3</version>
+		</dependency> -->
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itext-asian -->
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itext-asian</artifactId>
+		    <version>5.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
