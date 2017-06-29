@@ -44,6 +44,12 @@
             <version>4.0</version>
             <scope>runtime</scope>
         </dependency>
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>42.1.1</version>
+		    <scope>runtime</scope>
+		</dependency>
     </dependencies>
 </project>
 
