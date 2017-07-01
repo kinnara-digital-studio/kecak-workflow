@@ -2041,7 +2041,7 @@ Insert into OBJECTID (NEXTOID) values (1000200);
 --   DATA FOR TABLE DIR_USER
 --   FILTER = none used
 ---------------------------------------------------
-Insert into DIR_USER (ID,USERNAME,PASSWORD,FIRSTNAME,LASTNAME,EMAIL,TIMEZONE,ACTIVE) values ('admin','admin','3F3E6296C5974ED9C4AFF2BBB89256D0','Admin','Admin','admin@email.domain','0',1);
+Insert into DIR_USER (ID,USERNAME,PASSWORD,FIRSTNAME,LASTNAME,EMAIL,TIMEZONE,ACTIVE) values ('admin','admin','49E81638C33C9F0CC68ADFB7D92A7D78','Admin','Admin','admin@email.domain','0',1);
 
 ---------------------------------------------------
 --   END DATA FOR TABLE DIR_USER
@@ -2062,7 +2062,7 @@ Insert into DIR_USER_ROLE (ROLEID,USERID) values ('ROLE_ADMIN','admin');
 --   DATA FOR TABLE DIR_USER_SALT
 --   FILTER = none used
 ---------------------------------------------------
-Insert into DIR_USER_SALT (ID,USERID,RANDOMSALT) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','C2117FD9E043CD845C5D1A533FB2E580');
+Insert into DIR_USER_SALT (ID,USERID,RANDOMSALT) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','588A11C77B8BFB5B9C859E36959FF623');
 
 ---------------------------------------------------
 --   END DATA FOR TABLE DIR_USER_SALT

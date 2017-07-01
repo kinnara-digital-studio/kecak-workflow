@@ -93,156 +93,146 @@ public class SetupServlet extends HttpServlet {
             // create datasource
             LogUtil.info(getClass().getName(), "===== Starting Database Setup =====");
             boolean success = false;
+            boolean exists = false;
             String message = "";
-            Connection con = null;
-            Statement stmt = null;
-            ResultSet rs = null;
             BasicDataSource ds = new BasicDataSource();
             ds.setDriverClassName(jdbcDriver);
-            ds.setUrl(jdbcUrl);
             ds.setUsername(jdbcUser);
             ds.setPassword(jdbcPassword);
-            try {
-                // test connection
-                con = ds.getConnection();
-                con.setAutoCommit(false);
-                success = true;
-                message = ResourceBundleUtil.getMessage("setup.datasource.label.success");
+            ds.setUrl(jdbcFullUrl);
+            try(Connection con = ds.getConnection()) {
+                	// test connection
+                	success = true;
+                	message = ResourceBundleUtil.getMessage("setup.datasource.label.success");
 
-                // switch database
-                if (dbName != null) {
-                    try {
-                        LogUtil.info(getClass().getName(), "Use database " + dbName);
-                        con.setCatalog(dbName);
-                    } catch (SQLException ex) {
-                        // ignore
-                    }
-                }
-
-                // check for existing tables
-                boolean exists = false;
-                try {
-                    stmt = con.createStatement();
-                    rs = stmt.executeQuery("SELECT * FROM dir_role");
-                    if (rs.next()) {
-                        exists = true;
-                        LogUtil.info(getClass().getName(), "Database already initialized " + jdbcUrl);
-                    }
-                } catch (SQLException ex) {
-                    LogUtil.info(getClass().getName(), "Database not yet initialized " + jdbcUrl);
-                }
-                
-                if (!exists) {
-                    // get schema file
-                    String schemaFile = null;
-                    if ("oracle".equals(dbType) || jdbcUrl.contains("oracle")) {
-                        schemaFile = "/setup/sql/jwdb-oracle.sql";
-                    } else if ("sqlserver".equals(dbType) || jdbcUrl.contains("sqlserver")) {
-                        schemaFile = "/setup/sql/jwdb-mssql.sql";
-                    } else if ("mysql".equals(dbType) || jdbcUrl.contains("mysql")) {
-                        schemaFile = "/setup/sql/jwdb-mysql.sql";
-                    } else {
-                        throw new SQLException("Unrecognized database type, please setup the datasource manually");
-                    }
-
-                    if (dbName != null) {
-                        // create database
-                        try {
-                            LogUtil.info(getClass().getName(), "Create database " + dbName);
-                            stmt.executeUpdate("CREATE DATABASE " + dbName);
-                        } catch (SQLException ex) {
-                            // ignore
-                        }
-
-                        // switch database
-                        LogUtil.info(getClass().getName(), "Use database " + dbName);
-                        con.setCatalog(dbName);
-                    }
+                	// check for existing tables
+                	try (Statement stmt = con.createStatement();
+                	    	ResultSet rs = stmt.executeQuery("SELECT * FROM dir_role")) {
                     
-                    // execute schema file
-                    LogUtil.info(getClass().getName(), "Execute schema " + schemaFile);
-                    ScriptRunner runner = new ScriptRunner(con, false, true);
-                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
-                }
-                if ("true".equals(sampleUsers)) {
-                    // create users
-                    String schemaFile = "/setup/sql/jwdb-users.sql";
-                    LogUtil.info(getClass().getName(), "Create users using schema " + schemaFile);
-                    ScriptRunner runner = new ScriptRunner(con, false, true);
-                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
-                }
-                
-                con.commit();
-                LogUtil.info(getClass().getName(), "Datasource init complete: " + success);
-                
-                // save profile
-                String profileName = (dbName != null && !dbName.trim().isEmpty()) ? dbName : "custom";
-                String jdbcUrlToSave = (jdbcFullUrl != null && !jdbcFullUrl.trim().isEmpty()) ? jdbcFullUrl : jdbcUrl;
-                LogUtil.info(getClass().getName(), "Save profile " + profileName);
-                DynamicDataSourceManager.createProfile(profileName);
-                DynamicDataSourceManager.changeProfile(profileName);
-                DynamicDataSourceManager.writeProperty("workflowDriver", jdbcDriver);
-                DynamicDataSourceManager.writeProperty("workflowUrl", jdbcUrlToSave);
-                DynamicDataSourceManager.writeProperty("workflowUser", jdbcUser);
-                DynamicDataSourceManager.writeProperty("workflowPassword", jdbcPassword);
-                
-                // initialize spring application context
-                ServletContext sc = request.getServletContext();
-                ServletContextEvent sce = new ServletContextEvent(sc);
-                CustomContextLoaderListener cll = new CustomContextLoaderListener();
-                cll.contextInitialized(sce);
-                DispatcherServlet servlet = CustomDispatcherServlet.getCustomDispatcherServlet();
-                servlet.init();
-                
-                if (sampleApps != null) {
-                    // import sample apps
-                    ApplicationContext context = AppUtil.getApplicationContext();
-                    InputStream setupInput = getClass().getResourceAsStream("/setup/setup.properties");
-                    Properties setupProps = new Properties();
-                    try {
-                        setupProps.load(setupInput);
-                        String sampleDelimitedApps = setupProps.getProperty("sample.apps");
-                        StringTokenizer appTokenizer = new StringTokenizer(sampleDelimitedApps, ",");
-                        while (appTokenizer.hasMoreTokens()) {
-                            String appPath = appTokenizer.nextToken();
-                            importApp(context, appPath);
-                        }
-                    } finally {
-                        if (setupInput != null) {
-                            setupInput.close();
-                        }
-                    }
-                }                
-                
-                LogUtil.info(getClass().getName(), "Profile init complete: " + profileName);
-                LogUtil.info(getClass().getName(), "===== Database Setup Complete =====");
+                		exists = rs.next();
+                	} catch (SQLException ex) {
+                		LogUtil.error(getClass().getName(), ex, "");
+                	}
+            } catch (SQLException e) {
+            		LogUtil.error(getClass().getName(), e, "");
+			}
+            
+            try {
+	            if (exists) {
+	            		LogUtil.info(getClass().getName(), "Database already initialized " + jdbcUrl);
+	            } else {
+	            		LogUtil.info(getClass().getName(), "Database not yet initialized " + jdbcUrl);
+	            		
+	                // get schema file
+	                String schemaFile = null;
+	                String quartzFile = null;
+	                if ("oracle".equals(dbType) || jdbcUrl.contains("oracle")) {
+	                    schemaFile = "/setup/sql/oracle.sql";
+	                    quartzFile = "/setup/sql/quartz-tables_oracle.sql";
+	                } else if ("sqlserver".equals(dbType) || jdbcUrl.contains("sqlserver")) {
+	                    schemaFile = "/setup/sql/mssql.sql";
+	                    quartzFile = "/setup/sql/quartz-tables_sqlServer.sql";
+	                } else if ("mysql".equals(dbType) || jdbcUrl.contains("mysql")) {
+	                    schemaFile = "/setup/sql/mysql.sql";
+	                    quartzFile = "/setup/sql/quartz-tables_mysql_innodb.sql";
+	                } else if("postgresql".equals(dbType) || jdbcUrl.contains("postgresql")) {
+	                		schemaFile = "/setup/sql/postgresql.sql";
+	                		quartzFile = "/setup/sql/quartz-tables_postgres.sql";
+	                } else {
+	                    throw new SQLException("Unrecognized database type, please setup the datasource manually");
+	                }
+	
+	                if (dbName != null) {
+	                     // create database
+	                		ds.setUrl(jdbcUrl);
+	                     try( Connection con = ds.getConnection();
+	                    		 Statement stmt = con.createStatement()) {
+	                        LogUtil.info(getClass().getName(), "Create database " + dbName);
+	                        stmt.executeUpdate("CREATE DATABASE " + dbName + ";");
+	                    } catch(SQLException ex) {
+	                    		LogUtil.error(getClass().getName(), ex, "");
+	                    }
+	                }
+	                
+	                ds.setUrl(jdbcFullUrl);
+	                try(Connection con = ds.getConnection()) {
+	                    {
+		                    // execute schema file
+		                    LogUtil.info(getClass().getName(), "Execute schema " + schemaFile);
+		                    ScriptRunner runner = new ScriptRunner(con, false, false);
+		                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
+	                    }
+	                    
+	                    {
+		                    // execute quartz file
+		                    LogUtil.info(getClass().getName(), "Execute quartz " + quartzFile);
+		                    ScriptRunner runner = new ScriptRunner(con, false, false);
+		                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(quartzFile))));
+	                    }
+	                } catch(SQLException e) {
+	                		LogUtil.error(getClass().getName(), e, "");
+	                }
+	            }
+            
+	            try(Connection con = ds.getConnection()) {
+	                if ("true".equals(sampleUsers)) {
+	                    // create users
+	                    String schemaFile = "/setup/sql/users.sql";
+	                    LogUtil.info(getClass().getName(), "Create users using schema " + schemaFile);
+	                    ScriptRunner runner = new ScriptRunner(con, false, true);
+	                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
+	                }
+	                
+	                LogUtil.info(getClass().getName(), "Datasource init complete: " + success);
+	                
+	                // save profile
+	                String profileName = (dbName != null && !dbName.trim().isEmpty()) ? dbName : "custom";
+	                String jdbcUrlToSave = (jdbcFullUrl != null && !jdbcFullUrl.trim().isEmpty()) ? jdbcFullUrl : jdbcUrl;
+	                LogUtil.info(getClass().getName(), "Save profile " + profileName);
+	                DynamicDataSourceManager.createProfile(profileName);
+	                DynamicDataSourceManager.changeProfile(profileName);
+	                DynamicDataSourceManager.writeProperty("workflowDriver", jdbcDriver);
+	                DynamicDataSourceManager.writeProperty("workflowUrl", jdbcUrlToSave);
+	                DynamicDataSourceManager.writeProperty("workflowUser", jdbcUser);
+	                DynamicDataSourceManager.writeProperty("workflowPassword", jdbcPassword);
+	                
+	                // initialize spring application context
+	                ServletContext sc = request.getServletContext();
+	                ServletContextEvent sce = new ServletContextEvent(sc);
+	                CustomContextLoaderListener cll = new CustomContextLoaderListener();
+	                cll.contextInitialized(sce);
+	                DispatcherServlet servlet = CustomDispatcherServlet.getCustomDispatcherServlet();
+	                servlet.init();
+	                
+	                if (sampleApps != null) {
+	                    // import sample apps
+	                    ApplicationContext context = AppUtil.getApplicationContext();
+	                    InputStream setupInput = getClass().getResourceAsStream("/setup/setup.properties");
+	                    Properties setupProps = new Properties();
+	                    try {
+	                        setupProps.load(setupInput);
+	                        String sampleDelimitedApps = setupProps.getProperty("sample.apps");
+	                        StringTokenizer appTokenizer = new StringTokenizer(sampleDelimitedApps, ",");
+	                        while (appTokenizer.hasMoreTokens()) {
+	                            String appPath = appTokenizer.nextToken();
+	                            importApp(context, appPath);
+	                        }
+	                    } finally {
+	                        if (setupInput != null) {
+	                            setupInput.close();
+	                        }
+	                    }
+	                }                
+	                
+	                LogUtil.info(getClass().getName(), "Profile init complete: " + profileName);
+	                LogUtil.info(getClass().getName(), "===== Database Setup Complete =====");
+	            }
                 
             } catch (Exception ex) {
                 LogUtil.error(getClass().getName(), null, ex.toString());
                 success = false;
                 message = ex.getMessage().replace("'", " ");
             } finally {
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (SQLException ex) {
-                        // ignore
-                    }
-                }
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (SQLException ex) {
-                        // ignore
-                    }
-                }
-                if (con != null) {
-                    try {
-                        con.close();
-                    } catch (SQLException ex) {
-                        // ignore
-                    }
-                }
                 try {
                     ds.close();
                 } catch (SQLException ex) {
