@@ -11,10 +11,10 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>3.1</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -216,5 +216,10 @@
 			<artifactId>asm</artifactId>
 			<version>3.2</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.joget</groupId>
+            <artifactId>wflow-plugin-base</artifactId>
+            <version>5.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

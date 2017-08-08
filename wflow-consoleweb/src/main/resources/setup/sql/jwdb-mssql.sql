@@ -3125,9 +3125,9 @@ INSERT INTO dir_role (id,name,description) VALUES ('ROLE_USER','User','Normal Us
 INSERT INTO dir_role (id,name,description) VALUES ('ROLE_MANAGER', 'Manager', 'Manager Apps');
 INSERT INTO dir_role (id,name,description) VALUES ('ROLE_MONITORING', 'Monitoring', 'Monitoring Apps'); 
 
-INSERT INTO dir_user (id,username,password,firstName,lastName,email,active,timeZone) VALUES ('admin','admin','3F3E6296C5974ED9C4AFF2BBB89256D0','Admin','admin','admin@email.domain',1,'0');
+INSERT INTO dir_user (id,username,password,firstName,lastName,email,active,timeZone) VALUES ('admin','admin','D475DD2BBF4138BB17263A3537B2F101','Admin','admin','admin@email.domain',1,'0');
 
-INSERT INTO dir_user_salt (id,userId,randomSalt) VALUES ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','C2117FD9E043CD845C5D1A533FB2E580');
+INSERT INTO dir_user_salt (id,userId,randomSalt) VALUES ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','2DEFB4535E58F417C62E632D82402986');
 
 INSERT INTO dir_user_role (roleId,userId) VALUES ('ROLE_ADMIN','admin');
 
