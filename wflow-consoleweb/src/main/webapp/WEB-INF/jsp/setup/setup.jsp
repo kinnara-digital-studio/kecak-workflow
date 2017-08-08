@@ -290,15 +290,15 @@
                         $("#jdbcUrl").val("jdbc:mysql://" + dbHost + ":" + dbPort + "/?characterEncoding=UTF-8");
                         $("#jdbcFullUrl").val("jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?characterEncoding=UTF-8");
                     } else if(dbType === "postgresql") {
-	                		$("#jdbcSetup").hide();
-	                    $("#dbSetup").show();
-	                    $("#jdbcDriver").val("org.postgresql.Driver");
-	                    if (Setup.currentDbType !== dbType) {
-	                        $("#dbPort").val("5432");
-	                        dbPort = 5432;
-	                    }
-	                    $("#jdbcUrl").val("jdbc:postgresql://" + dbHost + ":" + dbPort + "/");
-	                    $("#jdbcFullUrl").val("jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName);
+                    	$("#jdbcSetup").hide();
+                        $("#dbSetup").show();
+                        $("#jdbcDriver").val("org.postgresql.Driver");
+                        if (Setup.currentDbType !== dbType) {
+                            $("#dbPort").val("5432");
+                            dbPort = 5432;
+                        }
+                        $("#jdbcUrl").val("jdbc:postgresql://" + dbHost + ":" + dbPort + "/");
+                        $("#jdbcFullUrl").val("jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName);
                     } else {
                         $("#jdbcUrl").val($("#jdbcFullUrl").val());
                         $("#jdbcSetup").show();
