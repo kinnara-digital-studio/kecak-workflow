@@ -149,7 +149,7 @@
     <bean id="propertiesLoader" class="org.joget.apps.property.DataSourcePropertiesLoader">
 		<property name="locations">
 		    <list>  
-		      <value>classpath:config/quartz-setup.properties</value>
+		      <value>classpath:conf/quartz-setup.properties</value>
 		    </list> 
 		</property>
 		<property name="propertyDao" ref="propertyDao" />
