@@ -2041,11 +2041,7 @@ Insert into OBJECTID (NEXTOID) values (1000200);
 --   DATA FOR TABLE DIR_USER
 --   FILTER = none used
 ---------------------------------------------------
-<<<<<<< HEAD:wflow-consoleweb/src/main/resources/setup/sql/jwdb-oracle.sql
 Insert into DIR_USER (ID,USERNAME,PASSWORD,FIRSTNAME,LASTNAME,EMAIL,TIMEZONE,ACTIVE) values ('admin','admin','D475DD2BBF4138BB17263A3537B2F101','Admin','Admin','admin@email.domain','0',1);
-=======
-Insert into DIR_USER (ID,USERNAME,PASSWORD,FIRSTNAME,LASTNAME,EMAIL,TIMEZONE,ACTIVE) values ('admin','admin','49E81638C33C9F0CC68ADFB7D92A7D78','Admin','Admin','admin@email.domain','0',1);
->>>>>>> dd332af958dd7a0f7fbca4dc181508da05b3540e:wflow-consoleweb/src/main/resources/setup/sql/oracle.sql
 
 ---------------------------------------------------
 --   END DATA FOR TABLE DIR_USER
@@ -2066,11 +2062,15 @@ Insert into DIR_USER_ROLE (ROLEID,USERID) values ('ROLE_ADMIN','admin');
 --   DATA FOR TABLE DIR_USER_SALT
 --   FILTER = none used
 ---------------------------------------------------
+<<<<<<< HEAD:wflow-consoleweb/src/main/resources/setup/sql/oracle.sql
 <<<<<<< HEAD:wflow-consoleweb/src/main/resources/setup/sql/jwdb-oracle.sql
 Insert into DIR_USER_SALT (ID,USERID,RANDOMSALT) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','2DEFB4535E58F417C62E632D82402986');
 =======
 Insert into DIR_USER_SALT (ID,USERID,RANDOMSALT) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','588A11C77B8BFB5B9C859E36959FF623');
 >>>>>>> dd332af958dd7a0f7fbca4dc181508da05b3540e:wflow-consoleweb/src/main/resources/setup/sql/oracle.sql
+=======
+Insert into DIR_USER_SALT (ID,USERID,RANDOMSALT) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','588A11C77B8BFB5B9C859E36959FF623');
+>>>>>>> origin/master:wflow-consoleweb/src/main/resources/setup/sql/oracle.sql
 
 ---------------------------------------------------
 --   END DATA FOR TABLE DIR_USER_SALT

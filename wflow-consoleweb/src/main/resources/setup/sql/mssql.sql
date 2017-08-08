@@ -3125,15 +3125,9 @@ INSERT INTO dir_role (id,name,description) VALUES ('ROLE_USER','User','Normal Us
 INSERT INTO dir_role (id,name,description) VALUES ('ROLE_MANAGER', 'Manager', 'Manager Apps');
 INSERT INTO dir_role (id,name,description) VALUES ('ROLE_MONITORING', 'Monitoring', 'Monitoring Apps'); 
 
-<<<<<<< HEAD:wflow-consoleweb/src/main/resources/setup/sql/jwdb-mssql.sql
 INSERT INTO dir_user (id,username,password,firstName,lastName,email,active,timeZone) VALUES ('admin','admin','D475DD2BBF4138BB17263A3537B2F101','Admin','admin','admin@email.domain',1,'0');
 
 INSERT INTO dir_user_salt (id,userId,randomSalt) VALUES ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','2DEFB4535E58F417C62E632D82402986');
-=======
-INSERT INTO dir_user (id,username,password,firstName,lastName,email,active,timeZone) VALUES ('admin','admin','49E81638C33C9F0CC68ADFB7D92A7D78','Admin','admin','admin@email.domain',1,'0');
-
-INSERT INTO dir_user_salt (id,userId,randomSalt) VALUES ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','588A11C77B8BFB5B9C859E36959FF623');
->>>>>>> dd332af958dd7a0f7fbca4dc181508da05b3540e:wflow-consoleweb/src/main/resources/setup/sql/mssql.sql
 
 INSERT INTO dir_user_role (roleId,userId) VALUES ('ROLE_ADMIN','admin');
 
