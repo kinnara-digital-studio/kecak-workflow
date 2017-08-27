@@ -1122,16 +1122,16 @@ CREATE TABLE dir_user (
     PRIMARY KEY (id)
 );
 
-INSERT INTO dir_user VALUES ('admin','admin','49E81638C33C9F0CC68ADFB7D92A7D78','Admin','Admin',NULL,1,'0',NULL);
+INSERT INTO dir_user VALUES ('admin','admin','D475DD2BBF4138BB17263A3537B2F101','Admin','Admin',NULL,1,'0',NULL);
 
-CREATE TABLE DIR_USER_SALT (	
-   	id varchar(510) NOT NULL, 
+CREATE TABLE DIR_USER_SALT (
+   	id varchar(510) NOT NULL,
 	userid varchar(510) NOT NULL,
 	randomsalt varchar(510) NOT NULL,
 	PRIMARY KEY (id)
 );
 
-Insert into DIR_USER_SALT (id,userid,randomsalt) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','588A11C77B8BFB5B9C859E36959FF623');
+Insert into DIR_USER_SALT (id,userid,randomsalt) values ('09f1122b-a389-4a24-b245-c6102109d4c1','admin','2DEFB4535E58F417C62E632D82402986');
  
 CREATE TABLE dir_user_extra (
     username varchar(510) NOT NULL,
