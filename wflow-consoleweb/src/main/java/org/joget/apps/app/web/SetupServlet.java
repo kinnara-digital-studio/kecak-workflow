@@ -99,29 +99,33 @@ public class SetupServlet extends HttpServlet {
             ds.setDriverClassName(jdbcDriver);
             ds.setUsername(jdbcUser);
             ds.setPassword(jdbcPassword);
-            ds.setUrl(jdbcFullUrl);
+            ds.setUrl(jdbcUrl);
             try(Connection con = ds.getConnection()) {
-                	// test connection
-                	success = true;
-                	message = ResourceBundleUtil.getMessage("setup.datasource.label.success");
+                success = true;
 
-                	// check for existing tables
-                	try (Statement stmt = con.createStatement();
-                	    	ResultSet rs = stmt.executeQuery("SELECT * FROM dir_role")) {
-                    
-                		exists = rs.next();
-                	} catch (SQLException ex) {
-                		LogUtil.error(getClass().getName(), ex, "");
-                	}
+                // test connection
+                message = ResourceBundleUtil.getMessage("setup.datasource.label.success");
+
+                LogUtil.info(getClass().getName(), "Use database " + dbName);
+                con.setCatalog(dbName);
+
+                // check for existing tables
+                try (Statement stmt = con.createStatement();
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM dir_role")) {
+
+                    exists = rs.next();
+                } catch (SQLException ex) {
+                    LogUtil.error(getClass().getName(), ex, "");
+                }
             } catch (SQLException e) {
             		LogUtil.error(getClass().getName(), e, "");
 			}
             
             try {
 	            if (exists) {
-	            		LogUtil.info(getClass().getName(), "Database already initialized " + jdbcUrl);
+	            	LogUtil.info(getClass().getName(), "Database already initialized " + jdbcUrl);
 	            } else {
-	            		LogUtil.info(getClass().getName(), "Database not yet initialized " + jdbcUrl);
+                    LogUtil.info(getClass().getName(), "Database not yet initialized " + jdbcUrl);
 	            		
 	                // get schema file
 	                String schemaFile = null;
@@ -147,15 +151,18 @@ public class SetupServlet extends HttpServlet {
 	                		ds.setUrl(jdbcUrl);
 	                     try( Connection con = ds.getConnection();
 	                    		 Statement stmt = con.createStatement()) {
-	                        LogUtil.info(getClass().getName(), "Create database " + dbName);
-	                        stmt.executeUpdate("CREATE DATABASE " + dbName + ";");
+                        LogUtil.info(getClass().getName(), "Create database " + dbName);
+                        stmt.executeUpdate("CREATE DATABASE " + dbName + ";");
 	                    } catch(SQLException ex) {
-	                    		LogUtil.error(getClass().getName(), ex, "");
+	                         LogUtil.error(getClass().getName(), ex, "");
 	                    }
 	                }
 	                
 	                ds.setUrl(jdbcFullUrl);
 	                try(Connection con = ds.getConnection()) {
+                        con.setAutoCommit(false);
+                        con.setCatalog(dbName);
+
 	                    {
 		                    // execute schema file
 		                    LogUtil.info(getClass().getName(), "Execute schema " + schemaFile);
@@ -169,20 +176,27 @@ public class SetupServlet extends HttpServlet {
 		                    ScriptRunner runner = new ScriptRunner(con, false, false);
 		                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(quartzFile))));
 	                    }
+
+                        con.commit();
 	                } catch(SQLException e) {
 	                		LogUtil.error(getClass().getName(), e, "");
 	                }
 	            }
             
 	            try(Connection con = ds.getConnection()) {
+                    con.setAutoCommit(false);
+                    con.setCatalog(dbName);
+
 	                if ("true".equals(sampleUsers)) {
 	                    // create users
 	                    String schemaFile = "/setup/sql/users.sql";
 	                    LogUtil.info(getClass().getName(), "Create users using schema " + schemaFile);
+                        con.setCatalog(dbName);
 	                    ScriptRunner runner = new ScriptRunner(con, false, true);
 	                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
 	                }
-	                
+
+	                con.commit();
 	                LogUtil.info(getClass().getName(), "Datasource init complete: " + success);
 	                
 	                // save profile
@@ -207,19 +221,14 @@ public class SetupServlet extends HttpServlet {
 	                if (sampleApps != null) {
 	                    // import sample apps
 	                    ApplicationContext context = AppUtil.getApplicationContext();
-	                    InputStream setupInput = getClass().getResourceAsStream("/setup/setup.properties");
-	                    Properties setupProps = new Properties();
-	                    try {
+	                    try(InputStream setupInput = getClass().getResourceAsStream("/setup/setup.properties")) {
+                            Properties setupProps = new Properties();
 	                        setupProps.load(setupInput);
 	                        String sampleDelimitedApps = setupProps.getProperty("sample.apps");
 	                        StringTokenizer appTokenizer = new StringTokenizer(sampleDelimitedApps, ",");
 	                        while (appTokenizer.hasMoreTokens()) {
 	                            String appPath = appTokenizer.nextToken();
 	                            importApp(context, appPath);
-	                        }
-	                    } finally {
-	                        if (setupInput != null) {
-	                            setupInput.close();
 	                        }
 	                    }
 	                }                
@@ -242,11 +251,8 @@ public class SetupServlet extends HttpServlet {
 
             // send result
             response.setContentType("application/json;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            try {
+            try(PrintWriter out = response.getWriter()) {
                 out.println("{\"action\":\"init\",\"result\":\"" + success + "\",\"message\":\"" + StringEscapeUtils.escapeJavaScript(message) + "\"}");
-            } finally {
-                out.close();
             }
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -287,10 +293,9 @@ public class SetupServlet extends HttpServlet {
      */
     protected byte[] readInputStream(InputStream in) throws IOException {
         byte[] fileContent;
-        ByteArrayOutputStream out = null;
-        try {
-            out = new ByteArrayOutputStream();
-            BufferedInputStream bin = new BufferedInputStream(in);
+
+        try(ByteArrayOutputStream out = new ByteArrayOutputStream();
+            BufferedInputStream bin = new BufferedInputStream(in);) {
             int len;
             byte[] buffer = new byte[4096];
             while ((len = bin.read(buffer)) > 0) {
@@ -299,17 +304,6 @@ public class SetupServlet extends HttpServlet {
             out.flush();
             fileContent = out.toByteArray();
             return fileContent;
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                LogUtil.error(getClass().getName(), ex, ex.getMessage());
-            }
         }
     }
     

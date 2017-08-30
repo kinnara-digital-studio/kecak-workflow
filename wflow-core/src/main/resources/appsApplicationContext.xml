@@ -270,22 +270,14 @@
 				
                 <!-- DataSource -->
                 <prop key="org.quartz.jobStore.dataSource">quartzDS</prop>
-				
-                <!--  
-                <prop key="org.quartz.dataSource.quartzDS.URL">jdbc:mysql://localhost:3306/kecakdb?characterEncoding=UTF-8</prop>
-                <prop key="org.quartz.dataSource.quartzDS.driver">com.mysql.jdbc.Driver</prop>
-                <prop key="org.quartz.dataSource.quartzDS.user">root</prop>
-                <prop key="org.quartz.dataSource.quartzDS.password">3nengtri</prop>
-                <prop key="org.quartz.dataSource.quartzDS.maxConnections">5</prop>
-                <prop key="org.quartz.dataSource.quartzDS.validationQuery">select 0 from dual</prop>
-                -->
-				
-                <prop key="org.quartz.dataSource.quartzDS.URL">${quartzDS.URL}</prop>
-                <prop key="org.quartz.dataSource.quartzDS.driver">${quartzDS.driver}</prop>
-                <prop key="org.quartz.dataSource.quartzDS.user">${quartzDS.user}</prop>
-                <prop key="org.quartz.dataSource.quartzDS.password">${quartzDS.password}</prop>
-                <prop key="org.quartz.dataSource.quartzDS.maxConnections">${quartzDS.maxConnections}</prop>
-                <prop key="org.quartz.dataSource.quartzDS.validationQuery">${quartzDS.validationQuery}</prop>
+
+                <prop key="org.quartz.dataSource.quartzDS.jndiURL">${quartzDS.jndiURL}</prop>
+                <!--<prop key="org.quartz.dataSource.quartzDS.URL">${quartzDS.URL}</prop>-->
+                <!--<prop key="org.quartz.dataSource.quartzDS.driver">${quartzDS.driver}</prop>-->
+                <!--<prop key="org.quartz.dataSource.quartzDS.user">${quartzDS.user}</prop>-->
+                <!--<prop key="org.quartz.dataSource.quartzDS.password">${quartzDS.password}</prop>-->
+                <!--<prop key="org.quartz.dataSource.quartzDS.maxConnections">${quartzDS.maxConnections}</prop>-->
+                <!--<prop key="org.quartz.dataSource.quartzDS.validationQuery">${quartzDS.validationQuery}</prop>-->
             </props>
         </property>
     </bean>
