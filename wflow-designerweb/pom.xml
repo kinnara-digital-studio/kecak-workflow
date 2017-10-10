@@ -130,9 +130,9 @@
             </plugin>
             -->
             <plugin>
-                <groupId>org.codehaus.mojo.webstart</groupId>
+                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>webstart-maven-plugin</artifactId>
-                <version>1.0-alpha-2</version>
+                <version>1.0-beta-7</version>
                 <executions>
                     <execution>
                         <phase>process-resources</phase>
@@ -266,7 +266,10 @@
                         <verify>false</verify> <!-- verify the signature after signing -->
                     </sign>
                     <unsign>true</unsign> <!-- unsign already signed packages and sign them with own key -->
-                    <verifyjar>false</verifyjar>
+                    <!--<verifyjar>false</verifyjar>-->
+                    <pack200>
+                        <enabled>true</enabled>
+                    </pack200>
                 </configuration>
             </plugin>
             <plugin>
