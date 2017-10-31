@@ -4361,6 +4361,7 @@ public class ConsoleWebController {
                 SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
                 details.setCronExpression(schedulerDetails.getCronExpression());
                 details.setJobClassName(schedulerDetails.getJobClassName());
+                details.setProcessDefId(schedulerDetails.getProcessDefId());
                 details.setDateModified(now);
                 details.setModifiedBy(currUsername);
 

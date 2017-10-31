@@ -39,12 +39,16 @@
                     <span class="form-input"><form:input path="groupTriggerName" cssErrorClass="form-input-error" size="30" readonly="true" disabled="true"/> *</span>
                 </div>
                 <div class="form-row">
-                    <label for="field1"><fmt:message key="console.setting.scheduler.common.label.jobClassName"/></label>
-                    <span class="form-input"><form:input path="jobClassName" cssErrorClass="form-input-error"  size="30"/> *</span>
+                    <label for="jobClassName"><fmt:message key="console.setting.scheduler.common.label.jobClassName"/></label>
+                    <span class="form-input"><form:input path="jobClassName" cssErrorClass="form-input-error"  size="30" value="org.joget.apps.scheduler.StartProcess" readonly="true"/> *</span>
                 </div>
                 <div class="form-row">
-                    <label for="field1"><fmt:message key="console.setting.scheduler.common.label.cronExpression"/></label>
+                    <label for="cronExpression"><fmt:message key="console.setting.scheduler.common.label.cronExpression"/></label>
                     <span class="form-input"><form:input path="cronExpression" cssErrorClass="form-input-error"  size="30"/> *</span>
+                </div>
+                <div class="form-row">
+                    <label for="processDefId"><fmt:message key="console.setting.scheduler.common.label.processDefId"/></label>
+                    <span class="form-input"><form:input path="processDefId" cssErrorClass="form-input-error"  size="30"/> *</span>
                 </div>
             </fieldset>
             <div class="form-buttons">
