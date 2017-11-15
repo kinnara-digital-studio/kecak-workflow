@@ -19,6 +19,7 @@
 		
 		<property name="jobClassName" type="string" column="job_class_name" />
 		<property name="cronExpression" type="string" column="cron_expression" />
+                <property name="processDefId" type="string" column="processDefId" />
 		<property name="interval" type="long" column="job_interval" />
 		<property name="nextFireTime" type="timestamp" />
 		<property name="triggerTypes" column="trigger_types">

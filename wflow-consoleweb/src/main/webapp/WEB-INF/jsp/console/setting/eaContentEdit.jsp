@@ -28,6 +28,7 @@
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.processId"/></label>
                     <span class="form-input"><c:out value="${eaContent.processId}"/>
                     	<input id="processId" type="hidden" value="${eaContent.processId}" name="processId" size="30"/>
+                        <i><span class="ftl_label">ex: crm#1#process1</span></i>
                     </span>
                 </div>
                 <div class="form-row">

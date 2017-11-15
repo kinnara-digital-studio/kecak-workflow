@@ -20,11 +20,16 @@
                 <legend><fmt:message key="console.setting.eaContent.common.label.details"/></legend>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.processId"/></label>
-                    <span class="form-input"><form:input path="processId" cssErrorClass="form-input-error" size="30"/> *</span>
+                    <span class="form-input">
+                        <form:input path="processId" cssErrorClass="form-input-error" size="30"/> *
+                        <i><span class="ftl_label">ex: crm#1#process1</span></i>
+                    </span>
                 </div>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.activityId"/></label>
-                    <span class="form-input"><form:input path="activityId" cssErrorClass="form-input-error" size="30" /> *</span>
+                    <span class="form-input">
+                        <form:input path="activityId" cssErrorClass="form-input-error" size="30" /> *
+                    </span>
                 </div>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.setting.eaContent.common.label.content"/></label>
