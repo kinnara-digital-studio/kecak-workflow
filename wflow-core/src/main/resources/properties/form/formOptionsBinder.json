@@ -26,6 +26,18 @@
         cols : '50'
     },
     {
+        name : 'showIdInLabel',
+        label : '@@form.defaultformoptionbinder.showIdInLabel@@',
+        type : 'checkbox',
+        value : 'false',
+        options : [
+            {
+                value : 'true',
+                label : ''
+            }
+        ]
+    },
+    {
         name : 'addEmptyOption',
         label : '@@form.defaultformoptionbinder.addEmptyOption@@',
         type : 'checkbox',
