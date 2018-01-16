@@ -13,6 +13,8 @@ import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
+import org.joget.workflow.model.WorkflowAssignment;
+import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 
 /**
@@ -378,7 +380,11 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
                 ExtDirectoryManager directoryManager = (ExtDirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
                 User user = directoryManager.getUserByUsername(workflowUserManager.getCurrentUsername());
                 permission.setCurrentUser(user);
-                
+
+                WorkflowManager workflowManager = (WorkflowManager)AppUtil.getApplicationContext().getBean("workflowManager");
+                WorkflowAssignment workflowAssignment = workflowManager.getAssignmentByProcess(formData.getProcessId());
+                permission.setWorkflowAssignment(workflowAssignment);
+
                 isAuthorize = permission.isAuthorize();
             }
         }

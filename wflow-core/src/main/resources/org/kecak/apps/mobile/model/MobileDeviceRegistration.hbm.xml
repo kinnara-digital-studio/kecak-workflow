@@ -14,5 +14,6 @@
 		<property name="username" type="string" column="username" />
 		<property name="deviceId" type="string" column="device_id" />
 		<property name="deviceToken" type="string" column="device_token" />
+		<property name="authToken" type="string" column="auth_token" />
 	</class>
 </hibernate-mapping>
