@@ -381,9 +381,7 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
                 User user = directoryManager.getUserByUsername(workflowUserManager.getCurrentUsername());
                 permission.setCurrentUser(user);
 
-                WorkflowManager workflowManager = (WorkflowManager)AppUtil.getApplicationContext().getBean("workflowManager");
-                WorkflowAssignment workflowAssignment = workflowManager.getAssignmentByProcess(formData.getProcessId());
-                permission.setWorkflowAssignment(workflowAssignment);
+                permission.setFormData(formData);
 
                 isAuthorize = permission.isAuthorize();
             }

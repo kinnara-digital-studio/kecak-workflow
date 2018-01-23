@@ -1,5 +1,6 @@
 package org.joget.apps.userview.model;
 
+import org.joget.apps.form.model.FormData;
 import org.joget.directory.model.User;
 import org.joget.workflow.model.WorkflowAssignment;
 
@@ -10,7 +11,23 @@ import org.joget.workflow.model.WorkflowAssignment;
 public abstract class UserviewPermission extends ExtElement {
 
     private User currentUser;
-    private WorkflowAssignment workflowAssignment;
+    private FormData formData;
+
+    /**
+     * Get current form data, null if permission is not assigned to a form
+     * @return
+     */
+    public FormData getFormData() {
+        return formData;
+    }
+
+    /**
+     * Set current form data
+     * @param formData
+     */
+    public void setFormData(FormData formData) {
+        this.formData = formData;
+    }
 
     /**
      * Gets current logged in user. 
@@ -26,22 +43,6 @@ public abstract class UserviewPermission extends ExtElement {
      */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
-    }
-
-    /**
-     * Get current active assignment
-     * @return NULL if current element is not being accessed from process
-     */
-    public WorkflowAssignment getWorkflowAssignment() {
-        return workflowAssignment;
-    }
-
-    /**
-     * Set current assignment
-     * @param workflowAssignment
-     */
-    public void setWorkflowAssignment(WorkflowAssignment workflowAssignment) {
-        this.workflowAssignment = workflowAssignment;
     }
 
     /**
