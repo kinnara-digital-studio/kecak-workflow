@@ -44,7 +44,7 @@ public class EmailApprovalProcessor {
         //GET EMAIL ADDRESS
         String from = (String) exchange.getIn().getHeader(FROM);
         
-
+        LogUtil.info(this.getClass().getName(), "====== Sender From: "+from);
         int startIndex = from.indexOf("<");
         int length = from.length();
         if (startIndex > -1) {
@@ -64,7 +64,6 @@ public class EmailApprovalProcessor {
         String subjectRegex = createRegex(MAIL_SUBJECT_PATTERN);
         Pattern pattern2 = Pattern.compile("^" + subjectRegex + "$");
         Matcher matcher2 = pattern2.matcher(subject);
-        LogUtil.info(this.getClass().getName(), "[Subject REGEX] : " + subjectRegex);
 
         String processId = null;
         while (matcher2.find()) {
@@ -78,7 +77,7 @@ public class EmailApprovalProcessor {
                 count++;
             }
         }
-        LogUtil.info(this.getClass().getName(), "Process ID : " + processId);
+        LogUtil.info(this.getClass().getName(), "process id [" + processId + "]");
 
         if (processId != null) {
             parseEmailContent(processId, username, body);
@@ -97,18 +96,18 @@ public class EmailApprovalProcessor {
         String activityId = null;
 
         workflowUserManager.setCurrentThreadUser(username);
-        LogUtil.info(this.getClass().getName(), "[USERNAME] : " + workflowUserManager.getCurrentUsername());
+        LogUtil.info(this.getClass().getName(), "USER [" + workflowUserManager.getCurrentUsername() + "] PROCESS_ID ["+processId+"]");
 
         WorkflowAssignment workflowAssignment = workflowManager.getAssignmentByProcess(processId);
         if (workflowAssignment != null) {
             processDefId = workflowAssignment.getProcessDefId();
             activityDefId = workflowAssignment.getActivityDefId();
             activityId = workflowAssignment.getActivityId();
-            LogUtil.info(this.getClass().getName(), "processDefId :[" + processDefId + "]");
-            LogUtil.info(this.getClass().getName(), "activityDefId :[" + activityDefId + "]");
-            LogUtil.info(this.getClass().getName(), "activityId :[" + activityId + "]");
+            LogUtil.info(this.getClass().getName(), "PROCESS_DEF_ID [" + processDefId + "]");
+            LogUtil.info(this.getClass().getName(), "ACTIVITY_DEF_ID [" + activityDefId + "]");
+            LogUtil.info(this.getClass().getName(), "ACTIVITY_ID[" + activityId + "]");
         } else {
-            LogUtil.info(this.getClass().getName(), "[ERROR] WorkflowAssignment is NULL");
+            LogUtil.info(this.getClass().getName(), "WorkflowAssignment is NULL");
         }
 
         EmailApprovalContent emailApprovalContent = null;
@@ -188,8 +187,6 @@ public class EmailApprovalProcessor {
                         String assignmentId = assignment.getActivityId();
                         AppDefinition appDef = appService.getAppDefinitionForWorkflowActivity(assignmentId);
 
-                        activityId = assignment.getActivityId();
-                        processId = assignment.getProcessId();
                         //if has form data to submit
                         if (!formData.getRequestParams().isEmpty()) {
                             PackageActivityForm activityForm = appService.viewAssignmentForm(appDef, assignment, formData, "", "");
@@ -222,7 +219,7 @@ public class EmailApprovalProcessor {
 
     public String getUsername(String sender) {
         // get sender
-        User user = null;
+        User user;
         InternetAddress ia = null;
         try {
             ia = new InternetAddress(sender);
@@ -231,12 +228,15 @@ public class EmailApprovalProcessor {
         }
         if (ia != null) {
             String email = ia.getAddress();
-            LogUtil.info(this.getClass().getName(), "[Email yg akan di process] - "+email);
+            LogUtil.info(this.getClass().getName(), "Processing EMAIL ["+email+"]");
             directoryManager = (DirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
-            Collection users = directoryManager.getUserList(email, null, null, 0, 1);
+            Collection<User> users = directoryManager.getUserList(email, null, null, 0, 1);
             if (!users.isEmpty()) {
-                user = (User) users.iterator().next();
+                user = users.iterator().next();
+                LogUtil.info(this.getClass().getName(), "Directory USERNAME ["+user.getUsername()+"]");
                 return user.getUsername();
+            } else {
+                LogUtil.info(getClass().getName(), "No directory user for EMAIL ["+email+"]");
             }
         }
         return null;
