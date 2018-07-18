@@ -1,15 +1,5 @@
 package org.joget.apps.processor;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.joget.apps.app.model.AppDefinition;
@@ -26,6 +16,14 @@ import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmailApprovalProcessor {
 
@@ -80,7 +78,7 @@ public class EmailApprovalProcessor {
         if (processId != null) {
             parseEmailContent(processId, username, body);
         } else {
-            LogUtil.info();
+            LogUtil.info(getClass().getName(), "Empty process ID");
         }
     }
 
@@ -223,7 +221,7 @@ public class EmailApprovalProcessor {
         if (ia != null) {
             String email = ia.getAddress();
             directoryManager = (DirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
-            User user = directoryManager.getUserList(email.toString(), null, null, 0, 1)
+            User user = directoryManager.getUserList(email, null, null, 0, 1)
                     .stream()
                     .findFirst()
                     // get data based on email without domain address
