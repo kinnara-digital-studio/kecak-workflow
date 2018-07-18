@@ -162,7 +162,7 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
                         if (id != null && !id.isEmpty() && label != null && !label.isEmpty()) {
                             newRow.setProperty(FormUtil.PROPERTY_VALUE, id);
                             newRow.setProperty(FormUtil.PROPERTY_LABEL,
-                                    "true".equals("showIdInLabel")
+                                    "true".equals(getPropertyString("showIdInLabel"))
                                             ? String.format("%s (%s)", label, id)
                                             : label);
                             newRow.setProperty(FormUtil.PROPERTY_GROUPING, grouping);
