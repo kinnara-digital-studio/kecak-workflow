@@ -15,6 +15,13 @@
 
     <import resource="classpath:appsApplicationContext.xml" />
 
+    <!-- ARISTO -->
+    <!--<security:listener>-->
+        <!--<listener-class>-->
+            <!--org.springframework.security.web.session.HttpSessionEventPublisher-->
+        <!--</listener-class>-->
+    <!--</security:listener>-->
+
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
@@ -113,15 +120,16 @@
         <security:session-management>
             <security:concurrency-control max-sessions="3" error-if-maximum-exceeded="true" expired-url="/web/login" />
         </security:session-management>
-       
-        
+
+
         <!-- Support Basic Authentication -->
         <security:http-basic />
+
         
         <security:custom-filter ref="workflowHttpAuthFilter" after="BASIC_AUTH_FILTER" /> 
-        
+
     </security:http>
-        
+
     <bean id="authenticationProvider" class="org.joget.apps.workflow.security.WorkflowAuthenticationProvider">
         <property name="directoryManager" ref="directoryManager"/>
     </bean>
@@ -162,5 +170,5 @@
     
     <import resource="classpath:camelApplicationContext.xml" />
     <import resource="classpath:webApplicationContext.xml" />
-        
+
 </beans>
