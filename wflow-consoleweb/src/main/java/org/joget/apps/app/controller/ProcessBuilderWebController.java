@@ -99,31 +99,35 @@ public class ProcessBuilderWebController {
         
         // get base64 encoded image in POST body
         String imageBase64 = request.getParameter("base64data");
-        imageBase64 = imageBase64.substring("data:image/png;base64,".length());
+        if(imageBase64!=null) {
+	        imageBase64 = imageBase64.substring("data:image/png;base64,".length());
+	        
+	        // convert into bytes
+	        byte[] decodedBytes = Base64.decodeBase64(imageBase64.getBytes());        
+	        
+	        // save into image file
+	        String filename = processDefId + XpdlImageUtil.IMAGE_EXTENSION;
+	        
+	        // determine base path
+	        String basePath = SetupManager.getBaseDirectory();
+	        String dataFileBasePath = SetupManager.getSettingValue("dataFileBasePath");
+	        if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
+	        	basePath = dataFileBasePath;
+	        }
+	    
+	        String path = basePath + File.separator + "app_xpdlImages" + File.separator + appId;
+	        new File(path).mkdirs();
+	        BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+	        File f = new File(path + File.separator + filename);
+	        ImageIO.write(image, "png", f);
+	        
+	        // create thumbnail
+	        this.createThumbnail(image, path, processDefId);
         
-        // convert into bytes
-        byte[] decodedBytes = Base64.decodeBase64(imageBase64.getBytes());        
-        
-        // save into image file
-        String filename = processDefId + XpdlImageUtil.IMAGE_EXTENSION;
-        
-        // determine base path
-        String basePath = SetupManager.getBaseDirectory();
-        String dataFileBasePath = SetupManager.getSettingValue("dataFileBasePath");
-        if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
-        	basePath = dataFileBasePath;
+	        LogUtil.debug(getClass().getName(), "Created screenshot for process " + appId);
+        }else {
+        	LogUtil.debug(getClass().getName(), "FAILED Created screenshot for process " + appId);
         }
-    
-        String path = basePath + File.separator + "app_xpdlImages" + File.separator + appId;
-        new File(path).mkdirs();
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-        File f = new File(path + File.separator + filename);
-        ImageIO.write(image, "png", f);
-        
-        // create thumbnail
-        createThumbnail(image, path, processDefId);
-        
-        LogUtil.debug(getClass().getName(), "Created screenshot for process " + appId);
     }
     
     protected void createThumbnail(Image image, String path, String processDefId) {

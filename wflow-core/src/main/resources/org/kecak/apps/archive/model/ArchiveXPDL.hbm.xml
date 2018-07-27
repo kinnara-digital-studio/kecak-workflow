@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class entity-name="XPDLArchive" lazy="false" name="org.kecak.apps.archive.model.ArchiveXPDL" table="SHKXPDLArchives">
+		<id name="id" type="string">
+			<generator class="uuid" />
+		</id>
+		<property name="dateCreated" type="timestamp"/>
+		
+		<property name="XPDLId" type="string" column="XPDLId" />
+		<property name="XPDLVersion" type="string" column="XPDLVersion" />
+		<property name="XPDLClassVersion" type="string" column="XPDLClassVersion" />
+		<property name="XPDLUploadTime" type="string" column="XPDLUploadTime" />
+		<property name="oid" type="string" column="oid" />
+		<property name="version" type="string" column="version" />
+	</class>
+</hibernate-mapping>
