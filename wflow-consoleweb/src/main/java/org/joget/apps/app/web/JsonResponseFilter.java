@@ -113,7 +113,7 @@ public class JsonResponseFilter implements Filter {
                     whitelist.addAll(Arrays.asList(jsonpWhitelist.split(";")));
                 }
                 if (!SecurityUtil.isAllowedDomain(domain, whitelist)) {
-                    LogUtil.info(JsonResponseFilter.class.getName(), "Possible CSRF attack from url("+httpRequest.getRequestURI()+") referer(" + httpRequest.getHeader("referer") + ") IP(" + httpRequest.getRemoteAddr() + ")");
+                    LogUtil.info(JsonResponseFilter.class.getName(), "Possible CSRF attack from url("+httpRequest.getRequestURI()+") referer(" + httpRequest.getHeader("referer") + ") domain (" + domain + ") IP(" + httpRequest.getRemoteAddr() + ")");
                     wrappedResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST, "");
                     return;
                 }
