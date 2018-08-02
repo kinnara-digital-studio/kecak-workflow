@@ -228,5 +228,9 @@ public class LoginWebController {
     public String mlogin(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return "mobile/mLogin";
     }
-    
+
+    @RequestMapping("/oauth2")
+    public String oauth2(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return "oauth2";
+    }
 }
