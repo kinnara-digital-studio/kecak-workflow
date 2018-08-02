@@ -31,6 +31,7 @@ public class User implements Serializable, Auditable {
     private Integer active;
     private String timeZone;
     private String locale;
+	private Blob profilePicture;
     //join
     @SuppressWarnings("rawtypes")
 	private Set roles;
@@ -118,6 +119,14 @@ public class User implements Serializable, Auditable {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+	
+	public Blob getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Blob profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public String getTimeZoneLabel() {
