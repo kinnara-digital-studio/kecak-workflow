@@ -4,6 +4,7 @@ import org.joget.commons.spring.model.Auditable;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
+import java.sql.Blob;
 import org.joget.commons.util.StringUtil;
 import org.joget.commons.util.TimeZoneUtil;
 import org.springmodules.validation.bean.conf.loader.annotation.handler.NotBlank;
