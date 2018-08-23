@@ -15,13 +15,6 @@
 
     <import resource="classpath:appsApplicationContext.xml" />
 
-    <!-- ARISTO -->
-    <!--<security:listener>-->
-        <!--<listener-class>-->
-            <!--org.springframework.security.web.session.HttpSessionEventPublisher-->
-        <!--</listener-class>-->
-    <!--</security:listener>-->
-
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
@@ -102,7 +95,10 @@
         <security:form-login login-page="/web/login" username-parameter="j_username" password-parameter="j_password" login-processing-url="/j_spring_security_check" default-target-url="/index.jsp" authentication-failure-url="/web/login?login_error=1" />
         <security:logout logout-url="/j_spring_security_logout" logout-success-url="/web/login" delete-cookies="JSESSIONID"/>
         <security:anonymous username="roleAnonymous"/>
-        
+
+        <!-- OAUTH -->
+        <security:intercept-url pattern="/web/extension" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
+
         <!-- Web Console Monitoring -->
 		<security:intercept-url pattern="/web/console/monitor/**" access="ROLE_ADMIN, ROLE_MONITORING"/>
 		
