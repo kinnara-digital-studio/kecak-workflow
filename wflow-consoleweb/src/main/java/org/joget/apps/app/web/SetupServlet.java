@@ -1,24 +1,5 @@
 package org.joget.apps.app.web;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.model.AppDefinition;
@@ -35,6 +16,20 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.servlet.DispatcherServlet;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Servlet to handle first-time database setup and initialization.
@@ -140,8 +135,8 @@ public class SetupServlet extends HttpServlet {
 	                    schemaFile = "/setup/sql/mysql.sql";
 	                    quartzFile = "/setup/sql/quartz-tables_mysql_innodb.sql";
 	                } else if("postgresql".equals(dbType) || jdbcUrl.contains("postgresql")) {
-	                		schemaFile = "/setup/sql/postgresql.sql";
-	                		quartzFile = "/setup/sql/quartz-tables_postgres.sql";
+                        schemaFile = "/setup/sql/postgresql.sql";
+                        quartzFile = "/setup/sql/quartz-tables_postgres.sql";
 	                } else {
 	                    throw new SQLException("Unrecognized database type, please setup the datasource manually");
 	                }
@@ -167,14 +162,22 @@ public class SetupServlet extends HttpServlet {
 		                    // execute schema file
 		                    LogUtil.info(getClass().getName(), "Execute schema " + schemaFile);
 		                    ScriptRunner runner = new ScriptRunner(con, false, false);
-		                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
+		                    try(BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile)))) {
+                                runner.runScript(br);
+                            } catch (SQLException | IOException e) {
+                                LogUtil.error(getClass().getName(), e, e.getMessage());
+                            }
 	                    }
 	                    
 	                    {
 		                    // execute quartz file
 		                    LogUtil.info(getClass().getName(), "Execute quartz " + quartzFile);
 		                    ScriptRunner runner = new ScriptRunner(con, false, false);
-		                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(quartzFile))));
+		                    try(BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(quartzFile)))) {
+                                runner.runScript(br);
+                            } catch (SQLException | IOException e) {
+                                LogUtil.error(getClass().getName(), e, e.getMessage());
+                            }
 	                    }
 
                         con.commit();
