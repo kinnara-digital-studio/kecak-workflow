@@ -1,10 +1,15 @@
 package org.joget.apps.form.lib;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.joget.apps.app.dao.AppDefinitionDao;
+import org.joget.apps.app.dao.FormDefinitionDao;
+import org.joget.apps.app.model.AppDefinition;
+import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
@@ -14,17 +19,37 @@ import org.joget.apps.form.model.FormBuilderPaletteElement;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.commons.util.LogUtil;
+import org.joget.directory.model.User;
+import org.joget.directory.model.service.DirectoryManager;
+import org.joget.plugin.base.PluginWebSupport;
+import org.joget.workflow.model.service.WorkflowUserManager;
+import org.joget.workflow.util.WorkflowUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
 
-public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement {
+import javax.annotation.Nullable;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport {
+    private final WeakHashMap<String, Form> formCache = new WeakHashMap<>();
+
     private Element controlElement;
+
+    private final static long PAGE_SIZE = 10;
     
     public String getName() {
         return "Select Box";
     }
 
     public String getVersion() {
-        return "5.1.0";
+        return "5.0.0";
     }
 
     public String getDescription() {
@@ -113,6 +138,28 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
 		Collection<Map> optionMap = getOptionMap(formData);
         dataModel.put("options", optionMap);
 
+        dataModel.put("className", getClassName());
+
+        dataModel.put("width", getPropertyString("size") == null || getPropertyString("size").isEmpty() ? "resolve" : (getPropertyString("size").replaceAll("[^0-9]+]", "") + "%"));
+
+        ApplicationContext appContext = AppUtil.getApplicationContext();
+        WorkflowUserManager workflowUserManager = (WorkflowUserManager) appContext.getBean("workflowUserManager");
+        DirectoryManager directoryManager = (DirectoryManager) appContext.getBean("directoryManager");
+        User user = directoryManager.getUserByUsername(WorkflowUtil.getCurrentUsername());
+        dataModel.put("language", user == null || user.getLocale() == null? "en" : user.getLocale().replaceAll("_", "-"));
+
+        final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        if(appDefinition != null) {
+            dataModel.put("appId", appDefinition.getAppId());
+            dataModel.put("appVersion", appDefinition.getVersion());
+        }
+
+        final Form form = FormUtil.findRootForm(this);
+        if(form != null)
+            dataModel.put("formDefId", form.getPropertyString(FormUtil.PROPERTY_ID));
+
+        dataModel.put("pageSize", PAGE_SIZE);
+
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
     }
@@ -161,6 +208,117 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
             }
         }
         return controlElement;
+    }
+
+    private Form generateForm(AppDefinition appDef, String formDefId) {
+        ApplicationContext appContext = AppUtil.getApplicationContext();
+        FormService formService = (FormService) appContext.getBean("formService");
+        FormDefinitionDao formDefinitionDao = (FormDefinitionDao)appContext.getBean("formDefinitionDao");
+
+        // check in cache
+        if(formCache.containsKey(formDefId))
+            return formCache.get(formDefId);
+
+        // proceed without cache
+        if (appDef != null && formDefId != null && !formDefId.isEmpty()) {
+            FormDefinition formDef = formDefinitionDao.loadById(formDefId, appDef);
+            if (formDef != null) {
+                String json = formDef.getJson();
+                Form form = (Form)formService.createElementFromJson(json);
+
+                formCache.put(formDefId, form);
+
+                return form;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        final AppDefinitionDao appDefinitionDao = (AppDefinitionDao) AppUtil.getApplicationContext().getBean("appDefinitionDao");
+
+        final String appId = request.getParameter("appId");
+        final String appVersion = request.getParameter("appVersion");
+        final String formDefId = request.getParameter("formDefId");
+        final String fieldId = request.getParameter("fieldId");
+        final String search = request.getParameter("search");
+        final Pattern searchPattern = Pattern.compile(search == null ? "" : search, Pattern.CASE_INSENSITIVE);
+        final long page = Long.parseLong(request.getParameter("page"));
+        final String grouping = request.getParameter("grouping");
+
+        final AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, Long.parseLong(appVersion));
+
+        final FormData formData = new FormData();
+        final Form form = generateForm(appDefinition, formDefId);
+
+        Element element = FormUtil.findElement(fieldId, form, formData);
+
+        FormRowSet optionsRowSet;
+        if(element.getOptionsBinder() == null) {
+            optionsRowSet = (FormRowSet) element.getProperty(FormUtil.PROPERTY_OPTIONS);
+        } else {
+            FormUtil.executeOptionBinders(element, formData);
+            optionsRowSet = formData.getOptionsBinderData(element, null);
+        }
+
+        int skip = (int) ((page - 1) * PAGE_SIZE);
+        int pageSize = (int) PAGE_SIZE;
+        JSONArray jsonResults = new JSONArray();
+        for(int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
+            FormRow formRow = optionsRowSet.get(i);
+            if (searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find() && (
+                    grouping == null
+                    || grouping.isEmpty()
+                    || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))) {
+
+                if(skip > 0) {
+                    skip--;
+                } else {
+                    try {
+                        JSONObject jsonResult = new JSONObject();
+                        jsonResult.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
+                        jsonResult.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
+                        jsonResults.put(jsonResult);
+                        pageSize--;
+                    } catch (JSONException ignored) { }
+                }
+            }
+        }
+
+        // I wonder why these codes don't work; they got some NULL POINTER EXCEPTION
+//        JSONArray jsonResults = new JSONArray((optionsRowSet).stream()
+//                .filter(Objects::nonNull)
+//                .filter(formRow -> searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find())
+//                .filter(formRow -> grouping == null
+//                        || formRow.getProperty(FormUtil.PROPERTY_GROUPING) == null
+//                        || grouping.isEmpty()
+//                        || formRow.getProperty(FormUtil.PROPERTY_GROUPING).isEmpty()
+//                        || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))
+//                .skip((page - 1) * PAGE_SIZE)
+//                .limit(PAGE_SIZE)
+//                .map(formRow -> {
+//                    final Map<String, String> map = new HashMap<>();
+//                    map.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
+//                    map.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
+//                    return map;
+//                })
+//                .collect(Collectors.toList()));
+
+        try {
+            JSONObject jsonPagination = new JSONObject();
+            jsonPagination.put("more", jsonResults.length() >= PAGE_SIZE);
+
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("results", jsonResults);
+            jsonData.put("pagination", jsonPagination);
+
+            response.setContentType("application/json");
+            response.getWriter().write(jsonData.toString());
+        } catch (JSONException e) {
+            LogUtil.error(getClassName(), e, e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 }
 

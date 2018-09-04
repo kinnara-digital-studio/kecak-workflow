@@ -1,7 +1,8 @@
 <div class="form-cell" ${elementMetaData!}>
-	<link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.SelectBox/css/chosen.min.css">
-	<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.SelectBox/js/chosen.jquery.min.js" type="text/javascript"></script>
-	
+    <link rel="stylesheet" href="${request.contextPath}/plugin/${className}/bower_components/select2/dist/css/select2.min.css" />
+    <script type="text/javascript" src="${request.contextPath}/plugin/${className}/bower_components/select2/dist/js/select2.min.js"></script>
+    <script type="text/javascript" src="${request.contextPath}/js/json/formUtil.js"></script>
+
     <label class="label">${element.properties.label} <span class="form-cell-validator">${decoration}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>
     <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
         <div class="form-cell-value">
@@ -15,13 +16,15 @@
         </div>
         <div style="clear:both;"></div>
     <#else>
-        <select class="chosen-select" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled </#if>>
-            <#list options as option>
-                <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if> <#if element.properties.readonly! == 'true'>disabled</#if>>${option.label!?html}</option>
-            </#list>
+        <select class="js-select2" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled </#if>>
+            <#if element.properties.lazyLoading! != 'true' >
+                <#list options as option>
+                    <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if> <#if element.properties.readonly! == 'true'>disabled</#if>>${option.label!?html}</option>
+                </#list>
+            </#if>
         </select>
     </#if>
-    <#if element.properties.readonly! == 'true'>    
+    <#if element.properties.readonly! == 'true'>
         <#list values as value>
             <input type="hidden" id="${elementParamName!}" name="${elementParamName!}" value="${value?html}" />
         </#list>
@@ -49,17 +52,36 @@
     <#if element.properties.modernStyle! == 'true' >
         <script type="text/javascript">
             $(document).ready(function(){
-                var config = {
-                  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select'           : {},
-                  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-deselect'  : {allow_single_deselect:true},
-                  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-no-single' : {disable_search_threshold:10},
-                  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                  '#${elementParamName!}${element.properties.elementUniqueKey!}.chosen-select-width'     : {width:"95%"}
-                }
+                $('#${elementParamName!}${element.properties.elementUniqueKey!}.js-select2').select2({
+                    placeholder: '${element.properties.placeholder!}',
+                    width : '${width!}',
+                    theme : 'classic',
+                    language : {
+                       errorLoading: () => '${element.properties.messageErrorLoading!}',
+                       loadingMore: () => '${element.properties.messageLoadingMore!}',
+                       noResults: () => '${element.properties.messageNoResults!}',
+                       searching: () => '${element.properties.messageSearching!}'
+                    }
 
-                for (var selector in config) {
-                  $(selector).chosen({width : "${element.properties.size!}%"});
-                }
+                    <#if element.properties.lazyLoading! == 'true' >
+                        ,ajax: {
+                            url: '${request.contextPath}/web/json/plugin/${className}/service',
+                            delay : 500,
+                            dataType: 'json',
+                            data : function(params) {
+                                return {
+                                    search: params.term,
+                                    appId : '${appId!}',
+                                    appVersion : '${appVersion!}',
+                                    formDefId : '${formDefId!}',
+                                    fieldId : '${element.properties.id!}',
+                                    grouping : FormUtil.getValue('${element.properties.controlField!}'),
+                                    page : params.page || 1
+                                };
+                            }
+                        }
+                    </#if>
+                });
             });
         </script>
     </#if>

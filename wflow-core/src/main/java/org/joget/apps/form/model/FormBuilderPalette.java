@@ -30,6 +30,12 @@ public class FormBuilderPalette {
      * Category for miscellaneous or custom elements
      */
     public static final String CATEGORY_CUSTOM = "Custom";
+
+    /**
+     * Category for miscellaneous or kecak elements
+     */
+    public static final String CATEGORY_KECAK = "Kecak";
+
     @Autowired
     PluginManager pluginManager;
 
