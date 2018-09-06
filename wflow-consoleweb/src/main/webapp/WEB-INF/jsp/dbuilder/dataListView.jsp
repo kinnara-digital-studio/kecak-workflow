@@ -116,12 +116,14 @@
                 <c:if test="${buttonPosition eq 'topLeft' || buttonPosition eq 'topRight' || buttonPosition eq 'bothLeft' || buttonPosition eq 'bothRight'}">
                     <div class="actions bottom ${buttonFloat}">
                         <c:forEach items="${dataList.actions}" var="action">
-                            <c:if test="${!(empty dataListRows[0] || checkboxPosition eq 'no') || action.visibleOnNoRecord}">
-                                <c:set var="buttonConfirmation" value="" />
-                                <c:if test="${!empty action.confirmation}">
-                                    <c:set var="buttonConfirmation" value=" onclick=\"return showConfirm(this, '${fn:escapeXml(action.confirmation)}')\""/>
+                            <c:if test="${action.permitted}">
+                                <c:if test="${!(empty dataListRows[0] || checkboxPosition eq 'no') || action.visibleOnNoRecord}">
+                                    <c:set var="buttonConfirmation" value="" />
+                                    <c:if test="${!empty action.confirmation}">
+                                        <c:set var="buttonConfirmation" value=" onclick=\"return showConfirm(this, '${fn:escapeXml(action.confirmation)}')\""/>
+                                    </c:if>
+                                    <button name="${dataList.actionParamName}" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
                                 </c:if>
-                                <button name="${dataList.actionParamName}" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
                             </c:if>
                         </c:forEach>
                     </div>
@@ -130,7 +132,7 @@
                     <button class="expandAll"><i></i> <fmt:message key="dbuilder.expandAll"/></button>
                     <button class="collapseAll"><i></i> <fmt:message key="dbuilder.collapseAll"/></button>
                     <span class="search_trigger"><fmt:message key="general.method.label.search"/> <i></i></span>
-                </div>    
+                </div>
                 <display:table id="${dataListId}" uid="${dataListId}" name="dataListRows" pagesize="${dataListPageSize}" class="xrounded_shadowed" export="true" decorator="decorator" excludedParams="${dataList.binder.primaryKeyColumnName}" requestURI="?" sort="external" partialList="true" size="dataListSize">
                     <c:if test="${checkboxPosition eq 'left' || checkboxPosition eq 'both'}">
                         <c:choose>
@@ -143,36 +145,40 @@
                         </c:choose>
                     </c:if>
                     <c:forEach items="${dataList.columns}" var="column">
-                        <c:set var="columnLabel"><c:out value="${column.label}"/></c:set>
-                        <c:set var="columnHiddenCss" value=""/>
-                        <c:set var="columnMedia" value="all"/>
-                        <c:choose> 
-                            <c:when test="${column.hidden}">
-                                <c:set var="columnHiddenCss" value=" column-hidden"/>
-                                <c:if test="${column.properties.include_export ne 'true'}">
-                                    <c:set var="columnMedia" value="html"/>
-                                </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                <c:if test="${column.properties.exclude_export eq 'true'}">
-                                    <c:set var="columnMedia" value="html"/>
-                                </c:if>
-                            </c:otherwise>
-                        </c:choose>
-                        <display:column
-                            property="column(${column.name})"
-                            title="${columnLabel}"
-                            sortable="${column.sortable}"
-                            headerClass="column_${column.name} ${columnHiddenCss}"
-                            class="column_${column.name} ${columnHiddenCss}"
-                            style="${column.style}"
-                            media="${columnMedia}"
-                            />
+                        <c:if test="${column.permitted}">
+                            <c:set var="columnLabel"><c:out value="${column.label}"/></c:set>
+                            <c:set var="columnHiddenCss" value=""/>
+                            <c:set var="columnMedia" value="all"/>
+                            <c:choose>
+                                <c:when test="${column.hidden}">
+                                    <c:set var="columnHiddenCss" value=" column-hidden"/>
+                                    <c:if test="${column.properties.include_export ne 'true'}">
+                                        <c:set var="columnMedia" value="html"/>
+                                    </c:if>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:if test="${column.properties.exclude_export eq 'true'}">
+                                        <c:set var="columnMedia" value="html"/>
+                                    </c:if>
+                                </c:otherwise>
+                            </c:choose>
+                            <display:column
+                                property="column(${column.name})"
+                                title="${columnLabel}"
+                                sortable="${column.sortable}"
+                                headerClass="column_${column.name} ${columnHiddenCss}"
+                                class="column_${column.name} ${columnHiddenCss}"
+                                style="${column.style}"
+                                media="${columnMedia}"
+                                />
+                        </c:if>
                     </c:forEach>
                     <c:if test="${!empty dataList.rowActions[0]}">
                         <c:set var="actionTitle" value="" />
                         <c:forEach items="${dataList.rowActions}" var="rowAction" begin="1">
-                            <c:set var="actionTitle" value="${actionTitle}</th><th class=\"row_action\">" />
+                            <c:if test="${rowAction.permitted}">
+                                <c:set var="actionTitle" value="${actionTitle}</th><th class=\"row_action\">" />
+                            </c:if>
                         </c:forEach>
                         <display:column headerClass="row_action" class="row_action" property="actions" media="html" title="${actionTitle}"/>
                     </c:if>
@@ -192,12 +198,14 @@
                 <c:if test="${buttonPosition eq 'bottomLeft' || buttonPosition eq 'bottomRight' || buttonPosition eq 'bothLeft' || buttonPosition eq 'bothRight'}">
                     <div class="actions bottom ${buttonFloat}">
                         <c:forEach items="${dataList.actions}" var="action">
-                            <c:if test="${!(empty dataListRows[0] || checkboxPosition eq 'no') || action.visibleOnNoRecord}">
-                                <c:set var="buttonConfirmation" value="" />
-                                <c:if test="${!empty action.confirmation}">
-                                    <c:set var="buttonConfirmation" value=" onclick=\"return showConfirm(this, '${fn:escapeXml(action.confirmation)}')\""/>
+                            <c:if test="${action.permitted}">
+                                <c:if test="${!(empty dataListRows[0] || checkboxPosition eq 'no') || action.visibleOnNoRecord}">
+                                    <c:set var="buttonConfirmation" value="" />
+                                    <c:if test="${!empty action.confirmation}">
+                                        <c:set var="buttonConfirmation" value=" onclick=\"return showConfirm(this, '${fn:escapeXml(action.confirmation)}')\""/>
+                                    </c:if>
+                                    <button name="${dataList.actionParamName}" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
                                 </c:if>
-                                <button name="${dataList.actionParamName}" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
                             </c:if>
                         </c:forEach>
                     </div>

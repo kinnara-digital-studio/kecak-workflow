@@ -1,11 +1,5 @@
 package org.joget.apps.datalist.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.displaytag.tags.TableTagParameters;
 import org.displaytag.util.ParamEncoder;
 import org.joget.apps.app.service.AppUtil;
@@ -15,6 +9,13 @@ import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.util.WorkflowUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 public class DataList {
 
@@ -130,7 +131,9 @@ public class DataList {
     }
 
     public DataListAction[] getActions() {
-        return actions;
+        return Arrays.stream(actions)
+                .filter(DataListAction::isPermitted)
+                .toArray(DataListAction[]::new);
     }
 
     public void setActions(DataListAction[] actions) {
@@ -257,8 +260,10 @@ public class DataList {
                 rowActions[i] = r;
             }
         }
-        
-        return rowActions;
+
+        return Arrays.stream(rowActions)
+                .filter(DataListAction::isPermitted)
+                .toArray(DataListAction[]::new);
     }
 
     public void setRowActions(DataListAction[] rowActions) {

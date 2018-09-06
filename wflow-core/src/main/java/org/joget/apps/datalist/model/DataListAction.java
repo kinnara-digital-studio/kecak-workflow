@@ -1,5 +1,6 @@
 package org.joget.apps.datalist.model;
 
+import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.plugin.property.model.PropertyEditable;
 
 /**
@@ -49,4 +50,6 @@ public interface DataListAction extends PropertyEditable {
      * @return
      */
     DataListActionResult executeAction(DataList dataList, String[] rowKeys);
+
+    boolean isPermitted();
 }

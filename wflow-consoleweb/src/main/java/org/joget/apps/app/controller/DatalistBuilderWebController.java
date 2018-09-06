@@ -221,13 +221,12 @@ public class DatalistBuilderWebController {
         // sort columns by label
         List<DataListColumn> binderColumnList = Arrays.asList(sourceColumns);
         Collections.sort(binderColumnList, new Comparator<DataListColumn>() {
-
             public int compare(DataListColumn o1, DataListColumn o2) {
                 return o1.getLabel().toLowerCase().compareTo(o2.getLabel().toLowerCase());
             }
         });
         
-        Collection<String> columnNameList = new HashSet<String>();
+        Collection<String> columnNameList = new HashSet<>();
         DataListColumn[] targetColumns = dataList.getColumns();
         if (targetColumns != null) {
             for (DataListColumn selectedColumn : targetColumns) {
@@ -241,7 +240,7 @@ public class DatalistBuilderWebController {
                 i.remove();
             }
         }
-        sourceColumns = (DataListColumn[]) binderColumnList.toArray(new DataListColumn[0]);
+        sourceColumns = binderColumnList.toArray(new DataListColumn[0]);
         DataList sourceDataList = new DataList();
         sourceDataList.setColumns(sourceColumns);
 

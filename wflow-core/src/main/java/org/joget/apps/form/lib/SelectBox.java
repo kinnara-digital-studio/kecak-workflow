@@ -1,24 +1,11 @@
 package org.joget.apps.form.lib;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormAjaxOptionsElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
@@ -32,10 +19,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport {
     private final WeakHashMap<String, Form> formCache = new WeakHashMap<>();
@@ -241,7 +230,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         final String appId = request.getParameter("appId");
         final String appVersion = request.getParameter("appVersion");
         final String formDefId = request.getParameter("formDefId");
-        final String fieldId = request.getParameter("fieldId");
+        final String[] fieldIds = request.getParameterValues("fieldId");
         final String search = request.getParameter("search");
         final Pattern searchPattern = Pattern.compile(search == null ? "" : search, Pattern.CASE_INSENSITIVE);
         final long page = Long.parseLong(request.getParameter("page"));
@@ -252,36 +241,42 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         final FormData formData = new FormData();
         final Form form = generateForm(appDefinition, formDefId);
 
-        Element element = FormUtil.findElement(fieldId, form, formData);
+        final JSONArray jsonResults = new JSONArray();
+        for(String fieldId : fieldIds) {
+            Element element = FormUtil.findElement(fieldId, form, formData);
 
-        FormRowSet optionsRowSet;
-        if(element.getOptionsBinder() == null) {
-            optionsRowSet = (FormRowSet) element.getProperty(FormUtil.PROPERTY_OPTIONS);
-        } else {
-            FormUtil.executeOptionBinders(element, formData);
-            optionsRowSet = formData.getOptionsBinderData(element, null);
-        }
+            if(element == null)
+                continue;
 
-        int skip = (int) ((page - 1) * PAGE_SIZE);
-        int pageSize = (int) PAGE_SIZE;
-        JSONArray jsonResults = new JSONArray();
-        for(int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
-            FormRow formRow = optionsRowSet.get(i);
-            if (searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find() && (
-                    grouping == null
-                    || grouping.isEmpty()
-                    || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))) {
+            FormRowSet optionsRowSet;
+            if (element.getOptionsBinder() == null) {
+                optionsRowSet = (FormRowSet) element.getProperty(FormUtil.PROPERTY_OPTIONS);
+            } else {
+                FormUtil.executeOptionBinders(element, formData);
+                optionsRowSet = formData.getOptionsBinderData(element, null);
+            }
 
-                if(skip > 0) {
-                    skip--;
-                } else {
-                    try {
-                        JSONObject jsonResult = new JSONObject();
-                        jsonResult.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
-                        jsonResult.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
-                        jsonResults.put(jsonResult);
-                        pageSize--;
-                    } catch (JSONException ignored) { }
+            int skip = (int) ((page - 1) * PAGE_SIZE);
+            int pageSize = (int) PAGE_SIZE;
+            for (int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
+                FormRow formRow = optionsRowSet.get(i);
+                if (searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find() && (
+                        grouping == null
+                                || grouping.isEmpty()
+                                || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))) {
+
+                    if (skip > 0) {
+                        skip--;
+                    } else {
+                        try {
+                            JSONObject jsonResult = new JSONObject();
+                            jsonResult.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
+                            jsonResult.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
+                            jsonResults.put(jsonResult);
+                            pageSize--;
+                        } catch (JSONException ignored) {
+                        }
+                    }
                 }
             }
         }

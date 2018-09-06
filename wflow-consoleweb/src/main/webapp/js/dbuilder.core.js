@@ -918,6 +918,13 @@ DatalistBuilder = {
                 }]
             },
             {
+                label : get_dbuilder_msg('dbuilder.permission'),
+                name  : 'permission',
+                type : 'elementselect',
+                options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.userview.model.UserviewPermission',
+                url : '[CONTEXT_PATH]/web/property/json' + DatalistBuilder.appPath + '/getPropertyOptions'
+            },
+            {
                 label : get_dbuilder_msg('dbuilder.export.include'),
                 name  : 'include_export',
                 type : 'checkbox',

@@ -9,10 +9,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.jsp.PageContext;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.displaytag.decorator.CheckboxTableDecorator;
+import org.displaytag.model.Column;
 import org.displaytag.model.TableModel;
 import org.displaytag.properties.MediaTypeEnum;
 import org.displaytag.tags.TableTagParameters;
@@ -21,9 +23,13 @@ import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListAction;
 import org.joget.apps.datalist.model.DataListColumn;
 import org.joget.apps.datalist.model.DataListColumnFormat;
+import org.joget.apps.userview.model.UserviewPermission;
+import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.commons.util.TimeZoneUtil;
+import org.joget.plugin.base.Plugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.util.WorkflowUtil;
 
 /**
@@ -188,14 +194,14 @@ public class DataListDecorator extends CheckboxTableDecorator {
         }
         
         // get column, temporarily just iterate thru to find
-        DataListColumn column = null;
         DataListColumn[] columns = dataList.getColumns();
-        column = columns[index];
+        DataListColumn column = columns[index];
         if (index == columns.length - 1) {
             index = 0;
         } else {
             index++;
         }
+
         if (!column.getName().equals(columnName) && ((skipHidden && column.isHidden()) || (!column.isHidden() && "true".equals(column.getPropertyString("exclude_export"))))) {
             column = findColumn(columnName);
         }

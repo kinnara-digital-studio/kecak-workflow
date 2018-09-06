@@ -61,12 +61,15 @@ public class CurrentUserHashVariable extends DefaultHashVariablePlugin {
                 attribute = firstChar + attribute.substring(1, attribute.length());
 
                 Method method = User.class.getDeclaredMethod("get" + attribute, new Class[]{});
-                String returnResult = ((Object) method.invoke(user, new Object[]{})).toString();
-                if (returnResult == null || attribute.equals("Password")) {
-                    returnResult = "";
+                try {
+                    String returnResult = ((Object) method.invoke(user, new Object[]{})).toString();
+                    if (returnResult == null || attribute.equals("Password")) {
+                        returnResult = "";
+                    }
+                    attributeValue = returnResult;
+                } catch (Exception e) {
+                    attributeValue = "";
                 }
-
-                attributeValue = returnResult;
             }
         } catch (Exception e) {
             LogUtil.error(CurrentUserHashVariable.class.getName(), e, "Error retrieving user attribute " + attribute);
