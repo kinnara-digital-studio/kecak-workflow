@@ -11,7 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 
-public abstract class AbstractSpringDao extends HibernateDaoSupport {
+public abstract class AbstractSpringDao<T> extends HibernateDaoSupport {
 
     public AbstractSpringDao() {
     }
@@ -23,26 +23,26 @@ public abstract class AbstractSpringDao extends HibernateDaoSupport {
         return session;
     }
     
-    protected Serializable save(String entityName, Object obj) {
+    protected Serializable save(String entityName, T obj) {
         Session session = findSession();
         Serializable save = session.save(entityName, obj);
         session.flush();
         return save;
     }
 
-    protected void saveOrUpdate(String entityName, Object obj) {
+    protected void saveOrUpdate(String entityName, T obj) {
         Session session = findSession();
         session.saveOrUpdate(entityName, obj);
         session.flush();
     }
 
-    protected void merge(String entityName, Object obj) {
+    protected void merge(String entityName, T obj) {
         Session session = findSession();
         session.merge(entityName, obj);
         session.flush();
     }
 
-    protected void delete(String entityName, Object obj) {
+    protected void delete(String entityName, T obj) {
         Session session = findSession();
         session.delete(entityName, obj);
         session.flush();
@@ -54,7 +54,7 @@ public abstract class AbstractSpringDao extends HibernateDaoSupport {
     }
 
     @SuppressWarnings("rawtypes")
-	protected List findByExample(String entityName, Object object) {
+	protected List findByExample(String entityName, T object) {
         Session session = findSession();
         Criteria crit = session.createCriteria(object.getClass());
         Example example = Example.create(object);
@@ -63,7 +63,7 @@ public abstract class AbstractSpringDao extends HibernateDaoSupport {
     }
 
     @SuppressWarnings("rawtypes")
-	protected Collection find(final String entityName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows) {
+	protected Collection<T> find(final String entityName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows) {
         Session session = findSession();
         String query = "SELECT e FROM " + entityName + " e " + condition;
 

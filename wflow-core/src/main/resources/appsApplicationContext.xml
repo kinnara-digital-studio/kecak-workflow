@@ -303,6 +303,7 @@
     </bean>
 
     <bean id="mobileDao" class="org.kecak.apps.mobile.dao.MobileDaoImpl" >
+        <property name="sessionFactory" ref="appSessionFactory"/>
     </bean>
     <!--End of Mobile -->
 
