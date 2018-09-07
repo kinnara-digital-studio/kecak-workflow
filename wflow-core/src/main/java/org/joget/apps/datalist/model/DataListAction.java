@@ -51,5 +51,9 @@ public interface DataListAction extends PropertyEditable {
      */
     DataListActionResult executeAction(DataList dataList, String[] rowKeys);
 
+    /**
+     * Method to perform permission checking
+     * @return
+     */
     boolean isPermitted();
 }

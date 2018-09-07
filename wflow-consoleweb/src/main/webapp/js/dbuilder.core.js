@@ -1251,6 +1251,13 @@ DatalistBuilder = {
         propertiesDefinition.push({
             title : get_dbuilder_msg('dbuilder.rowAction.visibility'),
             properties : [{
+                name : 'permission',
+                label : get_dbuilder_msg('dbuilder.rowAction.permission'),
+                type : 'elementselect',
+                options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.userview.model.UserviewPermission',
+                url : '[CONTEXT_PATH]/web/property/json' + DatalistBuilder.appPath + '/getPropertyOptions'
+            },
+            {
                 name : 'rules',
                 label : get_dbuilder_msg('dbuilder.rowAction.rules'),
                 type : 'grid',
