@@ -301,7 +301,11 @@
             </props>
         </property>
     </bean>
+
+    <bean id="mobileDao" class="org.kecak.apps.mobile.dao.MobileDaoImpl" >
+    </bean>
     <!--End of Mobile -->
+
     <!-- XPDL Archive -->
     <bean id="archiveFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="setupDataSource"/>

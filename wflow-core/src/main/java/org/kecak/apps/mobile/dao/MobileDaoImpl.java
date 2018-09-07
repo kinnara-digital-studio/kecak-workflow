@@ -7,6 +7,7 @@ package org.kecak.apps.mobile.dao;
 
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.kecak.apps.mobile.model.Mobile;
+import org.springframework.stereotype.Service;
 
 /**
  *
