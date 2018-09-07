@@ -15,6 +15,7 @@ import java.util.Collection;
  *
  * @author Yonathan
  */
+
 public class MobileDaoImpl extends AbstractSpringDao<Mobile> implements MobileDao {
 
     public static final String ENTITY_NAME = "Mobile";
