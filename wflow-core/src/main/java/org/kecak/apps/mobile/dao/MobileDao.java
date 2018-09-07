@@ -17,5 +17,5 @@ public interface MobileDao {
     public void saveOrUpdate(Mobile mobile);
     public void delete(Mobile mobile);
     public Mobile getDeviceById(String id);
-    public Collection<Mobile> find(String condition, String[] args, String sort, boolean desc, int start, int rows);
+    public Collection<Mobile> find(final String condition, final String[] args, final String sort, final Boolean desc, final Integer start, final Integer rows);
 }
