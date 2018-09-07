@@ -1,13 +1,13 @@
 package org.joget.apps.datalist.lib;
 
-import java.net.URLEncoder;
-
 import org.displaytag.util.LookupUtil;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionDefault;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.datalist.model.DataListCollection;
+
+import java.net.URLEncoder;
 
 /**
  * Hyperlink action for a datalist
