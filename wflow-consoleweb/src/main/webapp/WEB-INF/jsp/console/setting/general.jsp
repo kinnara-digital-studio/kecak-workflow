@@ -404,6 +404,16 @@
                     </div>
                 </span>
             </div>
+            <div class="main-body-row">
+                <span class="row-content">
+                    <div class="form-row">
+                        <label for="buildNumber"><fmt:message key="console.setting.general.label.buildNumber"/></label>
+                        <span class="form-input">
+                            <i><span class="ftl_label"><fmt:message key="build.number"/></span></i>
+                        </span>
+                    </div>
+                </span>
+            </div>
             <div class="form-buttons">
                 <input class="form-button" type="submit" value="<fmt:message key="general.method.label.submit"/>" />
             </div>
