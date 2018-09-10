@@ -75,7 +75,9 @@
                                     appVersion : '${appVersion!}',
                                     formDefId : '${formDefId!}',
                                     fieldId : '${element.properties.id!}',
-                                    grouping : FormUtil.getValue('${element.properties.controlField!}'),
+                                    <#if element.properties.controlField! != '' >
+                                        grouping : FormUtil.getValue('${element.properties.controlField!}'),
+                                    </#if>
                                     page : params.page || 1
                                 };
                             }
