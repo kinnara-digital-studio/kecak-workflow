@@ -32,7 +32,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     private Element controlElement;
 
     private final static long PAGE_SIZE = 10;
-    
+
     public String getName() {
         return "Select Box";
     }
@@ -124,8 +124,36 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
 
         // set options
         @SuppressWarnings("rawtypes")
-		Collection<Map> optionMap = getOptionMap(formData);
+		final List<Map<String, String>> optionMap = new ArrayList<>();
+        for(Map m : getOptionMap(formData)) {
+            optionMap.add((Map<String,String>)m);
+        }
         dataModel.put("options", optionMap);
+
+        Comparator<Map<String, String>> comparator = new Comparator<Map<String, String>>() {
+            @Override
+            public int compare(Map<String, String> m1, Map<String, String> m2) {
+                return m1.get("value").compareTo(m2.get("value"));
+            }
+        };
+
+        final List<Map<String, String>> valuesMap = new ArrayList<>();
+        for(String s : values) {
+            if(!s.isEmpty()) {
+                Map<String, String> map = new HashMap<>();
+                map.put("value", s);
+
+                final Map<String, String> lookingFor = new HashMap<>();
+                lookingFor.put("value", s);
+
+                int index = Collections.binarySearch(optionMap, lookingFor, comparator);
+                map.put("label", index >= 0 ? optionMap.get(index).get("label") : s);
+
+                valuesMap.add(map);
+            }
+        }
+        dataModel.put("optionsValues", valuesMap);
+
 
         dataModel.put("className", getClassName());
 

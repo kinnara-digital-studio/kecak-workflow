@@ -19,7 +19,11 @@
         <select class="js-select2" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled </#if>>
             <#if element.properties.lazyLoading! != 'true' >
                 <#list options as option>
-                    <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if> <#if element.properties.readonly! == 'true'>disabled</#if>>${option.label!?html}</option>
+                    <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>
+                </#list>
+            <#else>
+                <#list optionsValues as option>
+                    <option value="${option.value!?html}" grouping="${option.grouping!?html}" selected>${option.label!?html}</option>
                 </#list>
             </#if>
         </select>
