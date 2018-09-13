@@ -137,67 +137,66 @@
         label : '@@form.selectbox.workflowVariable@@',
         type : 'textfield'
     },
-      {
-        label : '@@form.selectbox.select2Options@@',
-        type : 'header',
-        control_field : 'modernStyle',
-        control_value : 'true'
-      },
-      {
-        name : 'lazyLoading',
-        label : '@@form.selectbox.lazyLoading@@',
-        type : 'checkbox',
-        value : 'false',
-        options : [{
-          value : 'true',
-          label : ''
-        }],
-        control_field : 'modernStyle',
-        control_value : 'true'
-      },
-      {
-        name : 'placeholder',
-        label : '@@form.selectbox.placeholder@@',
-        type : 'textfield',
-        value : 'Please Select',
-        control_field : 'modernStyle',
-        control_value : 'true'
-      },
-      {
-        name : 'messageSearching',
-        label : '@@form.selectbox.messageSearching@@',
-        type : 'textfield',
-        required : 'true',
-        value : 'Searching...',
-        control_field : 'modernStyle',
-        control_value : 'true'
-      },
-      {
-        name : 'messageLoadingMore',
-        label : '@@form.selectbox.messageLoadingMore@@',
-        type : 'textfield',
-        required : 'true',
-        value : 'Loading More...',
-        control_field : 'modernStyle',
-        control_value : 'true'
-      },
-      {
-        name : 'messageNoResults',
-        label : '@@form.selectbox.messageNoResults@@',
-        type : 'textfield',
-        required : 'true',
-        value : 'No Results Found',
-        control_field : 'modernStyle',
-        control_value : 'true'
-      },
-      {
-        name : 'messageErrorLoading',
-        label : '@@form.selectbox.messageErrorLoading@@',
-        type : 'textfield',
-        required : 'true',
-        value : 'Error Loading',
-        control_field : 'modernStyle',
-        control_value : 'true'
-      }
-    ]
+    {
+      label : '@@form.selectbox.select2Options@@',
+      type : 'header',
+      control_field : 'modernStyle',
+      control_value : 'true'
+    },
+    {
+      name : 'lazyLoading',
+      label : '@@form.selectbox.lazyLoading@@',
+      type : 'checkbox',
+      value : 'false',
+      options : [{
+        value : 'true',
+        label : ''
+      }],
+      control_field : 'modernStyle',
+      control_value : 'true'
+    },
+    {
+      name : 'placeholder',
+      label : '@@form.selectbox.placeholder@@',
+      type : 'textfield',
+      value : 'Please Select',
+      control_field : 'modernStyle',
+      control_value : 'true'
+    },
+    {
+      name : 'messageSearching',
+      label : '@@form.selectbox.messageSearching@@',
+      type : 'textfield',
+      required : 'true',
+      value : 'Searching...',
+      control_field : 'modernStyle',
+      control_value : 'true'
+    },
+    {
+      name : 'messageLoadingMore',
+      label : '@@form.selectbox.messageLoadingMore@@',
+      type : 'textfield',
+      required : 'true',
+      value : 'Loading More...',
+      control_field : 'modernStyle',
+      control_value : 'true'
+    },
+    {
+      name : 'messageNoResults',
+      label : '@@form.selectbox.messageNoResults@@',
+      type : 'textfield',
+      required : 'true',
+      value : 'No Results Found',
+      control_field : 'modernStyle',
+      control_value : 'true'
+    },
+    {
+      name : 'messageErrorLoading',
+      label : '@@form.selectbox.messageErrorLoading@@',
+      type : 'textfield',
+      required : 'true',
+      value : 'Error Loading',
+      control_field : 'modernStyle',
+      control_value : 'true'
+    }]
 }]
