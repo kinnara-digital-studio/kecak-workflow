@@ -1,89 +1,20 @@
 package org.joget.apps.app.service;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.map.ListOrderedMap;
-import org.joget.apps.app.dao.AppDefinitionDao;
-import org.joget.apps.app.dao.DatalistDefinitionDao;
-import org.joget.apps.app.dao.EnvironmentVariableDao;
-import org.joget.apps.app.dao.FormDefinitionDao;
-import org.joget.apps.app.dao.MessageDao;
-import org.joget.apps.app.dao.PackageDefinitionDao;
-import org.joget.apps.app.dao.PluginDefaultPropertiesDao;
-import org.joget.apps.app.dao.UserviewDefinitionDao;
-import org.joget.apps.app.model.AppDefinition;
-import org.joget.apps.app.model.DatalistDefinition;
-import org.joget.apps.app.model.EnvironmentVariable;
-import org.joget.apps.app.model.FormDefinition;
-import org.joget.apps.app.model.ImportAppException;
-import org.joget.apps.app.model.Message;
-import org.joget.apps.app.model.PackageActivityForm;
-import org.joget.apps.app.model.PackageActivityPlugin;
-import org.joget.apps.app.model.PackageDefinition;
-import org.joget.apps.app.model.PackageParticipant;
-import org.joget.apps.app.model.PluginDefaultProperties;
-import org.joget.apps.app.model.UserviewDefinition;
+import org.joget.apps.app.dao.*;
+import org.joget.apps.app.model.*;
 import org.joget.apps.form.dao.FormDataDao;
-import org.joget.apps.form.lib.LinkButton;
-import org.joget.apps.form.lib.SaveAsDraftButton;
-import org.joget.apps.form.lib.SubmitButton;
-import org.joget.apps.form.lib.TextField;
-import org.joget.apps.form.lib.WorkflowFormBinder;
-import org.joget.apps.form.model.Column;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormAction;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
-import org.joget.apps.form.model.FormStoreBinder;
-import org.joget.apps.form.model.Section;
+import org.joget.apps.form.lib.*;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.UserviewSetting;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
-import org.joget.commons.util.DynamicDataSourceManager;
-import org.joget.commons.util.HostManager;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.ResourceBundleUtil;
-import org.joget.commons.util.StringUtil;
-import org.joget.commons.util.UuidGenerator;
+import org.joget.commons.util.*;
 import org.joget.plugin.base.PluginManager;
-import org.joget.workflow.model.WorkflowActivity;
-import org.joget.workflow.model.WorkflowAssignment;
-import org.joget.workflow.model.WorkflowPackage;
-import org.joget.workflow.model.WorkflowProcess;
-import org.joget.workflow.model.WorkflowProcessLink;
-import org.joget.workflow.model.WorkflowProcessResult;
-import org.joget.workflow.model.WorkflowVariable;
+import org.joget.workflow.model.*;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.simpleframework.xml.Serializer;
@@ -92,6 +23,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Implementation of AppService interface
@@ -878,7 +820,7 @@ public class AppServiceImpl implements AppService {
     /**
      * Create a new app definition and duplicate the other app
      * @param appDefinition
-     * @param copyAppDefinition
+     * @param copy
      * @return A Collection of errors (if any).
      */
     @Transactional
@@ -1270,6 +1212,12 @@ public class AppServiceImpl implements AppService {
      */
     public FormRowSet loadFormData(Form form, String primaryKeyValue) {
         if (form != null) {
+            FormData formData = new FormData();
+            WorkflowProcess process = workflowManager.getRunningProcessById(primaryKeyValue);
+            formData.setPrimaryKeyValue(primaryKeyValue);
+            formData.setProcessId(process.getInstanceId());
+            FormUtil.executePreFormLoadProccessor(form, formData);
+
             String formDefId = form.getPropertyString(FormUtil.PROPERTY_ID);
             String tableName = form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
             return internalLoadFormData(formDefId, tableName, primaryKeyValue, true);
@@ -1286,6 +1234,12 @@ public class AppServiceImpl implements AppService {
      */
     public FormRowSet loadFormDataWithoutTransaction(Form form, String primaryKeyValue) {
         if (form != null) {
+            FormData formData = new FormData();
+            WorkflowProcess process = workflowManager.getRunningProcessById(primaryKeyValue);
+            formData.setPrimaryKeyValue(primaryKeyValue);
+            formData.setProcessId(process.getInstanceId());
+            FormUtil.executePreFormLoadProccessor(form, formData);
+
             String formDefId = form.getPropertyString(FormUtil.PROPERTY_ID);
             String tableName = form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
             return internalLoadFormData(formDefId, tableName, primaryKeyValue, false);
@@ -1296,13 +1250,25 @@ public class AppServiceImpl implements AppService {
     /**
      * Method to load specific data row (record) by primary key value for a specific form.
      * This method is transactional (since v5), but retains the method name for backward compatibility reasons.
-     * @param formDefid
+     * @param formDefId
      * @param tableName
      * @param primaryKeyValue
      * @return null if the form is not available, empty FormRowSet if the form is available but record is not found.
      */
-    public FormRowSet loadFormDataWithoutTransaction(String formDefid, String tableName, String primaryKeyValue) {
-        return internalLoadFormData(formDefid, tableName, primaryKeyValue, false);
+    public FormRowSet loadFormDataWithoutTransaction(String formDefId, String tableName, String primaryKeyValue) {
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        if(appDefinition != null) {
+            Form form = viewDataForm(appDefinition.getAppId(), String.valueOf(appDefinition.getVersion()), formDefId, null, null, null, null, null, null);
+            if (form != null) {
+                FormData formData = new FormData();
+                WorkflowProcess process = workflowManager.getRunningProcessById(primaryKeyValue);
+                formData.setPrimaryKeyValue(primaryKeyValue);
+                formData.setProcessId(process.getInstanceId());
+                FormUtil.executePreFormLoadProccessor(form, formData);
+            }
+        }
+
+        return internalLoadFormData(formDefId, tableName, primaryKeyValue, false);
     }
 
     /**

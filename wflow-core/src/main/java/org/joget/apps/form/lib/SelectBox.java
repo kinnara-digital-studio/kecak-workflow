@@ -137,24 +137,6 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
             }
         };
 
-        final List<Map<String, String>> valuesMap = new ArrayList<>();
-        for(String s : values) {
-            if(!s.isEmpty()) {
-                Map<String, String> map = new HashMap<>();
-                map.put("value", s);
-
-                final Map<String, String> lookingFor = new HashMap<>();
-                lookingFor.put("value", s);
-
-                int index = Collections.binarySearch(optionMap, lookingFor, comparator);
-                map.put("label", index >= 0 ? optionMap.get(index).get("label") : s);
-
-                valuesMap.add(map);
-            }
-        }
-        dataModel.put("optionsValues", valuesMap);
-
-
         dataModel.put("className", getClassName());
 
         dataModel.put("width", getPropertyString("size") == null || getPropertyString("size").isEmpty() ? "resolve" : (getPropertyString("size").replaceAll("[^0-9]+]", "") + "%"));

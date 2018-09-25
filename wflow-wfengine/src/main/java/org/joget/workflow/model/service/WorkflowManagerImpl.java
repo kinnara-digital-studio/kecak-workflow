@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -3083,7 +3084,66 @@ public class WorkflowManagerImpl implements WorkflowManager {
         // return process result
         return result;
     }
-    
+
+    @Override
+    public WorkflowProcessResult processActivityStepBack(String currentProcessId, String activityId) {
+        String newProcessDefId = Stream.of(currentProcessId)
+                .map(this::getRunningProcessById)
+                .findAny()
+                .map(workflowProcess -> workflowProcess.getPackageId())
+                .orElse("");
+
+        if(newProcessDefId.isEmpty()) {
+            LogUtil.warn(getClass().getName(), "Process Definition ["+newProcessDefId+"] not available");
+            return null;
+        }
+
+        WorkflowAssignment assignment = getAssignment(activityId);
+        if(assignment == null) {
+            LogUtil.warn(getClass().getName(), "Assignment ["+activityId+"] not available");
+            return null;
+        }
+
+        WorkflowProcessResult result = new WorkflowProcessResult();
+
+        try {
+            Map<String, Object> activitiesTree = getRunningActivitiesTree(currentProcessId);
+
+            if (activitiesTree != null && !activitiesTree.isEmpty()) {
+                // TODO : delete current activity
+                for(Map.Entry<String, Object> e : activitiesTree.entrySet()) {
+                    LogUtil.info(this.getClass().getName(), "activitiesTree ["+e.getKey()+"] ["+e.getValue().toString()+"]");
+                }
+
+                // get current variable values
+                Collection<WorkflowVariable> variableList = getProcessVariableList(currentProcessId);
+                Map<String, String> variableMap = new HashMap<>();
+                for (WorkflowVariable variable : variableList) {
+                    String val = (variable.getVal() != null) ? variable.getVal().toString() : null;
+                    variableMap.put(variable.getId(), val);
+                }
+
+                String starter = getUserByProcessIdAndActivityDefId(newProcessDefId, currentProcessId, WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS);
+                result = processStart(newProcessDefId, null, variableMap, starter, currentProcessId, true);
+                WorkflowProcess processStarted = result.getProcess();
+
+                if (processStarted != null) {
+                    String newProcessId = processStarted.getInstanceId();
+                    result.setActivities(new ArrayList<>());
+                    startActivitiesBasedOnActivitiesTree(newProcessId, activitiesTree, result);
+
+                    // abort old process if required
+                    processAbort(currentProcessId);
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.error(WorkflowManagerImpl.class.getName(), e, "Error stepping activity back of process instance - " + currentProcessId);
+        }
+
+        // return process result
+        return result;
+    }
+
     /**
      * Starts a process based on the process definition ID, while setting workflow variables values, start process username and parent process id.
      * @param processDefId

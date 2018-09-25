@@ -94,6 +94,7 @@ public class FormUtil implements ApplicationContextAware {
     public static final String PROPERTY_CUSTOM_PROPERTIES = "customProperties";
     public static final String PROPERTY_TABLE_NAME = "tableName";
     public static final String PROPERTY_TEMP_FILE_PATH = "_tempFilePathMap";
+    public static final String PROPERTY_PRE_PROCESSOR = "preProcessor";
     public static final String PROPERTY_POST_PROCESSOR = "postProcessor";
     public static final String PROPERTY_POST_PROCESSOR_RUN_ON = "postProcessorRunOn";
     public static final String FORM_META_ORIGINAL_ID = "_FORM_META_ORIGINAL_ID";
@@ -1915,6 +1916,83 @@ public class FormUtil implements ApplicationContextAware {
             }
         } catch (Exception e) {
             LogUtil.error(AppService.class.getName(), e, "Error executing Post Form Submission Processor");
+        }
+    }
+
+
+    public static void executePreFormLoadProccessor(Form form, FormData formData) {
+        try {
+            Object proccessor = form.getProperty(FormUtil.PROPERTY_PRE_PROCESSOR);
+            if (proccessor != null && proccessor instanceof Map) {
+
+                String primaryKey = form.getPrimaryKeyValue(formData);
+                PluginManager pluginManager = (PluginManager) FormUtil.getApplicationContext().getBean("pluginManager");
+                Map temp = (Map) proccessor;
+                String className = temp.get("className").toString();
+                Plugin p = pluginManager.getPlugin(className);
+
+                if (p != null) {
+                    WorkflowAssignment ass = null;
+                    AppDefinition appDef = AppUtil.getCurrentAppDefinition();
+                    if (formData.getActivityId() != null && !formData.getActivityId().isEmpty()) {
+                        WorkflowManager workflowManager = (WorkflowManager) FormUtil.getApplicationContext().getBean("workflowManager");
+                        ass = workflowManager.getAssignment(formData.getActivityId());
+                    } else if (formData.getProcessId() != null && !formData.getProcessId().isEmpty()) {
+                        //create an mock workflow assignment for run process form
+                        ass = new WorkflowAssignment();
+                        ass.setProcessId(formData.getProcessId());
+                    } else if (primaryKey!= null && !primaryKey.isEmpty()) {
+                        //create an mock workflow assignment to pass record id as process id as most of the existing tool as using it to retrieve record
+                        ass = new WorkflowAssignment();
+                        ass.setProcessId(primaryKey);
+                    }
+
+                    Map propertiesMap = null;
+
+                    //get form json again to retrieve plugin properties
+                    FormDefinitionDao formDefinitionDao = (FormDefinitionDao) FormUtil.getApplicationContext().getBean("formDefinitionDao");
+                    FormDefinition formDefinition = formDefinitionDao.loadById(form.getPropertyString(FormUtil.PROPERTY_ID), appDef);
+                    if (formDefinition != null) {
+                        String json = formDefinition.getJson();
+                        JSONObject obj = new JSONObject(json);
+                        JSONObject objProperty = obj.getJSONObject(FormUtil.PROPERTY_PROPERTIES);
+                        if (objProperty.has(FormUtil.PROPERTY_POST_PROCESSOR)) {
+                            JSONObject objProcessor = objProperty.getJSONObject(FormUtil.PROPERTY_POST_PROCESSOR);
+                            json = objProcessor.getString(FormUtil.PROPERTY_PROPERTIES);
+                            propertiesMap = AppPluginUtil.getDefaultProperties(p, json, appDef, ass);
+                        }
+                    }
+
+                    if (propertiesMap == null) {
+                        propertiesMap = AppPluginUtil.getDefaultProperties(p, (Map) temp.get(FormUtil.PROPERTY_PROPERTIES), appDef, ass);
+                    }
+                    if (ass != null) {
+                        propertiesMap.put("workflowAssignment", ass);
+                    }
+                    propertiesMap.put("recordId", formData.getPrimaryKeyValue());
+                    propertiesMap.put("pluginManager", pluginManager);
+                    propertiesMap.put("appDef", appDef);
+
+                    // add HttpServletRequest into the property map
+                    try {
+                        HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
+                        if (request != null) {
+                            propertiesMap.put("request", request);
+                        }
+                    } catch (Throwable e) {
+                        // ignore if class is not found
+                    }
+
+                    ApplicationPlugin appPlugin = (ApplicationPlugin) p;
+
+                    if (appPlugin instanceof PropertyEditable) {
+                        ((PropertyEditable) appPlugin).setProperties(propertiesMap);
+                    }
+                    appPlugin.execute(propertiesMap);
+                }
+            }
+        } catch (Exception e) {
+            LogUtil.error(AppService.class.getName(), e, "Error executing Pre Form Submission Processor");
         }
     }
 }

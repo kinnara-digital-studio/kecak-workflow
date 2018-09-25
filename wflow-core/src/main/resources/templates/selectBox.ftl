@@ -23,8 +23,10 @@
                     <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>
                 </#list>
             <#else>
-                <#list optionsValues! as option>
-                    <option value="${option.value!?html}" grouping="${option.grouping!?html}" selected>${option.label!?html}</option>
+                <#list options! as option>
+                    <#if values?? && values?seq_contains(option.value!) || option.value == ''>
+                        <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>
+                    </#if>
                 </#list>
             </#if>
         </select>

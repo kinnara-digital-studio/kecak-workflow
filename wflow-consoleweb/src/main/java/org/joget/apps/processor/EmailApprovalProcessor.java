@@ -6,7 +6,10 @@ import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.spring.model.EmailApprovalContent;
 import org.joget.commons.spring.model.EmailApprovalContentDao;
 import org.joget.commons.util.LogUtil;
@@ -17,6 +20,7 @@ import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 
+import javax.annotation.Nonnull;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.util.HashMap;
@@ -131,8 +135,9 @@ public class EmailApprovalProcessor {
                 Matcher matcher2 = pattern2.matcher(content);
 
                 @SuppressWarnings("rawtypes")
-                Map variables = new HashMap();
-                FormData formData = new FormData();
+                Map<String, String> variables = new HashMap<>();
+                Map<String, String> fields = new HashMap<>();
+//                FormData formData = new FormData();
                 
                 while (matcher2.find()) {
                     int count = 1;
@@ -149,18 +154,18 @@ public class EmailApprovalProcessor {
                             if(value == null || value.trim().equals("")){
                                 value = "-";
                             }
-                            formData.addRequestParameterValues(key, new String[]{value});
+                            fields.put(key, value);
                         }
                         count++;
                     }
                 }
-                completeActivity(username, processId, activityId, formData, variables, content);
+                completeActivity(username, processId, activityId, fields, variables, content);
             }
         }
     }
 
     @SuppressWarnings({"deprecation", "unchecked"})
-    public void completeActivity(String username, String processId, String activityId, FormData formData, @SuppressWarnings("rawtypes") Map variables, String message) {
+    public void completeActivity(String username, String processId, String activityId, @Nonnull final Map<String, String> fields, @Nonnull final Map<String, String> variables, String message) {
         if (username != null) {
             String currentUsername = workflowUserManager.getCurrentUsername();
             try {
@@ -171,7 +176,7 @@ public class EmailApprovalProcessor {
                 if (activityId != null) {
                     assignment = workflowManager.getAssignment(activityId);
                 }
-                if (processId != null) {
+                if (assignment == null || processId != null) {
                     assignment = workflowManager.getAssignmentByProcess(processId);
                 }
 
@@ -182,16 +187,30 @@ public class EmailApprovalProcessor {
                         AppDefinition appDef = appService.getAppDefinitionForWorkflowActivity(assignmentId);
 
                         //if has form data to submit
-                        if (!formData.getRequestParams().isEmpty()) {
-                            PackageActivityForm activityForm = appService.viewAssignmentForm(appDef, assignment, formData, "", "");
-                            if (activityForm != null && activityForm.getForm() != null) {
-                                appService.submitForm(activityForm.getForm(), formData, false);
+                        final FormData formData = new FormData();
+                        PackageActivityForm activityForm = appService.viewAssignmentForm(appDef, assignment, formData, "", "");
+                        Form form = activityForm.getForm();
+                        if(form != null) {
+                            for (Map.Entry<String, String> entry : fields.entrySet()) {
+                                Element element = FormUtil.findElement(entry.getKey(), form, formData, true);
+                                if(element != null) {
+                                    String parameterName = FormUtil.getElementParameterName(element);
+                                    formData.addRequestParameterValues(parameterName, new String[] {entry.getValue()});
+                                }
+                            }
+
+                            if(!formData.getRequestParams().isEmpty()) {
+                                FormData resultFormData = appService.submitForm(activityForm.getForm(), formData, false);
+                                for(Map.Entry<String, String> entry : resultFormData.getFormErrors().entrySet()) {
+                                    LogUtil.error(getClass().getName(), null, "Error submitting form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] field [" + entry.getKey()+"] message [" + entry.getValue()+"]");
+                                }
                             }
                         }
 
                         if (!assignment.isAccepted()) {
                             workflowManager.assignmentAccept(assignmentId);
                         }
+
                         workflowManager.assignmentComplete(assignmentId, variables);
 //	                    sendAutoReply(sender, subject);
                     } finally {
@@ -199,14 +218,14 @@ public class EmailApprovalProcessor {
                     }
 //	                addActivityLog(sender, processId, activityId, subject, message, variables, formData.getRequestParams());
                 } else {
-                    LogUtil.info(this.getClass().getName(), "Assignment not found for process(" + processId + ") or activityId(" + activityId + ")");
+                    LogUtil.error(getClass().getName(), null, "Assignment not found for process [" + processId + "] or activityId [" + activityId + "]");
                 }
 
             } finally {
                 workflowUserManager.setCurrentThreadUser(currentUsername);
             }
         } else {
-            LogUtil.info(this.getClass().getName(), "[ERROR] No user found for sender : "+ username);
+            LogUtil.error(getClass().getName(), null, "No user found for sender ["+ username + "]");
         }
     }
 

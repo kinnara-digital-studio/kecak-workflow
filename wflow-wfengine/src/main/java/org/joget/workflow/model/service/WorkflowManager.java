@@ -672,6 +672,8 @@ public interface WorkflowManager {
      */
     WorkflowProcessResult processCopyFromInstanceId(String currentProcessId, String newProcessDefId, boolean abortCurrentProcess);
 
+    WorkflowProcessResult processActivityStepBack(String currentProcessId, String currentActivity);
+
     /**
      * Abort a process instance.
      * @param processId
