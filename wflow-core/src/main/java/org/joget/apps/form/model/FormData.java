@@ -31,6 +31,7 @@ public class FormData {
     @SuppressWarnings("unchecked")
 	protected Map<String, String> resultMap = new ListOrderedMap();
     protected Boolean stay = false;
+    protected Boolean validation = true;
 
     public Boolean getStay() {
         return stay;
@@ -38,6 +39,14 @@ public class FormData {
 
     public void setStay(Boolean stay) {
         this.stay = stay;
+    }
+
+    public Boolean getDoValidation() {
+        return validation == null || validation;
+    }
+
+    public void setDoValidation(Boolean validation) {
+        this.validation = validation;
     }
 
     public String getPrimaryKeyValue() {

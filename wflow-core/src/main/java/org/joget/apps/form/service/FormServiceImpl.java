@@ -255,12 +255,11 @@ public class FormServiceImpl implements FormService {
      */
     @Transactional
     public FormData submitForm(Form form, FormData formData, boolean ignoreValidation) {
-        FormData updatedFormData = formData;
-        updatedFormData = FormUtil.executeElementFormatDataForValidation(form, formData);
-        if (!ignoreValidation) {
-            updatedFormData = validateFormData(form, formData);
-        } else {
+        FormData updatedFormData = FormUtil.executeElementFormatDataForValidation(form, formData);
+        if (ignoreValidation || !formData.getDoValidation()) {
             updatedFormData.clearFormErrors();
+        } else {
+            updatedFormData = validateFormData(form, formData);
         }
         Map<String, String> errors = updatedFormData.getFormErrors();
         if (!updatedFormData.getStay() && (errors == null || errors.isEmpty())) {
