@@ -253,10 +253,25 @@ public class AppServiceImpl implements AppService {
             saveButton.setProperty("label", ResourceBundleUtil.getMessage("form.button.saveAsDraft"));
             form.addAction((FormAction) saveButton);
         }
-        Element completeButton = (Element) pluginManager.getPlugin(AssignmentCompleteButton.class.getName());
+
+        Element completeButton;
+        Map<String, Object> customCompleteButton = (Map<String, Object>) form.getProperty("customAssignmentCompleteButton");
+        if(Objects.nonNull(customCompleteButton)
+                && Objects.nonNull(customCompleteButton.get("className"))
+                && Objects.nonNull(customCompleteButton.get("properties"))
+                && Objects.nonNull(completeButton = (Element) pluginManager.getPlugin(String.valueOf(customCompleteButton.get("className"))))
+        ) {
+            // custom complete button
+            Map<String, Object> pluginProperties = (Map<String, Object>)customCompleteButton.get("properties");
+            completeButton.setProperties(pluginProperties);
+        } else {
+            // default complete button
+            completeButton = (Element) pluginManager.getPlugin(AssignmentCompleteButton.class.getName());
+            completeButton.setProperty("label", ResourceBundleUtil.getMessage("form.button.complete"));
+        }
         completeButton.setProperty(FormUtil.PROPERTY_ID, AssignmentCompleteButton.DEFAULT_ID);
-        completeButton.setProperty("label", ResourceBundleUtil.getMessage("form.button.complete"));
         form.addAction((FormAction) completeButton);
+
         if (cancelUrl != null && !cancelUrl.isEmpty()) {
             Element cancelButton = (Element) pluginManager.getPlugin(LinkButton.class.getName());
             cancelButton.setProperty(FormUtil.PROPERTY_ID, "cancel");
@@ -899,7 +914,6 @@ public class AppServiceImpl implements AppService {
     /**
      * Create a new version of an app from an existing latest version
      * @param appId
-     * @param version
      * @return
      */
     @Transactional
@@ -1086,12 +1100,14 @@ public class AppServiceImpl implements AppService {
     }
 
     //---- form data use cases
+
     /**
-     * Loads a Form based on a specific form definition ID
+     *
      * @param appId
      * @param version
      * @param formDefId
-     * @param primaryKeyValue
+     * @param formData
+     * @param wfAssignment
      * @return
      */
     protected Form loadFormByFormDefId(String appId, String version, String formDefId, FormData formData, WorkflowAssignment wfAssignment) {
