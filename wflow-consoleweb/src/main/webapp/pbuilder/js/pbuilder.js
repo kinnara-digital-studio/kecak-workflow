@@ -2769,6 +2769,9 @@ ProcessBuilder.Designer = {
                         handle.css("width", handleWidth + "px");
                     }
                 });
+
+                ProcessBuilder.Designer.adjustParticipantSize($participant);
+                ProcessBuilder.Util.jsPlumb.setSuspendDrawing(false,true);
             }
             // associate startEndNode element with startEndNode model
             $startEndNode[0].model = startEndNode;
