@@ -17,7 +17,7 @@
 
 	<sws:annotation-driven/>
 
-	<sws:dynamic-wsdl id = "processStart"
+	<sws:dynamic-wsdl id = "process"
 	   portTypeName = "Process"
 	   locationUri = "/soap/process/"
 	   targetNamespace = "http://kecak.kinnarastudio.com/soap/process/definitions">

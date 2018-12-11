@@ -18,7 +18,7 @@ public class SoapProcessEndpoint {
 	private static final String NAMESPACE_URI = "http://kecak.kinnarastudio.com/soap/process/schemas";
 	private XPathExpression<Element> appIdExpression;
 	private XPathExpression<Element> appVersionExpression;
-	private XPathExpression<Element> processDefIdExpression;
+	private XPathExpression<Element> processIdExpression;
 	private XPathExpression<Element> workflowVariableExpression;
 
 	private SoapProcessService soapProcessService;
@@ -27,25 +27,25 @@ public class SoapProcessEndpoint {
 	public SoapProcessEndpoint(SoapProcessService soapProcessService) {
 		this.soapProcessService = soapProcessService;
 		
-		Namespace namespace = Namespace.getNamespace("p", NAMESPACE_URI);
+		Namespace namespace = Namespace.getNamespace("xp", NAMESPACE_URI);
 
 		XPathFactory xpathFactory = XPathFactory.instance();
 		try {
-			appIdExpression = xpathFactory.compile("//p:appId", Filters.element(), null, namespace);
+			appIdExpression = xpathFactory.compile("//xp:appId", Filters.element(), null, namespace);
 		} catch (NullPointerException e) {
 			appIdExpression = null;
 		}
 
 		try {
-			appVersionExpression = xpathFactory.compile("//p:appVersion", Filters.element(), null, namespace);
+			appVersionExpression = xpathFactory.compile("//xp:appVersion", Filters.element(), null, namespace);
 		} catch (NullPointerException e) {
 			appVersionExpression = null;
 		}
 
 		try {
-			processDefIdExpression = xpathFactory.compile("//p:processDefId", Filters.element(), null, namespace);
+			processIdExpression = xpathFactory.compile("//xp:processId", Filters.element(), null, namespace);
 		} catch (NullPointerException e) {
-			processDefIdExpression = null;
+			processIdExpression = null;
 		}
 
 
@@ -55,20 +55,20 @@ public class SoapProcessEndpoint {
 		
 	}
 	
-	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStart")
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
 	public void handleProcessStart(@RequestPayload Element processStart) {
-		final String processDefId = processDefIdExpression.evaluate(processStart).get(0).getValue();
+		final String processDefId = processIdExpression.evaluate(processStart).get(0).getValue();
 		final String appId = appIdExpression.evaluate(processStart).get(0).getValue();
 		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStart).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStart).get(0).getValue());
 		soapProcessService.processStart(appId, appVersion, processDefId, null);
 	}
 
-//	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherOperation")
-//	public void handleOtherOperation(@RequestPayload Element otherOperation) {
-//		final String processDefId = processDefIdExpression.evaluate(otherOperation).get(0).getValue();
-//		final String appId = appIdExpression.evaluate(otherOperation).get(0).getValue();
-//		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(otherOperation).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(otherOperation).get(0).getValue());
-//
-//		LogUtil.info(getClass().getName(), "Other operation");
-//	}
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherRequest")
+	public void handleOtherOperation(@RequestPayload Element otherOperation) {
+		final String processId = processIdExpression.evaluate(otherOperation).get(0).getValue();
+		final String appId = appIdExpression.evaluate(otherOperation).get(0).getValue();
+		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(otherOperation).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(otherOperation).get(0).getValue());
+
+		LogUtil.info(getClass().getName(), "Other operation appId [" + appId + "] appVersion ["+appVersion+"] processId ["+processId+"]");
+	}
 }

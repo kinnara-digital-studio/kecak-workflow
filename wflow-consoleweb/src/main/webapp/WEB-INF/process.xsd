@@ -1,15 +1,25 @@
 <xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
-   xmlns:p = "http://kecak.kinnarastudio.com/soap/process/schemas"
+   xmlns:xp = "http://kecak.kinnarastudio.com/soap/process/schemas"
    elementFormDefault = "qualified"
    targetNamespace = "http://kecak.kinnarastudio.com/soap/process/schemas">
    
-   <xs:element name = "ProcessStart">
+   <xs:element name = "ProcessStartRequest">
       <xs:complexType>
          <xs:all>
             <xs:element name = "appId" type = "xs:string"/>
             <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "processId" type = "xs:string"/>
+            <xs:element name = "variables" type = "xp:MapType" minOccurs="0"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name = "OtherRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long"/>
             <xs:element name = "processDefId" type = "xs:string"/>
-            <xs:element name = "variables" type = "p:MapType" />
          </xs:all>
       </xs:complexType>
    </xs:element>
@@ -17,7 +27,7 @@
    <xs:element name="map">
       <xs:complexType>
          <xs:sequence>
-            <xs:element name="item" type="MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="item" type="xp:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
          </xs:sequence>
       </xs:complexType>
       <xs:unique name="item">
@@ -28,14 +38,14 @@
 
    <xs:complexType name="MapType">
       <xs:sequence>
-         <xs:element ref="map"/>
+         <xs:element ref="xp:map"/>
       </xs:sequence>
    </xs:complexType>
 
    <xs:complexType name="MapItemType">
       <xs:sequence>
-         <xs:element name="key" type="xs:anyType"/>
-         <xs:element name="value" type="xs:anyType"/>
+         <xs:element name="key" type="xs:string"/>
+         <xs:element name="value" type="xs:string"/>
       </xs:sequence>
    </xs:complexType>
 </xs:schema>
