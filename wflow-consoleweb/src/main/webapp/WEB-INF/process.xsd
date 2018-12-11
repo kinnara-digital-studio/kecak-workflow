@@ -1,0 +1,26 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+   xmlns:apps = "http://kecak.kinnarastudio.com/soap/processes/schemas"
+   elementFormDefault = "qualified"
+   targetNamespace = "http://kecak.kinnarastudio.com/soap/processes/schemas">
+   
+   <xs:element name = "ProcessStart">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "processDefId" type = "xs:string"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name = "OtherOperation">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long"/>
+            <xs:element name = "processDefId" type = "xs:string"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+</xs:schema>
