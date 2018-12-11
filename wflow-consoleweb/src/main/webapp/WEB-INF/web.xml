@@ -83,7 +83,6 @@
 	   </init-param>
        <load-on-startup>1</load-on-startup>
 	</servlet>
-	
 	<servlet-mapping>
 	   <servlet-name>spring-ws</servlet-name>
 	   <url-pattern>/soap/*</url-pattern>

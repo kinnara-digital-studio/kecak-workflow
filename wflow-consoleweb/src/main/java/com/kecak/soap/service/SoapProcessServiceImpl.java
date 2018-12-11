@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Service
-public class SoapProcessesServiceImpl implements SoapProcessesService {
+public class SoapProcessServiceImpl implements SoapProcessService {
 
 	@Override
 	public String processStart(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processDefId, @Nullable Map<String, String> workflowVariable) {

@@ -1,6 +1,6 @@
 package com.kecak.soap.ws;
 
-import com.kecak.soap.service.SoapProcessesService;
+import com.kecak.soap.service.SoapProcessService;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
@@ -14,18 +14,18 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
 
 @Endpoint
-public class SoapProcessesEndpoint {
-	private static final String NAMESPACE_URI = "http://kecak.kinnarastudio.com/soap/processes/schemas";
+public class SoapProcessEndpoint {
+	private static final String NAMESPACE_URI = "http://kecak.kinnarastudio.com/soap/process/schemas";
 	private XPathExpression<Element> appIdExpression;
 	private XPathExpression<Element> appVersionExpression;
 	private XPathExpression<Element> processDefIdExpression;
 	private XPathExpression<Element> workflowVariableExpression;
 
-	private SoapProcessesService soapProcessesService;
+	private SoapProcessService soapProcessService;
 	
 	@Autowired
-	public SoapProcessesEndpoint(SoapProcessesService soapProcessesService) {
-		this.soapProcessesService = soapProcessesService;
+	public SoapProcessEndpoint(SoapProcessService soapProcessService) {
+		this.soapProcessService = soapProcessService;
 		
 		Namespace namespace = Namespace.getNamespace("p", NAMESPACE_URI);
 
@@ -56,19 +56,19 @@ public class SoapProcessesEndpoint {
 	}
 	
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStart")
-	public void handleProcessStart(@RequestPayload Element processRequest) {
-		final String processDefId = processDefIdExpression.evaluate(processRequest).get(0).getValue();
-		final String appId = appIdExpression.evaluate(processRequest).get(0).getValue();
-		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processRequest).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processRequest).get(0).getValue());
-		soapProcessesService.processStart(appId, appVersion, processDefId, null);
+	public void handleProcessStart(@RequestPayload Element processStart) {
+		final String processDefId = processDefIdExpression.evaluate(processStart).get(0).getValue();
+		final String appId = appIdExpression.evaluate(processStart).get(0).getValue();
+		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStart).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStart).get(0).getValue());
+		soapProcessService.processStart(appId, appVersion, processDefId, null);
 	}
 
-	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherOperation")
-	public void handleOtherOperation(@RequestPayload Element processRequest) {
-		final String processDefId = processDefIdExpression.evaluate(processRequest).get(0).getValue();
-		final String appId = appIdExpression.evaluate(processRequest).get(0).getValue();
-		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processRequest).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processRequest).get(0).getValue());
-
-		LogUtil.info(getClass().getName(), "Other operation");
-	}
+//	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherOperation")
+//	public void handleOtherOperation(@RequestPayload Element otherOperation) {
+//		final String processDefId = processDefIdExpression.evaluate(otherOperation).get(0).getValue();
+//		final String appId = appIdExpression.evaluate(otherOperation).get(0).getValue();
+//		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(otherOperation).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(otherOperation).get(0).getValue());
+//
+//		LogUtil.info(getClass().getName(), "Other operation");
+//	}
 }
