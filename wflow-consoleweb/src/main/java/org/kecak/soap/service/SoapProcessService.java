@@ -1,4 +1,4 @@
-package com.kecak.soap.service;
+package org.kecak.soap.service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,6 +1,6 @@
-package com.kecak.soap.ws;
+package org.kecak.soap.endpoint;
 
-import com.kecak.soap.service.SoapProcessService;
+import org.kecak.soap.service.SoapProcessService;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
@@ -12,42 +12,42 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
+import java.util.Collection;
+import java.util.List;
+
 
 @Endpoint
 public class SoapProcessEndpoint {
-	private static final String NAMESPACE_URI = "http://kecak.kinnarastudio.com/soap/process/schemas";
+	private static final String NAMESPACE_URI = "http://kecak.org/soap/process/schemas";
 	private XPathExpression<Element> appIdExpression;
 	private XPathExpression<Element> appVersionExpression;
 	private XPathExpression<Element> processIdExpression;
 	private XPathExpression<Element> workflowVariableExpression;
 
-	private SoapProcessService soapProcessService;
-	
 	@Autowired
-	public SoapProcessEndpoint(SoapProcessService soapProcessService) {
-		this.soapProcessService = soapProcessService;
-		
-		Namespace namespace = Namespace.getNamespace("xp", NAMESPACE_URI);
+	private SoapProcessService soapProcessService;
+
+	public SoapProcessEndpoint() {
+		Namespace namespace = Namespace.getNamespace("xps", NAMESPACE_URI);
 
 		XPathFactory xpathFactory = XPathFactory.instance();
 		try {
-			appIdExpression = xpathFactory.compile("//xp:appId", Filters.element(), null, namespace);
+			appIdExpression = xpathFactory.compile("//xps:appId", Filters.element(), null, namespace);
 		} catch (NullPointerException e) {
 			appIdExpression = null;
 		}
 
 		try {
-			appVersionExpression = xpathFactory.compile("//xp:appVersion", Filters.element(), null, namespace);
+			appVersionExpression = xpathFactory.compile("//xps:appVersion", Filters.element(), null, namespace);
 		} catch (NullPointerException e) {
 			appVersionExpression = null;
 		}
 
 		try {
-			processIdExpression = xpathFactory.compile("//xp:processId", Filters.element(), null, namespace);
+			processIdExpression = xpathFactory.compile("//xps:processId", Filters.element(), null, namespace);
 		} catch (NullPointerException e) {
 			processIdExpression = null;
 		}
-
 
 		workflowVariableExpression = null;
 
@@ -56,19 +56,20 @@ public class SoapProcessEndpoint {
 	}
 	
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
-	public void handleProcessStart(@RequestPayload Element processStart) {
-		final String processDefId = processIdExpression.evaluate(processStart).get(0).getValue();
-		final String appId = appIdExpression.evaluate(processStart).get(0).getValue();
-		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStart).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStart).get(0).getValue());
+	public void handleProcessStart(@RequestPayload Element processStartElement) {
+		LogUtil.info(getClass().getName(), "handleProcessStart");
+		final String processDefId = processIdExpression.evaluate(processStartElement).get(0).getValue();
+		final String appId = appIdExpression.evaluate(processStartElement).get(0).getValue();
+		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStartElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStartElement).get(0).getValue());
 		soapProcessService.processStart(appId, appVersion, processDefId, null);
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherRequest")
 	public void handleOtherOperation(@RequestPayload Element otherOperation) {
+		LogUtil.info(getClass().getName(), "handleOtherOperation");
 		final String processId = processIdExpression.evaluate(otherOperation).get(0).getValue();
 		final String appId = appIdExpression.evaluate(otherOperation).get(0).getValue();
 		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(otherOperation).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(otherOperation).get(0).getValue());
-
 		LogUtil.info(getClass().getName(), "Other operation appId [" + appId + "] appVersion ["+appVersion+"] processId ["+processId+"]");
 	}
 }

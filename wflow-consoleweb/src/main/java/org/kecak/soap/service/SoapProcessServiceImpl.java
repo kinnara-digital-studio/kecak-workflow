@@ -1,4 +1,4 @@
-package com.kecak.soap.service;
+package org.kecak.soap.service;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@Service
+@Service("soapProcessService")
 public class SoapProcessServiceImpl implements SoapProcessService {
 
 	@Override

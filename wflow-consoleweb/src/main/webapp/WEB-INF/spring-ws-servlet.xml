@@ -11,16 +11,21 @@
    http://www.springframework.org/schema/context 
    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
    
-	<context:component-scan base-package = "com.kecak.soap"/>
-
-	<bean id = "soapProcessService" class = "com.kecak.soap.service.SoapProcessServiceImpl" />
+	<context:component-scan base-package = "org.kecak.soap"/>
 
 	<sws:annotation-driven/>
 
 	<sws:dynamic-wsdl id = "process"
-	   portTypeName = "Process"
-	   locationUri = "/soap/process/"
-	   targetNamespace = "http://kecak.kinnarastudio.com/soap/process/definitions">
-	   <sws:xsd location = "/WEB-INF/process.xsd"/>
+					  portTypeName = "Process"
+					  locationUri = "/soap/"
+					  targetNamespace = "http://kecak.org/soap/process/definitions">
+		<sws:xsd location = "/WEB-INF/process.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "form"
+					  portTypeName = "Form"
+					  locationUri = "/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/form.xsd"/>
 	</sws:dynamic-wsdl>
 </beans>
