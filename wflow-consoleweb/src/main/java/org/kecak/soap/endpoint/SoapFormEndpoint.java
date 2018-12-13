@@ -71,8 +71,8 @@ public class SoapFormEndpoint {
                 .flatMap(elementMap -> elementMap.getChildren().stream())
                 .peek(e -> LogUtil.info(getClass().getName(), "Processing element 3 ["+e.getName()+"]"))
                 .collect(HashMap::new, (m, e) -> {
-                    String key = e.getText();
-                    String value = e.getText();
+                    String key = e.getChildText("key");
+                    String value = e.getChildText("value");;
                     if(key != null && value != null)
                         m.put(key, value);
                 }, Map::putAll);
