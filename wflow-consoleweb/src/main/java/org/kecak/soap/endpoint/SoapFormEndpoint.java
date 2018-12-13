@@ -19,17 +19,18 @@ import java.util.Map;
 @Endpoint
 public class SoapFormEndpoint {
     private static final String NAMESPACE_URI = "http://kecak.org/soap/form/schemas";
+    private final Namespace namespace = Namespace.getNamespace("xfs", NAMESPACE_URI);
+
     private XPathExpression<Element> appIdExpression;
     private XPathExpression<Element> appVersionExpression;
     private XPathExpression<Element> formDefIdExpression;
     private XPathExpression<Element> fieldsExpression;
 
+
     @Autowired
     private SoapFormService soapFormService;
 
     public SoapFormEndpoint() {
-        Namespace namespace = Namespace.getNamespace("xfs", NAMESPACE_URI);
-
         XPathFactory xpathFactory = XPathFactory.instance();
         try {
             appIdExpression = xpathFactory.compile("//xfs:appId", Filters.element(), null, namespace);
@@ -71,8 +72,9 @@ public class SoapFormEndpoint {
                 .flatMap(elementMap -> elementMap.getChildren().stream())
                 .peek(e -> LogUtil.info(getClass().getName(), "Processing element 3 ["+e.getName()+"]"))
                 .collect(HashMap::new, (m, e) -> {
-                    String key = e.getChildText("key");
-                    String value = e.getChildText("value");;
+                    String key = e.getChildText("key", namespace);
+                    String value = e.getChildText("value", namespace);
+                    LogUtil.info(getClass().getName(), "key ["+key+"] value ["+value+"]");
                     if(key != null && value != null)
                         m.put(key, value);
                 }, Map::putAll);

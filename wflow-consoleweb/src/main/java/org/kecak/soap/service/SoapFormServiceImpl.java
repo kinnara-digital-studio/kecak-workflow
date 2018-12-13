@@ -47,6 +47,7 @@ public class SoapFormServiceImpl implements SoapFormService {
     @Override
     public void formSubmit(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String formDefId, @Nonnull Map<String, String> data) {
         final FormData formData =  new FormData();
+        formData.setPrimaryKeyValue(data.get("id"));
         for(Map.Entry<String, String> e : data.entrySet()) {
             formData.addRequestParameterValues(e.getKey(), new String[] {e.getValue()});
         }
