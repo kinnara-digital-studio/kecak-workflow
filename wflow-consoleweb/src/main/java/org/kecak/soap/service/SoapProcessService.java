@@ -13,5 +13,5 @@ public interface SoapProcessService {
 	 * @param workflowVariable
 	 * @return
 	 */
-	String processStart(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId, @Nullable Map<String, String> workflowVariable);
+	String processStart(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId, @Nonnull Map<String, String> workflowVariable);
 }
