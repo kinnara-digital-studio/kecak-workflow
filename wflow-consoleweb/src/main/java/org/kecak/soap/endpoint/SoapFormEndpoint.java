@@ -59,22 +59,18 @@ public class SoapFormEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "FormSubmitRequest")
     public void handleFormSubmitRequest(@RequestPayload Element formSubmitElement) {
-        LogUtil.info(getClass().getName(), "handleProcessStart");
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service ["+formSubmitElement.getName()+"]");
 
         @Nonnull final String appId = appIdExpression.evaluate(formSubmitElement).get(0).getValue();
         @Nonnull final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(formSubmitElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(formSubmitElement).get(0).getValue());
         @Nonnull final String formDefId = formDefIdExpression.evaluate(formSubmitElement).get(0).getValue();
 
         @Nonnull final Map<String, String> fields = fieldsExpression.evaluate(formSubmitElement).stream()
-                .peek(e -> LogUtil.info(getClass().getName(), "Processing element 1 ["+e.getName()+"]"))
                 .flatMap(elementFields -> elementFields.getChildren().stream())
-                .peek(e -> LogUtil.info(getClass().getName(), "Processing element 2 ["+e.getName()+"]"))
                 .flatMap(elementMap -> elementMap.getChildren().stream())
-                .peek(e -> LogUtil.info(getClass().getName(), "Processing element 3 ["+e.getName()+"]"))
                 .collect(HashMap::new, (m, e) -> {
                     String key = e.getChildText("key", namespace);
                     String value = e.getChildText("value", namespace);
-                    LogUtil.info(getClass().getName(), "key ["+key+"] value ["+value+"]");
                     if(key != null && value != null)
                         m.put(key, value);
                 }, Map::putAll);

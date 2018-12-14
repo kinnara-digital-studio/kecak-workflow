@@ -1,10 +1,7 @@
 package org.kecak.soap.service;
 
-import java.util.Map;
-
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.service.AppService;
-import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.dao.FormDataDao;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.userview.service.UserviewService;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 @Service("soapProcessService")
 public class SoapProcessServiceImpl implements SoapProcessService {
@@ -49,11 +47,8 @@ public class SoapProcessServiceImpl implements SoapProcessService {
 
 	@Override
 	public String processStart(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId, @Nullable Map<String, String> workflowVariable) {
-		LogUtil.info(getClass().getName(), "Executing SOAP appId [" + appId + "] appVersion [" + appVersion + "] processId [" + processId + "]");
-
 		String processDefId = appId + "#" + (appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion) + "#" + processId;
 		WorkflowProcessResult result = workflowManager.processStart(processDefId);
-
 		return result.getProcess().getId();
 	}
 	
