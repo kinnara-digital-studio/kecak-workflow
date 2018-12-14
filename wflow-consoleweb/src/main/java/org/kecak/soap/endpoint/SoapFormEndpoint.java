@@ -1,5 +1,6 @@
 package org.kecak.soap.endpoint;
 
+import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.soap.service.SoapFormService;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -59,7 +60,7 @@ public class SoapFormEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "FormSubmitRequest")
     public void handleFormSubmitRequest(@RequestPayload Element formSubmitElement) {
-        LogUtil.info(getClass().getName(), "Executing SOAP Web Service ["+formSubmitElement.getName()+"]");
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + formSubmitElement.getName() + "]");
 
         @Nonnull final String appId = appIdExpression.evaluate(formSubmitElement).get(0).getValue();
         @Nonnull final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(formSubmitElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(formSubmitElement).get(0).getValue());

@@ -86,7 +86,7 @@
 	</servlet>
 	<servlet-mapping>
 	   <servlet-name>spring-ws</servlet-name>
-	   <url-pattern>/soap/*</url-pattern>
+	   <url-pattern>/ws/soap/*</url-pattern>
 	</servlet-mapping>
     <servlet-mapping>
         <servlet-name>JavaScriptServlet</servlet-name>
@@ -176,7 +176,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
-        <url-pattern>/soap/*</url-pattern>
+        <url-pattern>/ws/soap/*</url-pattern>
     </filter-mapping>
     <session-config>
         <session-timeout>

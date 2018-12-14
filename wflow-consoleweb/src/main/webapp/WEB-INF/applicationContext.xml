@@ -61,8 +61,8 @@
         <security:intercept-url pattern="/web/json/apps/published/processes" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
 
         <!-- Open SOAP Web Services -->
-        <security:intercept-url pattern="/soap/*.wsdl" access="ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
-        <security:intercept-url pattern="/soap/**" access="ROLE_ADMIN, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
+        <security:intercept-url pattern="/ws/soap/*.wsdl" access="ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
+        <security:intercept-url pattern="/ws/soap/**" access="ROLE_ADMIN, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
 
         <!-- Javascript API paths: JS API invokes JSON API, so permissions controlled there  --> 
         <security:intercept-url pattern="/web/js/**"  access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>

@@ -6,6 +6,7 @@ import org.jdom2.filter.Filters;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.soap.service.SoapProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -60,7 +61,7 @@ public class SoapProcessEndpoint {
 	
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
 	public void handleProcessStart(@RequestPayload Element processStartElement) {
-        LogUtil.info(getClass().getName(), "Executing SOAP Web Service [" + processStartElement.getName() + "]");
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + processStartElement.getName() + "]");
 
 		final String processDefId = processIdExpression.evaluate(processStartElement).get(0).getValue();
 		final String appId = appIdExpression.evaluate(processStartElement).get(0).getValue();
@@ -79,7 +80,7 @@ public class SoapProcessEndpoint {
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherRequest")
 	public void handleOtherOperation(@RequestPayload Element otherOperation) {
-        LogUtil.info(getClass().getName(), "Executing SOAP Web Service [" + otherOperation.getName() + "]");
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + otherOperation.getName() + "]");
 
 		final String processId = processIdExpression.evaluate(otherOperation).get(0).getValue();
 		final String appId = appIdExpression.evaluate(otherOperation).get(0).getValue();

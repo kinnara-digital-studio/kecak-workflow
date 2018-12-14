@@ -7,7 +7,7 @@
       <xs:complexType>
          <xs:all>
             <xs:element name = "appId" type = "xs:string"/>
-            <xs:element name = "appVersion" type = "xs:long"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
             <xs:element name = "formDefId" type = "xs:string"/>
             <xs:element name = "fields" type = "xfs:MapType" minOccurs="0"/>
          </xs:all>

@@ -17,14 +17,14 @@
 
 	<sws:dynamic-wsdl id = "process"
 					  portTypeName = "Process"
-					  locationUri = "/soap/"
+					  locationUri = "/ws/soap/"
 					  targetNamespace = "http://kecak.org/soap/process/definitions">
 		<sws:xsd location = "/WEB-INF/process.xsd"/>
 	</sws:dynamic-wsdl>
 
 	<sws:dynamic-wsdl id = "form"
 					  portTypeName = "Form"
-					  locationUri = "/soap/"
+					  locationUri = "/ws/soap/"
 					  targetNamespace = "http://kecak.org/soap/form/definitions">
 		<sws:xsd location = "/WEB-INF/form.xsd"/>
 	</sws:dynamic-wsdl>
