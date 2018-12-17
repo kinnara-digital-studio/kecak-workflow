@@ -60,20 +60,25 @@ public class SoapProcessEndpoint {
 	}
 	
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
-	public void handleProcessStart(@RequestPayload Element processStartElement) {
-        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + processStartElement.getName() + "]");
+	public void handleProcessStartAsync(@RequestPayload Element processStartAsyncElement) {
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + processStartAsyncElement.getName() + "]");
 
-		final String processDefId = processIdExpression.evaluate(processStartElement).get(0).getValue();
-		final String appId = appIdExpression.evaluate(processStartElement).get(0).getValue();
-		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStartElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStartElement).get(0).getValue());
-		@Nonnull final Map<String, String> variables = workflowVariableExpression.evaluate(processStartElement).stream()
-				.flatMap(elementFields -> elementFields.getChildren().stream())
-				.flatMap(elementMap -> elementMap.getChildren().stream())
+		final String processDefId = processIdExpression.evaluate(processStartAsyncElement).get(0).getValue();
+		final String appId = appIdExpression.evaluate(processStartAsyncElement).get(0).getValue();
+		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStartAsyncElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStartAsyncElement).get(0).getValue());
+		@Nonnull final Map<String, String> variables = workflowVariableExpression.evaluate(processStartAsyncElement).stream()
+				.flatMap(elementFields -> elementFields.getChildren("map", namespace).stream())
+				.flatMap(elementMap -> elementMap.getChildren("item", namespace).stream())
 				.collect(HashMap::new, (m, e) -> {
 					String key = e.getChildText("key", namespace);
 					String value = e.getChildText("value", namespace);
-					if(key != null && value != null)
-						m.put(key, value);
+
+					if(key == null || value == null)
+						return;
+
+					m.merge(key, value, (v1, v2) -> String.join(";", v1, v2));
+
+//					m.put(key, value);
 				}, Map::putAll);
 		soapProcessService.processStart(appId, appVersion, processDefId, variables);
 	}

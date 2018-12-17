@@ -2,7 +2,8 @@
    xmlns:xfs = "http://kecak.org/soap/form/schemas"
    elementFormDefault = "qualified"
    targetNamespace = "http://kecak.org/soap/form/schemas">
-   
+
+   <!-- Form Submit -->
    <xs:element name = "FormSubmitRequest">
       <xs:complexType>
          <xs:all>
@@ -10,6 +11,19 @@
             <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
             <xs:element name = "formDefId" type = "xs:string"/>
             <xs:element name = "fields" type = "xfs:MapType" minOccurs="0"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <!-- Form Assignment Complete  -->
+   <xs:element name = "FormAssignmentCompleteRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "assignmentId" type = "xs:string"/>
+            <xs:element name = "fields" type = "xfs:MapType" minOccurs="0"/>
+            <xs:element name = "variables" type = "xfs:MapType" minOccurs="0"/>
          </xs:all>
       </xs:complexType>
    </xs:element>
