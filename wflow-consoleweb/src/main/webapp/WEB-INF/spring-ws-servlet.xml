@@ -28,4 +28,11 @@
 					  targetNamespace = "http://kecak.org/soap/form/definitions">
 		<sws:xsd location = "/WEB-INF/form.xsd"/>
 	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "custom"
+					  portTypeName = "Custom"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/custom/definitions">
+		<sws:xsd location = "/WEB-INF/custom.xsd"/>
+	</sws:dynamic-wsdl>
 </beans>

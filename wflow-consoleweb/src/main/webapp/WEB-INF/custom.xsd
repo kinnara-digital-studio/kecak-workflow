@@ -1,0 +1,72 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xcs = "http://kecak.org/soap/custom/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/custom/schemas">
+
+   <!-- Process Start -->
+   <xs:element name = "ProcessStartRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "processId" type = "xs:string"/>
+            <xs:element name = "variables" minOccurs="0">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name="variable">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name="key" type="xs:string"/>
+                              <xs:element name="value" type="xs:string"/>
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name = "ProcessStartResponse" type="xcs:SapReturn" />
+
+   <!-- Vendor Master -->
+   <xs:element name = "VendorMasterRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "vendorData" minOccurs="0">
+               <xs:complexType>
+                  <xs:sequence>
+                     <xs:element name = "vendorNumber" type = "xs:string"/>
+                     <xs:element name = "vendorName" type = "xs:string" />
+                     <xs:element name = "bankAccount">
+                        <xs:complexType>
+                           <xs:sequence>
+                              <xs:element name = "accountNumber" type="xs:string" minOccurs="0" />
+                           </xs:sequence>
+                        </xs:complexType>
+                     </xs:element>
+                  </xs:sequence>
+               </xs:complexType>
+            </xs:element>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+
+   <xs:element name = "VendorMasterResponse" type="xcs:SapReturn" />
+
+   <!-- SAP Return Type -->
+   <xs:complexType name = "SapReturn">
+      <xs:sequence>
+         <xs:element name = "status" type="xs:string"/>
+         <xs:element name = "message1" type="xs:string"/>
+         <xs:element name = "message2" type="xs:string"/>
+         <xs:element name = "message3" type="xs:string"/>
+         <xs:element name = "message4" type="xs:string"/>
+         <xs:element name = "message5" type="xs:string"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>
