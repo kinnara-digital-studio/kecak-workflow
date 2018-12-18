@@ -112,7 +112,7 @@ public class SoapCustomEndpoint {
 
         ReturnMessage returnMessage = soapCustomService.processStart(appId, appVersion, processDefId, variables);
 
-        Element returnElement = new Element("VendorMasterResponse", namespace);
+        Element returnElement = new Element("ProcessStartResponse", namespace);
         returnElement.addContent(new Element("status", namespace).setText(returnMessage.getStatus()));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));

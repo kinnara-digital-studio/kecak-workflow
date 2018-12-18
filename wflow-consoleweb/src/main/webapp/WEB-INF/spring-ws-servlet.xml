@@ -29,10 +29,10 @@
 		<sws:xsd location = "/WEB-INF/form.xsd"/>
 	</sws:dynamic-wsdl>
 
-	<sws:dynamic-wsdl id = "custom"
-					  portTypeName = "Custom"
+	<sws:dynamic-wsdl id = "customPtTimah"
+					  portTypeName = "CustomPtTimah"
 					  locationUri = "/ws/soap/"
 					  targetNamespace = "http://kecak.org/soap/custom/definitions">
-		<sws:xsd location = "/WEB-INF/custom.xsd"/>
+		<sws:xsd location = "/WEB-INF/customPtTimah.xsd"/>
 	</sws:dynamic-wsdl>
 </beans>
