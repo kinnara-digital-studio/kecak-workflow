@@ -106,6 +106,7 @@ public class SoapCustomEndpoint {
                     if(key == null || value == null)
                         return;
 
+                    LogUtil.info(getClass().getName(), "key ["+key+"] value ["+value+"]");
                     m.merge(key, value, (v1, v2) -> String.join(";", v1, v2));
                 }, Map::putAll);
 

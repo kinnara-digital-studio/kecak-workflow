@@ -47,8 +47,8 @@ public class SoapProcessServiceImpl implements SoapProcessService {
 
 	@Override
 	public String processStart(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId, @Nullable Map<String, String> workflowVariable) {
-		String processDefId = appId + "#" + (appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion) + "#" + processId;
-		WorkflowProcessResult result = workflowManager.processStart(processDefId);
+		String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
+		WorkflowProcessResult result = workflowManager.processStart(processDefId, workflowVariable);
 		return result.getProcess().getId();
 	}
 	
