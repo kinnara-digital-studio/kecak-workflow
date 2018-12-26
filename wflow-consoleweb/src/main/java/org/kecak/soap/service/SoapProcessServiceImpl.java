@@ -5,7 +5,6 @@ import org.joget.apps.app.service.AppService;
 import org.joget.apps.form.dao.FormDataDao;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.userview.service.UserviewService;
-import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.WorkflowProcessResult;
 import org.joget.workflow.model.service.WorkflowManager;
@@ -47,8 +46,8 @@ public class SoapProcessServiceImpl implements SoapProcessService {
 
 	@Override
 	public String processStart(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId, @Nullable Map<String, String> workflowVariable) {
-		String processDefId = appId + "#" + (appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion) + "#" + processId;
-		WorkflowProcessResult result = workflowManager.processStart(processDefId);
+		String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
+		WorkflowProcessResult result = workflowManager.processStart(processDefId, workflowVariable);
 		return result.getProcess().getId();
 	}
 	

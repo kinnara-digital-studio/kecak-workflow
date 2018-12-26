@@ -1,25 +1,7 @@
 package org.joget.apps.form.dao;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.sql.DataSource;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import net.sf.ehcache.Cache;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -33,12 +15,7 @@ import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.AbstractSubForm;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormColumnCache;
-import org.joget.apps.form.model.FormContainer;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.DynamicDataSourceManager;
@@ -49,14 +26,17 @@ import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import net.sf.ehcache.Cache;
+import javax.sql.DataSource;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  *
@@ -824,23 +804,10 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         // load default FormRow hbm xml
         synchronized(this) {
             if (formRowDocument == null) {
-                InputStream is = null;
-                try {
-                    is = Form.class.getResourceAsStream("/org/joget/apps/form/model/FormRow.hbm.xml");
+                try(InputStream is = Form.class.getResourceAsStream("/org/joget/apps/form/model/FormRow.hbm.xml")) {
                     formRowDocument = XMLUtil.loadDocument(is);
-                } catch (ParserConfigurationException e) {
+                } catch (ParserConfigurationException | SAXException | IOException e) {
                     throw new HibernateException("Unable to load FormRow.hbm.xml", e);
-                } catch (SAXException e) {
-                    throw new HibernateException("Unable to load FormRow.hbm.xml", e);
-                } catch (IOException e) {
-                    throw new HibernateException("Unable to load FormRow.hbm.xml", e);
-                } finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException ex) {
-                        }
-                    }
                 }
             }
         }
@@ -892,9 +859,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
                 // save new mapping file
                 XMLUtil.saveDocument(document, mappingFile.getPath());
-            } catch (TransformerException e) {
-                throw new HibernateException("Unable to save " + mappingFile.getPath(), e);
-            } catch (IOException e) {
+            } catch (TransformerException | IOException e) {
                 throw new HibernateException("Unable to save " + mappingFile.getPath(), e);
             }
 

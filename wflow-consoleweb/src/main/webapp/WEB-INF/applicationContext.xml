@@ -15,6 +15,9 @@
 
     <import resource="classpath:appsApplicationContext.xml" />
 
+    <context:annotation-config/>
+    <context:component-scan base-package = "org.kecak.json"/>
+
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
