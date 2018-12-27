@@ -62,6 +62,7 @@
         <security:intercept-url pattern="/web/json/workflow/assignment/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/apps/published/userviews" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/apps/published/processes" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
+        <security:intercept-url pattern="/web/json/data/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
 
         <!-- Open SOAP Web Services -->
         <security:intercept-url pattern="/ws/soap/*.wsdl" access="ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>

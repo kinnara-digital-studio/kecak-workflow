@@ -50,5 +50,4 @@ public class SoapProcessServiceImpl implements SoapProcessService {
 		WorkflowProcessResult result = workflowManager.processStart(processDefId, workflowVariable);
 		return result.getProcess().getId();
 	}
-	
 }
