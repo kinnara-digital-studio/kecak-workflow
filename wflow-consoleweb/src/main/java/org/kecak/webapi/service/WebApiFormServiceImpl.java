@@ -1,4 +1,4 @@
-package org.kecak.soap.service;
+package org.kecak.webapi.service;
 
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.model.AppDefinition;
@@ -61,13 +61,13 @@ public class SoapFormServiceImpl implements SoapFormService {
         final FormData formData = collectFormData(fieldData);
 
         AppDefinition appDef = appDefinitionDao.loadVersion(appId, appVersion);
-        if(appDef == null) {
+        if (appDef == null) {
             LogUtil.warn(getClass().getName(), "Application form appId [" + appId + "] appVersion [" + appVersion + "] not found");
             return;
         }
 
         WorkflowAssignment assignment = workflowManager.getAssignment(assignmentId);
-        if(assignment == null) {
+        if (assignment == null) {
             LogUtil.warn(getClass().getName(), "Assignment [" + assignmentId + "] not found");
             return;
         }
@@ -81,8 +81,8 @@ public class SoapFormServiceImpl implements SoapFormService {
     protected FormData collectFormData(Map<String, String> fieldData) {
         final FormData formData = new FormData();
         formData.setPrimaryKeyValue(fieldData.get("id"));
-        for(Map.Entry<String, String> e : fieldData.entrySet()) {
-            formData.addRequestParameterValues(e.getKey(), new String[] {e.getValue()});
+        for (Map.Entry<String, String> e : fieldData.entrySet()) {
+            formData.addRequestParameterValues(e.getKey(), new String[]{e.getValue()});
         }
         return formData;
     }
