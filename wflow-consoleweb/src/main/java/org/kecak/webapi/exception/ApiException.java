@@ -1,4 +1,4 @@
-package org.kecak.exception;
+package org.kecak.webapi.exception;
 
 public class ApiException extends RuntimeException {
     private int httpErrorCode;

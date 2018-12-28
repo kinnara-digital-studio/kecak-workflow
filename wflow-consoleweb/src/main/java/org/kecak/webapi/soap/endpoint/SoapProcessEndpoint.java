@@ -1,13 +1,15 @@
-package org.kecak.soap.endpoint;
+package org.kecak.webapi.soap.endpoint;
 
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+import org.joget.apps.app.service.AppService;
 import org.joget.commons.util.LogUtil;
+import org.joget.workflow.model.WorkflowProcessResult;
+import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
-import org.kecak.soap.service.SoapProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -29,7 +31,10 @@ public class SoapProcessEndpoint {
 	private XPathExpression<Element> workflowVariableExpression;
 
 	@Autowired
-	private SoapProcessService soapProcessService;
+	private AppService appService;
+
+	@Autowired
+    private WorkflowManager workflowManager;
 
 	public SoapProcessEndpoint() {
 
@@ -63,9 +68,12 @@ public class SoapProcessEndpoint {
 	public void handleProcessStartAsync(@RequestPayload Element processStartAsyncElement) {
         LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + processStartAsyncElement.getName() + "]");
 
-		final String processDefId = processIdExpression.evaluate(processStartAsyncElement).get(0).getValue();
+		final String processId = processIdExpression.evaluate(processStartAsyncElement).get(0).getValue();
 		final String appId = appIdExpression.evaluate(processStartAsyncElement).get(0).getValue();
-		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStartAsyncElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStartAsyncElement).get(0).getValue());
+		final Long appVersion = appVersionExpression == null
+				|| appVersionExpression.evaluate(processStartAsyncElement) == null
+				|| appVersionExpression.evaluate(processStartAsyncElement).get(0) == null
+				? 0l : Long.parseLong(appVersionExpression.evaluate(processStartAsyncElement).get(0).getValue());
 		@Nonnull final Map<String, String> variables = workflowVariableExpression.evaluate(processStartAsyncElement).stream()
 				.flatMap(elementFields -> elementFields.getChildren("map", namespace).stream())
 				.flatMap(elementMap -> elementMap.getChildren("item", namespace).stream())
@@ -80,7 +88,9 @@ public class SoapProcessEndpoint {
 
 //					m.put(key, value);
 				}, Map::putAll);
-		soapProcessService.processStart(appId, appVersion, processDefId, variables);
+
+        String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
+        WorkflowProcessResult result = workflowManager.processStart(processDefId, variables);
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherRequest")
@@ -89,7 +99,10 @@ public class SoapProcessEndpoint {
 
 		final String processId = processIdExpression.evaluate(otherOperation).get(0).getValue();
 		final String appId = appIdExpression.evaluate(otherOperation).get(0).getValue();
-		final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(otherOperation).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(otherOperation).get(0).getValue());
+		final Long appVersion = appVersionExpression == null
+				|| appVersionExpression.evaluate(otherOperation) == null
+				|| appVersionExpression.evaluate(otherOperation).get(0) == null
+				? 0L : Long.parseLong(appVersionExpression.evaluate(otherOperation).get(0).getValue());
 		LogUtil.info(getClass().getName(), "Other operation appId [" + appId + "] appVersion ["+appVersion+"] processId ["+processId+"]");
 	}
 }

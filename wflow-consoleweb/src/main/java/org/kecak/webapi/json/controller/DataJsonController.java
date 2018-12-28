@@ -2,7 +2,10 @@ package org.kecak.webapi.json.controller;
 
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
+import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.service.AppService;
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
@@ -12,6 +15,7 @@ import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcessResult;
+import org.joget.workflow.model.WorkflowVariable;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
@@ -19,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.webapi.exception.ApiException;
-import org.kecak.webapi.service.WebApiFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -30,11 +33,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-public class DataWebController {
+public class DataJsonController {
 
     @Autowired
     private WorkflowUserManager workflowUserManager;
@@ -47,10 +50,6 @@ public class DataWebController {
     private AppService appService;
     @Autowired
     private AppDefinitionDao appDefinitionDao;
-    @Autowired
-    private FormService formService;
-    @Autowired
-    private WebApiFormService webApiFormService;
 
     /**
      * Submit form into table, can be used to save master data
@@ -76,11 +75,14 @@ public class DataWebController {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
             }
 
+            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
+
             // read request body and convert request body to json
-            final FormData formData = extractBodyToFormData(request);
+            final FormData formData = extractBodyToFormData(request, form);
 
             // submit form
-            final FormData result = appService.submitForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, formData, false);
+//            final FormData result = appService.submitForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, formData, false);
+            final FormData result = appService.submitForm(form, formData, false);
 
             // construct response
             final JSONObject jsonResponse = new JSONObject();
@@ -121,26 +123,46 @@ public class DataWebController {
             // get version, version 0 indicates published version
             Long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
-            final FormData formData = extractBodyToFormData(request);
-            WorkflowProcessResult processResult = webApiFormService.processStart(appId, version, processId, formData);
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+
+            // get processDefId
+            String processDefId = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId).getId();
+
+            // get process form
+            PackageActivityForm packageActivityForm = appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, "");
+            if (packageActivityForm == null || packageActivityForm.getForm() == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form");
+            }
+
+            Form form = packageActivityForm.getForm();
 
             // read request body and convert request body to json
+            final FormData formData = extractBodyToFormData(request, form);
+
             JSONObject jsonResponse = new JSONObject();
 
-            if (processResult != null) {
-                jsonResponse.put("status", processResult.getStatus());
-
+            // trigger run process
+            WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, null, null, null);
+            if(processResult != null) {
                 if (processResult.getProcess() != null) {
-                    jsonResponse.put("id", processResult.getProcess().getInstanceId());
-                    jsonResponse.put("processId", processResult.getProcess().getInstanceId());
-                    jsonResponse.put("processDefId", processResult.getProcess().getId());
-
-                    // execute store binder
-                    formData.setPrimaryKeyValue(processResult.getProcess().getInstanceId());
+                    WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
+                    if(nextAssignment != null) {
+                        jsonResponse.put("processId", nextAssignment.getProcessId());
+                        jsonResponse.put("activityId", nextAssignment.getActivityId());
+                        jsonResponse.put("dateCreated", nextAssignment.getDateCreated());
+                        jsonResponse.put("dueDate", nextAssignment.getDueDate());
+                        jsonResponse.put("priority", nextAssignment.getPriority());
+                    }
                 }
 
                 if (processResult.getActivities() != null && !processResult.getActivities().isEmpty()) {
-                    jsonResponse.put("activityId", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
+                    jsonResponse.put("activityIds", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
                 }
             }
 
@@ -160,6 +182,7 @@ public class DataWebController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+
     }
 
     /**
@@ -174,13 +197,37 @@ public class DataWebController {
         LogUtil.info(getClass().getName(), "Executing [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // read request body and convert request body to json
-            final FormData formData = extractBodyToFormData(request);
+            WorkflowAssignment assignment = workflowManager.getAssignment(assignmentId);
+            if (assignment == null) {
+                // check if assignment available
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignmentId + "] not available");
+            }
 
-            final FormData resultFormData = webApiFormService.assignmentComplete(assignmentId, formData);
+            AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + assignment.getProcessId() + "]");
+            }
+
+            // get assignment form
+            PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, null, "", "");
+            final Form form = packageActivityForm.getForm();
+
+            // read request body and convert request body to json
+            final FormData formData = extractBodyToFormData(request, form);
+
+            Map<String, String> workflowVariables = formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
+                Element element = FormUtil.findElement(e.getKey(), form, formData, true);
+                String workflowVariable = element.getPropertyString("workflowVariable");
+
+                if(!Objects.isNull(workflowVariable) && !workflowVariable.isEmpty())
+                    m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
+            }, Map::putAll);
+
+            FormData resultFormData = appService.completeAssignmentForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), assignmentId, formData, workflowVariables);
 
             // return processResult
-            JSONObject jsonResponse = new JSONObject();
+            final JSONObject jsonResponse = new JSONObject();
             if (resultFormData.getFormErrors() != null && !resultFormData.getFormErrors().isEmpty()) {
                 // show error message
                 resultFormData.getFormErrors().forEach((key, value) -> {
@@ -192,11 +239,12 @@ public class DataWebController {
             } else {
                 jsonResponse.put("id", resultFormData.getPrimaryKeyValue());
                 WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(resultFormData.getProcessId());
-                if (nextAssignment != null) {
+                if(nextAssignment != null) {
                     jsonResponse.put("processId", nextAssignment.getProcessId());
                     jsonResponse.put("activityId", nextAssignment.getActivityId());
-                } else {
-                    jsonResponse.put("processId", resultFormData.getProcessId());
+                    jsonResponse.put("dateCreated", nextAssignment.getDateCreated());
+                    jsonResponse.put("dueDate", nextAssignment.getDueDate());
+                    jsonResponse.put("priority", nextAssignment.getPriority());
                 }
             }
 
@@ -270,7 +318,7 @@ public class DataWebController {
      * @throws IOException
      * @throws JSONException
      */
-    private FormData extractBodyToFormData(final HttpServletRequest request) throws IOException, JSONException {
+    private FormData extractBodyToFormData(final HttpServletRequest request, final Form form) throws IOException, JSONException {
         final FormData formData = new FormData();
 
         // read request body and convert request body to json
@@ -278,9 +326,15 @@ public class DataWebController {
         Iterator i = jsonBody.keys();
         while (i.hasNext()) {
             String key = String.valueOf(i.next());
+            String value = jsonBody.getString(key);
 
-            // convert json to field data
-            formData.addRequestParameterValues(key, new String[]{jsonBody.optString(key)});
+            if (key != null && value != null) {
+
+                // convert json to field data
+                Element element = FormUtil.findElement(key, form, new FormData());
+                if (element != null)
+                    formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
+            }
         }
 
         formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{"true"});
