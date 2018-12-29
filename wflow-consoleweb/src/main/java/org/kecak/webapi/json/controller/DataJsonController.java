@@ -379,14 +379,16 @@ public class DataJsonController {
                 jsonResponse.put("error", jsonError);
 
             } else {
-                jsonResponse.put("id", resultFormData.getPrimaryKeyValue());
                 WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(resultFormData.getProcessId());
                 if(nextAssignment != null) {
-                    jsonResponse.put("processId", nextAssignment.getProcessId());
-                    jsonResponse.put("activityId", nextAssignment.getActivityId());
-                    jsonResponse.put("dateCreated", nextAssignment.getDateCreated());
-                    jsonResponse.put("dueDate", nextAssignment.getDueDate());
-                    jsonResponse.put("priority", nextAssignment.getPriority());
+                    JSONObject jsonProcess = new JSONObject();
+                    jsonProcess.put("processId", nextAssignment.getProcessId());
+                    jsonProcess.put("activityId", nextAssignment.getActivityId());
+                    jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                    jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                    jsonProcess.put("priority", nextAssignment.getPriority());
+
+                    jsonResponse.put("process", jsonProcess);
                 }
 
                 FormRowSet rowSet = appService.loadFormData(form, resultFormData.getPrimaryKeyValue());
