@@ -506,11 +506,6 @@ public class DataJsonController {
      * @return
      */
     protected String getDigest(JSONArray json) {
-        // clean some keys
-        Set<ICleaner> cleaners = new HashSet<>();
-        cleaners.add("elementUniqueKey"::equals);
-        cleanUp(json, cleaners);
-
         return DigestUtils.sha256Hex(json.toString());
     }
 
@@ -520,60 +515,6 @@ public class DataJsonController {
      * @return
      */
     protected String getDigest(JSONObject json) {
-        // clean some keys
-        Set<ICleaner> cleaners = new HashSet<>();
-        cleaners.add("elementUniqueKey"::equals);
-        cleanUp(json, cleaners);
-
         return DigestUtils.sha256Hex(json.toString());
-    }
-
-    private void cleanUp(@Nonnull JSONObject jsonObject, @Nonnull Set<ICleaner> cleaners) {
-        Iterator<String> i = jsonObject.keys();
-        while(i.hasNext()) {
-            String key = i.next();
-            for(ICleaner cleaner : cleaners) {
-                if(cleaner.test(key)) {
-                    i.remove();
-                }
-            }
-
-            // has key and not null
-            if(jsonObject.has(key) && !jsonObject.isNull(key)) {
-                JSONObject childObject = jsonObject.optJSONObject(key);
-                JSONArray childArray = jsonObject.optJSONArray(key);
-
-                if(childObject != null) {
-                    cleanUp(childObject, cleaners);
-                } else if(childArray != null) {
-                    cleanUp(childArray, cleaners);
-                }
-            }
-        }
-    }
-
-    private void cleanUp(JSONArray jsonArray, Set<ICleaner> cleaners) {
-        for(int i = 0, size = jsonArray.length(); i < size; i++) {
-            JSONObject childObject = jsonArray.optJSONObject(i);
-            JSONArray childArray = jsonArray.optJSONArray(i);
-
-            if(childObject != null) {
-                cleanUp(childObject, cleaners);
-            } else if(childArray != null) {
-                cleanUp(childArray, cleaners);
-            }
-        }
-    }
-
-    /**
-     * Callback for JSON cleaner
-     * @author aristo
-     */
-    interface ICleaner extends Predicate<String> {
-        /**
-         * Listener
-         * @param jsonKey
-         * @return if method returns true, the jsonKey will be removed
-         */
     }
 }
