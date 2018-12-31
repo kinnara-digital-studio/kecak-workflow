@@ -2,9 +2,14 @@ package org.kecak.webapi.json.controller;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joget.apps.app.dao.AppDefinitionDao;
+import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
+import org.joget.apps.app.model.DatalistDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.service.AppService;
+import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.datalist.model.*;
+import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
@@ -35,14 +40,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Controller
 public class DataJsonController {
 
-    public final static String MESSAGE_VALIDATION_ERROR = "Validation Error";
-    public final static String MESSAGE_SUCCESS = "Success";
+    private final static String MESSAGE_VALIDATION_ERROR = "Validation Error";
+    private final static String MESSAGE_SUCCESS = "Success";
 
     @Autowired
     private WorkflowUserManager workflowUserManager;
@@ -55,6 +59,10 @@ public class DataJsonController {
     private AppService appService;
     @Autowired
     private AppDefinitionDao appDefinitionDao;
+    @Autowired
+    private DataListService dataListService;
+    @Autowired
+    private DatalistDefinitionDao datalistDefinitionDao;
 
     /**
      * Submit form into table, can be used to save master data
@@ -71,7 +79,7 @@ public class DataJsonController {
 
         try {
             // get version, version 0 indicates published version
-            Long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
@@ -79,6 +87,9 @@ public class DataJsonController {
                 // check if app valid
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
             }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
 
             Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
 
@@ -125,7 +136,7 @@ public class DataJsonController {
 
         try {
             // get version, version 0 indicates published version
-            Long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
@@ -133,6 +144,9 @@ public class DataJsonController {
                 // check if app valid
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
             }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
 
             Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
 
@@ -184,7 +198,7 @@ public class DataJsonController {
         String digestParameter = request.getParameter("digest");
         try {
             // get version, version 0 indicates published version
-            Long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
@@ -192,6 +206,9 @@ public class DataJsonController {
                 // check if app valid
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
             }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
 
             Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
             FormRowSet rowSet = appService.loadFormData(form, primaryKey);
@@ -236,7 +253,7 @@ public class DataJsonController {
 
         try {
             // get version, version 0 indicates published version
-            Long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
@@ -245,6 +262,8 @@ public class DataJsonController {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
             }
 
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
 
             // get processDefId
             String processDefId = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId).getId();
@@ -346,6 +365,9 @@ public class DataJsonController {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + assignment.getProcessId() + "]");
             }
 
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
             // get assignment form
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, null, "", "");
             final Form form = packageActivityForm.getForm();
@@ -434,6 +456,9 @@ public class DataJsonController {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
             }
 
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
             // retrieve data
             FormData formData = new FormData();
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
@@ -463,10 +488,89 @@ public class DataJsonController {
         }
     }
 
+    @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)", method = RequestMethod.GET)
+    public void listLoad(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("appId") final String appId, @RequestParam("appVersion") final String appVersion, @RequestParam("dataListId") final String dataListId) throws IOException, JSONException {
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        String digestParam = request.getParameter("digest");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // get dataList definition
+            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
+            if (datalistDefinition == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+            }
+
+            // get dataList
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            if(dataList == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // paging
+            String pageParameter = request.getParameter("page");
+            int page = pageParameter == null || pageParameter.isEmpty() ? 0 : Integer.parseInt(pageParameter);
+            int pageSize = page == 0 ? DataList.MAXIMUM_PAGE_SIZE : DataList.DEFAULT_PAGE_SIZE;
+
+            getCollectFilters(request.getParameterMap(), dataList);
+            DataListCollection<Map<String, Object>> collections = dataList.getRows(pageSize, page == 0 ? 0 : ((page - 1) * pageSize));
+
+            // apply formatting
+            for (Map<String, Object> row : collections) {
+                row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey())));
+            }
+
+            JSONArray jsonData = new JSONArray();
+
+            for (Map<String, Object> row : collections) {
+                try {
+                    JSONObject jsonRow = new JSONObject();
+                    for (String field : row.keySet()) {
+                        jsonRow.put(field, format(dataList, row, field));
+                    }
+                    jsonData.put(jsonRow);
+                } catch (JSONException e) {
+                    jsonData.put(new JSONObject(row));
+                }
+            }
+
+            JSONObject jsonResponse = new JSONObject();
+            try {
+                String digest = getDigest(jsonData);
+
+                jsonResponse.put("total", jsonData.length());
+                if(!Objects.equals(digest, digestParam))
+                    jsonResponse.put("data", jsonData);
+                jsonResponse.put("digest", digest);
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(jsonResponse.toString());
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
     /**
      * Convert request body to form data
      *
-     * @param request
+     * @param request HTTP Request
      * @return form data
      * @throws IOException
      * @throws JSONException
@@ -504,19 +608,59 @@ public class DataJsonController {
 
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
-     * @param json
-     * @return
+     * @param json JSON array object
+     * @return digest value
      */
-    protected String getDigest(JSONArray json) {
-        return DigestUtils.sha256Hex(json.toString());
+    private String getDigest(JSONArray json) {
+        return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
     }
 
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
-     * @param json
-     * @return
+     * @param json JSON object
+     * @return digest value
      */
-    protected String getDigest(JSONObject json) {
-        return DigestUtils.sha256Hex(json.toString());
+    private String getDigest(JSONObject json) {
+        return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
+    }
+
+    /**
+     *
+     * @param requestParameters Request parameter
+     * @param dataList Input/Output parameter
+     */
+    private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
+        Arrays.stream(dataList.getFilters())
+                .peek(f -> {
+                    if(!(f.getType() instanceof DataListFilterTypeDefault))
+                        LogUtil.warn(getClass().getName(), "DataList filter ["+f.getName()+"] is not instance of ["+DataListFilterTypeDefault.class.getName()+"], filter will be ignored");
+                })
+                .filter(f -> Objects.nonNull(requestParameters.get(f.getName())) && f.getType() instanceof DataListFilterTypeDefault)
+                .forEach(f -> f.getType().setProperty("defaultValue", String.join(";", requestParameters.get(f.getName()))));
+    }
+
+    private @Nonnull String format(DataList dataList, Map<String, Object> row, String field) {
+        if(dataList.getColumns() == null) {
+            return String.valueOf(row.get(field));
+        }
+
+        for(DataListColumn column : dataList.getColumns()) {
+            if(!field.equals(column.getName())) {
+                continue;
+            }
+
+            String value = String.valueOf(row.get(field));
+            if(column.getFormats() == null) {
+                return value;
+            }
+
+            for(DataListColumnFormat format : column.getFormats()) {
+                if(format != null) {
+                    return format.format(dataList, column, row, value).replaceAll("<[^>]*>", "");
+                }
+            }
+        }
+
+        return String.valueOf(row.get(field));
     }
 }
