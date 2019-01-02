@@ -1,11 +1,9 @@
-package org.joget.apps.scheduler.model;
+package org.joget.scheduler.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
 public class SchedulerLog implements Serializable {
-
-	
 
 	/**
 	 * 

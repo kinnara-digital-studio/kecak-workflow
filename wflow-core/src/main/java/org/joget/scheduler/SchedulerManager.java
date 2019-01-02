@@ -1,24 +1,18 @@
-package org.joget.apps.scheduler;
+package org.joget.scheduler;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Set;
-
-import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
-import org.joget.apps.scheduler.model.SchedulerDetails;
-import org.joget.apps.scheduler.model.TriggerTypes;
 import org.joget.plugin.base.PluginManager;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.TriggerKey;
+import org.joget.scheduler.dao.SchedulerDetailsDao;
+import org.joget.scheduler.model.SchedulerDetails;
+import org.joget.scheduler.model.TriggerTypes;
+import org.quartz.*;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.quartz.impl.triggers.SimpleTriggerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Set;
 
 public class SchedulerManager {
 
@@ -38,6 +32,7 @@ public class SchedulerManager {
         try {
             schedulerFactory.getListenerManager().addJobListener(schedulerJobListener);
             initialized = true;
+
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);
         }

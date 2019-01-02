@@ -1,4 +1,4 @@
-package org.joget.apps.scheduler;
+package org.joget.scheduler;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

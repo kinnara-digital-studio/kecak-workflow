@@ -1,11 +1,12 @@
-package org.joget.apps.scheduler.dao;
+package org.joget.scheduler.dao;
+
+
+import org.joget.commons.spring.model.AbstractSpringDao;
+import org.joget.scheduler.model.SchedulerLog;
 
 import java.util.List;
 
-import org.joget.apps.scheduler.model.SchedulerLog;
-import org.joget.commons.spring.model.AbstractSpringDao;
-
-public class SchedulerLogDao extends AbstractSpringDao {
+public class SchedulerLogDao extends AbstractSpringDao<SchedulerLog> {
 
 	public static final String ENTITY_NAME = "SchedulerLog";
 	

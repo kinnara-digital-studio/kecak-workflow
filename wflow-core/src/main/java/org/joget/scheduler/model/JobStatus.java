@@ -1,4 +1,4 @@
-package org.joget.apps.scheduler.model;
+package org.joget.scheduler.model;
 
 public enum JobStatus {
 

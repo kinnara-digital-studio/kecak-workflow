@@ -1,49 +1,18 @@
 package org.joget.apps.job;
 
-import java.util.Collection;
+import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPStore;
+import org.joget.apps.form.model.FormData;
+import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.StringUtil;
+
+import javax.mail.*;
+import javax.mail.search.FlagTerm;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.mail.Address;
-import javax.mail.BodyPart;
-import javax.mail.Flags;
-import javax.mail.Flags.Flag;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.event.MessageCountAdapter;
-import javax.mail.event.MessageCountEvent;
-import javax.mail.internet.InternetAddress;
-import javax.mail.search.FlagTerm;
-
-import com.sun.mail.imap.IMAPFolder;
-import com.sun.mail.imap.IMAPStore;
-
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.StringUtil;
-import org.joget.apps.app.model.AppDefinition;
-import org.joget.apps.app.model.PackageActivityForm;
-import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.app.service.AppService;
-import org.joget.apps.form.model.FormData;
-import org.joget.directory.model.User;
-import org.joget.directory.model.service.DirectoryManager;
-import org.joget.workflow.model.WorkflowAssignment;
-import org.joget.workflow.model.service.WorkflowManager;
-import org.joget.workflow.model.service.WorkflowUserManager;
-import org.joget.plugin.base.ApplicationPlugin;
-import org.joget.plugin.base.Plugin;
-import org.joget.plugin.base.PluginManager;
-import org.joget.plugin.property.model.PropertyEditable;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
-import org.apache.camel.Body;
 
 public class EmailApprovalProcessor {
 

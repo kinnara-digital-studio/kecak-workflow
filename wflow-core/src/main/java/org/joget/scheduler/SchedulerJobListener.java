@@ -1,10 +1,10 @@
-package org.joget.apps.scheduler;
+package org.joget.scheduler;
 
 import java.util.Date;
 
-import org.joget.apps.scheduler.dao.SchedulerLogDao;
-import org.joget.apps.scheduler.model.JobStatus;
-import org.joget.apps.scheduler.model.SchedulerLog;
+import org.joget.scheduler.dao.SchedulerLogDao;
+import org.joget.scheduler.model.JobStatus;
+import org.joget.scheduler.model.SchedulerLog;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
