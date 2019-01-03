@@ -4,6 +4,7 @@ import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.DefaultSchedulerPlugin;
 import org.joget.apps.app.model.PluginDefaultProperties;
+import org.joget.apps.app.model.SchedulerPlugin;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.PluginManager;
@@ -14,7 +15,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -25,10 +25,6 @@ import java.util.stream.Stream;
  * Job for Scheduler Plugin
  */
 public class SchedulerPluginJob implements Job {
-    public final static String VARIABLE_CONTEXT = "jobExecutionContext";
-    public final static String VARIABLE_APP_DEFINITION = "appDefinition";
-    public final static String VARIABLE_PLUGIN_MANAGER = "pluginManager";
-
     /**
      * Execute
      * @param context
@@ -39,9 +35,6 @@ public class SchedulerPluginJob implements Job {
         ApplicationContext applicationContext = AppUtil.getApplicationContext();
         final PluginManager pluginManager = (PluginManager) applicationContext.getBean("pluginManager");
         AppDefinitionDao appDefinitionDao = (AppDefinitionDao) applicationContext.getBean("appDefinitionDao");
-
-        // set timestamp
-        final Date timestamp = new Date();
 
         Collection<AppDefinition> appDefinitions = appDefinitionDao.findPublishedApps(null, null, null, null);
         if(appDefinitions == null) {
@@ -61,9 +54,9 @@ public class SchedulerPluginJob implements Job {
                                 p.setProperties(pluginProperties);
 
                                 Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
-                                parameterProperties.put(VARIABLE_CONTEXT, context);
-                                parameterProperties.put(VARIABLE_APP_DEFINITION, appDefinition);
-                                parameterProperties.put(VARIABLE_PLUGIN_MANAGER, pluginManager);
+                                parameterProperties.put(SchedulerPlugin.PROPERTY_APP_DEFINITION, appDefinition);
+                                parameterProperties.put(SchedulerPlugin.PROPERTY_PLUGIN_MANAGER, pluginManager);
+                                parameterProperties.put(SchedulerPlugin.PROPERTY_TIMESTAMP, context.getFireTime());
 
                                 if(p.filter(parameterProperties)) {
                                     LogUtil.info(getClass().getName(), "Running Scheduler Job Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
