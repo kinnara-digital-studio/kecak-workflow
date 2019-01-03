@@ -6,7 +6,7 @@ import org.kecak.apps.scheduler.model.SchedulerDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class SchedulerDetailsDao extends AbstractSpringDao {
+public class SchedulerDetailsDao extends AbstractSpringDao<SchedulerDetails> {
 
 	public static final String ENTITY_NAME = "SchedulerDetails";
 	

@@ -32,9 +32,9 @@ public class SchedulerPluginJob implements Job {
      */
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        ApplicationContext applicationContext = AppUtil.getApplicationContext();
+        final ApplicationContext applicationContext = AppUtil.getApplicationContext();
         final PluginManager pluginManager = (PluginManager) applicationContext.getBean("pluginManager");
-        AppDefinitionDao appDefinitionDao = (AppDefinitionDao) applicationContext.getBean("appDefinitionDao");
+        final AppDefinitionDao appDefinitionDao = (AppDefinitionDao) applicationContext.getBean("appDefinitionDao");
 
         Collection<AppDefinition> appDefinitions = appDefinitionDao.findPublishedApps(null, null, null, null);
         if(appDefinitions == null) {
