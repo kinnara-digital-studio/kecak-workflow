@@ -10,13 +10,11 @@ import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.PagedList;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
@@ -566,6 +564,74 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/json/data/assignments", method = RequestMethod.GET)
+    public void assignmentList(final HttpServletRequest request, final HttpServletResponse response, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "digest", required = false) String digest) throws IOException, JSONException {
+        try {
+            PagedList<WorkflowAssignment> pendingAssingment = workflowManager.getAssignmentPendingList(null, null, null, page, page == null ? null : 10);
+            if(pendingAssingment == null) {
+                throw new ApiException(HttpServletResponse.SC_NO_CONTENT, "No assignments");
+            }
+
+            FormRowSet rowSet = pendingAssingment.stream()
+                    .map(assignment -> {
+                        AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
+                        if (appDefinition == null) {
+                            LogUtil.warn(getClass().getName(), "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
+                            return null;
+                        }
+
+                        FormData formData = new FormData();
+                        PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
+                        if (packageActivityForm == null) {
+                            LogUtil.warn(getClass().getName(), "Invalid Package Activity Form for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
+                            return null;
+                        }
+
+                        Form form = packageActivityForm.getForm();
+                        if (form == null) {
+                            LogUtil.warn(getClass().getName(), "Invalid Form for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
+                            return null;
+                        }
+                        return appService.loadFormData(form, formData.getPrimaryKeyValue());
+                    })
+                    .filter(Objects::nonNull)
+                    .flatMap(Collection::stream)
+                    .collect(FormRowSet::new, FormRowSet::add, FormRowSet::addAll);
+
+            JSONArray jsonData = new JSONArray();
+
+            for (FormRow row : rowSet) {
+                try {
+                    JSONObject jsonRow = new JSONObject();
+                    for (Object key : row.keySet()) {
+                        jsonRow.put(key.toString(), row.get(key));
+                    }
+                    jsonData.put(jsonRow);
+                } catch (JSONException e) {
+                    jsonData.put(new JSONObject(row));
+                }
+            }
+
+            JSONObject jsonResponse = new JSONObject();
+            try {
+                String currentDigest = getDigest(jsonData);
+                jsonResponse.put("total", jsonData.length());
+                if (!Objects.equals(currentDigest, digest))
+                    jsonResponse.put("data", jsonData);
+                jsonResponse.put("digest", currentDigest);
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(jsonResponse.toString());
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
 
     /**
      * Convert request body to form data
