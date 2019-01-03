@@ -1,8 +1,8 @@
-package org.joget.scheduler.dao;
+package org.kecak.apps.scheduler.dao;
 
 
 import org.joget.commons.spring.model.AbstractSpringDao;
-import org.joget.scheduler.model.SchedulerLog;
+import org.kecak.apps.scheduler.model.SchedulerLog;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class entity-name="SchedulerDetails" lazy="false" name="org.joget.scheduler.model.SchedulerDetails" table="schdlr_detail">
+	<class entity-name="SchedulerDetails" lazy="false" name="org.kecak.apps.scheduler.model.SchedulerDetails" table="schdlr_detail">
 		<id name="id" type="string">
 			<generator class="uuid" />
 		</id>
@@ -19,12 +19,11 @@
 		
 		<property name="jobClassName" type="string" column="job_class_name" />
 		<property name="cronExpression" type="string" column="cron_expression" />
-                <property name="processDefId" type="string" column="processDefId" />
 		<property name="interval" type="long" column="job_interval" />
 		<property name="nextFireTime" type="timestamp" />
 		<property name="triggerTypes" column="trigger_types">
 		    <type name="org.hibernate.type.EnumType">
-		        <param name="enumClass">org.joget.scheduler.model.TriggerTypes</param>
+		        <param name="enumClass">org.kecak.apps.scheduler.model.TriggerTypes</param>
 		    </type>
 		</property>
 	</class>

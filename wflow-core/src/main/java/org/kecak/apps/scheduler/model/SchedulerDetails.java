@@ -1,4 +1,4 @@
-package org.joget.scheduler.model;
+package org.kecak.apps.scheduler.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -18,7 +18,6 @@ public class SchedulerDetails implements Serializable {
     private String groupTriggerName;
     private String jobClassName;
     private String cronExpression;
-    private String processDefId;
     private Long interval;
     private TriggerTypes triggerTypes;
     private Date nextFireTime;
@@ -148,19 +147,4 @@ public class SchedulerDetails implements Serializable {
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
-
-    /**
-     * @return the processDefId
-     */
-    public String getProcessDefId() {
-        return processDefId;
-    }
-
-    /**
-     * @param processDefId the processDefId to set
-     */
-    public void setProcessDefId(String processDefId) {
-        this.processDefId = processDefId;
-    }
-
 }

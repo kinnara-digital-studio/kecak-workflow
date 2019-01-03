@@ -12,23 +12,24 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="org.joget.apps"/>
+    <context:component-scan base-package="org.kecak"/>
 
 	<!-- Scheduler -->
-    <bean id="schedulerLogDao" class="org.joget.scheduler.dao.SchedulerLogDao" depends-on="staticInitOfDynamicDataSourceManager">
+    <bean id="schedulerLogDao" class="org.kecak.apps.scheduler.dao.SchedulerLogDao" depends-on="staticInitOfDynamicDataSourceManager">
         <property name="sessionFactory" ref="setupSessionFactory"/>
     </bean>
     
-    <bean id="schedulerDetailsDao" class="org.joget.scheduler.dao.SchedulerDetailsDao" depends-on="staticInitOfDynamicDataSourceManager">
+    <bean id="schedulerDetailsDao" class="org.kecak.apps.scheduler.dao.SchedulerDetailsDao" depends-on="staticInitOfDynamicDataSourceManager">
         <property name="sessionFactory" ref="setupSessionFactory"/>
     </bean>
     
-    <bean id="schedulerManager" class="org.joget.scheduler.SchedulerManager" init-method="initManager">
+    <bean id="schedulerManager" class="org.kecak.apps.scheduler.SchedulerManager" init-method="initManager">
     	<property name="schedulerFactory" ref="schedulerFactory"/>
     	<property name="schedulerJobListener" ref="schedulerJobListener"/>
     	<property name="schedulerDetailsDao" ref="schedulerDetailsDao"></property>
     </bean>
     
-    <bean id="schedulerJobListener" class="org.joget.scheduler.SchedulerJobListener">
+    <bean id="schedulerJobListener" class="org.kecak.apps.scheduler.SchedulerJobListener">
     	<property name="schedulerLogDao" ref="schedulerLogDao"/>
     </bean>
     

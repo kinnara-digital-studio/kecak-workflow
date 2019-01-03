@@ -1,9 +1,9 @@
-package org.joget.scheduler;
+package org.kecak.apps.scheduler;
 
 import org.joget.plugin.base.PluginManager;
-import org.joget.scheduler.dao.SchedulerDetailsDao;
-import org.joget.scheduler.model.SchedulerDetails;
-import org.joget.scheduler.model.TriggerTypes;
+import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
+import org.kecak.apps.scheduler.model.SchedulerDetails;
+import org.kecak.apps.scheduler.model.TriggerTypes;
 import org.quartz.*;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.quartz.impl.triggers.SimpleTriggerImpl;

@@ -1,32 +1,77 @@
-package org.joget.scheduler;
+package org.kecak.apps.scheduler;
 
+import org.joget.apps.app.dao.AppDefinitionDao;
+import org.joget.apps.app.model.AppDefinition;
+import org.joget.apps.app.model.DefaultSchedulerPlugin;
+import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
-import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
-import org.joget.apps.app.model.DefaultSchedulerPlugin;
+import org.joget.plugin.property.service.PropertyUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.context.ApplicationContext;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
+/**
+ * @author aristo
+ *
+ * Job for Scheduler Plugin
+ */
 public class SchedulerPluginJob implements Job {
+    public final static String VARIABLE_CONTEXT = "jobExecutionContext";
+    public final static String VARIABLE_APP_DEFINITION = "appDefinition";
+    public final static String VARIABLE_PLUGIN_MANAGER = "pluginManager";
+
+    /**
+     * Execute
+     * @param context
+     * @throws JobExecutionException
+     */
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        ApplicationContext applicationContext = AppUtil.getApplicationContext();
+        final PluginManager pluginManager = (PluginManager) applicationContext.getBean("pluginManager");
+        AppDefinitionDao appDefinitionDao = (AppDefinitionDao) applicationContext.getBean("appDefinitionDao");
 
-        List<Plugin> schedulerPluginList = (List<Plugin>) pluginManager.list(DefaultSchedulerPlugin.class);
+        // set timestamp
+        final Date timestamp = new Date();
 
-        // scheduler plugins not available
-        if(schedulerPluginList == null)
+        Collection<AppDefinition> appDefinitions = appDefinitionDao.findPublishedApps(null, null, null, null);
+        if(appDefinitions == null) {
             return;
+        }
 
-        schedulerPluginList.stream()
-                .map(p -> (DefaultSchedulerPlugin)p)
-                .peek(p -> LogUtil.info(getClass().getName(), "Executing scheduler plugins ["+p.getClassName()+"]"))
-                .filter(p -> p.filter(new HashMap<>()))
-                .forEach(p -> p.execute(context, new HashMap<>()));
+        appDefinitions.forEach(appDefinition -> {
+            Collection<PluginDefaultProperties> pluginDefaultProperties = appDefinition.getPluginDefaultPropertiesList();
+            if(pluginDefaultProperties != null) {
+                pluginDefaultProperties.forEach(pluginDefaultPropery -> {
+                    Stream.of(pluginDefaultPropery)
+                            .map(p -> pluginManager.getPlugin(p.getId()))
+                            .filter(p -> p instanceof DefaultSchedulerPlugin)
+                            .map(p -> (DefaultSchedulerPlugin)p)
+                            .forEach(p -> {
+                                Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultPropery.getPluginProperties());
+                                p.setProperties(pluginProperties);
+
+                                Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
+                                parameterProperties.put(VARIABLE_CONTEXT, context);
+                                parameterProperties.put(VARIABLE_APP_DEFINITION, appDefinition);
+                                parameterProperties.put(VARIABLE_PLUGIN_MANAGER, pluginManager);
+
+                                if(p.filter(parameterProperties)) {
+                                    LogUtil.info(getClass().getName(), "Running Scheduler Job Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
+                                    p.jobRun(parameterProperties);
+                                }
+                            });
+                });
+            }
+        });
     }
 }

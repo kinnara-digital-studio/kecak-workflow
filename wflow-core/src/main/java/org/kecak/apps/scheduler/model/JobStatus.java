@@ -1,4 +1,4 @@
-package org.joget.scheduler.model;
+package org.kecak.apps.scheduler.model;
 
 public enum JobStatus {
 
