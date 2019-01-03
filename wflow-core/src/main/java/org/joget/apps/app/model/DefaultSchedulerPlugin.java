@@ -8,11 +8,17 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author aristo
+ *
+ * Default Scheduler Plugin impletemntation and helper
+ */
 public abstract class DefaultSchedulerPlugin extends ExtDefaultPlugin implements SchedulerPlugin {
     /**
-     * NOT USED !!!!
+     * NOT USED !!!! For future use !!!
+     *
      * @param properties
-     * @return
+     * @return NaN
      */
     @Override
     public final Object execute(Map properties) {
@@ -37,7 +43,7 @@ public abstract class DefaultSchedulerPlugin extends ExtDefaultPlugin implements
     /**
      * First Day of Month
      *
-     * @param context
+     * @param context {@link JobExecutionContext}
      * @return true every first day of month at 00:00
      */
     public static boolean filterForFirstDayOfMonth(@Nonnull JobExecutionContext context) {
@@ -51,7 +57,7 @@ public abstract class DefaultSchedulerPlugin extends ExtDefaultPlugin implements
     /**
      * Weekly on specific date
      *
-     * @param context
+     * @param context {@link JobExecutionContext}
      * @param dayOfWeek
      *      {@link Calendar#SUNDAY}
      *      {@link Calendar#MONDAY}
@@ -70,10 +76,51 @@ public abstract class DefaultSchedulerPlugin extends ExtDefaultPlugin implements
                 && calendar.get(Calendar.MINUTE) == 0;
     }
 
+    /**
+     * Every Day at 00:00
+     *
+     * @param context {@link JobExecutionContext}
+     * @return true for everyday at 00:00
+     */
     public static boolean filterForEveryDay(@Nonnull JobExecutionContext context) {
+        return filterForEveryDay(context, 0);
+    }
+
+    /**
+     * Every Day at specified hour
+     *
+     * @param context {@link JobExecutionContext}
+     * @param atHour 24-hour format
+     * @return true for everyday at specified hour
+     */
+    public static boolean filterForEveryDay(@Nonnull JobExecutionContext context, int atHour) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(context.getFireTime());
-        return calendar.get(Calendar.HOUR_OF_DAY) == 0
+        return calendar.get(Calendar.HOUR_OF_DAY) == atHour
+                && calendar.get(Calendar.MINUTE) == 0;
+    }
+
+    /**
+     * Every Hour
+     *
+     * @param context {@link JobExecutionContext}
+     * @return true for every hour
+     */
+    public static boolean filterForEveryHour(@Nonnull JobExecutionContext context) {
+        return filterForEveryIntervalHour(context, 0);
+    }
+
+    /**
+     * Every Interval Hour
+     *
+     * @param context {@link JobExecutionContext}
+     * @param interval hourly interval
+     * @return true for every interval hour starts at 00:00
+     */
+    public static boolean filterForEveryIntervalHour(@Nonnull JobExecutionContext context, int interval) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(context.getFireTime());
+        return calendar.get(Calendar.HOUR_OF_DAY) % (interval < 1 ? 1 : interval) == 0
                 && calendar.get(Calendar.MINUTE) == 0;
     }
 }
