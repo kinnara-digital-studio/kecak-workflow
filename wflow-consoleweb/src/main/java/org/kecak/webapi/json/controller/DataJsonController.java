@@ -63,7 +63,12 @@ public class DataJsonController {
      * @param formDefId  Form ID
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/submit", method = RequestMethod.POST)
-    public void formSubmit(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("appId") final String appId, @RequestParam("appVersion") final String appVersion, @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
+    public void formSubmit(final HttpServletRequest request, final HttpServletResponse response,
+                           @RequestParam("appId") final String appId,
+                           @RequestParam("appVersion") final String appVersion,
+                           @RequestParam("formDefId") final String formDefId)
+            throws IOException, JSONException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -120,7 +125,13 @@ public class DataJsonController {
     }
 
     @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
-    public void formUpdate(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("appId") final String appId, @RequestParam("appVersion") final String appVersion, @RequestParam("formDefId") final String formDefId, @RequestParam("primaryKey") final String primaryKey) throws IOException, JSONException {
+    public void formUpdate(final HttpServletRequest request, final HttpServletResponse response,
+                           @RequestParam("appId") final String appId,
+                           @RequestParam("appVersion") final String appVersion,
+                           @RequestParam("formDefId") final String formDefId,
+                           @RequestParam("primaryKey") final String primaryKey)
+            throws IOException, JSONException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -182,9 +193,13 @@ public class DataJsonController {
 
     @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
     public void formLoad(final HttpServletRequest request, final HttpServletResponse response,
-                         @RequestParam("appId") final String appId, @RequestParam("appVersion") final String appVersion,
-                         @RequestParam("formDefId") final String formDefId, @RequestParam("primaryKey") final String primaryKey,
-                         @RequestParam(value = "digest", required = false) final String digest) throws IOException, JSONException {
+                         @RequestParam("appId") final String appId,
+                         @RequestParam("appVersion") final String appVersion,
+                         @RequestParam("formDefId") final String formDefId,
+                         @RequestParam("primaryKey") final String primaryKey,
+                         @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException, JSONException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -230,6 +245,105 @@ public class DataJsonController {
     }
 
     /**
+     * API to retrieve dataList data
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param page optional
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)", method = RequestMethod.GET)
+    public void getList(final HttpServletRequest request, final HttpServletResponse response,
+                        @RequestParam("appId") final String appId,
+                        @RequestParam("appVersion") final String appVersion,
+                        @RequestParam("dataListId") final String dataListId,
+                        @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                        @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // get dataList definition
+            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
+            if (datalistDefinition == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+            }
+
+            // get dataList
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            if(dataList == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // paging
+            int pageSize = page == 0 ? DataList.MAXIMUM_PAGE_SIZE : DataList.DEFAULT_PAGE_SIZE;
+            int rowStart = page == 0 ? 0 : ((page - 1) * pageSize);
+
+            getCollectFilters(request.getParameterMap(), dataList);
+            DataListCollection<Map<String, Object>> collections = dataList.getRows(pageSize, rowStart);
+
+            // apply formatting
+            for (Map<String, Object> row : collections) {
+                row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey())));
+            }
+
+            JSONArray jsonData = new JSONArray();
+
+            for (Map<String, Object> row : collections) {
+                try {
+                    JSONObject jsonRow = new JSONObject();
+                    for (String field : row.keySet()) {
+                        jsonRow.put(field, format(dataList, row, field));
+                    }
+                    jsonData.put(jsonRow);
+                } catch (JSONException e) {
+                    jsonData.put(new JSONObject(row));
+                }
+            }
+
+            try {
+                JSONObject jsonResponse = new JSONObject();
+
+                String currentDigest = getDigest(jsonData);
+                jsonResponse.put("total", jsonData.length());
+                if(!Objects.equals(digest, currentDigest))
+                    jsonResponse.put("data", jsonData);
+                jsonResponse.put("digest", currentDigest);
+
+                if (jsonData.length() > 0) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                }
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+    /**
      * Start new process
      *
      * @param request    HTTP Request, request body contains form field values
@@ -239,7 +353,12 @@ public class DataJsonController {
      * @param processId  Process ID
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/process/(*:processId)", method = RequestMethod.POST)
-    public void processStart(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("appId") String appId, @RequestParam("appVersion") String appVersion, @RequestParam("processId") String processId) throws IOException, JSONException {
+    public void processStart(final HttpServletRequest request, final HttpServletResponse response,
+                             @RequestParam("appId") String appId,
+                             @RequestParam("appVersion") String appVersion,
+                             @RequestParam("processId") String processId)
+            throws IOException, JSONException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -279,25 +398,6 @@ public class DataJsonController {
 
             // trigger run process
             WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, null, null, null);
-            if(processResult != null) {
-                JSONObject jsonProcess = new JSONObject();
-                if (processResult.getProcess() != null) {
-                    WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
-                    if(nextAssignment != null) {
-                        jsonProcess.put("processId", nextAssignment.getProcessId());
-                        jsonProcess.put("activityId", nextAssignment.getActivityId());
-                        jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                        jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                        jsonProcess.put("priority", nextAssignment.getPriority());
-                    }
-                }
-
-                if (processResult.getActivities() != null && !processResult.getActivities().isEmpty()) {
-                    jsonProcess.put("activityIds", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
-                }
-
-                jsonResponse.put("process", jsonProcess);
-            }
 
             if (formData.getFormErrors() != null && !formData.getFormErrors().isEmpty()) {
                 jsonResponse.put("message", MESSAGE_VALIDATION_ERROR);
@@ -319,9 +419,33 @@ public class DataJsonController {
                     response.setStatus(HttpServletResponse.SC_OK);
 
                     // construct response
-                    JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    String digest = getDigest(jsonData);
+                    FormRow row = rowSet.get(0);
+                    JSONObject jsonData = new JSONObject(row);
 
+                    if(processResult != null) {
+                        JSONObject jsonProcess = new JSONObject();
+                        if (processResult.getProcess() != null) {
+                            WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
+                            if(nextAssignment != null) {
+                                jsonProcess.put("processId", nextAssignment.getProcessId());
+                                jsonProcess.put("activityId", nextAssignment.getActivityId());
+                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                                jsonProcess.put("priority", nextAssignment.getPriority());
+
+                                jsonData.put("processId", nextAssignment.getProcessId());
+                                jsonData.put("activityId", nextAssignment.getActivityId());
+                            }
+                        }
+
+                        if (processResult.getActivities() != null && !processResult.getActivities().isEmpty()) {
+                            jsonProcess.put("activityIds", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
+                        }
+
+                        jsonResponse.put("process", jsonProcess);
+                    }
+
+                    String digest = getDigest(jsonData);
                     jsonResponse.put("data", jsonData);
                     jsonResponse.put("message", MESSAGE_SUCCESS);
                     jsonResponse.put("digest", digest);
@@ -334,7 +458,6 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
-
     }
 
     /**
@@ -345,7 +468,10 @@ public class DataJsonController {
      * @param assignmentId Assignment ID
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.POST)
-    public void assignmentComplete(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("assignmentId") String assignmentId) throws IOException, JSONException {
+    public void assignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
+                                   @RequestParam("assignmentId") String assignmentId)
+            throws IOException, JSONException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -416,7 +542,13 @@ public class DataJsonController {
                     response.setStatus(HttpServletResponse.SC_OK);
 
                     // construct response
-                    JSONObject jsonData = new JSONObject(rowSet.get(0));
+                    FormRow row = rowSet.get(0);
+
+                    JSONObject jsonData = new JSONObject(row);
+
+                    jsonData.put("activityId", nextAssignment.getActivityId());
+                    jsonData.put("processId", nextAssignment.getProcessId());
+
                     String digest = getDigest(jsonData);
 
                     jsonResponse.put("data", jsonData);
@@ -434,7 +566,11 @@ public class DataJsonController {
     }
 
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.GET)
-    public void assignmentView(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("assignmentId") final String assignmentId, @RequestParam(value = "digest", required = false) String digest) throws IOException {
+    public void assignmentView(final HttpServletRequest request, final HttpServletResponse response,
+                               @RequestParam("assignmentId") final String assignmentId,
+                               @RequestParam(value = "digest", required = false) String digest)
+            throws IOException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -467,6 +603,8 @@ public class DataJsonController {
 
                 try {
                     JSONObject jsonData = new JSONObject(rowSet.get(0));
+                    jsonData.put("activityId", assignment.getActivityId());
+                    jsonData.put("processId", assignment.getProcessId());
 
                     String currentDigest = getDigest(jsonData);
 
@@ -501,6 +639,7 @@ public class DataJsonController {
                                @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -544,6 +683,9 @@ public class DataJsonController {
                                 return null;
 
                             FormRow row = rowSet.get(0);
+                            row.put("activityId", assignment.getActivityId());
+                            row.put("processId", assignment.getProcessId());
+
                             return row;
                         }
                     })
@@ -572,103 +714,6 @@ public class DataJsonController {
                 jsonResponse.put("digest", currentDigest);
 
                 if(jsonData.length() > 0) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                }
-
-                response.getWriter().write(jsonResponse.toString());
-            } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            }
-        } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
-            response.sendError(e.getErrorCode(), e.getMessage());
-        }
-    }
-
-    /**
-     * API to retrieve dataList data
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param page optional
-     * @throws IOException
-     */
-    @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)", method = RequestMethod.GET)
-    public void getList(final HttpServletRequest request, final HttpServletResponse response,
-                        @RequestParam("appId") final String appId, @RequestParam("appVersion") final String appVersion,
-                        @RequestParam("dataListId") final String dataListId, @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                        @RequestParam(value = "digest", required = false) final String digest)
-            throws IOException {
-
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
-            // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            // get dataList definition
-            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
-            if (datalistDefinition == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
-            }
-
-            // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
-            if(dataList == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // paging
-            int pageSize = page == 0 ? DataList.MAXIMUM_PAGE_SIZE : DataList.DEFAULT_PAGE_SIZE;
-            int rowStart = page == 0 ? 0 : ((page - 1) * pageSize);
-
-            getCollectFilters(request.getParameterMap(), dataList);
-            DataListCollection<Map<String, Object>> collections = dataList.getRows(pageSize, rowStart);
-
-            // apply formatting
-            for (Map<String, Object> row : collections) {
-                row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey())));
-            }
-
-            JSONArray jsonData = new JSONArray();
-
-            for (Map<String, Object> row : collections) {
-                try {
-                    JSONObject jsonRow = new JSONObject();
-                    for (String field : row.keySet()) {
-                        jsonRow.put(field, format(dataList, row, field));
-                    }
-                    jsonData.put(jsonRow);
-                } catch (JSONException e) {
-                    jsonData.put(new JSONObject(row));
-                }
-            }
-
-            try {
-                JSONObject jsonResponse = new JSONObject();
-
-                String currentDigest = getDigest(jsonData);
-                jsonResponse.put("total", jsonData.length());
-                if(!Objects.equals(digest, currentDigest))
-                    jsonResponse.put("data", jsonData);
-                jsonResponse.put("digest", currentDigest);
-
-                if (jsonData.length() > 0) {
                     response.setStatus(HttpServletResponse.SC_OK);
                 } else {
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
