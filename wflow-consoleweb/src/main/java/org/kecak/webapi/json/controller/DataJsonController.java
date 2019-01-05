@@ -246,13 +246,15 @@ public class DataJsonController {
 
     /**
      * API to retrieve dataList data
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param page optional
+     * @param request HTTP Request
+     * @param response HTTP Response
+     * @param appId Application ID
+     * @param appVersion Application version
+     * @param dataListId DataList ID
+     * @param page paging every 10 rows, page = 0 will show all data without paging
+     * @param sort order list by specified field name
+     * @param desc optional true/false
+     * @param digest hash calculation of data json
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)", method = RequestMethod.GET)
@@ -261,6 +263,8 @@ public class DataJsonController {
                         @RequestParam("appVersion") final String appVersion,
                         @RequestParam("dataListId") final String dataListId,
                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                        @RequestParam(value = "sort", required = false) final String sort,
+                        @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
                         @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
@@ -290,6 +294,14 @@ public class DataJsonController {
             DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
             if(dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // configure sorting
+            if(sort != null) {
+                dataList.setDefaultSortColumn(sort);
+
+                // order ASC / DESC
+                dataList.setDefaultOrder(desc ? DataList.ORDER_DESCENDING_VALUE : DataList.ORDER_ASCENDING_VALUE);
             }
 
             // paging
@@ -631,12 +643,16 @@ public class DataJsonController {
      * @param request
      * @param response
      * @param page
+     * @param sort
+     * @param desc
      * @param digest
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/assignments", method = RequestMethod.GET)
     public void assignmentList(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                               @RequestParam(value = "sort", required = false) final String sort,
+                               @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
@@ -646,7 +662,7 @@ public class DataJsonController {
             int pageSize = page == 0 ? DataList.MAXIMUM_PAGE_SIZE : DataList.DEFAULT_PAGE_SIZE;
             int rowStart = page == 0 ? 0 : ((page - 1) * pageSize);
 
-            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(null, null, null, null, null, rowStart, pageSize).stream()
+            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(null, null, null, sort, desc, rowStart, pageSize).stream()
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
                     .map(assignment -> {
