@@ -1,10 +1,10 @@
-package org.joget.apps.scheduler;
+package org.kecak.apps.scheduler;
 
 import java.util.Date;
 
-import org.joget.apps.scheduler.dao.SchedulerLogDao;
-import org.joget.apps.scheduler.model.JobStatus;
-import org.joget.apps.scheduler.model.SchedulerLog;
+import org.kecak.apps.scheduler.dao.SchedulerLogDao;
+import org.kecak.apps.scheduler.model.JobStatus;
+import org.kecak.apps.scheduler.model.SchedulerLog;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
@@ -27,17 +27,14 @@ public class SchedulerJobListener implements JobListener {
 
 	public void jobToBeExecuted(JobExecutionContext context) {
 		String jobName = context.getJobDetail().getKey().toString();
-		logger.info("jobToBeExecuted");
-		logger.info("Job : " + jobName + " is going to start...");
+//		logger.info("Job : " + jobName + " is going to start...");
 	}
 
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-		logger.info("jobWasExecuted");
-
 		Date finishTime = new Date();
 		String jobName = context.getJobDetail().getKey().toString();
 		String jobClassName = context.getJobDetail().getJobClass().getName();
-		logger.info("Job : " + jobName + " is finished...");
+//		logger.info("Job : " + jobName + " is finished...");
 		
 		StringBuilder sb = new StringBuilder("Job : " + jobName
 				+ (jobException == null ? " is success" : " is fail")

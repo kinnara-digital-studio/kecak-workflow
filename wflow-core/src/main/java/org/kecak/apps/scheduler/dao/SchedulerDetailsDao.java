@@ -1,13 +1,12 @@
-package org.joget.apps.scheduler.dao;
+package org.kecak.apps.scheduler.dao;
 
-import java.util.ArrayList;
+import org.joget.commons.spring.model.AbstractSpringDao;
+import org.kecak.apps.scheduler.model.SchedulerDetails;
+
 import java.util.Collection;
 import java.util.List;
 
-import org.joget.apps.scheduler.model.SchedulerDetails;
-import org.joget.commons.spring.model.AbstractSpringDao;
-
-public class SchedulerDetailsDao extends AbstractSpringDao {
+public class SchedulerDetailsDao extends AbstractSpringDao<SchedulerDetails> {
 
 	public static final String ENTITY_NAME = "SchedulerDetails";
 	
@@ -38,8 +37,7 @@ public class SchedulerDetailsDao extends AbstractSpringDao {
 
 	@SuppressWarnings("unchecked")
 	public SchedulerDetails getSchedulerDetailsByJob(String jobName, String groupJobName) {
-		Collection<SchedulerDetails> results = new ArrayList<SchedulerDetails>();
-		results = super.find(ENTITY_NAME, "WHERE e.jobName = ? AND e.groupJobName = ?", new String[] { jobName, groupJobName }, null, null, null, null);
+		Collection<SchedulerDetails> results = super.find(ENTITY_NAME, "WHERE e.jobName = ? AND e.groupJobName = ?", new String[] { jobName, groupJobName }, null, null, null, null);
 		
 		SchedulerDetails result = null;
 		if (results != null && results.size() != 0) {
@@ -50,8 +48,7 @@ public class SchedulerDetailsDao extends AbstractSpringDao {
 
 	@SuppressWarnings("unchecked")
 	public SchedulerDetails getSchedulerDetailsByTrigger(String triggerName, String groupTriggerName) {
-		Collection<SchedulerDetails> results = new ArrayList<SchedulerDetails>();
-		results = super.find(ENTITY_NAME, "WHERE e.triggerName = ? AND e.groupTriggerName = ?", new String[] { triggerName, groupTriggerName }, null, null, null, null);
+		Collection<SchedulerDetails> results = super.find(ENTITY_NAME, "WHERE e.triggerName = ? AND e.groupTriggerName = ?", new String[] { triggerName, groupTriggerName }, null, null, null, null);
 		
 		SchedulerDetails result = null;
 		if (results != null && results.size() != 0) {

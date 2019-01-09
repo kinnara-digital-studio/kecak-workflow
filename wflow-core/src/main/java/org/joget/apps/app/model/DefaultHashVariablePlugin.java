@@ -31,7 +31,7 @@ public abstract class DefaultHashVariablePlugin extends ExtDefaultPlugin impleme
      * @return 
      */
     public Collection<String> availableSyntax() {
-        Collection <String> list = new ArrayList<String>();
+        Collection <String> list = new ArrayList<>();
         
         list.add(getPrefix() + ".KEY");
         

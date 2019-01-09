@@ -1,0 +1,55 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+   xmlns:xfs = "http://kecak.org/soap/form/schemas"
+   elementFormDefault = "qualified"
+   targetNamespace = "http://kecak.org/soap/form/schemas">
+
+   <!-- Form Submit -->
+   <xs:element name = "FormSubmitRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "formDefId" type = "xs:string"/>
+            <xs:element name = "fields" type = "xfs:MapType" minOccurs="0"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <!-- Form Assignment Complete  -->
+   <xs:element name = "FormAssignmentCompleteRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "appId" type = "xs:string"/>
+            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+            <xs:element name = "assignmentId" type = "xs:string"/>
+            <xs:element name = "fields" type = "xfs:MapType" minOccurs="0"/>
+            <xs:element name = "variables" type = "xfs:MapType" minOccurs="0"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="map">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="item" type="xfs:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+         </xs:sequence>
+      </xs:complexType>
+      <xs:unique name="item">
+         <xs:selector xpath="item"/>
+         <xs:field xpath="key"/>
+      </xs:unique>
+   </xs:element>
+
+   <xs:complexType name="MapType">
+      <xs:sequence>
+         <xs:element ref="xfs:map"/>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="MapItemType">
+      <xs:sequence>
+         <xs:element name="key" type="xs:string"/>
+         <xs:element name="value" type="xs:string"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

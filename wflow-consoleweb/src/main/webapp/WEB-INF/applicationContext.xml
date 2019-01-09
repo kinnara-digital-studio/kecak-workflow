@@ -15,6 +15,9 @@
 
     <import resource="classpath:appsApplicationContext.xml" />
 
+    <context:annotation-config/>
+    <context:component-scan base-package = "org.kecak"/>
+
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider" />
     </security:authentication-manager>
@@ -59,6 +62,11 @@
         <security:intercept-url pattern="/web/json/workflow/assignment/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/apps/published/userviews" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/apps/published/processes" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
+        <security:intercept-url pattern="/web/json/data/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
+
+        <!-- Open SOAP Web Services -->
+        <security:intercept-url pattern="/ws/soap/*.wsdl" access="ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
+        <security:intercept-url pattern="/ws/soap/**" access="ROLE_ADMIN, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
 
         <!-- Javascript API paths: JS API invokes JSON API, so permissions controlled there  --> 
         <security:intercept-url pattern="/web/js/**"  access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>

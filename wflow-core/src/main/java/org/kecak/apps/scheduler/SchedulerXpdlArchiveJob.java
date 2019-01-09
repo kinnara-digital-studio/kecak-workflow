@@ -1,4 +1,4 @@
-package org.joget.apps.scheduler;
+package org.kecak.apps.scheduler;
 
 import java.util.Iterator;
 import org.hibernate.Query;
@@ -9,6 +9,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+@Deprecated
 public class SchedulerXpdlArchiveJob implements Job{
 
 	private SessionFactory sessionFactory = null;

@@ -1,4 +1,4 @@
-package org.joget.apps.scheduler.model;
+package org.kecak.apps.scheduler.model;
 
 public enum TriggerTypes {
 	
