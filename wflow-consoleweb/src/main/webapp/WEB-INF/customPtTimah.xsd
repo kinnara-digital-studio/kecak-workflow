@@ -3,49 +3,22 @@
            elementFormDefault = "qualified"
            targetNamespace = "http://kecak.org/soap/custom/schemas">
 
-   <!-- Process Start -->
-   <xs:element name = "ProcessStartRequest">
-      <xs:complexType>
-         <xs:all>
-            <xs:element name = "appId" type = "xs:string"/>
-            <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
-            <xs:element name = "processId" type = "xs:string"/>
-            <xs:element name = "variables" minOccurs="0">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="variable">
-                        <xs:complexType>
-                           <xs:sequence>
-                              <xs:element name="key" type="xs:string"/>
-                              <xs:element name="value" type="xs:string"/>
-                           </xs:sequence>
-                        </xs:complexType>
-                     </xs:element>
-                  </xs:sequence>
-               </xs:complexType>
-            </xs:element>
-         </xs:all>
-      </xs:complexType>
-   </xs:element>
-
-   <xs:element name = "ProcessStartResponse" type="xcs:SapReturn" />
-
    <!-- Start Slip -->
    <xs:element name = "StartSlipRequest">
       <xs:complexType>
          <xs:all>
-            <xs:element name = "status" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "tipeDokumen" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "primaryKey" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "no_dokumen" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "tgl_dokumen" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "catatan" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "urlFrontApp" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "frontAppProcessId" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "refNumber" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "jml_dibayar" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "no_vendor" type = "xs:string" maxOccurs="0"/>
-            <xs:element name = "nik" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "status" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "tipeDokumen" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "primaryKey" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "nomorDokumen" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "tanggalDokumen" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "catatan" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "urlFrontApp" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "frontAppProcessId" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "refNumber" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "jumlahDibayar" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "nomorVendor" type = "xs:string" minOccurs="0"/>
+            <xs:element name = "nik" type = "xs:string" minOccurs="0"/>
          </xs:all>
       </xs:complexType>
    </xs:element>

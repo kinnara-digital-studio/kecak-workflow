@@ -18,8 +18,6 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Endpoint
@@ -176,37 +174,6 @@ public class SoapCustomEndpoint {
         } catch (NullPointerException e) {
             nikExpression = null;
         }
-    }
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
-    public @ResponsePayload Element handleProcessStartRequest(@RequestPayload Element processStartElement) {
-        final String processDefId = processIdExpression.evaluate(processStartElement).get(0).getValue();
-        final String appId = appIdExpression.evaluate(processStartElement).get(0).getValue();
-        final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(processStartElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(processStartElement).get(0).getValue());
-        @Nonnull final Map<String, String> variables = workflowVariableExpression.evaluate(processStartElement).stream()
-                .flatMap(elementFields -> elementFields.getChildren("variable", namespace).stream())
-                .collect(HashMap::new, (m, e) -> {
-                    String key = e.getChildText("key", namespace);
-                    String value = e.getChildText("value", namespace);
-
-                    if(key == null || value == null)
-                        return;
-
-                    LogUtil.info(getClass().getName(), "key ["+key+"] value ["+value+"]");
-                    m.merge(key, value, (v1, v2) -> String.join(";", v1, v2));
-                }, Map::putAll);
-
-        ReturnMessage returnMessage = soapCustomService.processStart(appId, appVersion, processDefId, variables);
-
-        Element returnElement = new Element("ProcessStartResponse", namespace);
-        returnElement.addContent(new Element("statusExpression", namespace).setText(returnMessage.getStatus()));
-        returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
-        returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
-        returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
-        returnElement.addContent(new Element("message4", namespace).setText(returnMessage.getMessage4()));
-        returnElement.addContent(new Element("message5", namespace).setText(returnMessage.getMessage5()));
-
-        return returnElement;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "StartSlipRequest")
