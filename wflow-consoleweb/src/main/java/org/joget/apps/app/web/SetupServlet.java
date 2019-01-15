@@ -110,10 +110,10 @@ public class SetupServlet extends HttpServlet {
 
                     exists = rs.next();
                 } catch (SQLException ex) {
-                    LogUtil.error(getClass().getName(), ex, "");
+                    LogUtil.error(getClass().getName(), ex, ex.getMessage());
                 }
             } catch (SQLException e) {
-            		LogUtil.error(getClass().getName(), e, "");
+            		LogUtil.error(getClass().getName(), e, e.getMessage());
 			}
             
             try {
@@ -149,7 +149,7 @@ public class SetupServlet extends HttpServlet {
                         LogUtil.info(getClass().getName(), "Create database " + dbName);
                         stmt.executeUpdate("CREATE DATABASE " + dbName + ";");
 	                    } catch(SQLException ex) {
-	                         LogUtil.error(getClass().getName(), ex, "");
+	                         LogUtil.error(getClass().getName(), ex, ex.getMessage());
 	                    }
 	                }
 	                
@@ -182,7 +182,7 @@ public class SetupServlet extends HttpServlet {
 
                         con.commit();
 	                } catch(SQLException e) {
-	                		LogUtil.error(getClass().getName(), e, "");
+	                		LogUtil.error(getClass().getName(), e, e.getMessage());
 	                }
 	            }
             
@@ -241,7 +241,7 @@ public class SetupServlet extends HttpServlet {
 	            }
                 
             } catch (Exception ex) {
-                LogUtil.error(getClass().getName(), null, ex.toString());
+                LogUtil.error(getClass().getName(), ex, ex.toString());
                 success = false;
                 message = ex.getMessage().replace("'", " ");
             } finally {
