@@ -37,6 +37,19 @@ public class SoapCustomEndpoint {
     private XPathExpression<Element> processIdExpression;
     private XPathExpression<Element> workflowVariableExpression;
 
+    private XPathExpression<Element> statusExpression;
+    private XPathExpression<Element> tipeDokumenExpression;
+    private XPathExpression<Element> primaryKeyExpression;
+    private XPathExpression<Element> nomorDokumenExpression;
+    private XPathExpression<Element> tanggalDokumenExpression;
+    private XPathExpression<Element> catatanExpression;
+    private XPathExpression<Element> urlFrontAppExpression;
+    private XPathExpression<Element> frontAppProcessIdExpression;
+    private XPathExpression<Element> refNumberExpression;
+    private XPathExpression<Element> jumlahDibayarExpression;
+    private XPathExpression<Element> nomorVendorExpression;
+    private XPathExpression<Element> nikExpression;
+
     @Autowired
     private SoapCustomService soapCustomService;
 
@@ -90,6 +103,79 @@ public class SoapCustomEndpoint {
         } catch (NullPointerException e) {
             workflowVariableExpression = null;
         }
+
+        try {
+            statusExpression = xpathFactory.compile("//xs:status", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            statusExpression = null;
+        }
+
+        try {
+            tipeDokumenExpression = xpathFactory.compile("//xs:tipeDokumen", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            tipeDokumenExpression
+                    = null;
+        }
+
+        try {
+            primaryKeyExpression = xpathFactory.compile("//xs:primaryKey", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            primaryKeyExpression = null;
+        }
+
+        try {
+            nomorDokumenExpression = xpathFactory.compile("//xs:nomorDokumen", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            nomorDokumenExpression = null;
+        }
+
+        try {
+            tanggalDokumenExpression = xpathFactory.compile("//xs:tanggalDokumen", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            tanggalDokumenExpression = null;
+        }
+
+        try {
+            catatanExpression = xpathFactory.compile("//xs:catatan", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            catatanExpression = null;
+        }
+
+        try {
+            urlFrontAppExpression = xpathFactory.compile("//xs:urlFrontApp", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            urlFrontAppExpression = null;
+        }
+
+        try {
+            frontAppProcessIdExpression = xpathFactory.compile("//xs:frontAppProcessId", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            frontAppProcessIdExpression = null;
+        }
+
+        try {
+            refNumberExpression = xpathFactory.compile("//xs:refNumber", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            refNumberExpression = null;
+        }
+
+        try {
+            jumlahDibayarExpression = xpathFactory.compile("//xs:jumlahDibayar", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            jumlahDibayarExpression = null;
+        }
+
+        try {
+            nomorVendorExpression = xpathFactory.compile("//xs:nomorVendor", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            nomorVendorExpression = null;
+        }
+
+        try {
+            nikExpression = xpathFactory.compile("//xs:nik", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            nikExpression = null;
+        }
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
@@ -113,7 +199,37 @@ public class SoapCustomEndpoint {
         ReturnMessage returnMessage = soapCustomService.processStart(appId, appVersion, processDefId, variables);
 
         Element returnElement = new Element("ProcessStartResponse", namespace);
-        returnElement.addContent(new Element("status", namespace).setText(returnMessage.getStatus()));
+        returnElement.addContent(new Element("statusExpression", namespace).setText(returnMessage.getStatus()));
+        returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
+        returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
+        returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
+        returnElement.addContent(new Element("message4", namespace).setText(returnMessage.getMessage4()));
+        returnElement.addContent(new Element("message5", namespace).setText(returnMessage.getMessage5()));
+
+        return returnElement;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "StartSlipRequest")
+    public @ResponsePayload Element handleStartSlipRequest(@RequestPayload Element processStartElement) {
+        final String status = statusExpression.evaluate(processStartElement).get(0).getValue();
+        final String tipeDokumen = tipeDokumenExpression.evaluate(processStartElement).get(0).getValue();
+        final String primaryKey = primaryKeyExpression.evaluate(processStartElement).get(0).getValue();
+        final String nomorDokumen = nomorDokumenExpression.evaluate(processStartElement).get(0).getValue();
+        final String tanggalDokumen = tanggalDokumenExpression.evaluate(processStartElement).get(0).getValue();
+        final String catatan = catatanExpression.evaluate(processStartElement).get(0).getValue();
+        final String urlFrontApp = urlFrontAppExpression.evaluate(processStartElement).get(0).getValue();
+        final String frontAppProcessId = frontAppProcessIdExpression.evaluate(processStartElement).get(0).getValue();
+        final String refNumber = refNumberExpression.evaluate(processStartElement).get(0).getValue();
+        final String jumlahDibayar = jumlahDibayarExpression.evaluate(processStartElement).get(0).getValue();
+        final String nomorVendor = nomorVendorExpression.evaluate(processStartElement).get(0).getValue();
+        final String nik = nikExpression.evaluate(processStartElement).get(0).getValue();
+
+        ReturnMessage returnMessage = soapCustomService.startSlip(SoapCustomService.APP_ID_SLIP, 0L, SoapCustomService.APP_ID_SLIP,
+                status, tipeDokumen, primaryKey, nomorDokumen, tanggalDokumen, catatan, urlFrontApp,
+                frontAppProcessId, refNumber, jumlahDibayar, nomorVendor, nik);
+
+        Element returnElement = new Element("ProcessStartResponse", namespace);
+        returnElement.addContent(new Element("statusExpression", namespace).setText(returnMessage.getStatus()));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
         returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
@@ -144,7 +260,7 @@ public class SoapCustomEndpoint {
         ReturnMessage returnMessage = soapCustomService.submitVendorMasterData(appId, appVersion, vendorMaster);
 
         Element returnElement = new Element("VendorMasterResponse", namespace);
-        returnElement.addContent(new Element("status", namespace).setText(returnMessage.getStatus()));
+        returnElement.addContent(new Element("statusExpression", namespace).setText(returnMessage.getStatus()));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
         returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));

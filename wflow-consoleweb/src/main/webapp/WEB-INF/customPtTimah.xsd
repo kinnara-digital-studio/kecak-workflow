@@ -30,6 +30,29 @@
 
    <xs:element name = "ProcessStartResponse" type="xcs:SapReturn" />
 
+   <!-- Start Slip -->
+   <xs:element name = "StartSlipRequest">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "status" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "tipeDokumen" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "primaryKey" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "no_dokumen" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "tgl_dokumen" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "catatan" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "urlFrontApp" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "frontAppProcessId" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "refNumber" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "jml_dibayar" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "no_vendor" type = "xs:string" maxOccurs="0"/>
+            <xs:element name = "nik" type = "xs:string" maxOccurs="0"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name = "StartSlipResponse" type="xcs:SapReturn" />
+
+
    <!-- Vendor Master -->
    <xs:element name = "VendorMasterRequest">
       <xs:complexType>

@@ -26,10 +26,7 @@ import org.springframework.stereotype.Service;
 import sun.rmi.runtime.Log;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,6 +69,47 @@ public class SoapCustomServiceImpl implements SoapCustomService{
         ReturnMessage returnMessage = new ReturnMessage();
 
         String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
+        WorkflowProcessResult result = workflowManager.processStart(processDefId, workflowVariable);
+
+        if(result == null) {
+            returnMessage.setStatus("E");
+            returnMessage.setMessage1("Error starting process ["+processDefId+"]");
+        } else {
+            returnMessage.setStatus("S");
+            returnMessage.setMessage1(result.getProcess().getInstanceId());
+            returnMessage.setMessage2(result.getActivities().stream().map(a -> a.getId()).collect(Collectors.joining(";")));
+        }
+
+        return returnMessage;
+    }
+
+    @Override
+    public ReturnMessage startSlip(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId,
+                                   @Nonnull String status, @Nonnull String tipeDokumen, @Nonnull String primaryKey,
+                                   @Nonnull String nomorDokumen, @Nonnull String tanggalDokumen, @Nonnull String catatan,
+                                   @Nonnull String urlFrontApp, @Nonnull String frontAppProcessId, @Nonnull String refNumber,
+                                   @Nonnull String jumlahDibayar, @Nonnull String nomorVendor, @Nonnull String nik) {
+        AppDefinition appDef = appDefinitionDao.loadVersion(appId, appVersion);
+        AppUtil.setCurrentAppDefinition(appDef);
+
+        ReturnMessage returnMessage = new ReturnMessage();
+
+        String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
+
+        Map<String, String> workflowVariable = new HashMap<>();
+        workflowVariable.put("status", status);
+        workflowVariable.put("tipeDokumen", tipeDokumen);
+        workflowVariable.put("primaryKey", primaryKey);
+        workflowVariable.put("no_dokumen", nomorDokumen);
+        workflowVariable.put("tgl_dokumen", tanggalDokumen);
+        workflowVariable.put("catatan", catatan);
+        workflowVariable.put("urlFrontApp", urlFrontApp);
+        workflowVariable.put("frontAppProc", frontAppProcessId);
+        workflowVariable.put("refNumber", refNumber);
+        workflowVariable.put("jml_dibayar", jumlahDibayar);
+        workflowVariable.put("no_vendor", nomorVendor);
+        workflowVariable.put("nik", nik);
+
         WorkflowProcessResult result = workflowManager.processStart(processDefId, workflowVariable);
 
         if(result == null) {
