@@ -18,7 +18,11 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Endpoint
 public class SoapCustomEndpoint {
@@ -35,18 +39,24 @@ public class SoapCustomEndpoint {
     private XPathExpression<Element> processIdExpression;
     private XPathExpression<Element> workflowVariableExpression;
 
-    private XPathExpression<Element> statusExpression;
-    private XPathExpression<Element> tipeDokumenExpression;
-    private XPathExpression<Element> primaryKeyExpression;
-    private XPathExpression<Element> nomorDokumenExpression;
-    private XPathExpression<Element> tanggalDokumenExpression;
-    private XPathExpression<Element> catatanExpression;
-    private XPathExpression<Element> urlFrontAppExpression;
-    private XPathExpression<Element> frontAppProcessIdExpression;
-    private XPathExpression<Element> refNumberExpression;
+    private XPathExpression<Element> inputByExpression;
+    private XPathExpression<Element> inputDateExpression;
+    private XPathExpression<Element> poNumberExpression;
+    private XPathExpression<Element> invoiceNumberExpression;
+    private XPathExpression<Element> invoiceDateExpression;
+    private XPathExpression<Element> bankNameExpression;
+    private XPathExpression<Element> jumlahTagihanExpression;
+    private XPathExpression<Element> ppnMasukanExpression;
+    private XPathExpression<Element> ppnWapuExpression;
+    private XPathExpression<Element> hutangWapuExpression;
+    private XPathExpression<Element> uangMukaExpression;
+    private XPathExpression<Element> pph22Expression;
+    private XPathExpression<Element> pph23Expression;
+    private XPathExpression<Element> pph21Expression;
     private XPathExpression<Element> jumlahDibayarExpression;
-    private XPathExpression<Element> nomorVendorExpression;
-    private XPathExpression<Element> nikExpression;
+    private XPathExpression<Element> vendor_NumberExpression;
+    private XPathExpression<Element> vendor_NameExpression;
+    private XPathExpression<Element> attachmentExpression;
 
     @Autowired
     private SoapCustomService soapCustomService;
@@ -103,100 +113,148 @@ public class SoapCustomEndpoint {
         }
 
         try {
-            statusExpression = xpathFactory.compile("//xs:status", Filters.element(), null, namespace);
+            inputByExpression = xpathFactory.compile("//xs:Input_By", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            statusExpression = null;
+            inputByExpression = null;
         }
 
         try {
-            tipeDokumenExpression = xpathFactory.compile("//xs:tipeDokumen", Filters.element(), null, namespace);
+            inputDateExpression = xpathFactory.compile("//xs:Input_Date", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            tipeDokumenExpression
-                    = null;
+            inputDateExpression = null;
         }
 
         try {
-            primaryKeyExpression = xpathFactory.compile("//xs:primaryKey", Filters.element(), null, namespace);
+            poNumberExpression = xpathFactory.compile("//xs:PO_Number", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            primaryKeyExpression = null;
+            poNumberExpression = null;
         }
 
         try {
-            nomorDokumenExpression = xpathFactory.compile("//xs:nomorDokumen", Filters.element(), null, namespace);
+            invoiceNumberExpression = xpathFactory.compile("//xs:Invoice_Number", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            nomorDokumenExpression = null;
+            invoiceNumberExpression = null;
         }
 
         try {
-            tanggalDokumenExpression = xpathFactory.compile("//xs:tanggalDokumen", Filters.element(), null, namespace);
+            invoiceDateExpression = xpathFactory.compile("//xs:Invoice_Date", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            tanggalDokumenExpression = null;
+            invoiceDateExpression = null;
         }
 
         try {
-            catatanExpression = xpathFactory.compile("//xs:catatan", Filters.element(), null, namespace);
+            bankNameExpression = xpathFactory.compile("//xs:Bank_Name", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            catatanExpression = null;
+            bankNameExpression = null;
         }
 
         try {
-            urlFrontAppExpression = xpathFactory.compile("//xs:urlFrontApp", Filters.element(), null, namespace);
+            jumlahTagihanExpression = xpathFactory.compile("//xs:Jumlah_Tagihan", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            urlFrontAppExpression = null;
+            jumlahTagihanExpression = null;
         }
 
         try {
-            frontAppProcessIdExpression = xpathFactory.compile("//xs:frontAppProcessId", Filters.element(), null, namespace);
+            ppnMasukanExpression = xpathFactory.compile("//xs:PPN_Masukan", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            frontAppProcessIdExpression = null;
+            ppnMasukanExpression = null;
         }
 
         try {
-            refNumberExpression = xpathFactory.compile("//xs:refNumber", Filters.element(), null, namespace);
+            ppnWapuExpression = xpathFactory.compile("//xs:PPN_WAPU", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            refNumberExpression = null;
+            ppnWapuExpression = null;
         }
 
         try {
-            jumlahDibayarExpression = xpathFactory.compile("//xs:jumlahDibayar", Filters.element(), null, namespace);
+            hutangWapuExpression = xpathFactory.compile("//xs:Hutang_WAPU", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            hutangWapuExpression = null;
+        }
+
+        try {
+            uangMukaExpression = xpathFactory.compile("//xs:Uang_Muka", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            uangMukaExpression = null;
+        }
+
+        try {
+            pph22Expression = xpathFactory.compile("//xs:PPH22", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            pph22Expression = null;
+        }
+
+        try {
+            pph23Expression = xpathFactory.compile("//xs:PPH23", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            pph23Expression = null;
+        }
+
+        try {
+            pph21Expression = xpathFactory.compile("//xs:PPH21", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            pph21Expression = null;
+        }
+
+        try {
+            jumlahDibayarExpression = xpathFactory.compile("//xs:Jumlah_Dibayar", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             jumlahDibayarExpression = null;
         }
 
         try {
-            nomorVendorExpression = xpathFactory.compile("//xs:nomorVendor", Filters.element(), null, namespace);
+            vendor_NumberExpression = xpathFactory.compile("//xs:Vendor_Number", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            nomorVendorExpression = null;
+            vendor_NumberExpression = null;
         }
 
         try {
-            nikExpression = xpathFactory.compile("//xs:nik", Filters.element(), null, namespace);
+            vendor_NameExpression = xpathFactory.compile("//xs:Vendor_Name", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            nikExpression = null;
+            vendor_NameExpression = null;
+        }
+
+        try {
+            attachmentExpression = xpathFactory.compile("//xs:Attachment", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            attachmentExpression = null;
         }
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "StartSlipRequest")
     public @ResponsePayload Element handleStartSlipRequest(@RequestPayload Element processStartElement) {
-        final String status = statusExpression.evaluate(processStartElement).get(0).getValue();
-        final String tipeDokumen = tipeDokumenExpression.evaluate(processStartElement).get(0).getValue();
-        final String primaryKey = primaryKeyExpression.evaluate(processStartElement).get(0).getValue();
-        final String nomorDokumen = nomorDokumenExpression.evaluate(processStartElement).get(0).getValue();
-        final String tanggalDokumen = tanggalDokumenExpression.evaluate(processStartElement).get(0).getValue();
-        final String catatan = catatanExpression.evaluate(processStartElement).get(0).getValue();
-        final String urlFrontApp = urlFrontAppExpression.evaluate(processStartElement).get(0).getValue();
-        final String frontAppProcessId = frontAppProcessIdExpression.evaluate(processStartElement).get(0).getValue();
-        final String refNumber = refNumberExpression.evaluate(processStartElement).get(0).getValue();
-        final String jumlahDibayar = jumlahDibayarExpression.evaluate(processStartElement).get(0).getValue();
-        final String nomorVendor = nomorVendorExpression.evaluate(processStartElement).get(0).getValue();
-        final String nik = nikExpression.evaluate(processStartElement).get(0).getValue();
+        final String inputBy = getValue(inputByExpression, processStartElement);
+        final String inputDate = getValue(inputDateExpression, processStartElement);
+        final String poNumber = getValue(poNumberExpression, processStartElement);
+        final String invoiceNumber = getValue(invoiceNumberExpression, processStartElement);
+        final String invoiceDate = getValue(invoiceDateExpression, processStartElement);
+        final String bankName = getValue(bankNameExpression, processStartElement);
+        final String jumlahTagihan = getValue(jumlahTagihanExpression, processStartElement);
+        final String ppnMasukan = getValue(ppnMasukanExpression, processStartElement);
+        final String ppnWapu = getValue(ppnWapuExpression, processStartElement);
+        final String hutangWapu = getValue(hutangWapuExpression, processStartElement);
+        final String uangMuka = getValue(uangMukaExpression, processStartElement);
+        final String pph22 = getValue(pph22Expression, processStartElement);
+        final String pph23 = getValue(pph23Expression, processStartElement);
+        final String pph21 = getValue(pph21Expression, processStartElement);
+        final String jumlahDibayar = getValue(jumlahDibayarExpression, processStartElement);
+        final String vendorNumber = getValue(vendor_NumberExpression, processStartElement);
+        final String vendorName = getValue(vendor_NameExpression, processStartElement);
 
-        ReturnMessage returnMessage = soapCustomService.startSlip(SoapCustomService.APP_ID_SLIP, 0L, SoapCustomService.APP_ID_SLIP,
-                status, tipeDokumen, primaryKey, nomorDokumen, tanggalDokumen, catatan, urlFrontApp,
-                frontAppProcessId, refNumber, jumlahDibayar, nomorVendor, nik);
+        List<Element> attachmentList = attachmentExpression.evaluate(processStartElement);
+        final Map<String, String> attachment = (attachmentList == null ? Stream.<Element>empty() : attachmentList.stream())
+                .collect(HashMap::new, (map, element) -> {
+                    String key = element.getChild("PDF_File", namespace).getText();
+                    String value = element.getChild("row", namespace).getChild("Line", namespace).getText();
+                    map.put(key, value);
+                }, Map::putAll);
+
+        ReturnMessage returnMessage = soapCustomService.startSlip(SoapCustomService.APP_ID_SLIP, 0L, SoapCustomService.PROCESS_ID_SLIP,
+                "PO", inputBy, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
+                jumlahTagihan, bankName, ppnMasukan, ppnWapu, uangMuka, pph21, pph22, pph23, jumlahDibayar, attachment);
 
         Element returnElement = new Element("ProcessStartResponse", namespace);
-        returnElement.addContent(new Element("statusExpression", namespace).setText(returnMessage.getStatus()));
+        returnElement.addContent(new Element("statusExpression", namespace).setText(String.valueOf(returnMessage.getStatus())));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
         returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
@@ -227,7 +285,7 @@ public class SoapCustomEndpoint {
         ReturnMessage returnMessage = soapCustomService.submitVendorMasterData(appId, appVersion, vendorMaster);
 
         Element returnElement = new Element("VendorMasterResponse", namespace);
-        returnElement.addContent(new Element("statusExpression", namespace).setText(returnMessage.getStatus()));
+        returnElement.addContent(new Element("statusExpression", namespace).setText(String.valueOf(returnMessage.getStatus())));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
         returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
@@ -240,5 +298,13 @@ public class SoapCustomEndpoint {
     protected void addContent(@Nonnull final Element returnElement, @Nonnull String name, @Nonnull String content) {
         Element element = returnElement.addContent(name);
         element.setText(content);
+    }
+
+    protected String getValue(XPathExpression<Element> expression, Element processStartElement) {
+        Element element = expression.evaluateFirst(processStartElement);
+        if(element == null)
+            return "";
+        else
+            return element.getValue();
     }
 }

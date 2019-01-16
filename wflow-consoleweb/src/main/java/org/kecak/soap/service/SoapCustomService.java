@@ -29,25 +29,31 @@ public interface SoapCustomService {
      * @param appId
      * @param appVersion
      * @param processId
-     * @param status
      * @param tipeDokumen
-     * @param primaryKey
-     * @param nomorDokumen
-     * @param tanggalDokumen
-     * @param catatan
-     * @param urlFrontApp
-     * @param frontAppProcessId
-     * @param refNumber
+     * @param inputBy
+     * @param poNumber
+     * @param invoiceNumber
+     * @param invoiceDate
+     * @param vendorNumber
+     * @param vendorName
+     * @param jumlahTagihan
+     * @param bankName
+     * @param ppnMasukan
+     * @param ppnWapu
+     * @param uangMuka
+     * @param pph21
+     * @param pph22
+     * @param pph23
      * @param jumlahDibayar
-     * @param nomorVendor
-     * @param nik
      * @return
      */
     ReturnMessage startSlip(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId,
-                            @Nonnull String status, @Nonnull String tipeDokumen, @Nonnull String primaryKey,
-                            @Nonnull String nomorDokumen, @Nonnull String tanggalDokumen, @Nonnull String catatan,
-                            @Nonnull String urlFrontApp, @Nonnull String frontAppProcessId, @Nonnull String refNumber,
-                            @Nonnull String jumlahDibayar, @Nonnull String nomorVendor, @Nonnull String nik);
+                            @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String poNumber,
+                            @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
+                            @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
+                            @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String uangMuka,
+                            @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23,
+                            @Nonnull String jumlahDibayar, @Nonnull Map<String, String> attachment);
     /**
      * Submit new vendor master
      * @param appId

@@ -3,18 +3,33 @@ package org.kecak.soap.model;
 import javax.annotation.Nonnull;
 
 public class ReturnMessage {
-    private String status;
+
+    public enum MessageStatus {
+        ERROR,
+        INFORMATION,
+        SUCCESS,
+        WARNING;
+
+        @Override
+        public String toString() {
+            return super.toString().substring(0,1);
+        }
+
+    }
+
+    private MessageStatus status;
     private String message1;
     private String message2;
     private String message3;
     private String message4;
     private String message5;
 
-    public @Nonnull String getStatus() {
-        return status == null ? "" : status;
+    public @Nonnull
+    MessageStatus getStatus() {
+        return status == null ? MessageStatus.SUCCESS : status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(MessageStatus status) {
         this.status = status;
     }
 

@@ -3,28 +3,45 @@
            elementFormDefault = "qualified"
            targetNamespace = "http://kecak.org/soap/custom/schemas">
 
-   <!-- Start Slip -->
-   <xs:element name = "StartSlipRequest">
-      <xs:complexType>
-         <xs:all>
-            <xs:element name = "status" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "tipeDokumen" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "primaryKey" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "nomorDokumen" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "tanggalDokumen" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "catatan" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "urlFrontApp" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "frontAppProcessId" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "refNumber" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "jumlahDibayar" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "nomorVendor" type = "xs:string" minOccurs="0"/>
-            <xs:element name = "nik" type = "xs:string" minOccurs="0"/>
-         </xs:all>
-      </xs:complexType>
-   </xs:element>
-
-   <xs:element name = "StartSlipResponse" type="xcs:SapReturn" />
-
+    <!-- Start Slip -->
+    <xs:element name = "StartSlipRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "Input_By" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Input_Date" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "PO_Number" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Invoice_Number" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Invoice_Date" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Bank_Name" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Jumlah_Tagihan" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "PPN_Masukan" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "PPN_WAPU" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Hutang_WAPU" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Uang_Muka" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "PPH22" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "PPH23" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "PPH21" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Jumlah_Dibayar" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Vendor_Number" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Vendor_Name" type = "xs:string" minOccurs="0"/>
+                <xs:element name = "Attachment" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name = "PDF_File" type="xs:string"/>
+                            <xs:element name = "row">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Line" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "StartSlipResponse" type="xcs:SapReturn" />
 
    <!-- Vendor Master -->
    <xs:element name = "VendorMasterRequest">
