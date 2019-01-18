@@ -250,7 +250,7 @@ public class SoapCustomEndpoint {
                 }, Map::putAll);
 
         ReturnMessage returnMessage = soapCustomService.startSlip(SoapCustomService.APP_ID_SLIP, 0L, SoapCustomService.PROCESS_ID_SLIP,
-                "PO_BIJIH", inputBy, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
+                "PO_BIJIH", inputBy, inputDate, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
                 jumlahTagihan, bankName, ppnMasukan, ppnWapu, hutangWapu, uangMuka, pph21, pph22, pph23, jumlahDibayar, attachment);
 
         Element returnElement = new Element("StartSlipResponse", namespace);
@@ -302,9 +302,10 @@ public class SoapCustomEndpoint {
 
     protected String getValue(XPathExpression<Element> expression, Element processStartElement) {
         Element element = expression.evaluateFirst(processStartElement);
-        if(element == null)
+        if(element == null) {
+            LogUtil.warn(getClass().getName(), "Expression ["+expression.getExpression()+"] cannot be found in xml tag ["+processStartElement.getName()+"]");
             return "";
-        else
+        } else
             return element.getValue();
     }
 }

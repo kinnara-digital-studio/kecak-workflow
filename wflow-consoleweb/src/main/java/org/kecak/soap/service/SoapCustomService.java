@@ -47,7 +47,7 @@ public interface SoapCustomService {
      * @return
      */
     ReturnMessage startSlip(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId,
-                            @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String poNumber,
+                            @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String inputDate, @Nonnull String poNumber,
                             @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
                             @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
                             @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,

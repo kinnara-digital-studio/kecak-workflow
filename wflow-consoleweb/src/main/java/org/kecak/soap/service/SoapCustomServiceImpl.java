@@ -91,7 +91,7 @@ public class SoapCustomServiceImpl implements SoapCustomService{
 
     @Override
     public ReturnMessage startSlip(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId,
-                                   @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String poNumber,
+                                   @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String poNumber, @Nonnull String inputDate,
                                    @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
                                    @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
                                    @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,
@@ -171,6 +171,7 @@ public class SoapCustomServiceImpl implements SoapCustomService{
             addRequestParameterValue(form, formData, "tipe_dokumen", tipeDokumen);
             addRequestParameterValue(form, formData, "input_slip_oleh", inputBy);
             addRequestParameterValue(form, formData, "nomor_po", poNumber);
+            addRequestParameterValue(form, formData, "tanggal_input_slip", inputDate);
             addRequestParameterValue(form, formData, "nomor_invoice", invoiceNumber);
             addRequestParameterValue(form, formData, "tanggal_invoice", invoiceDate);
             addRequestParameterValue(form, formData, "nomor_vendor", vendorNumber);
