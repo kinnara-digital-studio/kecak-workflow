@@ -1,6 +1,5 @@
 package org.kecak.soap.service;
 
-import org.hibernate.loader.custom.Return;
 import org.kecak.soap.model.ReturnMessage;
 import org.kecak.soap.model.VendorMaster;
 
@@ -51,7 +50,7 @@ public interface SoapCustomService {
                             @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String poNumber,
                             @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
                             @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
-                            @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String uangMuka,
+                            @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,
                             @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23,
                             @Nonnull String jumlahDibayar, @Nonnull Map<String, String> attachment);
     /**

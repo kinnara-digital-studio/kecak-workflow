@@ -26,7 +26,7 @@
                 <xs:element name = "Vendor_Name" type = "xs:string" minOccurs="0"/>
                 <xs:element name = "Attachment" minOccurs="0">
                     <xs:complexType>
-                        <xs:sequence>
+                        <xs:sequence minOccurs="0" maxOccurs="unbounded">
                             <xs:element name = "PDF_File" type="xs:string"/>
                             <xs:element name = "row">
                                 <xs:complexType>
@@ -57,7 +57,7 @@
                      <xs:element name = "bankAccount">
                         <xs:complexType>
                            <xs:sequence>
-                              <xs:element name = "accountNumber" type="xs:string" minOccurs="0" />
+                              <xs:element name = "accountNumber" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                            </xs:sequence>
                         </xs:complexType>
                      </xs:element>

@@ -250,11 +250,11 @@ public class SoapCustomEndpoint {
                 }, Map::putAll);
 
         ReturnMessage returnMessage = soapCustomService.startSlip(SoapCustomService.APP_ID_SLIP, 0L, SoapCustomService.PROCESS_ID_SLIP,
-                "PO", inputBy, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
-                jumlahTagihan, bankName, ppnMasukan, ppnWapu, uangMuka, pph21, pph22, pph23, jumlahDibayar, attachment);
+                "PO_BIJIH", inputBy, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
+                jumlahTagihan, bankName, ppnMasukan, ppnWapu, hutangWapu, uangMuka, pph21, pph22, pph23, jumlahDibayar, attachment);
 
-        Element returnElement = new Element("ProcessStartResponse", namespace);
-        returnElement.addContent(new Element("statusExpression", namespace).setText(String.valueOf(returnMessage.getStatus())));
+        Element returnElement = new Element("StartSlipResponse", namespace);
+        returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
         returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
@@ -285,7 +285,7 @@ public class SoapCustomEndpoint {
         ReturnMessage returnMessage = soapCustomService.submitVendorMasterData(appId, appVersion, vendorMaster);
 
         Element returnElement = new Element("VendorMasterResponse", namespace);
-        returnElement.addContent(new Element("statusExpression", namespace).setText(String.valueOf(returnMessage.getStatus())));
+        returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
         returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));

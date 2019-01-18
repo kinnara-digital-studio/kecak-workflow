@@ -11,7 +11,6 @@ import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRowSet;
-import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.service.UserviewService;
@@ -22,6 +21,9 @@ import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.WorkflowProcessResult;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.kecak.soap.model.BankAccountMaster;
 import org.kecak.soap.model.ReturnMessage;
 import org.kecak.soap.model.SoapException;
@@ -29,16 +31,9 @@ import org.kecak.soap.model.VendorMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nonnull;
-import java.io.*;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("soapCustomService")
@@ -99,7 +94,7 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                                    @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String poNumber,
                                    @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
                                    @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
-                                   @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String uangMuka,
+                                   @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,
                                    @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23, @Nonnull String jumlahDibayar,
                                    @Nonnull Map<String, String> attachment) {
 //        AppDefinition appDef = appDefinitionDao.loadVersion(appId, appVersion);
@@ -172,41 +167,66 @@ public class SoapCustomServiceImpl implements SoapCustomService{
 
             final FormData formData = new FormData();
 
-            formData.addRequestParameterValues("tipe_dokumen", new String[]{tipeDokumen});
+            addRequestParameterValue(form, formData, "referensi_dokumen", poNumber);
+            addRequestParameterValue(form, formData, "tipe_dokumen", tipeDokumen);
+            addRequestParameterValue(form, formData, "input_slip_oleh", inputBy);
+            addRequestParameterValue(form, formData, "nomor_po", poNumber);
+            addRequestParameterValue(form, formData, "nomor_invoice", invoiceNumber);
+            addRequestParameterValue(form, formData, "tanggal_invoice", invoiceDate);
+            addRequestParameterValue(form, formData, "nomor_vendor", vendorNumber);
+            addRequestParameterValue(form, formData, "vendor", vendorName);
+            addRequestParameterValue(form, formData, "jml_tagihan", jumlahTagihan);
+            addRequestParameterValue(form, formData, "bank_pembayaran", bankName);
+            addRequestParameterValue(form, formData, "ppn_masukan", ppnMasukan);
+            addRequestParameterValue(form, formData, "ppn_wapu", ppnWapu);
+            addRequestParameterValue(form, formData, "ppn_wapu_hutang", hutangPpnWapu);
+            addRequestParameterValue(form, formData, "pph_23", pph23);
+            addRequestParameterValue(form, formData, "uang_muka", uangMuka);
+            addRequestParameterValue(form, formData, "pph_22", pph22);
+            addRequestParameterValue(form, formData, "pph_21", pph21);
+            addRequestParameterValue(form, formData, "jml_bayar", jumlahDibayar);
+            addRequestParameterValue(form, formData, "ref_amount", jumlahDibayar);
 
-            formData.addRequestParameterValues("input_slip_oleh", new String[] {inputBy});
-            formData.addRequestParameterValues("nomor_po", new String[] {poNumber});
-//            formData.addRequestParameterValues("tanggal_input_slip", new String[] {""});
-            formData.addRequestParameterValues("nomor_invoice", new String[] {invoiceNumber});
-            formData.addRequestParameterValues("tanggal_invoice", new String[] {invoiceDate});
-            formData.addRequestParameterValues("nomor_vendor", new String[] {vendorNumber});
-            formData.addRequestParameterValues("vendor", new String[] {vendorName});
-            formData.addRequestParameterValues("jml_tagihan", new String[] {jumlahTagihan});
-            formData.addRequestParameterValues("bank_pembayaran", new String[] {bankName});
-            formData.addRequestParameterValues("ppn_masukan", new String[] {ppnMasukan});
-            formData.addRequestParameterValues("ppn_wapu_hutang", new String[] {ppnWapu});
-            formData.addRequestParameterValues("pph_23", new String[] {pph23});
-            formData.addRequestParameterValues("uang_muka", new String[] {uangMuka});
-            formData.addRequestParameterValues("pph_22", new String[] {pph22});
-            formData.addRequestParameterValues("pph_21", new String[] {pph21});
-            formData.addRequestParameterValues("jml_bayar", new String[] {jumlahDibayar});
+            int i = 0;
+            for (Map.Entry<String, String> e : attachment.entrySet()) {
+                try {
+                    String filePath = FileManager.storeFile(new MockMultipartFile(e.getKey(), e.getKey(), null, hexStringToByteArray(e.getValue())));
+                    String uuid = UUID.randomUUID().toString();
 
-            final Element elementAttachment = FormUtil.findElement("attachment", form, formData);
+                    JSONObject json = new JSONObject();
+                    json.put(FormUtil.PROPERTY_ID, uuid);
+                    json.put("tipe", "OTHERS");
+                    json.put("file", e.getKey());
+                    json.put("deskripsi", e.getKey());
 
-            for (String elementPropertyValue : FormUtil.getElementPropertyValues(elementAttachment, formData)) {
-                LogUtil.info(getClass().getName(), "elementPropertyValue ["+elementPropertyValue+"]");
+                    JSONObject jsonTempFilePathMap = new JSONObject();
+                    JSONArray jsonArrayFile = new JSONArray();
+                    jsonArrayFile.put(filePath);
+                    jsonTempFilePathMap.put("file", jsonArrayFile);
+                    json.put(FormUtil.PROPERTY_TEMP_FILE_PATH, jsonTempFilePathMap);
+
+                    addRequestParameterValueGrid(form, formData, "lampiran", i, json);
+
+                    i++;
+                } catch (JSONException ex) {
+                    LogUtil.error(getClass().getName(), ex,ex.getMessage());
+                }
             }
 
-            formData.addRequestParameterValues(FormUtil.getElementParameterName(elementAttachment), attachment.entrySet().stream()
-                    .map(e -> FileManager.storeFile(new MockMultipartFile(e.getKey(), e.getKey(), null, hexStringToByteArray(e.getValue()))))
-                    .filter(Objects::nonNull)
-                    .toArray(String[]::new));
+//            addRequestParameterValues(form, formData, "attachment", attachment.entrySet().stream()
+//                    .map(e -> FileManager.storeFile(new MockMultipartFile(e.getKey(), e.getKey(), null, hexStringToByteArray(e.getValue()))))
+//                    .filter(Objects::nonNull)
+//                    .toArray(String[]::new));
 
             formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{"true"});
+            formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
+
             formData.setDoValidation(true);
 
+            Map<String, String> workflowVariables = extractWorkflowVariables(form, formData);
+
             // trigger run process
-            WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, null, null, null);
+            WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, workflowVariables, null, null);
 
             if (formData.getFormErrors() != null && !formData.getFormErrors().isEmpty()) {
                 // show error message
@@ -228,9 +248,6 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                 }
                 return returnMessage;
             }
-
-
-
         } catch (SoapException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
             ReturnMessage returnMessage = new ReturnMessage();
@@ -335,5 +352,49 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                     + Character.digit(s.charAt(i+1), 16));
         }
         return data;
+    }
+
+    /**
+     * Extract workflow variable from form
+     * @param form
+     * @param formData
+     * @return
+     */
+    private Map<String, String> extractWorkflowVariables(@Nonnull Form form, @Nonnull FormData formData) {
+        return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
+            Element element = FormUtil.findElement(e.getKey(), form, formData, true);
+            if(element != null) {
+                String workflowVariable = element.getPropertyString("workflowVariable");
+
+                if (!Objects.isNull(workflowVariable) && !workflowVariable.isEmpty())
+                    m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
+            }
+        }, Map::putAll);
+    }
+
+    private void addRequestParameterValue(@Nonnull Form form, @Nonnull FormData formData, @Nonnull String fieldId, @Nonnull String value) {
+        addRequestParameterValues(form, formData, fieldId, new String[]{ value });
+    }
+
+    private void addRequestParameterValues(@Nonnull Form form, @Nonnull FormData formData, @Nonnull String fieldId, @Nonnull String[] values) {
+        Element element = FormUtil.findElement(fieldId, form, formData, true);
+        if(element == null) {
+            LogUtil.warn(getClass().getName(), "Element ["+fieldId+"] is not found");
+            return;
+        }
+
+        String parameterName = FormUtil.getElementParameterName(element) ;
+        formData.addRequestParameterValues(parameterName, values);
+    }
+
+    private void addRequestParameterValueGrid(@Nonnull Form form, @Nonnull FormData formData, @Nonnull String fieldId, int index, @Nonnull JSONObject value) {
+        Element element = FormUtil.findElement(fieldId, form, formData, true);
+        if(element == null) {
+            LogUtil.warn(getClass().getName(), "Element ["+fieldId+"] is not found");
+            return;
+        }
+
+        String parameterName = FormUtil.getElementParameterName(element) + "_jsonrow_" + index;
+        formData.addRequestParameterValues(parameterName, new String[]{value.toString()});
     }
 }
