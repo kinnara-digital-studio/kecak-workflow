@@ -472,8 +472,10 @@ public class DataJsonController {
 
             JSONObject jsonResponse = new JSONObject();
 
+            Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
+
             // trigger run process
-            WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, null, null, null);
+            WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, workflowVariables, null, null);
 
             if (formData.getFormErrors() != null && !formData.getFormErrors().isEmpty()) {
                 jsonResponse.put("message", MESSAGE_VALIDATION_ERROR);
@@ -573,13 +575,7 @@ public class DataJsonController {
             // read request body and convert request body to json
             final FormData formData = extractBodyToFormData(request, form);
 
-            Map<String, String> workflowVariables = formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
-                Element element = FormUtil.findElement(e.getKey(), form, formData, true);
-                String workflowVariable = element.getPropertyString("workflowVariable");
-
-                if(!Objects.isNull(workflowVariable) && !workflowVariable.isEmpty())
-                    m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
-            }, Map::putAll);
+            Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
 
             FormData resultFormData = appService.completeAssignmentForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), assignmentId, formData, workflowVariables);
 
@@ -868,6 +864,8 @@ public class DataJsonController {
             }
         }
 
+        formData.setDoValidation(true);
+        formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
         formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{"true"});
 
         // use field "ID" as primary key if possible
@@ -957,13 +955,21 @@ public class DataJsonController {
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] for Application ID [" + appId + "] is not available");
         }
 
-        String processDefId = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId).getId();
-
-        WorkflowProcess process = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId);
+        WorkflowProcess process = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId);
         if(process == null) {
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process ["+processId+"] for application ["+appId+"] version ["+appVersion+"]");
         }
 
         return process.getId();
+    }
+
+    private Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
+        return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
+            Element element = FormUtil.findElement(e.getKey(), form, formData, true);
+            String workflowVariable = element.getPropertyString("workflowVariable");
+
+            if(!Objects.isNull(workflowVariable) && !workflowVariable.isEmpty())
+                m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
+        }, Map::putAll);
     }
 }

@@ -672,7 +672,28 @@ public interface WorkflowManager {
      */
     WorkflowProcessResult processCopyFromInstanceId(String currentProcessId, String newProcessDefId, boolean abortCurrentProcess);
 
-    WorkflowProcessResult processActivityStepBack(String currentProcessId, String currentActivity);
+    /**
+     * Transfer current assingment to target activity
+     * @param currentProcessId
+     * @param targetActivity
+     * @return
+     */
+    WorkflowProcessResult assignmentTransfer(String currentProcessId, String targetActivity);
+
+    /**
+     * Step back activity in 1 step
+     * @param currentProcessId
+     * @return
+     */
+    WorkflowProcessResult assignmentStepBack(String currentProcessId);
+
+    /**
+     * Step back activity in N steps
+     * @param currentProcessId
+     * @param steps
+     * @return
+     */
+    WorkflowProcessResult assignmentStepBack(String currentProcessId, Integer steps);
 
     /**
      * Abort a process instance.
