@@ -98,41 +98,6 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                             @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23,
                             @Nonnull String jumlahDibayar, @Nonnull String keterangan1, @Nonnull String keterangan2, @Nonnull String keterangan3,
                             @Nonnull String keterangan4, @Nonnull Map<String, String> attachment) {
-
-//        AppDefinition appDef = appDefinitionDao.loadVersion(appId, appVersion);
-//        AppUtil.setCurrentAppDefinition(appDef);
-//
-//        ReturnMessage returnMessage = new ReturnMessage();
-//
-//        String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
-//
-//        Map<String, String> workflowVariable = new HashMap<>();
-//        workflowVariable.put("status", status);
-//        workflowVariable.put("tipeDokumen", tipeDokumen);
-//        workflowVariable.put("primaryKey", primaryKey);
-//        workflowVariable.put("no_dokumen", nomorDokumen);
-//        workflowVariable.put("tgl_dokumen", tanggalDokumen);
-//        workflowVariable.put("catatan", catatan);
-//        workflowVariable.put("urlFrontApp", urlFrontApp);
-//        workflowVariable.put("frontAppProc", frontAppProcessId);
-//        workflowVariable.put("refNumber", refNumber);
-//        workflowVariable.put("jml_dibayar", jumlahDibayar);
-//        workflowVariable.put("no_vendor", nomorVendor);
-//        workflowVariable.put("nik", nik);
-//
-//        WorkflowProcessResult result = workflowManager.processStart(processDefId, workflowVariable);
-//
-//        if(result == null) {
-//            returnMessage.setStatus("E");
-//            returnMessage.setMessage1("Error starting process ["+processDefId+"]");
-//        } else {
-//            returnMessage.setStatus("S");
-//            returnMessage.setMessage1(result.getProcess().getInstanceId());
-//            returnMessage.setMessage2(result.getActivities().stream().map(a -> a.getId()).collect(Collectors.joining(";")));
-//        }
-//
-//        return returnMessage;
-
         try {
             // get version, version 0 indicates published version
             long version = appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion;
@@ -186,7 +151,7 @@ public class SoapCustomServiceImpl implements SoapCustomService{
             addRequestParameterValue(form, formData, "uang_muka", uangMuka);
             addRequestParameterValue(form, formData, "pph_22", pph22);
             addRequestParameterValue(form, formData, "pph_21", pph21);
-            addRequestParameterValue(form, formData, "jml_bayar", jumlahDibayar);
+            addRequestParameterValue(form, formData, "jml_dibayar", jumlahDibayar);
             addRequestParameterValue(form, formData, "ref_amount", jumlahDibayar);
             addRequestParameterValue(form, formData, "keterangan_1", keterangan1);
             addRequestParameterValue(form, formData, "keterangan_2", keterangan2);
@@ -221,11 +186,6 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                 }
             }
 
-//            addRequestParameterValues(form, formData, "attachment", attachment.entrySet().stream()
-//                    .map(e -> FileManager.storeFile(new MockMultipartFile(e.getKey(), e.getKey(), null, hexStringToByteArray(e.getValue()))))
-//                    .filter(Objects::nonNull)
-//                    .toArray(String[]::new));
-
             formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{"true"});
             formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
 
@@ -252,7 +212,8 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                 } else {
                     returnMessage.setStatus(ReturnMessage.MessageStatus.SUCCESS);
                     returnMessage.setMessage1("New process has been generated");
-                    returnMessage.setMessage2("Process ID : " + formData.getPrimaryKeyValue());
+                    returnMessage.setMessage2("Process ID");
+                    returnMessage.setMessage3(formData.getPrimaryKeyValue());
                 }
                 return returnMessage;
             }
@@ -285,7 +246,9 @@ public class SoapCustomServiceImpl implements SoapCustomService{
         Form bankAccountMasterForm = loadFormByFormDefId(appId, appVersion, BankAccountMaster.FORM_DEF_ID);
         if(bankAccountMasterForm == null) {
             returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
-            returnMessage.setMessage1("Form ["+BankAccountMaster.FORM_DEF_ID+"] does not exist in app id ["+appId+"] version ["+appVersion+"]");
+            returnMessage.setMessage1("Form ["+BankAccountMaster.FORM_DEF_ID+"] does not exist");
+            returnMessage.setMessage2("App id ["+appId+"]");
+            returnMessage.setMessage3("App version ["+appVersion+"]");
             return returnMessage;
         }
 
@@ -305,7 +268,9 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                 String errorMessage = String.join("; ", resultFormData.getFormErrors().values());
                 LogUtil.warn(getClass().getName(), "Error submitting form [" + BankAccountMaster.FORM_DEF_ID + "] messages [" + errorMessage + "]");
                 returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
-                returnMessage.setMessage1(String.join("; ", errorMessage));
+                returnMessage.setMessage1("Error submitting form [" + BankAccountMaster.FORM_DEF_ID + "]");
+                returnMessage.setMessage2("Messages [" + errorMessage + "]");
+                returnMessage.setMessage3(String.join("; ", errorMessage));
                 return returnMessage;
             } else {
                 bankAccountIds.add(resultFormData.getPrimaryKeyValue());
@@ -326,7 +291,13 @@ public class SoapCustomServiceImpl implements SoapCustomService{
                 String errorMessage = String.join("; ", vendorMasterFormDataResult.getFormErrors().values());
                 LogUtil.warn(getClass().getName(), "Error submitting form [" + VendorMaster.FORM_DEF_ID + "] messages [" + errorMessage + "]");
                 returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
-                returnMessage.setMessage1(String.join("; ", errorMessage));
+                returnMessage.setMessage1("Error submitting form [" + VendorMaster.FORM_DEF_ID + "]");
+                returnMessage.setMessage3("Messages [" + errorMessage + "]");
+                returnMessage.setMessage3(String.join("; ", errorMessage));
+            } else {
+                returnMessage.setMessage1("Success");
+                returnMessage.setMessage2("Vendor Number");
+                returnMessage.setMessage3(vendorMaster.getId());
             }
         }
 

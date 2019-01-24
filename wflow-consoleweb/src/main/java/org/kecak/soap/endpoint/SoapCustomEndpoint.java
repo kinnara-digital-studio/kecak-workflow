@@ -223,6 +223,8 @@ public class SoapCustomEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "StartSlipRequest")
     public @ResponsePayload Element handleStartSlipRequest(@RequestPayload Element processStartElement) {
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + processStartElement.getName() + "]");
+
         /**
          * Peekaboo... <inputBy></inputBy> contains taksasi/definitif status !!???
          */
@@ -264,7 +266,6 @@ public class SoapCustomEndpoint {
             }
         }
 
-        LogUtil.info(getClass().getName(), "attachmentElement.getContentSize ["+attachmentElement.getContentSize()+"]");
 //        final Map<String, String> attachment = (attachment == null ? Stream.<Element>empty() : attachmentList.stream())
 //                .collect(HashMap::new, (map, element) -> {
 //                    String key = element.getChild("PDF_File", namespace).getText();
