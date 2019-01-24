@@ -158,8 +158,6 @@ public class SoapCustomServiceImpl implements SoapCustomService{
             addRequestParameterValue(form, formData, "keterangan_3", keterangan3);
             addRequestParameterValue(form, formData, "keterangan_4", keterangan4);
 
-            LogUtil.info(getClass().getName(), "addRequestParameterValue finished");
-
             int i = 0;
             for (Map.Entry<String, String> e : attachment.entrySet()) {
                 try {
