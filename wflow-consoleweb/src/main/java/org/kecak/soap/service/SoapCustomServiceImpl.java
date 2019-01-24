@@ -91,12 +91,14 @@ public class SoapCustomServiceImpl implements SoapCustomService{
 
     @Override
     public ReturnMessage startSlip(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull String processId,
-                                   @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String inputDate, @Nonnull String poNumber,
-                                   @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
-                                   @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
-                                   @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,
-                                   @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23,
-                                   @Nonnull String jumlahDibayar, @Nonnull Map<String, String> attachment) {
+                            @Nonnull String tipeDokumen, @Nonnull String inputBy, @Nonnull String inputDate, @Nonnull String poNumber,
+                            @Nonnull String invoiceNumber, @Nonnull String invoiceDate, @Nonnull String vendorNumber,
+                            @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
+                            @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,
+                            @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23,
+                            @Nonnull String jumlahDibayar, @Nonnull String keterangan1, @Nonnull String keterangan2, @Nonnull String keterangan3,
+                            @Nonnull String keterangan4, @Nonnull Map<String, String> attachment) {
+
 //        AppDefinition appDef = appDefinitionDao.loadVersion(appId, appVersion);
 //        AppUtil.setCurrentAppDefinition(appDef);
 //
@@ -130,7 +132,6 @@ public class SoapCustomServiceImpl implements SoapCustomService{
 //        }
 //
 //        return returnMessage;
-
 
         try {
             // get version, version 0 indicates published version
@@ -187,6 +188,12 @@ public class SoapCustomServiceImpl implements SoapCustomService{
             addRequestParameterValue(form, formData, "pph_21", pph21);
             addRequestParameterValue(form, formData, "jml_bayar", jumlahDibayar);
             addRequestParameterValue(form, formData, "ref_amount", jumlahDibayar);
+            addRequestParameterValue(form, formData, "keterangan_1", keterangan1);
+            addRequestParameterValue(form, formData, "keterangan_2", keterangan2);
+            addRequestParameterValue(form, formData, "keterangan_3", keterangan3);
+            addRequestParameterValue(form, formData, "keterangan_4", keterangan4);
+
+            LogUtil.info(getClass().getName(), "addRequestParameterValue finished");
 
             int i = 0;
             for (Map.Entry<String, String> e : attachment.entrySet()) {
@@ -261,6 +268,8 @@ public class SoapCustomServiceImpl implements SoapCustomService{
 
     @Override
     public ReturnMessage submitVendorMasterData(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull VendorMaster vendorMaster) {
+        appVersion = appDefinitionDao.getPublishedVersion(appId);
+
         AppDefinition appDef = appDefinitionDao.loadVersion(appId, appVersion);
         AppUtil.setCurrentAppDefinition(appDef);
 
@@ -269,14 +278,14 @@ public class SoapCustomServiceImpl implements SoapCustomService{
         Form vendorMasterForm = loadFormByFormDefId(appId, appVersion, VendorMaster.FORM_DEF_ID);
         if(vendorMasterForm == null) {
             returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
-            returnMessage.setMessage1("Form ["+VendorMaster.FORM_DEF_ID+"] does not exist");
+            returnMessage.setMessage1("Form ["+VendorMaster.FORM_DEF_ID+"] does not exist in app id ["+appId+"] version ["+appVersion+"]");
             return returnMessage;
         }
 
         Form bankAccountMasterForm = loadFormByFormDefId(appId, appVersion, BankAccountMaster.FORM_DEF_ID);
         if(bankAccountMasterForm == null) {
             returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
-            returnMessage.setMessage1("Form ["+BankAccountMaster.FORM_DEF_ID+"] does not exist");
+            returnMessage.setMessage1("Form ["+BankAccountMaster.FORM_DEF_ID+"] does not exist in app id ["+appId+"] version ["+appVersion+"]");
             return returnMessage;
         }
 

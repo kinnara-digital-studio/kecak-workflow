@@ -223,7 +223,11 @@ public class SoapCustomEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "StartSlipRequest")
     public @ResponsePayload Element handleStartSlipRequest(@RequestPayload Element processStartElement) {
-        final String inputBy = getValue(inputByExpression, processStartElement);
+        /**
+         * Peekaboo... <inputBy></inputBy> contains taksasi/definitif status !!???
+         */
+        final String keterangan1 = getValue(inputByExpression, processStartElement);
+
         final String inputDate = getValue(inputDateExpression, processStartElement);
         final String poNumber = getValue(poNumberExpression, processStartElement);
         final String invoiceNumber = getValue(invoiceNumberExpression, processStartElement);
@@ -238,20 +242,40 @@ public class SoapCustomEndpoint {
         final String pph23 = getValue(pph23Expression, processStartElement);
         final String pph21 = getValue(pph21Expression, processStartElement);
         final String jumlahDibayar = getValue(jumlahDibayarExpression, processStartElement);
-        final String vendorNumber = getValue(vendor_NumberExpression, processStartElement);
-        final String vendorName = getValue(vendor_NameExpression, processStartElement);
 
-        List<Element> attachmentList = attachmentExpression.evaluate(processStartElement);
-        final Map<String, String> attachment = (attachmentList == null ? Stream.<Element>empty() : attachmentList.stream())
-                .collect(HashMap::new, (map, element) -> {
-                    String key = element.getChild("PDF_File", namespace).getText();
-                    String value = element.getChild("row", namespace).getChild("Line", namespace).getText();
-                    map.put(key, value);
-                }, Map::putAll);
+        /**
+         * Peekaboo... <Vendor_Name></Vendor_Name> contains both vendor number and vendor name delimited by /
+         */
+        final String vendorNumber = getValue(vendor_NameExpression, processStartElement).replaceAll("/.+$", "");
+        final String vendorName = getValue(vendor_NameExpression, processStartElement).replaceAll("[^/]+/", "");
+
+        Element attachmentElement = attachmentExpression.evaluateFirst(processStartElement);
+        final Map<String, String> attachment = new HashMap<>();
+
+        if(attachmentElement != null) {
+            List<Element> pdfElementList = attachmentElement.getChildren("PDF_File", namespace);
+            List<Element> rowElementList = attachmentElement.getChildren("row", namespace);
+
+            if(pdfElementList != null && rowElementList != null) {
+                for (int i = 0, size = pdfElementList.size(); i < size; i++) {
+                    if (pdfElementList.get(i) != null && rowElementList.get(i) != null && rowElementList.get(i).getChildText("Line", namespace) != null)
+                        attachment.put(pdfElementList.get(i).getText(), rowElementList.get(i).getChildText("Line", namespace));
+                }
+            }
+        }
+
+        LogUtil.info(getClass().getName(), "attachmentElement.getContentSize ["+attachmentElement.getContentSize()+"]");
+//        final Map<String, String> attachment = (attachment == null ? Stream.<Element>empty() : attachmentList.stream())
+//                .collect(HashMap::new, (map, element) -> {
+//                    String key = element.getChild("PDF_File", namespace).getText();
+//                    String value = element.getChild("row", namespace).getChild("Line", namespace).getText();
+//                    map.put(key, value);
+//                }, Map::putAll);
 
         ReturnMessage returnMessage = soapCustomService.startSlip(SoapCustomService.APP_ID_SLIP, 0L, SoapCustomService.PROCESS_ID_SLIP,
-                "PO_BIJIH", inputBy, inputDate, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
-                jumlahTagihan, bankName, ppnMasukan, ppnWapu, hutangWapu, uangMuka, pph21, pph22, pph23, jumlahDibayar, attachment);
+                "PO_BIJIH", "", inputDate, poNumber, invoiceNumber, invoiceDate, vendorNumber, vendorName,
+                jumlahTagihan, bankName, ppnMasukan, ppnWapu, hutangWapu, uangMuka, pph21, pph22, pph23, jumlahDibayar,
+                keterangan1, "", "", "", attachment);
 
         Element returnElement = new Element("StartSlipResponse", namespace);
         returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
@@ -269,7 +293,7 @@ public class SoapCustomEndpoint {
         LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + vendorMasterElement.getName() + "]");
 
         @Nonnull final String appId = appIdExpression.evaluate(vendorMasterElement).get(0).getValue();
-        @Nonnull final Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(vendorMasterElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(vendorMasterElement).get(0).getValue());
+        @Nonnull Long appVersion = appVersionExpression == null || appVersionExpression.evaluate(vendorMasterElement).get(0) == null ? 0l : Long.parseLong(appVersionExpression.evaluate(vendorMasterElement).get(0).getValue());
 
         LogUtil.info(getClass().getName(), "appId ["+appId+"] appVersion ["+appVersion+"]");
 
@@ -280,7 +304,6 @@ public class SoapCustomEndpoint {
                 .map(Element::getText)
                 .map(BankAccountMaster::new)
                 .collect(Collectors.toList()));
-
 
         ReturnMessage returnMessage = soapCustomService.submitVendorMasterData(appId, appVersion, vendorMaster);
 

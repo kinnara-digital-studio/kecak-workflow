@@ -52,7 +52,8 @@ public interface SoapCustomService {
                             @Nonnull String vendorName, @Nonnull String jumlahTagihan, @Nonnull String bankName,
                             @Nonnull String ppnMasukan, @Nonnull String ppnWapu, @Nonnull String hutangPpnWapu, @Nonnull String uangMuka,
                             @Nonnull String pph21, @Nonnull String pph22, @Nonnull String pph23,
-                            @Nonnull String jumlahDibayar, @Nonnull Map<String, String> attachment);
+                            @Nonnull String jumlahDibayar, @Nonnull String keterangan1, @Nonnull String keterangan2, @Nonnull String keterangan3,
+                            @Nonnull String keterangan4, @Nonnull Map<String, String> attachment);
     /**
      * Submit new vendor master
      * @param appId
