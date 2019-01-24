@@ -45,7 +45,6 @@ public class EmailApprovalContentDao extends AbstractSpringDao {
 			result = results.iterator().next();
 		}
 		return result;
-
 	}
 	
 	@SuppressWarnings("unchecked")

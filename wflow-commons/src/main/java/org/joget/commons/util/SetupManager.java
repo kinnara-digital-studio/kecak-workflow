@@ -10,6 +10,8 @@ import org.joget.commons.spring.model.Setting;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
+import javax.annotation.Nonnull;
+
 /**
  * Service method used to manage system settings
  * 
@@ -188,10 +190,9 @@ public class SetupManager {
      * @param property
      * @return 
      */
-    public static String getSettingValue(String property) {        
+    public static @Nonnull String getSettingValue(String property) {
         Setting setting = getSettingByProperty(property);
-        String value = (setting != null) ? setting.getValue() : null;
-        return value;
+        return (setting != null) ? setting.getValue() : "";
     }
 
     /**

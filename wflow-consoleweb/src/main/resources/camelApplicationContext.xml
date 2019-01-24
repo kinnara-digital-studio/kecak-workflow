@@ -13,7 +13,7 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-	<bean id="emailApprovalProcessor" class="org.joget.apps.processor.EmailApprovalProcessor">
+	<bean id="emailApprovalProcessor" class="org.kecak.apps.processor.EmailProcessor">
 		<property name="emailApprovalContentDao" ref="emailApprovalContentDao"/>
 		<property name="workflowManager" ref="workflowManager"/>
 		<property name="appService" ref="appService"/>
@@ -21,9 +21,9 @@
 		<property name="directoryManager" ref="directoryManager"/>
 	</bean>
 	
-	<bean id="kecakRouteManager" class="org.joget.apps.route.KecakRouteManager"/>
+	<bean id="camelRouteManager" class="org.kecak.apps.route.CamelRouteManager"/>
 	
-    <camelContext id="kecakRoute" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="camelRoute" xmlns="http://camel.apache.org/schema/spring">
     	<package>org.joget.apps.route</package>
 	</camelContext>
     

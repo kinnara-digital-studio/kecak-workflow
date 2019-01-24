@@ -1,6 +1,7 @@
-package org.joget.apps.route;
+package org.kecak.apps.route;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SetupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class EmailApprovalRouteBuilder extends RouteBuilder {
 
 			from(fromUri).beanRef("emailApprovalProcessor", "parseEmail");
 		} else {
-			LOGGER.info("Skipping Email Approval; not configured");
+			LogUtil.info(getClass().getName(), "Skipping Email Approval; not configured");
 		}
 	}
 

@@ -2,13 +2,13 @@ package org.kecak.apps.scheduler;
 
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
-import org.joget.apps.app.model.DefaultSchedulerPlugin;
 import org.joget.apps.app.model.PluginDefaultProperties;
-import org.joget.apps.app.model.SchedulerPlugin;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
+import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.service.PropertyUtil;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -47,20 +47,19 @@ public class SchedulerPluginJob implements Job {
                 pluginDefaultProperties.forEach(pluginDefaultPropery -> {
                     Stream.of(pluginDefaultPropery)
                             .map(p -> pluginManager.getPlugin(p.getId()))
-                            .filter(p -> p instanceof DefaultSchedulerPlugin)
-                            .map(p -> (DefaultSchedulerPlugin)p)
+                            .filter(p -> p instanceof SchedulerPlugin && p instanceof ExtDefaultPlugin)
+                            .map(p -> (ExtDefaultPlugin)p)
                             .forEach(p -> {
                                 Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultPropery.getPluginProperties());
                                 p.setProperties(pluginProperties);
 
                                 Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
                                 parameterProperties.put(SchedulerPlugin.PROPERTY_APP_DEFINITION, appDefinition);
-                                parameterProperties.put(SchedulerPlugin.PROPERTY_PLUGIN_MANAGER, pluginManager);
                                 parameterProperties.put(SchedulerPlugin.PROPERTY_TIMESTAMP, context.getFireTime());
 
-                                if(p.filter(parameterProperties)) {
+                                if(((SchedulerPlugin)p).filter(parameterProperties)) {
                                     LogUtil.info(getClass().getName(), "Running Scheduler Job Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
-                                    p.jobRun(parameterProperties);
+                                    ((SchedulerPlugin)p).jobRun(parameterProperties);
                                 }
                             });
                 });

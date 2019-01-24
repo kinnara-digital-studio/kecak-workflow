@@ -1,4 +1,4 @@
-package org.joget.apps.job;
+package org.kecak.apps.job;
 
 public class EmailApprovalJob {
 

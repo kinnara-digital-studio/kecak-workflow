@@ -1,13 +1,13 @@
-package org.joget.apps.route;
+package org.kecak.apps.route;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KecakRouteManager implements CamelContextAware { 
+public class CamelRouteManager implements CamelContextAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KecakRouteManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamelRouteManager.class);
 
     protected CamelContext camelContext;
 

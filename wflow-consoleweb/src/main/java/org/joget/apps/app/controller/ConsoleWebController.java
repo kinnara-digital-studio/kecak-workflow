@@ -19,7 +19,8 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
-import org.joget.apps.route.KecakRouteManager;
+import org.kecak.apps.app.model.SchedulerPlugin;
+import org.kecak.apps.route.CamelRouteManager;
 import org.kecak.apps.scheduler.SchedulerManager;
 import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
 import org.kecak.apps.scheduler.dao.SchedulerLogDao;
@@ -151,7 +152,7 @@ public class ConsoleWebController {
     @Autowired
     JdbcDataListDao jdbcDataListDao;
     @Autowired
-    KecakRouteManager kecakRouteManager;
+    CamelRouteManager camelRouteManager;
     @Autowired
     SchedulerManager schedulerManager;
     @Autowired
@@ -3620,10 +3621,10 @@ public class ConsoleWebController {
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
 
-        kecakRouteManager.stopContext();
+        camelRouteManager.stopContext();
         Thread.sleep(3000);
 
-        kecakRouteManager.startContext();
+        camelRouteManager.startContext();
 
         return "redirect:/web/console/setting/general";
     }

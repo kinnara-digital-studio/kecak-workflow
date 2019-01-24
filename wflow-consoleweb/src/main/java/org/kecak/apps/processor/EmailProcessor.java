@@ -1,9 +1,11 @@
-package org.joget.apps.processor;
+package org.kecak.apps.processor;
 
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
+import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
+import org.joget.apps.app.model.PluginDefaultProperties;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.Element;
@@ -16,48 +18,49 @@ import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
+import org.joget.plugin.base.ExtDefaultPlugin;
+import org.joget.plugin.base.PluginManager;
+import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
+import org.kecak.apps.app.model.EmailProcessorPlugin;
 
 import javax.annotation.Nonnull;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
-public class EmailApprovalProcessor {
-
+public class EmailProcessor {
 
     public static final String MAIL_SUBJECT_PATTERN = "{unuse}processId:{processId}";
 
     public static final String FROM = "from";
+    public static final String SUBJECT = "subject";
 
     private EmailApprovalContentDao emailApprovalContentDao;
     private WorkflowManager workflowManager;
     private AppService appService;
     private WorkflowUserManager workflowUserManager;
     private DirectoryManager directoryManager;
+    private PluginManager pluginManager;
+    private AppDefinitionDao appDefinitionDao;
 
-    public void parseEmail(@Body String body, Exchange exchange) {
+    public void parseEmail(@Body final String body, final Exchange exchange) {
         //GET EMAIL ADDRESS
-        String from = (String) exchange.getIn().getHeader(FROM);
-
-        int startIndex = from.indexOf("<");
-        int length = from.length();
-        if (startIndex > -1) {
-            from = from.substring(startIndex + 1, length - 1);
-        }
+        final String from = exchange.getIn().getHeader(FROM).toString().replaceAll("^<|>$", "");
         LogUtil.info(this.getClass().getName(), "[FROM] : " + from);
         
         String username = getUsername(from);
         workflowUserManager.setCurrentThreadUser(username);
 
-        String subject = (String) exchange.getIn().getHeader("subject");
-        subject = subject.replace("\t", "__").replace("\n", "__").replace(" ", "__");
+        final String subject = exchange.getIn().getHeader(SUBJECT).toString().replace("\t", "__").replace("\n", "__").replace(" ", "__");
 
         Pattern pattern = Pattern.compile("\\{([a-zA-Z0-9_]+)\\}");
         Matcher matcher = pattern.matcher(MAIL_SUBJECT_PATTERN);
@@ -84,10 +87,41 @@ public class EmailApprovalProcessor {
         } else {
             LogUtil.info(getClass().getName(), "Empty process ID");
         }
+
+        Collection<AppDefinition> appDefinitions = appDefinitionDao.findPublishedApps(null, null, null, null);
+        if(appDefinitions == null) {
+            return;
+        }
+
+        appDefinitions.forEach(appDefinition -> {
+            Collection<PluginDefaultProperties> pluginDefaultProperties = appDefinition.getPluginDefaultPropertiesList();
+            if(pluginDefaultProperties != null) {
+                pluginDefaultProperties.forEach(pluginDefaultProperty -> {
+                    Stream.of(pluginDefaultProperty)
+                            .map(p -> pluginManager.getPlugin(p.getId()))
+                            .filter(p -> p instanceof EmailProcessorPlugin && p instanceof ExtDefaultPlugin)
+                            .map(p -> (ExtDefaultPlugin)p)
+                            .forEach(p -> {
+                                Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultProperty.getPluginProperties());
+                                p.setProperties(pluginProperties);
+
+                                Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
+                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_APP_DEFINITION, appDefinition);
+                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_FROM, from);
+                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_SUBJECT, subject);
+                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_BODY, body);
+                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_EXCHANGE, exchange);
+
+                                LogUtil.info(getClass().getName(), "Processing Email Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
+                                ((EmailProcessorPlugin) p).parse(parameterProperties);
+                            });
+                });
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
-    public void parseEmailContent(String processId, String username, String emailContent) {
+    private void parseEmailContent(String processId, String username, String emailContent) {
         String content = emailContent.replaceAll("\\r?\\n", " ");
         content = content.replaceAll("\\_\\_", " ");
         content = StringUtil.decodeURL(content);
@@ -96,7 +130,7 @@ public class EmailApprovalProcessor {
         String activityDefId = null;
         String activityId = null;
 
-        workflowUserManager.setCurrentThreadUser(username);
+//        workflowUserManager.setCurrentThreadUser(username);
 
         WorkflowAssignment workflowAssignment = workflowManager.getAssignmentByProcess(processId);
         if (workflowAssignment != null) {
@@ -165,7 +199,7 @@ public class EmailApprovalProcessor {
     }
 
     @SuppressWarnings({"deprecation", "unchecked"})
-    public void completeActivity(String username, String processId, String activityId, @Nonnull final Map<String, String> fields, @Nonnull final Map<String, String> variables, String message) {
+    private void completeActivity(String username, String processId, String activityId, @Nonnull final Map<String, String> fields, @Nonnull final Map<String, String> variables, String message) {
         if (username != null) {
             String currentUsername = workflowUserManager.getCurrentUsername();
             try {
@@ -326,4 +360,11 @@ public class EmailApprovalProcessor {
         this.directoryManager = directoryManager;
     }
 
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public void setPluginManager(PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
 }
