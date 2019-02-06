@@ -19,14 +19,14 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
-import org.kecak.apps.app.model.SchedulerPlugin;
-import org.kecak.apps.route.CamelRouteManager;
-import org.kecak.apps.scheduler.SchedulerManager;
-import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
-import org.kecak.apps.scheduler.dao.SchedulerLogDao;
-import org.kecak.apps.scheduler.model.SchedulerDetails;
-import org.kecak.apps.scheduler.model.SchedulerLog;
-import org.kecak.apps.scheduler.model.TriggerTypes;
+import org.joget.apps.app.model.SchedulerPlugin;
+import org.joget.apps.route.CamelRouteManager;
+import org.joget.apps.scheduler.SchedulerManager;
+import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
+import org.joget.apps.scheduler.dao.SchedulerLogDao;
+import org.joget.apps.scheduler.model.SchedulerDetails;
+import org.joget.apps.scheduler.model.SchedulerLog;
+import org.joget.apps.scheduler.model.TriggerTypes;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.spring.model.*;
 import org.joget.commons.util.*;
@@ -5047,6 +5047,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.workflow.model.ParticipantPlugin", ResourceBundleUtil.getMessage("setting.plugin.processParticipant"));
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
         pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
+        pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewMenu", ResourceBundleUtil.getMessage("setting.plugin.userviewMenu"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewPermission", ResourceBundleUtil.getMessage("setting.plugin.userviewPermission"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewTheme", ResourceBundleUtil.getMessage("setting.plugin.userviewTheme"));
@@ -5063,6 +5064,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.workflow.model.ParticipantPlugin", ResourceBundleUtil.getMessage("setting.plugin.processParticipant"));
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
         pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
+        pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
 
         return PagingUtils.sortMapByValue(pluginTypeMap, false);
     }

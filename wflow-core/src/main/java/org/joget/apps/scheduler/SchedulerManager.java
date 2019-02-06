@@ -1,9 +1,9 @@
-package org.kecak.apps.scheduler;
+package org.joget.apps.scheduler;
 
 import org.joget.plugin.base.PluginManager;
-import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
-import org.kecak.apps.scheduler.model.SchedulerDetails;
-import org.kecak.apps.scheduler.model.TriggerTypes;
+import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
+import org.joget.apps.scheduler.model.SchedulerDetails;
+import org.joget.apps.scheduler.model.TriggerTypes;
 import org.quartz.*;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.quartz.impl.triggers.SimpleTriggerImpl;
@@ -14,6 +14,9 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Kecak Exclusive
+ */
 public class SchedulerManager {
 
     private static final Logger logger = LoggerFactory.getLogger(SchedulerManager.class);

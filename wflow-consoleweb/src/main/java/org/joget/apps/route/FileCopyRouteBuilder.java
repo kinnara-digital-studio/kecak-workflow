@@ -1,7 +1,8 @@
-package org.kecak.apps.route;
+package org.joget.apps.route;
 
 import org.apache.camel.builder.RouteBuilder;
 
+@Deprecated
 public class FileCopyRouteBuilder extends RouteBuilder {
 	
 	private String fromUri = "file:data/inbox?noop=true";

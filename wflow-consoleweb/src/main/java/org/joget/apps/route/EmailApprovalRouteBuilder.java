@@ -1,4 +1,4 @@
-package org.kecak.apps.route;
+package org.joget.apps.route;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.joget.commons.util.LogUtil;
@@ -6,6 +6,7 @@ import org.joget.commons.util.SetupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class EmailApprovalRouteBuilder extends RouteBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailApprovalRouteBuilder.class);
@@ -24,9 +25,9 @@ public class EmailApprovalRouteBuilder extends RouteBuilder {
 
 		// set default port
 		if(emailPort == null || emailPort.isEmpty()) {
-			if("imap".equals(emailProtocol))
+			if("imap".equalsIgnoreCase(emailProtocol))
 				emailPort = "143"; // default IMAP
-			else if("imaps".equals(emailProtocol))
+			else if("imaps".equalsIgnoreCase(emailProtocol))
 				emailPort = "993"; // default IMAPS
 		}
 
@@ -48,7 +49,7 @@ public class EmailApprovalRouteBuilder extends RouteBuilder {
 			String fromUri = fromUriBuilder.toString();
 			LOGGER.info("###fromUri#" + fromUri);
 
-			from(fromUri).beanRef("emailApprovalProcessor", "parseEmail");
+			from(fromUri).beanRef("emailProcessor", "parseEmail");
 		} else {
 			LogUtil.info(getClass().getName(), "Skipping Email Approval; not configured");
 		}

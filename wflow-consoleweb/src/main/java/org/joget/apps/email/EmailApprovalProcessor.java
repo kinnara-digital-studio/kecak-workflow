@@ -1,4 +1,4 @@
-package org.kecak.apps.job;
+package org.joget.apps.email;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Deprecated
 public class EmailApprovalProcessor {
 
     public void pollEmail() {
@@ -137,6 +138,7 @@ public class EmailApprovalProcessor {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void parseEmail(String sender, String subject, String content) {
+        LogUtil.info(getClass().getName(), "Parse Email");
         String processId = null;
         String activityId = null;
         Map variables = new HashMap();

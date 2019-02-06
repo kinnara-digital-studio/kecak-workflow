@@ -1,4 +1,4 @@
-package org.kecak.apps.scheduler;
+package org.joget.apps.scheduler;
 
 import java.util.Iterator;
 import org.hibernate.Query;

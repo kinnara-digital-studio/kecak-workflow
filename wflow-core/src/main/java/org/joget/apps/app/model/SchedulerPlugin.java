@@ -1,4 +1,4 @@
-package org.kecak.apps.app.model;
+package org.joget.apps.app.model;
 
 import org.joget.plugin.property.model.PropertyEditable;
 

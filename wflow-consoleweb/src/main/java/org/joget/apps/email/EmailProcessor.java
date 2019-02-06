@@ -1,4 +1,4 @@
-package org.kecak.apps.processor;
+package org.joget.apps.email;
 
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
@@ -18,13 +18,14 @@ import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
+import org.joget.directory.model.service.DirectoryUtil;
 import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
-import org.kecak.apps.app.model.EmailProcessorPlugin;
+import org.joget.apps.app.model.EmailProcessorPlugin;
 
 import javax.annotation.Nonnull;
 import javax.mail.internet.AddressException;
@@ -54,69 +55,68 @@ public class EmailProcessor {
 
     public void parseEmail(@Body final String body, final Exchange exchange) {
         //GET EMAIL ADDRESS
-        final String from = exchange.getIn().getHeader(FROM).toString().replaceAll("^<|>$", "");
+        final String from = exchange.getIn().getHeader(FROM).toString();
         LogUtil.info(this.getClass().getName(), "[FROM] : " + from);
-        
-        String username = getUsername(from);
+
+        String fromEmail = from.replaceAll("^.*<|>.*$", "");
+        String username = getUsername(fromEmail);
         workflowUserManager.setCurrentThreadUser(username);
 
         final String subject = exchange.getIn().getHeader(SUBJECT).toString().replace("\t", "__").replace("\n", "__").replace(" ", "__");
-
-        Pattern pattern = Pattern.compile("\\{([a-zA-Z0-9_]+)\\}");
-        Matcher matcher = pattern.matcher(MAIL_SUBJECT_PATTERN);
-
-        String subjectRegex = createRegex(MAIL_SUBJECT_PATTERN);
-        Pattern pattern2 = Pattern.compile("^" + subjectRegex + "$");
-        Matcher matcher2 = pattern2.matcher(subject);
-
-        String processId = null;
-        while (matcher2.find()) {
-            int count = 1;
-            while (matcher.find()) {
-                String key = matcher.group(1);
-                String value = matcher2.group(count);
-                if ("processId".equals(key)) {
-                    processId = value;
-                }
-                count++;
-            }
-        }
-
-        if (processId != null) {
-            parseEmailContent(processId, username, body);
-        } else {
-            LogUtil.info(getClass().getName(), "Empty process ID");
-        }
-
+//
+//        Pattern pattern = Pattern.compile("\\{([a-zA-Z0-9_]+)\\}");
+//        Matcher matcher = pattern.matcher(MAIL_SUBJECT_PATTERN);
+//
+//        String subjectRegex = createRegex(MAIL_SUBJECT_PATTERN);
+//        Pattern pattern2 = Pattern.compile("^" + subjectRegex + "$");
+//        Matcher matcher2 = pattern2.matcher(subject);
+//
+//        String processId = null;
+//        while (matcher2.find()) {
+//            int count = 1;
+//            while (matcher.find()) {
+//                String key = matcher.group(1);
+//                String value = matcher2.group(count);
+//                if ("processId".equals(key)) {
+//                    processId = value;
+//                }
+//                count++;
+//            }
+//        }
+//
+//        if (processId != null) {
+//            parseEmailContent(processId, username, body);
+//        } else {
+//            LogUtil.info(getClass().getName(), "Empty process ID");
+//        }
+//
         Collection<AppDefinition> appDefinitions = appDefinitionDao.findPublishedApps(null, null, null, null);
         if(appDefinitions == null) {
+            LogUtil.warn(getClass().getName(), "Email Processor is configured but no published app(s) found");
             return;
         }
 
         appDefinitions.forEach(appDefinition -> {
             Collection<PluginDefaultProperties> pluginDefaultProperties = appDefinition.getPluginDefaultPropertiesList();
-            if(pluginDefaultProperties != null) {
-                pluginDefaultProperties.forEach(pluginDefaultProperty -> {
-                    Stream.of(pluginDefaultProperty)
-                            .map(p -> pluginManager.getPlugin(p.getId()))
-                            .filter(p -> p instanceof EmailProcessorPlugin && p instanceof ExtDefaultPlugin)
-                            .map(p -> (ExtDefaultPlugin)p)
-                            .forEach(p -> {
-                                Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultProperty.getPluginProperties());
-                                p.setProperties(pluginProperties);
+            (pluginDefaultProperties == null ? Stream.<PluginDefaultProperties>empty() : pluginDefaultProperties.stream())
+                    .forEach(pluginDefaultProperty -> Stream.of(pluginDefaultProperty)
+                        .map(p -> pluginManager.getPlugin(p.getId()))
+                        .filter(p -> p instanceof EmailProcessorPlugin && p instanceof ExtDefaultPlugin)
+                        .map(p -> (ExtDefaultPlugin)p)
+                        .forEach(p -> {
+                            Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultProperty.getPluginProperties());
+                            p.setProperties(pluginProperties);
 
-                                Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
-                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_APP_DEFINITION, appDefinition);
-                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_FROM, from);
-                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_SUBJECT, subject);
-                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_BODY, body);
-                                parameterProperties.put(EmailProcessorPlugin.PROPERTY_EXCHANGE, exchange);
+                            Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
+                            parameterProperties.put(EmailProcessorPlugin.PROPERTY_APP_DEFINITION, appDefinition);
+                            parameterProperties.put(EmailProcessorPlugin.PROPERTY_FROM, fromEmail);
+                            parameterProperties.put(EmailProcessorPlugin.PROPERTY_SUBJECT, subject);
+                            parameterProperties.put(EmailProcessorPlugin.PROPERTY_BODY, body);
+                            parameterProperties.put(EmailProcessorPlugin.PROPERTY_EXCHANGE, exchange);
 
-                                LogUtil.info(getClass().getName(), "Processing Email Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
-                                ((EmailProcessorPlugin) p).parse(parameterProperties);
-                            });
-                });
-            }
+                            LogUtil.info(getClass().getName(), "Processing Email Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
+                            ((EmailProcessorPlugin) p).parse(parameterProperties);
+                        }));
         });
     }
 
@@ -286,7 +286,7 @@ public class EmailProcessor {
 
             if (user == null) {
                 LogUtil.info(getClass().getName(), "No directory user for EMAIL ["+email+"]");
-                return null;
+                return DirectoryUtil.ROLE_ANONYMOUS;
             } else {
                 return user.getUsername();
             }
@@ -366,5 +366,9 @@ public class EmailProcessor {
 
     public void setPluginManager(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
+    }
+
+    public void setAppDefinitionDao(AppDefinitionDao appDefinitionDao) {
+        this.appDefinitionDao = appDefinitionDao;
     }
 }

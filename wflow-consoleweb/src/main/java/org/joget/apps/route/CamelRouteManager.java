@@ -1,13 +1,12 @@
-package org.kecak.apps.route;
+package org.joget.apps.route;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
+import org.joget.commons.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CamelRouteManager implements CamelContextAware {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CamelRouteManager.class);
 
     protected CamelContext camelContext;
 
@@ -24,9 +23,9 @@ public class CamelRouteManager implements CamelContextAware {
 		try {
 			getCamelContext().stop();
 			result = true;
-			LOGGER.info(getCamelContext().getName()+" is stopped");
+			LogUtil.info(getClass().getName(), getCamelContext().getName()+" is stopped");
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
+			LogUtil.error(getClass().getName(), e, e.getMessage());
 		}
 		
 		return result;
@@ -37,9 +36,9 @@ public class CamelRouteManager implements CamelContextAware {
 		try {
 			getCamelContext().start();
 			result = true;
-			LOGGER.info(getCamelContext().getName()+" is started");
+			LogUtil.info(getClass().getName(), getCamelContext().getName()+" is started");
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
+			LogUtil.error(getClass().getName(), e, e.getMessage());
 		}
 		
 		return result;

@@ -1,10 +1,10 @@
-package org.kecak.apps.scheduler;
+package org.joget.apps.scheduler;
 
 import java.util.Date;
 
-import org.kecak.apps.scheduler.dao.SchedulerLogDao;
-import org.kecak.apps.scheduler.model.JobStatus;
-import org.kecak.apps.scheduler.model.SchedulerLog;
+import org.joget.apps.scheduler.dao.SchedulerLogDao;
+import org.joget.apps.scheduler.model.JobStatus;
+import org.joget.apps.scheduler.model.SchedulerLog;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * Kecak Exclusive
+ */
 public class SchedulerJobListener implements JobListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(SchedulerJobListener.class);

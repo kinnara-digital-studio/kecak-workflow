@@ -1,7 +1,6 @@
-package org.kecak.apps.app.model;
+package org.joget.apps.app.model;
 
 import org.joget.plugin.base.ExtDefaultPlugin;
-import org.kecak.apps.app.model.SchedulerPlugin;
 
 import java.util.Map;
 

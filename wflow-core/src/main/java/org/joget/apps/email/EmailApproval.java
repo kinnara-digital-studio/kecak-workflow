@@ -2,7 +2,7 @@ package org.joget.apps.email;
 
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
-import org.kecak.apps.app.model.DefaultEmailProcessorPlugin;
+import org.joget.apps.app.model.DefaultEmailProcessorPlugin;
 
 import java.util.Map;
 

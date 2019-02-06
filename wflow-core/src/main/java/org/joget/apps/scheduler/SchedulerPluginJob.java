@@ -1,4 +1,4 @@
-package org.kecak.apps.scheduler;
+package org.joget.apps.scheduler;
 
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
@@ -8,7 +8,7 @@ import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.service.PropertyUtil;
-import org.kecak.apps.app.model.SchedulerPlugin;
+import org.joget.apps.app.model.SchedulerPlugin;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
+ * Kecak Exclusive
+ *
  * @author aristo
  *
  * Job for Scheduler Plugin

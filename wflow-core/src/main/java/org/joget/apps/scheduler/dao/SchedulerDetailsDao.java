@@ -1,11 +1,14 @@
-package org.kecak.apps.scheduler.dao;
+package org.joget.apps.scheduler.dao;
 
 import org.joget.commons.spring.model.AbstractSpringDao;
-import org.kecak.apps.scheduler.model.SchedulerDetails;
+import org.joget.apps.scheduler.model.SchedulerDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Kecak Exclusive
+ */
 public class SchedulerDetailsDao extends AbstractSpringDao<SchedulerDetails> {
 
 	public static final String ENTITY_NAME = "SchedulerDetails";

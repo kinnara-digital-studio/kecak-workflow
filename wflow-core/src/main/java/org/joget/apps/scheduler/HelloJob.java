@@ -1,4 +1,4 @@
-package org.kecak.apps.scheduler;
+package org.joget.apps.scheduler;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
