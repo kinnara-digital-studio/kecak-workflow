@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class entity-name="SchedulerLog" lazy="false" name="org.joget.apps.scheduler.model.SchedulerLog" table="schdlr_log">
+	<class entity-name="SchedulerLog" lazy="false" name="org.kecak.apps.scheduler.model.SchedulerLog" table="schdlr_log">
 		<id name="id" type="string">
 			<generator class="uuid" />
 		</id>
@@ -16,7 +16,7 @@
 		<property name="finishTime" type="timestamp" />
 		<property name="jobStatus" column="job_status">
 		    <type name="org.hibernate.type.EnumType">
-		        <param name="enumClass">org.joget.apps.scheduler.model.JobStatus</param>
+		        <param name="enumClass">org.kecak.apps.scheduler.model.JobStatus</param>
 		    </type>
 		</property>
 		<property name="message" type="string" />

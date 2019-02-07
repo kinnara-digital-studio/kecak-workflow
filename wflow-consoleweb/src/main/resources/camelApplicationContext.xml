@@ -4,7 +4,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-	<bean id="emailProcessor" class="org.joget.apps.email.EmailProcessor">
+	<bean id="emailProcessor" class="org.kecak.apps.email.EmailProcessor">
 		<property name="emailApprovalContentDao" ref="emailApprovalContentDao"/>
 		<property name="workflowManager" ref="workflowManager"/>
 		<property name="appService" ref="appService"/>
@@ -14,10 +14,10 @@
 		<property name="pluginManager" ref="pluginManager"/>
 	</bean>
 	
-	<bean id="camelRouteManager" class="org.joget.apps.route.CamelRouteManager"/>
+	<bean id="camelRouteManager" class="org.kecak.apps.route.CamelRouteManager"/>
 	
     <camelContext id="camelRoute" xmlns="http://camel.apache.org/schema/spring">
-    	<package>org.joget.apps.route</package>
+    	<package>org.kecak.apps.route</package>
 	</camelContext>
     
 </beans>

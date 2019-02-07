@@ -25,8 +25,8 @@ public abstract class DefaultEmailProcessorPlugin extends ExtDefaultPlugin imple
      */
     @Override
     public void parse(Map<String, Object> properties) {
-        parse(properties.get(PROPERTY_FROM).toString(), properties.get(PROPERTY_SUBJECT).toString(), properties.get(PROPERTY_BODY).toString(), properties);
+        parse(properties.get(PROPERTY_FROM).toString(), properties.get(PROPERTY_SUBJECT).toString(), properties.get(PROPERTY_BODY), properties);
     }
 
-    public abstract void parse(String from, String subject, String body, Map<String, Object> properties);
+    public abstract void parse(String from, String subject, Object body, Map<String, Object> properties);
 }

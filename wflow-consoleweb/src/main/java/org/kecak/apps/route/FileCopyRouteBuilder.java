@@ -1,4 +1,4 @@
-package org.joget.apps.route;
+package org.kecak.apps.route;
 
 import org.apache.camel.builder.RouteBuilder;
 

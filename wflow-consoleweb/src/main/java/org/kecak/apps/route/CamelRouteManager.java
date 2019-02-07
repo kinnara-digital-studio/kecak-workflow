@@ -1,10 +1,8 @@
-package org.joget.apps.route;
+package org.kecak.apps.route;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelContextAware;
 import org.joget.commons.util.LogUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CamelRouteManager implements CamelContextAware {
 

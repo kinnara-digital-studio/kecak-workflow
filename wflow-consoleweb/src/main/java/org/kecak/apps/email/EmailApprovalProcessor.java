@@ -1,4 +1,4 @@
-package org.joget.apps.email;
+package org.kecak.apps.email;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;

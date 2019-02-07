@@ -1,4 +1,4 @@
-package org.joget.apps.scheduler.model;
+package org.kecak.apps.scheduler.model;
 
 import java.io.Serializable;
 import java.util.Date;
