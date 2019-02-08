@@ -42,7 +42,7 @@ public class EmailProcessor {
      * @param body
      * @param exchange
      */
-    public void parseEmail(@Body final Object body, final Exchange exchange) {
+    public void parseEmail(@Body final String body, final Exchange exchange) {
         // get sender email address
         final String from = exchange.getIn().getHeader(FROM).toString();
         LogUtil.info(this.getClass().getName(), "[FROM] : " + from);

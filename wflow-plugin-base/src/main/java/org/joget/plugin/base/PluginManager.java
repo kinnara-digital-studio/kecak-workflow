@@ -368,7 +368,7 @@ public class PluginManager implements ApplicationContextAware {
         // find plugins in classpath
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
         provider.addIncludeFilter(new AssignableTypeFilter(classFilter));
-        Set<BeanDefinition> components = provider.findCandidateComponents("org.kecak");
+        Set<BeanDefinition> components = provider.findCandidateComponents("org.joget");
         if (scanPackageList != null) {
             for (String scanPackage: scanPackageList) {
                 components.addAll(provider.findCandidateComponents(scanPackage));
