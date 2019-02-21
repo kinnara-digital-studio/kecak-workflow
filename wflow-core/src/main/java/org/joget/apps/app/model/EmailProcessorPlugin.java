@@ -2,6 +2,7 @@ package org.joget.apps.app.model;
 
 import org.joget.plugin.property.model.PropertyEditable;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -14,5 +15,17 @@ public interface EmailProcessorPlugin extends PropertyEditable {
     String PROPERTY_BODY = "body";
     String PROPERTY_EXCHANGE = "exchange";
 
+    /**
+     * Filter method, return true to run plugin when new unread mail arrived
+     *
+     * @param properties
+     * @return
+     */
+    boolean filter(@Nonnull Map<String, Object> properties);
+
+    /**
+     * Parse email
+     * @param properties
+     */
     void parse(Map<String, Object> properties);
 }

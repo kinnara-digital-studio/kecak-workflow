@@ -45,8 +45,6 @@ public class EmailProcessor {
     public void parseEmail(@Body final String body, final Exchange exchange) {
         // get sender email address
         final String from = exchange.getIn().getHeader(FROM).toString();
-        LogUtil.info(this.getClass().getName(), "[FROM] : " + from);
-
         String fromEmail = from.replaceAll("^.*<|>.*$", "");
         String username = getUsername(fromEmail);
         workflowUserManager.setCurrentThreadUser(username);
@@ -80,8 +78,12 @@ public class EmailProcessor {
                                     parameterProperties.put(EmailProcessorPlugin.PROPERTY_BODY, body);
                                     parameterProperties.put(EmailProcessorPlugin.PROPERTY_EXCHANGE, exchange);
 
-                                    LogUtil.info(getClass().getName(), "Processing Email Plugin [" + p.getName() + "] for application [" + appDefinition.getAppId() + "]");
-                                    ((EmailProcessorPlugin) p).parse(parameterProperties);
+                                    if(((EmailProcessorPlugin) p).filter(parameterProperties)) {
+                                        LogUtil.info(getClass().getName(), "Processing Email Plugin [" + p.getName() + "] for application [" + appDefinition.getAppId() + "]");
+                                        ((EmailProcessorPlugin) p).parse(parameterProperties);
+                                    } else {
+                                        LogUtil.debug(getClass().getName(), "Skipping Email Plugin [" + p.getName() + "] : Not meeting filter condition");
+                                    }
                                 })));
     }
 

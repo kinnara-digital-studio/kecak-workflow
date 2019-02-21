@@ -2,6 +2,7 @@ package org.joget.apps.app.model;
 
 import org.joget.plugin.base.ExtDefaultPlugin;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -17,6 +18,16 @@ public abstract class DefaultEmailProcessorPlugin extends ExtDefaultPlugin imple
     @Override
     public final Object execute(Map properties) {
         return null;
+    }
+
+    /**
+     * Overwrite this method to implement custom filter during incoming email
+     * @param properties
+     * @return
+     */
+    @Override
+    public boolean filter(@Nonnull Map<String, Object> properties) {
+        return true;
     }
 
     /**

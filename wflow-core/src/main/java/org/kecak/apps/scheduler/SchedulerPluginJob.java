@@ -62,6 +62,8 @@ public class SchedulerPluginJob implements Job {
                                 if(((SchedulerPlugin)plugin).filter(parameterProperties)) {
                                     LogUtil.info(getClass().getName(), "Running Scheduler Job Plugin ["+plugin.getName()+"] for application ["+appDefinition.getAppId()+"]");
                                     ((SchedulerPlugin)plugin).jobRun(parameterProperties);
+                                } else {
+                                    LogUtil.debug(getClass().getName(), "Skipping Scheduler Job Plugin [" + plugin.getName() + "] : Not meeting filter condition");
                                 }
                             })));
     }
