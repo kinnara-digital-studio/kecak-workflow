@@ -42,7 +42,7 @@
         });
     </script>
 <#else>
-    <select id="${name!}" name="${name!}" <#if element.properties.size?? && element.properties.size != ''> size="${element.properties.size!}"</#if> <#if element.properties.multiple?? && element.properties.multiple == 'true'> multiple="true"</#if>>
+    <select id="${name!}" name="${name!}" class="form-control" <#if element.properties.size?? && element.properties.size != ''> size="${element.properties.size!}"</#if> <#if element.properties.multiple?? && element.properties.multiple == 'true'> multiple="true"</#if>>
         <option value="" style="color:gray;">${label!?html}</option>
         <#list options?keys as key>
              <option value="${key?html}" <#if values?? && values?seq_contains(key)>selected</#if> style="color:black;">${options[key]!?html}</option>

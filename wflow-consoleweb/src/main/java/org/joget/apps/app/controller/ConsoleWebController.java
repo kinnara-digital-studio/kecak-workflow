@@ -19,13 +19,13 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
-import org.joget.apps.route.KecakRouteManager;
-import org.joget.apps.scheduler.SchedulerManager;
-import org.joget.apps.scheduler.dao.SchedulerDetailsDao;
-import org.joget.apps.scheduler.dao.SchedulerLogDao;
-import org.joget.apps.scheduler.model.SchedulerDetails;
-import org.joget.apps.scheduler.model.SchedulerLog;
-import org.joget.apps.scheduler.model.TriggerTypes;
+import org.joget.apps.app.model.SchedulerPlugin;
+import org.kecak.apps.scheduler.SchedulerManager;
+import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
+import org.kecak.apps.scheduler.dao.SchedulerLogDao;
+import org.kecak.apps.scheduler.model.SchedulerDetails;
+import org.kecak.apps.scheduler.model.SchedulerLog;
+import org.kecak.apps.scheduler.model.TriggerTypes;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.spring.model.*;
 import org.joget.commons.util.*;
@@ -46,6 +46,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.route.CamelRouteManager;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +152,7 @@ public class ConsoleWebController {
     @Autowired
     JdbcDataListDao jdbcDataListDao;
     @Autowired
-    KecakRouteManager kecakRouteManager;
+    CamelRouteManager camelRouteManager;
     @Autowired
     SchedulerManager schedulerManager;
     @Autowired
@@ -3620,10 +3621,10 @@ public class ConsoleWebController {
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
 
-        kecakRouteManager.stopContext();
+        camelRouteManager.stopContext();
         Thread.sleep(3000);
 
-        kecakRouteManager.startContext();
+        camelRouteManager.startContext();
 
         return "redirect:/web/console/setting/general";
     }
@@ -4279,9 +4280,10 @@ public class ConsoleWebController {
                 SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
                 details.setCronExpression(schedulerDetails.getCronExpression());
                 details.setJobClassName(schedulerDetails.getJobClassName());
-                details.setProcessDefId(schedulerDetails.getProcessDefId());
                 details.setDateModified(now);
                 details.setModifiedBy(currUsername);
+
+                LogUtil.info(getClass().getName(), "getCronExpression ["+schedulerDetails.getCronExpression()+"] getJobClassName ["+schedulerDetails.getJobClassName()+"]");
 
                 try {
                     schedulerManager.updateJobDetails(details);
@@ -5044,6 +5046,8 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.apps.app.model.HashVariablePlugin", ResourceBundleUtil.getMessage("setting.plugin.hashVariable"));
         pluginTypeMap.put("org.joget.workflow.model.ParticipantPlugin", ResourceBundleUtil.getMessage("setting.plugin.processParticipant"));
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
+        pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
+        pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewMenu", ResourceBundleUtil.getMessage("setting.plugin.userviewMenu"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewPermission", ResourceBundleUtil.getMessage("setting.plugin.userviewPermission"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewTheme", ResourceBundleUtil.getMessage("setting.plugin.userviewTheme"));
@@ -5059,6 +5063,8 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.workflow.model.DeadlinePlugin", ResourceBundleUtil.getMessage("setting.plugin.deadline"));
         pluginTypeMap.put("org.joget.workflow.model.ParticipantPlugin", ResourceBundleUtil.getMessage("setting.plugin.processParticipant"));
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
+        pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
+        pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
 
         return PagingUtils.sortMapByValue(pluginTypeMap, false);
     }

@@ -13,6 +13,7 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.model.UserviewBuilderPalette;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
@@ -116,7 +117,13 @@ public class FormMenu extends UserviewMenu {
             displayForm();
 
         }
-        return "userview/plugin/form.jsp";
+        Userview userview = this.getUserview();
+//        if(userview.getSetting().getPropertyString("useNewLayout").equals("true")){
+        if(userview.getSetting().getTheme() instanceof AdminLTETheme){
+            return "userview/plugin/form2.jsp";
+        } else {
+            return "userview/plugin/form.jsp";
+        }
     }
 
     @Override

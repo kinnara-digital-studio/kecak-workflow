@@ -133,8 +133,13 @@ public class DataListMenu extends UserviewMenu {
             String message = ex.toString();
             message += "\r\n<pre class=\"stacktrace\">" + out.getBuffer() + "</pre>";
             setProperty("error", message);
-        }    
-        return "userview/plugin/datalist.jsp";
+        }
+        Userview userview = this.getUserview();
+        if(userview.getSetting().getTheme() instanceof AdminLTETheme) {
+            return "userview/plugin/datalist2.jsp";
+        } else {
+            return "userview/plugin/datalist.jsp";
+        }
     }
 
     protected DataList getDataList() throws BeansException {

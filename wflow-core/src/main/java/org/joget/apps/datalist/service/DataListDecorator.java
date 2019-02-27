@@ -277,7 +277,7 @@ public class DataListDecorator extends CheckboxTableDecorator {
                     confirmationString = " onclick=\"return confirm('" + confirmation + "')\"";
                 }
             }
-            link = "<a href=\"" + link + "\"" + targetString + confirmationString + ">" + text + "</a>";
+            link = "<a class=\"badge bg-light-blue\" href=\"" + link + "\"" + targetString + confirmationString + ">" + text + "</a>";
         }
         return link;
     }

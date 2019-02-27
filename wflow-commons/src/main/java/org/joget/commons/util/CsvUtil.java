@@ -17,8 +17,8 @@ public class CsvUtil {
 
     /**
      * Convert a String array as CSV
-     * @param array
-     * @return 
+     * @param array input array
+     * @return delimited value
      */
     public static String getDeliminatedString(String[] array) {
         return getDeliminatedString(array, DEFAULT_DELIMINATOR);
@@ -26,9 +26,9 @@ public class CsvUtil {
 
     /**
      * Convert a String array as CSV with custom deliminator
-     * @param array
-     * @param deliminator
-     * @return 
+     * @param array input array
+     * @param deliminator delimiter
+     * @return delimited value
      */
     public static String getDeliminatedString(String[] array, String deliminator) {
         return getDeliminatedString(array, deliminator, false);
@@ -37,10 +37,10 @@ public class CsvUtil {
     /**
      * Convert a String array as CSV with custom deliminator. 
      * Option to remove empty String from result.
-     * @param array
-     * @param deliminator
-     * @param ignoreEmptyValue
-     * @return 
+     * @param array input array
+     * @param deliminator delimiter
+     * @param ignoreEmptyValue flag ignore empty value
+     * @return delimited value
      */
     public static String getDeliminatedString(String[] array, String deliminator, boolean ignoreEmptyValue) {
         String result = "";

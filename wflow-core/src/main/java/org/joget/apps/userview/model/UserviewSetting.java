@@ -39,6 +39,9 @@ public class UserviewSetting extends Element {
         if (!mobileDisabled) {
             options += "{name:'mobileViewDisabled',label:'" + ResourceBundleUtil.getMessage("mobile.setting.viewDisabled") + "',type:'checkbox',value :'false',options:[{value:'true',label :''}]},";
         }
+        //Added by @septi --option to use new layout--
+//        options += "{name:'useNewLayout',label:'Use New Layout',type:'checkbox',value :'false',options:[{value:'true',label :''}]},";
+
         options += "{name:'userviewDescription',label:'" + ResourceBundleUtil.getMessage("ubuilder.description") + "',required:'false',type:'textarea'}"
                 + "]},{title:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.configPermission") + "', properties:[{name:'permission',label:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.permission") + "',type:'elementselect',options_ajax:'[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.userview.model.UserviewPermission',url:'[CONTEXT_PATH]/web/property/json/getPropertyOptions'}]},"
                 + "{title:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPage") + "', properties:[{name:'loginPageTop', label: '" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPageTop") + "', type:'textarea', rows:'10', cols:'50'}, {name:'loginPageBottom', label: '" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPageBottom") + "', type:'textarea', rows:'10', cols:'50'}]}";

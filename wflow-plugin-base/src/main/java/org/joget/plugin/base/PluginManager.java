@@ -376,11 +376,7 @@ public class PluginManager implements ApplicationContextAware {
         }
         // sort plugins
 		List<BeanDefinition> componentList = new ArrayList(components);
-        Collections.sort(componentList, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                return ((BeanDefinition)o1).getBeanClassName().compareTo(((BeanDefinition)o2).getBeanClassName());
-            }
-        });
+        componentList.sort(Comparator.comparing(BeanDefinition::getBeanClassName));
         for (BeanDefinition component : componentList) {
             String beanClassName = component.getBeanClassName();
             if (blackList == null || !blackList.contains(beanClassName)) {
@@ -413,7 +409,7 @@ public class PluginManager implements ApplicationContextAware {
      * @return
      */
     protected Collection<Plugin> loadOsgiPlugins() {
-        Collection<Plugin> list = new ArrayList<Plugin>();
+        Collection<Plugin> list = new ArrayList<>();
         BundleContext context = felix.getBundleContext();
         Bundle[] bundles = context.getBundles();
         for (Bundle b : bundles) {
@@ -472,14 +468,12 @@ public class PluginManager implements ApplicationContextAware {
             }
 
             // write file
-            FileOutputStream out = null;
-            try {
-                outputFile = new File(getBaseDirectory(), filename);
-                File outputDir = outputFile.getParentFile();
-                if (!outputDir.exists()) {
-                    outputDir.mkdirs();
-                }
-                out = new FileOutputStream(outputFile);
+            outputFile = new File(getBaseDirectory(), filename);
+            File outputDir = outputFile.getParentFile();
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+            try(FileOutputStream out = new FileOutputStream(outputFile)) {
                 BufferedInputStream bin = new BufferedInputStream(in);
                 int len = 0;
                 byte[] buffer = new byte[4096];
@@ -488,24 +482,11 @@ public class PluginManager implements ApplicationContextAware {
                 }
                 out.flush();
                 location = outputFile.toURI().toURL().toExternalForm();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    LogUtil.error(PluginManager.class.getName(), ex, "");
-                }
             }
 
             // validate jar file
             boolean isValid = false;
-            JarFile jarFile = null;
-            try {
-                jarFile = new JarFile(outputFile);
+            try (JarFile jarFile = new JarFile(outputFile)) {
                 isValid = true;
             } catch (IOException ex) {
                 //delete invalid file
@@ -520,10 +501,6 @@ public class PluginManager implements ApplicationContextAware {
             } catch (Exception ex) {
                 LogUtil.error(PluginManager.class.getName(), ex, "");
                 throw new PluginException("Invalid jar file");
-            } finally {
-                if (jarFile != null) {
-                    jarFile.close();
-                }
             }
 
             // install
@@ -1055,24 +1032,16 @@ public class PluginManager implements ApplicationContextAware {
 
         // install plugin
         if (install && (!existing || override)) {
-            InputStream in = null;
             try {
                 LogUtil.info(PluginManager.class.getName(), " ===install=== ");
                 File file = new File(location);
                 if (file.exists()) {
-                    in = new FileInputStream(file);
-                    upload(file.getName(), in);
+                    try(InputStream in = new FileInputStream(file)) {
+                        upload(file.getName(), in);
+                    }
                 }
             } catch (Exception ex) {
                 LogUtil.error(PluginManager.class.getName(), ex, "");
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    LogUtil.error(PluginManager.class.getName(), ex, "");
-                }
             }
         }
 
@@ -1099,7 +1068,6 @@ public class PluginManager implements ApplicationContextAware {
 //        String pluginDirectory = "target/wflow-bundles";
         PluginManager pm = new PluginManager();
 
-        FileInputStream in = null;
         try {
             LogUtil.info(PluginManager.class.getName(), " ===Plugin List=== ");
             for (Plugin p : pm.list()) {
@@ -1108,21 +1076,12 @@ public class PluginManager implements ApplicationContextAware {
             String samplePluginFile = "../wflow-plugins/wflow-plugin-sample/target/wflow-plugin-sample.jar";
             String samplePlugin = "org.joget.plugin.sample.SamplePlugin";
 
-            try {
-                LogUtil.info(PluginManager.class.getName(), " ===Install SamplePlugin=== ");
-                File file = new File(samplePluginFile);
-                in = new FileInputStream(file);
+            File file = new File(samplePluginFile);
+            LogUtil.info(PluginManager.class.getName(), " ===Install SamplePlugin=== ");
+            try(FileInputStream in = new FileInputStream(file)) {
                 pm.upload(file.getName(), in);
             } catch (Exception ex) {
                 LogUtil.error(PluginManager.class.getName(), ex, "");
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    LogUtil.error(PluginManager.class.getName(), ex, "");
-                }
             }
 
             LogUtil.info(PluginManager.class.getName(), " ===Plugin List after install=== ");

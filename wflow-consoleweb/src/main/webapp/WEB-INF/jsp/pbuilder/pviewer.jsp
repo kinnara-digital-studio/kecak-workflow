@@ -61,28 +61,31 @@
     </head>
 
     <body id="pviewer">
-        <div id="pviewer-container">
-            <div id="viewport">
-                <div id="canvas"></div>
-            </div>
-            <div id="panel">
-                <div id="controls">                                    
-                    <a href="#" onclick="ProcessBuilder.Designer.setZoom(0.7); return false"><i class="icon-zoom-out"></i> </a> 
-                    <a href="#" onclick="ProcessBuilder.Designer.setZoom(1.0); return false"><i class="icon-zoom-in"></i></a> | 
-                    <a href="#" onclick="$('#config').toggle(); return false"><i class="icon-cog"></i> <fmt:message key="pbuilder.label.debug"/></a>
+        <section class="content" id="pviewer-container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="viewport">
+                        <div id="canvas"></div>
+                    </div>
+                    <div id="panel">
+                        <div id="controls">
+                            <a href="#" onclick="ProcessBuilder.Designer.setZoom(0.7); return false"><i class="icon-zoom-out"></i> </a>
+                            <a href="#" onclick="ProcessBuilder.Designer.setZoom(1.0); return false"><i class="icon-zoom-in"></i></a> |
+                            <a href="#" onclick="$('#config').toggle(); return false"><i class="icon-cog"></i> <fmt:message key="pbuilder.label.debug"/></a>
+                        </div>
+                        <div id="config">
+                            <form method="POST">
+                                <textarea id="xpdl" name="xpdl" rows="12" cols="30"><c:out value="${xpdl}" escapeXml="true"/></textarea>
+                                <br />
+                                <input type="hidden" name="editable" value="false"/>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div id="config">
-                    <form method="POST">
-                        <textarea id="xpdl" name="xpdl" rows="12" cols="30"><c:out value="${xpdl}" escapeXml="true"/></textarea>
-                        <br />
-                        <input type="hidden" name="editable" value="false"/>
-                    </form>
-                </div>
-            </div>        
-        </div>
 
-        <div id="builder-message"></div>
-        <div id="builder-screenshot"></div>
-        
+                <div id="builder-message"></div>
+                <div id="builder-screenshot"></div>
+            </div>
+        </section>
     </body>
 </html>
