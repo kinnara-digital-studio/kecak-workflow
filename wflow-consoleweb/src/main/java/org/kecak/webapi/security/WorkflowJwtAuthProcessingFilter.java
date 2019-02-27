@@ -1,0 +1,115 @@
+package org.kecak.webapi.security;
+
+
+import io.jsonwebtoken.ExpiredJwtException;
+import org.joget.apps.workflow.security.WorkflowUserDetails;
+import org.joget.commons.util.LogUtil;
+import org.joget.directory.model.Role;
+import org.joget.directory.model.User;
+import org.joget.directory.model.service.DirectoryManager;
+import org.joget.workflow.model.service.WorkflowUserManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.util.Assert;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String tokenHeader = "Authorization";
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    @Qualifier("main")
+    private DirectoryManager directoryManager;
+
+    @Autowired
+    private WorkflowUserManager workflowUserManager;
+
+    private AuthenticationEntryPoint authenticationEntryPoint;
+    private AuthenticationManager authenticationManager;
+
+    public WorkflowJwtAuthProcessingFilter(AuthenticationManager authenticationManager) {
+        Assert.notNull(authenticationManager, "authenticationManager cannot be null");
+        this.authenticationManager = authenticationManager;
+    }
+
+    public WorkflowJwtAuthProcessingFilter(AuthenticationManager authenticationManager,
+                                           AuthenticationEntryPoint authenticationEntryPoint) {
+        Assert.notNull(authenticationManager, "authenticationManager cannot be null");
+        Assert.notNull(authenticationEntryPoint,
+                "authenticationEntryPoint cannot be null");
+        this.authenticationManager = authenticationManager;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response, FilterChain chain) throws IOException,
+                                    ServletException {
+        final boolean debug = logger.isDebugEnabled();
+
+        String header = request.getHeader(this.tokenHeader);
+        if ( header!=null && header.startsWith("Bearer ") ) {
+            String authToken = header.substring(7);
+
+            try {
+                String username = jwtTokenUtil.getUsernameFromToken(authToken);
+                logger.info("Authenticating user '{}' ", username);
+                User user = directoryManager.getUserByUsername(username);
+                if (jwtTokenUtil.validateToken(authToken, user)) {
+                    Collection<Role> roles = directoryManager.getUserRoles(username);
+                    List<GrantedAuthority> gaList = new ArrayList<GrantedAuthority>();
+                    if (roles != null && !roles.isEmpty()) {
+                        for (Role role : roles) {
+                            GrantedAuthority ga = new SimpleGrantedAuthority(role.getId());
+                            gaList.add(ga);
+                        }
+                    }
+                    UserDetails details = new WorkflowUserDetails(user);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(details, null, gaList);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    logger.info("Authorizated user '{}', setting security context", username);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    chain.doFilter(request, response);
+                } else {
+                    logger.error("Error when authenticating user");
+                    authenticationEntryPoint.commence(request, response, new BadCredentialsException("Error when authenticating user"));
+                }
+            } catch(ExpiredJwtException e) {
+                String refreshToken = jwtTokenUtil.generateRefreshToken(e.getClaims().getId(), e.getClaims().getSubject());
+                response.setHeader("REF_TOKEN", refreshToken);
+                authenticationEntryPoint.commence(request, response, new BadCredentialsException(e.getMessage()));
+            } catch(Exception e) {
+                LogUtil.error(this.getClass().getName(), e, null);
+                authenticationEntryPoint.commence(request, response, new BadCredentialsException(e.getMessage()));
+            }
+        }
+        else {
+            chain.doFilter(request, response);
+        }
+    }
+}
