@@ -118,7 +118,6 @@ public class FormMenu extends UserviewMenu {
 
         }
         Userview userview = this.getUserview();
-//        if(userview.getSetting().getPropertyString("useNewLayout").equals("true")){
         if(userview.getSetting().getTheme() instanceof AdminLTETheme){
             return "userview/plugin/form2.jsp";
         } else {

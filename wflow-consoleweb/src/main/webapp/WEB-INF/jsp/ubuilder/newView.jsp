@@ -230,8 +230,6 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
           <link href="${pageContext.request.contextPath}/css/userview.css?build=<fmt:message key="build.number"/>" rel="stylesheet" type="text/css" />
           <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon_uv.ico"/>
-          <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/select2/dist/css/select2.min.css">
-          ${userview.setting.theme.css}
     </head>
 <!--
 BODY TAG OPTIONS:
@@ -529,6 +527,7 @@ desired effect
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+${userview.setting.theme.css}
 
 <!-- REQUIRED JS SCRIPTS -->
 

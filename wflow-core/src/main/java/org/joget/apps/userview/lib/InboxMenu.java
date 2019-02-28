@@ -307,7 +307,12 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
         //reset appDef
         AppUtil.setCurrentAppDefinition(appDef);
-        return "userview/plugin/form.jsp";
+        Userview userview = this.getUserview();
+        if(userview.getSetting().getTheme() instanceof AdminLTETheme) {
+            return "userview/plugin/form2.jsp";
+        } else {
+            return "userview/plugin/form.jsp";
+        }
     }
 
     protected void displayForm() {
