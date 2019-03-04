@@ -4279,7 +4279,7 @@ public class ConsoleWebController {
             } else {
                 SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
                 details.setCronExpression(schedulerDetails.getCronExpression());
-                details.setJobClassName(schedulerDetails.getJobClassName());
+//                details.setJobClassName(schedulerDetails.getJobClassName());
                 details.setDateModified(now);
                 details.setModifiedBy(currUsername);
 
