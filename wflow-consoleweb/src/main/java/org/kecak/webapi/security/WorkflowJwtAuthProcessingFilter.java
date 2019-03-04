@@ -8,6 +8,8 @@ import org.joget.directory.model.Role;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,8 +103,15 @@ public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
                 }
             } catch(ExpiredJwtException e) {
                 String refreshToken = jwtTokenUtil.generateRefreshToken(e.getClaims().getId(), e.getClaims().getSubject());
-                response.setHeader("REF_TOKEN", refreshToken);
-                authenticationEntryPoint.commence(request, response, new BadCredentialsException(e.getMessage()));
+                JSONObject jsonResponse = new JSONObject();
+                try {
+                    jsonResponse.put("status", HttpServletResponse.SC_OK);
+                    jsonResponse.put("message", "Error 302: Token expired, please refresh token");
+                    jsonResponse.put("ref_token", refreshToken);
+                    response.getWriter().write(jsonResponse.toString());
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
             } catch(Exception e) {
                 LogUtil.error(this.getClass().getName(), e, null);
                 authenticationEntryPoint.commence(request, response, new BadCredentialsException(e.getMessage()));
