@@ -1,11 +1,6 @@
 <div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
     <#if element.properties.readonly! != 'true'>
         <#if !(request.getAttribute("org.joget.apps.form.lib.DatePicker_EDITABLE")??) >
-            <link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-            <link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-            <script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/moment/min/moment.min.js"></script>
-            <script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-            <script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
             <#if request.getAttribute("currentLocale")!?starts_with("zh") >
                 <script type="text/javascript" src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/js/jquery.ui.datepicker-zh-CN.js"></script>
             </#if>
@@ -13,35 +8,37 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $("#${elementParamName!}_${element.properties.elementUniqueKey!}").datepicker({
-                autoclose:true
+              changeMonth: true,
+              changeYear: true
                 <#if element.properties.format! != ''>
-                ,format: "${element.properties.format}"
+                ,dateFormat: "${element.properties.format}"
+                </#if>
+                <#if element.properties.yearRange! != ''>
+                ,yearRange: "${element.properties.yearRange}"
+                </#if>
+                <#if element.properties.currentDateAs! == 'minDate' && element.properties.startDateFieldId! == ''>
+                ,minDate:0
+                </#if>
+                <#if element.properties.currentDateAs! == 'maxDate' && element.properties.endDateFieldId! == ''>
+                ,maxDate:0
+                </#if>
+                <#if element.properties.startDateFieldId! != ''>
+                ,minDate: $("#${element.properties.startDateFieldId}").val()
+                </#if>
+                <#if element.properties.endDateFieldId! != ''>
+                ,maxDate: $("#${element.properties.endDateFieldId}").val()
                 </#if>
             });
-            /*
-            $("#${elementParamName!}_${element.properties.elementUniqueKey!}").cdatepicker({
-                            showOn: "button",
-                            buttonImage: "${request.contextPath}/css/images/calendar.png",
-                            buttonImageOnly: true,
-                            changeMonth: true,
-                            changeYear: true
-                            <#if element.properties.format! != ''>
-                            ,dateFormat: "${element.properties.format}"
-                            </#if>
-                            <#if element.properties.yearRange! != ''>
-                            ,yearRange: "${element.properties.yearRange}"
-                            </#if>
-                            <#if element.properties.startDateFieldId! != ''>
-                            ,startDateFieldId: "${element.properties.startDateFieldId}"
-                            </#if>
-                            <#if element.properties.endDateFieldId! != ''>
-                            ,endDateFieldId: "${element.properties.endDateFieldId}"
-                            </#if>
-                            <#if element.properties.currentDateAs! != ''>
-                            ,currentDateAs: "${element.properties.currentDateAs}"
-                            </#if>
-            });
-            */
+            <#if element.properties.endDateFieldId! != ''>
+                $("#${element.properties.endDateFieldId}").change(function(){
+                    $("#${elementParamName!}_${element.properties.elementUniqueKey!}").datepicker('option', 'maxDate', $("#${element.properties.endDateFieldId}").val() );
+                });
+            </#if>
+            <#if element.properties.startDateFieldId! != ''>
+                $("#${element.properties.startDateFieldId}").change(function(){
+                    $("#${elementParamName!}_${element.properties.elementUniqueKey!}").datepicker('option', 'minDate', $("#${element.properties.startDateFieldId}").val() );
+                });
+            </#if>
         });
     </script>
     </#if>
