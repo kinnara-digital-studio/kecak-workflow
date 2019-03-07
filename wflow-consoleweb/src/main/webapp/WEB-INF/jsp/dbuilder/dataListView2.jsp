@@ -34,7 +34,8 @@
         <c:if test="${!empty actionResult}">
             <c:if test="${!empty actionResult.message}">
                 <script>
-                    alert("<c:out value="${actionResult.message}"/>");
+                    $('#alert-modal').find('.message').html("<c:out value="${actionResult.message}"/>");
+                    $('#alert-modal').modal('show');
                 </script>
             </c:if>
             <c:choose>
@@ -226,6 +227,39 @@ t.printStackTrace(new java.io.PrintWriter(out));
 
 </div>
 
+<div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-label" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close dismiss" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="confirm-label">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p class="message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default dismiss" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="alert-label" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="confirm-label">Alert</h4>
+      </div>
+      <div class="modal-body">
+        <p class="message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
     var popupActionDialog = null;
 
@@ -260,44 +294,72 @@ t.printStackTrace(new java.io.PrintWriter(out));
     }
     function dlPopupAction(element, message) {
         var url = $(element).attr("href");
-        var showPopup = true;
         if (message != "") {
-            showPopup = confirm(message);
-        }
-        if (showPopup) {
-            if (popupActionDialog == null) {
-                popupActionDialog = new PopupDialog(url);
-            } else {
-                popupActionDialog.src = url;
-            }
-            popupActionDialog.init();
+            $('#confirmation-modal').confirm(message).on({
+              confirm: function () {
+                if (popupActionDialog == null) {
+                    popupActionDialog = new PopupDialog(url);
+                } else {
+                    popupActionDialog.src = url;
+                }
+                popupActionDialog.init();
+              }
+            });
         }
         return false;
     }
     function dlPostAction(element, message) {
         var url = $(element).attr("href");
-        var showPopup = true;
         if (message != "") {
-            showPopup = confirm(message);
-        }
-        if (showPopup) {
-            var  orgAction = $(element).closest("form").attr("action");
-            $(element).closest("form").find("input[type=checkbox]").removeAttr("checked");
-            $(element).closest("form").attr("action", $(element).attr("href"));
-            $(element).closest("form").submit();
+            $('#confirmation-modal').confirm(message).on({
+              confirm: function () {
+                var  orgAction = $(element).closest("form").attr("action");
+                $(element).closest("form").find("input[type=checkbox]").removeAttr("checked");
+                $(element).closest("form").attr("action", $(element).attr("href"));
+                $(element).closest("form").submit();
 
-            //reset the action
-            $(element).closest("form").attr("action", orgAction);
+                //reset the action
+                $(element).closest("form").attr("action", orgAction);
+              }
+            });
         }
         return false;
     }
+    var confirm = false;
     function showConfirm(element, message) {
         var table = $(element).parent().parent().find('table');
         if ($(table).find("input[type=checkbox][name|=d]:checked").length > 0) {
-            return confirm(message);
+            if(confirm) return true;
+            $('#confirmation-modal').confirm(message).on({
+              confirm: function () {
+                confirm=true;
+                $(element).trigger('click');
+              }
+            });
+            return false;
         } else {
-            alert("<fmt:message key="dbuilder.alert.noRecordSelected"/>");
+            $('#alert-modal').find('.message').html("<fmt:message key="dbuilder.alert.noRecordSelected"/>");
+            $('#alert-modal').modal('show');
             return false;
         }
     }
+    $.fn.confirm = function (message) {
+      return this.each(function () {
+        var element = this;
+        $('.message', this).html(message);
+        $(this).on('click', '.confirm', function (event) {
+          $(element).data('confirm', true);
+        });
+        $(this).on('hide.bs.modal', function (event) {
+          if ($(this).data('confirm')) {
+            $(this).trigger('confirm', event);
+            $(this).removeData('confirm');
+          } else {
+            $(this).trigger('dismiss', event);
+          }
+          $(this).off('confirm dismiss');
+        });
+        $(this).modal('show');
+      });
+    };
 </script>

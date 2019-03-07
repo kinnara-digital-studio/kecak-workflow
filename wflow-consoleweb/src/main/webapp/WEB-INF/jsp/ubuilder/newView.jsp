@@ -133,6 +133,8 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     </c:choose>
 </c:set>
 
+<c:set var="alertTitleProperty" value="<%= UserviewMenu.ALERT_TITLE_PROPERTY %>"/>
+<c:set var="alertTitleValue" value="${userview.current.properties[alertTitleProperty]}"/>
 <c:set var="alertMessageProperty" value="<%= UserviewMenu.ALERT_MESSAGE_PROPERTY %>"/>
 <c:set var="alertMessageValue" value="${userview.current.properties[alertMessageProperty]}"/>
 <c:set var="redirectUrlProperty" value="<%= UserviewMenu.REDIRECT_URL_PROPERTY %>"/>
@@ -141,12 +143,29 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 <c:set var="redirectParentValue" value="${userview.current.properties[redirectParentProperty]}"/>
 <c:choose>
 <c:when test="${!empty alertMessageValue}">
-    <script>
-        alert("<ui:escape value="${alertMessageValue}" format="javascript"/>");
-    <c:if test="${!empty redirectUrlValue}">
-        <c:if test="${redirectParentValue}">parent.</c:if>location.href = "${redirectUrlValue}";
-    </c:if>
-    </script>
+    <div id="alertMessage" class="modal fade" role="dialog"  data-backdrop="static" data-keyboard="false">
+       <div class="modal-dialog">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                   <c:choose>
+                       <c:when test="${!empty alertTitleValue}">
+                           <h4 class="modal-title">${alertTitleValue}</h4>
+                       </c:when>
+                       <c:otherwise>
+                           <h4 class="modal-title"><c:choose><c:when test="${currentLocale == 'en_US'}">SUCCESS</c:when><c:otherwise>SUKSES</c:otherwise></c:choose></h4>
+                       </c:otherwise>
+                   </c:choose>
+               </div>
+               <div class="modal-body">
+                     <p>${alertMessageValue}</p>
+               </div>
+               <div class="modal-footer">
+                   <input type="button" id="btnClose" <c:if test="${!empty redirectUrlValue}">onclick="javascript:<c:if test="${redirectParentValue}">parent.</c:if>location.href = '${redirectUrlValue}'"</c:if> value="OK" class="btn btn-primary" data-dismiss="modal">
+               </div>
+           </div>
+       </div>
+   </div>
 </c:when>
 <c:when test="${!empty redirectUrlValue}">
     <c:choose>
@@ -534,11 +553,25 @@ ${userview.setting.theme.css}
 <!-- Bootstrap 3.3.7 -->
 <script src="${pageContext.request.contextPath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 ${userview.setting.theme.javascript}
+<script>
+  $(document).ready(function () {
+    $('.sidebar-menu').tree()
+  })
+</script>
 <script type="text/javascript">
     HelpGuide.base = "${pageContext.request.contextPath}"
     HelpGuide.attachTo = "#header";
     HelpGuide.key = "help.web.userview.${appId}.${userview.properties.id}.${bodyId}";
     HelpGuide.show();
+    <c:if test="${!empty alertMessageValue}">
+       $(function(){
+           $('.runProcess-body-content').hide();
+           $('#alertMessage').modal('show');
+           $('#alertMessage').on('hidden.bs.modal', function () {
+                $('.runProcess-body-content').show();
+           })
+       });
+   </c:if>
 </script>
 
 <%= AppUtil.getSystemAlert() %>
