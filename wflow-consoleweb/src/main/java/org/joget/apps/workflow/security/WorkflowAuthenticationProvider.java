@@ -45,6 +45,8 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // reset profile and set hostname
         HostManager.initHost();
+
+        LogUtil.debug(this.getClass().getName(), "INSIDE AUTH PROVIDER");
             
         // Determine username
         String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();

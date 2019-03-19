@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.MobileUtil;
+import org.joget.apps.userview.lib.AdminLTETheme;
 import org.joget.apps.userview.lib.DefaultV5EmptyTheme;
 import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.model.UserviewCategory;
@@ -74,7 +75,12 @@ public class UserviewThemeProcesser {
     public String getView() {
         
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-            return "ubuilder/view";
+//            if(userview.getSetting().getPropertyString("useNewLayout").equals("true")) {
+            if(userview.getSetting().getTheme() instanceof AdminLTETheme){
+                return "ubuilder/newView";
+            } else {
+                return "ubuilder/view";
+            }
         }
 
         String mobileViewRedirection = mobileViewRedirection();

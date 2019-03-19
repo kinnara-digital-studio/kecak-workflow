@@ -50,6 +50,10 @@
 {
     title : 'Redirection',
     properties : [{
+        name : 'messageTitleShowAfterComplete',
+        label : '@@userview.runprocess.messageTitleAfterStarted@@',
+        type : 'textfield'
+    },{
         name : 'messageShowAfterComplete',
         label : '@@userview.runprocess.messageAfterStarted@@',
         type : 'textarea'
@@ -57,6 +61,21 @@
     {
         name : 'redirectUrlAfterComplete',
         label : '@@userview.runprocess.redirectAfterStarted@@',
+        type : 'textfield'
+    },
+    {
+        name : 'messageTitleShowAfterSaved',
+        label : '@@userview.runprocess.messageTitleAfterSaved@@',
+        type : 'textfield'
+    },
+    {
+        name : 'messageShowAfterSaved',
+        label : '@@userview.runprocess.messageAfterSaved@@',
+        type : 'textarea'
+    },
+    {
+        name : 'redirectUrlAfterSaveAsDraft',
+        label : '@@userview.runprocess.redirectAfterSaved@@',
         type : 'textfield'
     },
     {

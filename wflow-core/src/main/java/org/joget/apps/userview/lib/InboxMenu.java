@@ -24,6 +24,7 @@ import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
+import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.model.UserviewBuilderPalette;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
@@ -135,8 +136,12 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
 
     protected String handleList() {
         viewList();
-
-        return "userview/plugin/datalist.jsp";
+        Userview userview = this.getUserview();
+        if(userview.getSetting().getTheme() instanceof AdminLTETheme) {
+            return "userview/plugin/datalist2.jsp";
+        } else {
+            return "userview/plugin/datalist.jsp";
+        }
     }
 
     protected void viewList() {
@@ -302,7 +307,12 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
         //reset appDef
         AppUtil.setCurrentAppDefinition(appDef);
-        return "userview/plugin/form.jsp";
+        Userview userview = this.getUserview();
+        if(userview.getSetting().getTheme() instanceof AdminLTETheme) {
+            return "userview/plugin/form2.jsp";
+        } else {
+            return "userview/plugin/form.jsp";
+        }
     }
 
     protected void displayForm() {

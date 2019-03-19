@@ -19,6 +19,7 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.model.UserviewBuilderPalette;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
@@ -220,7 +221,12 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
                 viewProcess(null);
             }
         }
-        return "userview/plugin/runProcess.jsp";
+        Userview userview = this.getUserview();
+        if(userview.getSetting().getTheme() instanceof AdminLTETheme) {
+            return "userview/plugin/runProcess2.jsp";
+        } else {
+            return "userview/plugin/runProcess.jsp";
+        }
     }
 
     private void viewProcess(PackageActivityForm startFormDef) {
@@ -356,7 +362,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
             // set result
             if (result != null) {
-                setAlertMessage(getPropertyString("messageShowAfterComplete"));
+                setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
                 // Show next activity if available
                 Collection<WorkflowActivity> activities = result.getActivities();
                 if (activities != null && !activities.isEmpty()) {
@@ -451,7 +457,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
                     Map<String, String> errors = formResult.getFormErrors();
                     if (!formResult.getStay() && (errors == null || errors.isEmpty()) && activityForm.isAutoContinue()) {
-                        setAlertMessage(getPropertyString("messageShowAfterComplete"));
+                        setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
                         // redirect to next activity if available
                         WorkflowAssignment nextActivity = workflowManager.getAssignmentByProcess(processId);
                         if (nextActivity != null) {
@@ -462,6 +468,13 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
                             setRedirectUrl(redirectUrl);
                             return;
                         }
+                    }
+                } else {
+                    String redirectUrl = getPropertyString("redirectUrlAfterSaveAsDraft");
+                    if(redirectUrl != null && !redirectUrl.isEmpty()){
+                        setAlertMessage(getPropertyString("messageTitleShowAfterSaved"),getPropertyString("messageShowAfterSaved"));
+                        setRedirectUrl(redirectUrl);
+                        return;
                     }
                 }
 
@@ -532,7 +545,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
     }
 
     private void processStarted(Form form, FormData formData) {
-        setAlertMessage(getPropertyString("messageShowAfterComplete"));
+        setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
         if (getPropertyString("redirectUrlAfterComplete") != null && !getPropertyString("redirectUrlAfterComplete").isEmpty()) {
             setProperty("view", "redirect");
             boolean redirectToParent = "Yes".equals(getPropertyString("showInPopupDialog"));            

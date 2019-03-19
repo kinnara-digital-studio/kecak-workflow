@@ -11,6 +11,7 @@ public abstract class UserviewMenu extends ExtElement{
     public static final String REDIRECT_URL_PROPERTY = "userviewRedirectUrl";
     public static final String REDIRECT_PARENT_PROPERTY = "userviewRedirectParent";
     public static final String ALERT_MESSAGE_PROPERTY = "userviewAlertMessage";
+    public static final String ALERT_TITLE_PROPERTY = "userviewAlertTitle";
     
     private String url;
     private String key;
@@ -198,6 +199,11 @@ public abstract class UserviewMenu extends ExtElement{
      * @param message
      */
     public void setAlertMessage(String message) {
+        setProperty(ALERT_MESSAGE_PROPERTY, message);
+    }
+
+    public void setAlertMessage(String title, String message) {
+        setProperty(ALERT_TITLE_PROPERTY, title);
         setProperty(ALERT_MESSAGE_PROPERTY, message);
     }
 }
