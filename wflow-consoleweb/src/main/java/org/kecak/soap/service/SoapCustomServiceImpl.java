@@ -161,14 +161,16 @@ public class SoapCustomServiceImpl implements SoapCustomService{
             int i = 0;
             for (Map.Entry<String, String> e : attachment.entrySet()) {
                 try {
-                    String filePath = FileManager.storeFile(new MockMultipartFile(e.getKey(), e.getKey(), null, hexStringToByteArray(e.getValue())));
+                    String originalFileName = e.getKey();
+                    String cleanFileName = e.getKey().replaceAll("[^0-9A-Za-z\\-._]", "_").replaceAll("\\.(pdf|PDF)$", ".pdf");
+                    String filePath = FileManager.storeFile(new MockMultipartFile(cleanFileName, cleanFileName, "application/pdf", hexStringToByteArray(e.getValue())));
                     String uuid = UUID.randomUUID().toString();
 
                     JSONObject json = new JSONObject();
                     json.put(FormUtil.PROPERTY_ID, uuid);
                     json.put("tipe", "OTHERS");
-                    json.put("file", e.getKey());
-                    json.put("deskripsi", e.getKey());
+                    json.put("file", cleanFileName);
+                    json.put("deskripsi", originalFileName);
 
                     JSONObject jsonTempFilePathMap = new JSONObject();
                     JSONArray jsonArrayFile = new JSONArray();
