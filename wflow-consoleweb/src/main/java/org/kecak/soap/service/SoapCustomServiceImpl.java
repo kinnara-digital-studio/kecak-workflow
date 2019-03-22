@@ -162,7 +162,7 @@ public class SoapCustomServiceImpl implements SoapCustomService{
             for (Map.Entry<String, String> e : attachment.entrySet()) {
                 try {
                     String originalFileName = e.getKey();
-                    String cleanFileName = e.getKey().replaceAll("[^0-9A-Za-z\\-._]", "_").replaceAll("\\.(pdf|PDF)$", ".pdf");
+                    String cleanFileName = e.getKey().replaceAll("[^0-9A-Za-z\\-._]", "_").replaceAll("\\.[^.]*$", "") + ".pdf";
                     String filePath = FileManager.storeFile(new MockMultipartFile(cleanFileName, cleanFileName, "application/pdf", hexStringToByteArray(e.getValue())));
                     String uuid = UUID.randomUUID().toString();
 
