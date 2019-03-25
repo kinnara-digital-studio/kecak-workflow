@@ -2,6 +2,8 @@ package org.joget.apps.app.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
@@ -17,11 +19,14 @@ import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.Base64;
 
 @Controller
@@ -87,9 +92,18 @@ public class UserviewWebController {
         if (isLoggedIn) {
             ExtDirectoryManager directoryManager = (ExtDirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
             User user = directoryManager.getUserByUsername(username);
-            int blobLength = (int) user.getProfilePicture().length();
-            byte[] blobAsBytes = user.getProfilePicture().getBytes(1, blobLength);
-            String pp = Base64.getEncoder().encodeToString(blobAsBytes);
+            String pp = "";
+            if(user.getProfilePicture() != null) {
+                int blobLength = (int) user.getProfilePicture().length();
+                byte[] blobAsBytes = user.getProfilePicture().getBytes(1, blobLength);
+                pp = Base64.getEncoder().encodeToString(blobAsBytes);
+            }
+            else {
+                Resource resource = AppUtil.getApplicationContext().getResource("classpath:images/no-image.jpg");
+                File noPicture = resource.getFile();
+                byte[] fileAsBytes = FileUtils.readFileToByteArray(noPicture);
+                pp = Base64.getEncoder().encodeToString(fileAsBytes);
+            }
             map.addAttribute("username", username);
             map.addAttribute("user", user);
             map.addAttribute("profilePicture",pp);
