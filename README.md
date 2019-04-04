@@ -22,4 +22,5 @@ Example of very basic Email Tool setting
 * Content - display any pop-ups that will be sent to the corresponding email.
 
 Here is an example of filling fields in email approval:
+
 ![image](/uploads/00468fab18ec8d41be0458f963b4d9f9/image.png)
