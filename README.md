@@ -12,3 +12,13 @@ Example of very basic Email Tool setting
 `<br>`
 `<br>`
 `<a href="mailto:admin@domain?subject=Rejection processId:#assignment.processId#&body=rejected" data-rel="external">REJECT</a>`
+
+## Approval Settings
+
+##### Parameters
+* ID - Application ID
+* Process ID - Application Version (optional) : if not included will retrieve the latest version
+* Activity ID - The activity ID to do
+* Content - display any pop-ups that will be sent to the corresponding email.
+
+Here is an example of filling fields in email approval:
