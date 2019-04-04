@@ -47,7 +47,7 @@ Approval Status: {form_sf_approval_sf_appr_approval} {form_sf_approval_sf_appr_s
 * approval - 
 
 #### The trick is as follows: ####
-1. open * All Apps * in the menu options on the right
+1. open *All Apps* in the menu options on the right
 2. Select *Payment Request Application*
 3. Find the form which will be taken (in this case the form will be taken is EAF-Approval form)
 4. Select the approval form and edit from approval to see the ID of the Approval Form (green box) and what form it uses (blue box)
