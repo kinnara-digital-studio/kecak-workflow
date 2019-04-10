@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## Overview
 Email Approval is one way approval is implemented on email (not through the form), so approval can be done more easily without having to open the website first.
 
