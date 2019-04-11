@@ -23,6 +23,7 @@ git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
 after clone docker kecak workflow, checked the file in your computer. for example, see this picture (place the folder after clone) :
 
 ![image](uploads/2653b537620a63c219d842bc0399180e/image.png)
+x
 
 ### 3. Install Docker 
 Install Docker using docker-compose. With adding directory address in command prompt
