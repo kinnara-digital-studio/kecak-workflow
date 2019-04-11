@@ -22,8 +22,8 @@ git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
 ### 2. Checked your docker-kecak-workflow
 after clone docker kecak workflow, checked the file in your computer. for example, see this picture (place the folder after clone) :
 
-![image](uploads/2653b537620a63c219d842bc0399180e/image.png)
-x
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows 1.png" alt="dockerwindows" />
+
 
 ### 3. Install Docker 
 Install Docker using docker-compose. With adding directory address in command prompt
@@ -34,12 +34,12 @@ docker-compose up
 
 which will look like this:
 
-![image](uploads/2fb6f793c7bf38cb5b1cb96aa0fb7e75/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-2.png" alt="dockerwindows2" />
 
 
 if there is an access confirmation as shown below, then select "allowed access
-![image](uploads/4a95cc7cf5871e1c5cf0b45d0a8d344b/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-3.png" alt="dockerwindows3" />
 
 
 after that, the server can be used as shown below:
-![image](uploads/3d0488dcf32afac6eb0290d26c704e7a/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-4.png" alt="dockerwindows4" />
