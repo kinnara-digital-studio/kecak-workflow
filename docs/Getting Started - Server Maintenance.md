@@ -1,8 +1,4 @@
 ## Starting and Stopping Kecak Server
-## Starting and Stopping Mysql Service
-## Setup JAVA Memory
-
-## Starting and Stopping Kecak Server
 
 To start Kecak Workflow is by clicking the “kecak-start” that is in the kecak-workflow file
 
