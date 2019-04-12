@@ -229,7 +229,7 @@ public class FormBuilderWebController {
         }
 
         String csrfToken = SecurityUtil.getCsrfTokenName() + "=" + SecurityUtil.getCsrfTokenValue(request);
-        form.setProperty("url", "?_nonce="+URLEncoder.encode(nonce, "UTF-8")+"&_a=submit&_callback="+callback+"&_setting="+StringEscapeUtils.escapeHtml(callbackSetting)+"&_submitButtonLabel="+StringEscapeUtils.escapeHtml(buttonLabel) + "&" + csrfToken);
+        form.setProperty("url", "?_nonce="+URLEncoder.encode(nonce, "UTF-8")+"&_a=submit&_callback="+callback+"&_setting="+URLEncoder.encode(callbackSetting, "UTF-8")+"&_submitButtonLabel="+StringEscapeUtils.escapeHtml(buttonLabel) + "&" + csrfToken);
 
         if(form != null){
             //if id field not exist, automatically add an id hidden field
