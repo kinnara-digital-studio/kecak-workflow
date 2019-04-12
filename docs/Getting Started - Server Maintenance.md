@@ -2,20 +2,18 @@
 ## Starting and Stopping Mysql Service
 ## Setup JAVA Memory
 
-### Starting and Stopping Kecak Server
+## Starting and Stopping Kecak Server
 
 To start Kecak Workflow is by clicking the “kecak-start” that is in the kecak-workflow file
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-start.png" alt="dockerwindows" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-start.png" alt="dockerwindows" />
-
-
 Information That Kecak Has Started
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/information-kecak-start.png" alt="dockerwindows" />
 
 
-### Starting and Stopping Mysql Service
+## Starting and Stopping Mysql Service
 
 To stop Kecak Workflow is by click the “kecak-stop” in the kecak-workflow file
 
@@ -24,7 +22,7 @@ To stop Kecak Workflow is by click the “kecak-stop” in the kecak-workflow fi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/information-kecak-stop.png" alt="dockerwindows" />
 
 
-### Starting and Stopping mysql server
+## Starting and Stopping mysql server
 
 To start MySQL Server Kecak Workflow is by clicking the “mariadb-start” that is in the kecak-workflow file
 
