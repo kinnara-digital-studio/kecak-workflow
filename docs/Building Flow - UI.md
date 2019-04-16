@@ -50,3 +50,29 @@
 		
 		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-1" alt="UI" />
 		
+	### Create new Userview	
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-2" alt="UI" />
+		
+		Orginize item by category 
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-3" alt="UI" />
+		
+		Integrate Inbox into userview 
+		. Add inbox element into designer 
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-4" alt="UI" />
+		. Custom ID - Assign link name 
+		. Label - label to be show in sidebar
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-5" alt="UI" />
+		
+		Integrate Run processes into useview 
+		. select Leave Application Process and assign custom ID.
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-6" alt="UI" />
+		
+		Add Html element into userview
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-7" alt="UI" />
+		
+		Customize Userview settings
+		. customize look and feel of the userview
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-8" alt="UI" />
+		
+		Preview Userview
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-9" alt="UI" />
