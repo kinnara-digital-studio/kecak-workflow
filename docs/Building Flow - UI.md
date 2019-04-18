@@ -3,7 +3,7 @@
 ## Create New Form
 
 		
-		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/UI-1" />
+		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/UI-1.PNG" />
 ## Design Form 
 
 		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-2" alt="UI" />
