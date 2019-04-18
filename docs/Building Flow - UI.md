@@ -4,18 +4,18 @@ Form Builder make it easy for you design you Forms. One can easy build a form by
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/UI-1.PNG" alt="UI1" />
 
 ### 2. Design Form 
-Form elements,Each elements is plugins, Drag and drop
+- Form elements,Each elements is plugins, Drag and drop
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-2.PNG" alt="ui2" />
 
 ### 3. Advanced:Json Definition
 
-Advanced Method for developer to edit the form design by changing its Json Definition
+- Advanced Method for developer to edit the form design by changing its Json Definition
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-3.PNG" alt="ui3" />
 
 ### 4. Properties 
-Form Name and table name can be edited in "Properties"
+- Form Name and table name can be edited in "Properties"
 	
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-4.PNG" alt="ui4" />
 		
@@ -60,7 +60,7 @@ Application Front-end interface builder;Serves as the wrapper for forms, process
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-2.PNG" alt="userview2" />
 		
-Organize item by category 
+### Organize item by category 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-3.PNG" alt="userview3" />
 		
