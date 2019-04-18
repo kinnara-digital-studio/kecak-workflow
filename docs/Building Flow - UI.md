@@ -36,7 +36,7 @@ Listing of records/ generating reports,Retrieving records from Form Data Table,E
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-3.PNG" alt="datalist3" />
 		
 		
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-4.PNG" alt=datalist4" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-4.PNG" alt="datalist4" />
 																   
 	
 ###  Create new DataList
