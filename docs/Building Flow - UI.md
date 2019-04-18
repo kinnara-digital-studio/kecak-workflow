@@ -5,34 +5,26 @@ Form Builder make it easy for you design you Forms. One can easy build a form by
 
 ### 2. Design Form 
 - Form elements,Each elements is plugins, Drag and drop
-
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-2.PNG" alt="ui2" />
 
 ### 3. Advanced:Json Definition
 
 - Advanced Method for developer to edit the form design by changing its Json Definition
-
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-3.PNG" alt="ui3" />
 
 ### 4. Properties 
 - Form Name and table name can be edited in "Properties"
-	
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-4.PNG" alt="ui4" />
-		
-		
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-5.PNG" alt="ui5" />
 
 # UI Builder : DataList 
 Listing of records/ generating reports,Retrieving records from Form Data Table,Extends default capabilities of task inbox,Extensible functionalities through Kecak’s plugin architecture.
-		
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-1.PNG" alt="datalist1" />
-		
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-2.PNG" alt="datalist2" />
 
 - Columns and actions elements, each actions is a plugins, Drag and Drop
 		
 - Retrieving records form data table
-
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-3.PNG" alt="datalist3" />
 		
 		
