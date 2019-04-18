@@ -1,13 +1,10 @@
-# UI Builder : Form
-		>Form Builder make it easy for you design you Forms. One can easy build a form by using the simplistic and guided interface
-## Create New Form
-
-		
-		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/UI-1.PNG" alt="UI1" />
+## UI Builder : Form
+Form Builder make it easy for you design you Forms. One can easy build a form by using the simplistic and guided interface
+## Create New Form		
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/UI-1.PNG" alt="UI1" />
 ## Design Form 
-
-		<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-2.png" alt="ui2" />
-		Form elements,Each elements is plugins, Drag and drop
+Form elements,Each elements is plugins, Drag and drop
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ui-2.png" alt="ui2" />
 ## Advanced:Json Definition 
 		Advanced Method for developer to edit the form design by changing its Json Definition 
 		
