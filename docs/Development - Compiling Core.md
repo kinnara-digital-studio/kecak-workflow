@@ -5,7 +5,7 @@ clone kecak-workflow to your local ccomputer
 ```html
 https://gitlab.com/kinnarastudio/kecak-workflow
 ```
-ot use this
+or use this
 ```html
 git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
 ```
