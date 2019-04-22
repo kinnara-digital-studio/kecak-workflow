@@ -3,11 +3,11 @@
 ### Clone Kecak-Core
 clone kecak-workflow to your local ccomputer 
 ```html
-https://gitlab.com/kinnarastudio/kecak-workflow
+https://gitlab.com/kinnarastudio/kecak-workflow.git
 ```
 or use this
 ```html
-git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
+git@gitlab.com:kinnarastudio/kecak-workflow.git
 ```
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compilingcore.PNG" alt="compilingcore" />
 
