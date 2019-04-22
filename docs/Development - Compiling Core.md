@@ -2,13 +2,13 @@
 
 ### Clone Kecak-Core
 clone kecak-workflow to your local ccomputer 
-'''html
+```html
 https://gitlab.com/kinnarastudio/kecak-workflow
-'''
+```
 ot use this
-'''html
+```html
 git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
-'''
+```
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compilingcore.PNG" alt="compilingcore" />
 
 ### Compile Kecak-Core
@@ -23,8 +23,8 @@ Run kecak_make.sh shell script or run "mvn -Dmaven.test.skip=true clean install"
 
 example :
 add command ./kecak_make.sh using gitbash on windows
-'''html
+```html
  ./kecak_make.sh
-'''
+```
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compilingcore3.png" alt="compilingcore3" />
