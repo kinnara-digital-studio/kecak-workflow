@@ -50,3 +50,23 @@ Example
 #envVariable.script?nl2br;json#
 #form.table.users?separator(, )#
 ```
+List of Hash Variable :
+
+- Workflow Assignment Hash Variable
+- Workflow Process Hash Variable
+- Current User Hash Variable
+- Date Hash Variable  
+- Environment Variable Hash Variable  
+- Form Data Hash Variable  
+- Form Binder Hash Variable
+- App Definition Hash Variable
+- App Message Hash Variable (Internationalization)  
+- Performer Hash Variable  
+- Request Parameter Hash Variable  
+- User Hash Variable  
+- Userview Key Hash Variable  
+- Workflow Variable Hash Variable
+- Request Hash Variable
+- Platform Hash Variable
+- Users Hash Variable
+- Bean Shell Hash Variable
