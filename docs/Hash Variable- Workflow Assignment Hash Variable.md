@@ -1,7 +1,9 @@
+### Workflow Process Hash Variable
+To retrieve information of a workflow process instance
+
 | Name | Description |
 | --- | --- |
 | Prefix | Assignment|
-| Description | To get Workflow  information of the current assigment |
 | Attributes | 1.   `#assignment.processId#` |
 | | 2.   `#assignment.processDefId#` |
 | | 3.   `#assignment.processDefIdWithoutVersion#` |
