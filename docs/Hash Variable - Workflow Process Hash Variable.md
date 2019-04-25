@@ -9,7 +9,7 @@
 | Description | To retrieve information of a workflow process instance |
 | Attributes | 1. `#process.appId#` |
 |  | 2. `process.processId#` |
-|  ^  | 3. `#process.processDefId#` |
+| ^ | 3. `#process.processDefId#` |
 |  | 4. `#process.processDefIdWithoutVersion#` |
 |  | 5. `#process.processName#` |
 |  | 6. `#process.processVersion#` |
