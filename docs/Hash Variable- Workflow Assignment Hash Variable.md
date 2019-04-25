@@ -1,11 +1,11 @@
 ### Workflow Process Hash Variable
-To retrieve information of a workflow process instance
+
 
 ---
-
 | Name | Description |
 | --- | --- |
 | Prefix | Assignment|
+| Description | To retrieve information of a workflow process instance |
 | Attributes | 1.   `#assignment.processId#` |
 | | 2.   `#assignment.processDefId#` |
 | | 3.   `#assignment.processDefIdWithoutVersion#` |
@@ -21,7 +21,6 @@ To retrieve information of a workflow process instance
 | | 1. Activitity Name |
 | | 2. Form Mapped as part process | 
 | | 3. activity mapping |
-| | 4. Email tool configuration as part of| 
-| | 5. process tool mapping |
+| | 4. Email tool configuration as part of process tool mapping |
 | Sample Attributes | To display assingnee's name |
 | | `#user.{assignment.assigneeId}.firstName# #user.{assignment.assigneeId}.lastName#` |
