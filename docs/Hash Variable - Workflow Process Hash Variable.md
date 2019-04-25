@@ -5,9 +5,9 @@
 ---
 | Name | Description |
 | --- | --- |
-| Prefix | Process|
-| Description | To retrieve information of a workflow process instance |
-| Attributes | 1. `#process.appId#` |
+|***Prefix*** | Process|
+| ***Description*** | To retrieve information of a workflow process instance |
+| ***Attributes*** | 1. `#process.appId#` |
 |  | 2. `process.processId#` |
 |  | 3. `#process.processDefId#` |
 |  | 4. `#process.processDefIdWithoutVersion#` |
@@ -71,10 +71,10 @@
 |  | 62. `#process.activityInst.ACTIVITY_DEF_ID.performer[PROCESS_INSTANCE_ID]#` |
 |  | 63. `#process.activityInst.ACTIVITY_DEF_ID.performerUser[PROCESS_INSTANCE_ID]#` |
 |  | 64. `#process.activityInst.ACTIVITY_DEF_ID.assignmentUsers[PROCESS_INSTANCE_ID]#` |
-| Scope Of Use | Element Within and part of a process|
+| ***Scope Of Use*** | Element Within and part of a process|
 | | 1. Activitity Name |
 | | 2. Form Mapped as part process activity mapping | 
 | | 3. activity mapping |
 | | 4. Email tool configuration as part of process tool mapping| 
-| Sample Attributes | To display the performer username of an activity instance of a process instance: |
+| ***Sample Attributes*** | To display the performer username of an activity instance of a process instance: |
 | | `#process.activityInst.assign.performerUser[{assingment.processId}]#` |
