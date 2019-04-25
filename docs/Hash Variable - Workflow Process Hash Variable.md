@@ -8,7 +8,7 @@
 | Prefix | Process|
 | Description | To retrieve information of a workflow process instance |
 | Attributes | 1. `#process.appId#` |
-|  | 2. `process.processId#` |
+|^| 2. `process.processId#` |
 |  | 3. `#process.processDefId#` |
 |  | 4. `#process.processDefIdWithoutVersion#` |
 |  | 5. `#process.processName#` |
@@ -67,9 +67,7 @@
 |  | 58. `#process.activityInst.ACTIVITY_DEF_ID.delayInSeconds[PROCESS_INSTANCE_ID]#` |
 |  | 59. `#process.activityInst.ACTIVITY_DEF_ID.finishTime[PROCESS_INSTANCE_ID]#` |
 |  | 60. `#process.activityInst.ACTIVITY_DEF_ID.timeConsumingFromDateStarted[PROCESS_INSTANCE_ID]#` |
-|  | 61. 
-    
-   `#process.activityInst.ACTIVITY_DEF_ID.timeConsumingFromDateStartedInSeconds[PROCESS_INSTANCE_ID]#` |
+|  | 61. `#process.activityInst.ACTIVITY_DEF_ID.timeConsumingFromDateStartedInSeconds[PROCESS_INSTANCE_ID]#` |
 |  | 62. `#process.activityInst.ACTIVITY_DEF_ID.performer[PROCESS_INSTANCE_ID]#` |
 |  | 63. `#process.activityInst.ACTIVITY_DEF_ID.performerUser[PROCESS_INSTANCE_ID]#` |
 |  | 64. `#process.activityInst.ACTIVITY_DEF_ID.assignmentUsers[PROCESS_INSTANCE_ID]#` |
