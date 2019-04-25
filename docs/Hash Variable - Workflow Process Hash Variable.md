@@ -71,7 +71,7 @@
 |  | 62. `#process.activityInst.ACTIVITY_DEF_ID.performer[PROCESS_INSTANCE_ID]#` |
 |  | 63. `#process.activityInst.ACTIVITY_DEF_ID.performerUser[PROCESS_INSTANCE_ID]#` |
 |  | 64. `#process.activityInst.ACTIVITY_DEF_ID.assignmentUsers[PROCESS_INSTANCE_ID]#` |
-| Scope Of Use | Element Within and part of a process|
+| Scope Of Use| Element Within and part of a process|
 | | 1. Activitity Name |
 | | 2. Form Mapped as part process activity mapping | 
 | | 3. activity mapping |
