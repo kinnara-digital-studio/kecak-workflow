@@ -13,7 +13,6 @@
 | | -#assignment.activityName# |
 | | -#assignment.activityDefId# |
 | | -#assignment.assigneeId# |
-
 | Scope Of Use | Element Within and part of a process|
 | | -Activitity Name |
 | | -Form Mapped as part process | 
