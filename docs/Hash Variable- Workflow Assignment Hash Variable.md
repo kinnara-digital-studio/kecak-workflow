@@ -2,17 +2,17 @@
 | --- | --- |
 | Prefix | Assignment|
 | Description | To get Workflow  information of the current assigment |
-| Attributes | 1.  #assignment.processId# |
-| | 2.  #assignment.processDefId# |
-| | 3.  #assignment.processDefIdWithoutVersion# |
-| | 4.  #assignment.processName# |
-| | 5.  #assignment.processVersion# |
-| | 6.  #assignment.processRequesterId# |
-| | 7.  #assignment.appId# |
-| | 8.  #assignment.activityId# |
-| | 9.  #assignment.activityName# |
-| | 10. #assignment.activityDefId# |
-| | 11. #assignment.assigneeId# |
+| Attributes | 1.   `#assignment.processId#` |
+| | 2.   `#assignment.processDefId#` |
+| | 3.   `#assignment.processDefIdWithoutVersion#` |
+| | 4.   `#assignment.processName#` |
+| | 5.   `#assignment.processVersion#` |
+| | 6.   `#assignment.processRequesterId#` |
+| | 7.   `#assignment.appId#` |
+| | 8.   `#assignment.activityId#` |
+| | 9.   `#assignment.activityName#` |
+| | 10. `#assignment.activityDefId#` |
+| | 11. `#assignment.assigneeId#` |
 | Scope Of Use | Element Within and part of a process|
 | | 1. Activitity Name |
 | | 2. Form Mapped as part process | 
