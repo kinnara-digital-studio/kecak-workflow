@@ -2,7 +2,7 @@
 | --- | --- |
 | Prefix | Assignment|
 | Description | To get Workflow  information of the current assigment |
-| Attributes | -#assignment.processId# |
+| Attributes |-#assignment.processId# |
 | | - #assignment.processDefId# |
 | | - #assignment.processDefIdWithoutVersion# |
 | | - #assignment.processName# |
