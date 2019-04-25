@@ -1,5 +1,6 @@
 ### Workflow Process Hash Variable
 To retrieve information of a workflow process instance
+
 ---
 
 | Name | Description |
