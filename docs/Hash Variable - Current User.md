@@ -6,7 +6,7 @@
 | --- | --- |
 | **Prefix** | CurrentUser|
 | **Description** | To retrieve currently logged in user information |
-| **Attributes** | 1. #currentUser.id# |
+| **Attributes** | 1. `#currentUser.id#` |
 | | 2. `#currentUser.username#` |
 | | 3. `#currentUser.firstName#` |
 | | 4. `#currentUser.lastName#` |
@@ -14,15 +14,15 @@
 | | 6. `#currentUser.active#` |
 | | 7. `#currentUser.timeZone#` |
 | | **User Meta**|
-| | 1. `#currentUser.meta.KEY# |
+| | 1. `#currentUser.meta.KEY#` |
 | | **Organization** |
 | | 1. `#currentUser.organization.id#` |
 | | 2. `#currentUser.organization.name#` |
 | | 3. `#currentUser.organization.description#` |
 | | **Departement** |
 | | 1. `#currentUser.department.id#` |
-| | 2. `#currentUser.department.name# |
-| | 3. `#currentUser.department.description# |
+| | 2. `#currentUser.department.name#` |
+| | 3. `#currentUser.department.description#` |
 | |  **Grade**|
 | | 1. `#currentUser.grade.id#` |
 | | 2. `#currentUser.grade.name#` |
@@ -38,10 +38,10 @@
 | | **Group**|
 | | 1. `#currentUser.groups.id#` |
 | | 2. `#currentUser.groups.name#` |
-| | ** Employment**|
-| | 1. #currentUser.employee.code#` |
-| | 2. #currentUser.employee.jobTitle#` |
-| | 3. #currentUser.employee.isHod#` |
+| | **Employment**|
+| | 1. `#currentUser.employee.code#` |
+| | 2. `#currentUser.employee.jobTitle#` |
+| | 3. `#currentUser.employee.isHod#` |
 | | **Departement HOD**|
 | | 1. `#currentUser.department.hod.username#` |
 | | 2. `#currentUser.department.hod.firstName#` |
