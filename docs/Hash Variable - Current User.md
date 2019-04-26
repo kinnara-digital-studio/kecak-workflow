@@ -38,7 +38,7 @@
 | | **Group**|
 | | 1. `#currentUser.groups.id#` |
 | | 2. `#currentUser.groups.name#` |
-| | ** Employment**|
+| | **Employment**|
 | | 1. `#currentUser.employee.code#` |
 | | 2. `#currentUser.employee.jobTitle#` |
 | | 3. `#currentUser.employee.isHod#` |
