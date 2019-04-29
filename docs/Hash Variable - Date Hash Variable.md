@@ -1,16 +1,7 @@
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td rowspan=4>L1 Name</td>
-            <td rowspan=2>L2 Name A</td>
-            <td>L3 Name A</td>
-        </tr>  
-   </tbody>
-</table>
+| Name | Description |
+| --- | --- |
+| **Prefix** | Date |
+| **Description** | To get date time according to a specified format |
+| **Attributes** | 1.   `#date.dateFormat#` |
+| | 2. `#date.dateUnit[+-]integerValue.dateFormat#` |
+| | ``**Options** |`` | 
