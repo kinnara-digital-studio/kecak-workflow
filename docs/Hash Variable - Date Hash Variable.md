@@ -7,3 +7,7 @@
 | |  **Options**
 | | `` dateformat`` 
 | |    ``in java date format eg;., yyy-mm-dd for 2011-06-01 `` | 
+| | ``DateUnit`` |
+| | ``a. Year`` |
+| | ``b. Month`` |
+| | ``c. Day`` |
