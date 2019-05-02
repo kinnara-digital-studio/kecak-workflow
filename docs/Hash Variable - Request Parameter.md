@@ -25,7 +25,8 @@ To access request parameter's value
 
 - `#requestParam.name[;]#`
 
-``` to indicate 'name' variable will store multiple values separated by semicolon. For example, this SQL statement "select * from expenses where title in `#requestParam.title[,]#` will be translated to "select * from expenses where title in (a,b,c)" to cater for multiple values in "where-in" statement.
+``` 
+to indicate 'name' variable will store multiple values separated by semicolon. For example, this SQL statement "select * from expenses where title in `#requestParam.title[,]#` will be translated to "select * from expenses where title in (a,b,c)" to cater for multiple values in "where-in" statement.
 ```
 - In a Userview page, one may access the following attributes.
 ```
