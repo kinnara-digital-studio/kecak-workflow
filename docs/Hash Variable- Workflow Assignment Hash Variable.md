@@ -21,11 +21,12 @@
  7.   `#assignment.appId#` 
  8.   `#assignment.activityId#` 
  9.   `#assignment.activityName#` 
- 10. `#assignment.activityDefId#` 
- 11. `#assignment.assigneeId#` 
+ 10.  `#assignment.activityDefId#` 
+ 11.  `#assignment.assigneeId#` 
  ```
  **Scope Of Use** 
- -Element Within and part of a process
+ 
+ - Element Within and part of a process
  1. Activitity Name 
  2. Form Mapped as part process  
  3. activity mapping 
