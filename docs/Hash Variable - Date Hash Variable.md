@@ -40,7 +40,7 @@ INPUT_VALUE_FORMAT is the INPUT_DATE_VALUE original format.
 DATE_FORMAT_TO defines the format to change to.
 ```
 
-**Scope of Use 
+**Scope of Use**
 ```
 All components within App.
 ```
