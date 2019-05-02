@@ -17,7 +17,7 @@ To get date time according to a specified format
 `2. #date.dateUnit[+-]integerValue.dateFormat#`
 
 ```
-OPTIONS
+OPTIONS :
 dateFormat 
 - in Java date format eg., yyyy-mm-dd for 2011-06-01
 
@@ -44,7 +44,7 @@ DATE_FORMAT_TO defines the format to change to.
 ```
 All components within App.
 ```
-**Sapmple Attribute**
+**Sample Attribute**
 ```
 1. #date.h:mm a# // shows current time of 12:08 PM
 2. #date.EEE,d MMM yyyy h:mm:ss a# // shows current date time of Wed, 4 Jul 2014 12:08:56 PM
