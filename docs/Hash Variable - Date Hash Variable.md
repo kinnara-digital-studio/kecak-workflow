@@ -36,7 +36,9 @@ IntegerValue
 
 ```
 INPUT_DATE_VALUE accepts any date value and even nested hash variables, e.g: form data hash variable. See example in sample attributes below.
+
 INPUT_VALUE_FORMAT is the INPUT_DATE_VALUE original format.
+
 DATE_FORMAT_TO defines the format to change to.
 ```
 
