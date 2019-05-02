@@ -1,4 +1,4 @@
-### App Definision Hash Variable###
+### App Definision Hash Variable
 
 ---
 ***Prefix***
