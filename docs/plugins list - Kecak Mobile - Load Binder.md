@@ -37,18 +37,21 @@ This example is showing the Form Data for authorized user from one of Kecak app,
 
 
 ![Form_Data](/uploads/cacc03d433bc16298a3c130d0e0b5976/Form_Data.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Form_Data.png" alt="KecakMobile-LoadBinderAPI-Form_Data" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 
 ![Authorization](/uploads/05ac49e6c5f812b2107b89802005c0d4/Authorization.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Authorization.png" alt="KecakMobile-LoadBinderAPI-Authorization" />
 
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
 
 ![Headers](/uploads/696188b795c078740e980071f6eb3769/Headers.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Headers.png" alt="KecakMobile-LoadBinderAPI-Headers" />
 
 
 Request parameters are needed to filter the Load Binder by its *appId*, *formId*, and *optionId*. For this example request parameter is as follow :
@@ -62,6 +65,7 @@ and there are more request parameter you can fill if you want change your reques
 
 
 ![Request_Parameters](/uploads/42052c7bf149994f702eadf1f42c8fba/Request_Parameters.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Request_Parameters.png" alt="KecakMobile-LoadBinderAPI-Request_Parameters" />
 
 
 If you have done all steps above, the server will responses by giving you JSONObject in **Response Body** which contains the form data you have been requested.

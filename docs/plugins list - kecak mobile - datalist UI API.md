@@ -32,19 +32,22 @@ HTTP GET
 This example is showing the JSON of Datalist for authorized user, with the JSON of Datalist on Kecak is as follows
 
 
-![Datalist_JSON](/uploads/e7a31c6d872012945790c543f8c4b9f3/Datalist_JSON.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI.png" alt="KecakMobile-DatalistAPI" />
+
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 
-![Authorization](/uploads/0f542d38c622ef84e7331dc3248efd5c/Authorization.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Authorization.png" alt="KecakMobile-DatalistAPI-Authorization" />
+
 
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
 
-![Headers](/uploads/9838a528935d67ae5ba0ca1b60ce0716/Headers.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Request_Parameters.png" alt="KecakMobile-DatalistAPI-Request_Parameters" />
+
 
 
 Request parameters are needed to filter the datalist by its *appId*, *appVersion*, *digest*, and *id*. For this example request parameters is as follow :
@@ -55,7 +58,8 @@ Request parameters are needed to filter the datalist by its *appId*, *appVersion
 *id*         : training_REST <br/>
 
 
-![Request_Parameters](/uploads/c7dc5c7c9c2a63b0fe7fc06c97d819aa/Request_Parameters.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Headers.png" alt="KecakMobile-DatalistAPI-Headers" />
+
 
 
 If you have done all steps above, the server will responses by giving you JSONBody in **Response Body** which contains *appId*, *appVersion*, *digest*, *json*, and *status*.
