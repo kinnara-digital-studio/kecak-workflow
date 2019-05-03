@@ -6,7 +6,7 @@
 **Prefix**
 
 ```
-CurrentUser
+currentUser
 
 ```
 **Description** 
