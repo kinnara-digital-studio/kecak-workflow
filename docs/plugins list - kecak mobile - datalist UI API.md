@@ -32,18 +32,18 @@ HTTP GET
 This example is showing the JSON of Datalist for authorized user, with the JSON of Datalist on Kecak is as follows
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI.png" alt="KecakMobile-DatalistAPI" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI.PNG" alt="KecakMobile-DatalistAPI" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Authorization.png" alt="KecakMobile-DatalistAPI-Authorization" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Authorization.PNG" alt="KecakMobile-DatalistAPI-Authorization" />
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Request_Parameters.png" alt="KecakMobile-DatalistAPI-Request_Parameters" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Request_Parameters.PNG" alt="KecakMobile-DatalistAPI-Request_Parameters" />
 
 
 
@@ -55,7 +55,7 @@ Request parameters are needed to filter the datalist by its *appId*, *appVersion
 *id*         : training_REST <br/>
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Headers.png" alt="KecakMobile-DatalistAPI-Headers" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Headers.PNG" alt="KecakMobile-DatalistAPI-Headers" />
 
 
 
