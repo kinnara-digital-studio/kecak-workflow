@@ -25,11 +25,11 @@ HTTP GET
 
 The example below shows you that how to use Check Token API plugin. First of all, fill the authorization with your currently token or make it empty if your currently token is empty.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-CheckTokenAPI.png" alt="kecakMobile-CheckTokenAPI" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-CheckTokenAPI.PNG" alt="kecakMobile-CheckTokenAPI" />
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-CheckTokenAPI2.png" alt="kecakMobile-CheckTokenAPI2" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-CheckTokenAPI2.PNG" alt="kecakMobile-CheckTokenAPI2" />
 
 
 If you have done all steps above, the server will responses by giving you JSONBody in **Response Body** which contains the data of users and validation for the token.
