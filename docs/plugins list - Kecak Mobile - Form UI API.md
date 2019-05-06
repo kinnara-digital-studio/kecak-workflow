@@ -32,20 +32,20 @@ HTTP GET
 This example is showing the JSON of Form for authorized user, with the JSON of Form on Kecak is as follows
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Form.png" alt="KecakMobile-FormPageAPI-Form" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Form.PNG" alt="KecakMobile-FormPageAPI-Form" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Authorization.png" alt="KecakMobile-FormPageAPI-Authorization" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Authorization.PNG" alt="KecakMobile-FormPageAPI-Authorization" />
 
 
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Headers.png" alt="KecakMobile-FormPageAPI-Headers" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Headers.PNG" alt="KecakMobile-FormPageAPI-Headers" />
 
 
 Request parameters are needed to filter the form by its *appId*, *appVersion*, *id*, and *digest*. For this example request parameters is as follow :
@@ -56,7 +56,7 @@ Request parameters are needed to filter the form by its *appId*, *appVersion*, *
 *digest*     : <br/>
 
 ![Request_Parameters](/uploads/c7ec46ad4f2da54589bce4b627694711/Request_Parameters.PNG)
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Request_Parameters.png" alt="KecakMobile-FormPageAPI-Request_Parameters" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Request_Parameters.PNG" alt="KecakMobile-FormPageAPI-Request_Parameters" />
 
 
 If you have done all steps above, the server will responses by giving you JSONBody in **Response Body** which contains *appId*, *appVersion*, *digest*, *json*, and *status*.

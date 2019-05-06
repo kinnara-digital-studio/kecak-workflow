@@ -12,16 +12,16 @@ Kecak Excel Import Tool is a Kecak plugin for importing data --mainly master dat
 You can use this plugin in a Post Form Submission Processing group located in Form Properties in the form builder after making the upload form
 
 ##### 1. Create a new File Upload field in your Form Builder. In advanced options properties tab, specify the file type property to ".xls".
-![asdf](/uploads/e88560c1a49fb974c43ad5277063c7e1/asdf.png)
+![asdf](/uploads/e88560c1a49fb974c43ad5277063c7e1/asdf.PNG)
 
 ##### 2. Choose the Excel Import Plugin from the "Post Processing Tool" select box in the Form Properties section of Form Builder
-![Post_Form_Submission](/uploads/605defa48a584cfb34d9eae25429fdbf/Post_Form_Submission.png)
+![Post_Form_Submission](/uploads/605defa48a584cfb34d9eae25429fdbf/Post_Form_Submission.PNG)
 
 ##### 3. There will be another properties tab belongs to Excel Import Plugin. Click the properties tab.
-![Properties_Exce](/uploads/c6f344c519a6bad53294fa9a983090f6/Properties_Exce.png)
+![Properties_Exce](/uploads/c6f344c519a6bad53294fa9a983090f6/Properties_Exce.PNG)
 
 ##### 4. In the properties tab, you will see the properties belongs to the Excel Import Plugin. You can see the description of each property in the [Properties section](#properties). Fill the mandatory properties marked with `*` and click ok, then you can save your form.
-![Excel_Import_Tool_Properties](/uploads/c4afba549e20a26687cc73bf6508e20e/Excel_Import_Tool_Properties.png)
+![Excel_Import_Tool_Properties](/uploads/c4afba549e20a26687cc73bf6508e20e/Excel_Import_Tool_Properties.PNG)
 
 
 
@@ -29,7 +29,7 @@ You can use this plugin in a Post Form Submission Processing group located in Fo
 ## <a name="properties"></a> Properties
 
 ### Form
-![Screenshot_from_2017-10-30_16-40-14](/uploads/cfc40ba78ae186e735d1c63dadbfbdbd/Screenshot_from_2017-10-30_16-40-14.png "Form Property")
+![Screenshot_from_2017-10-30_16-40-14](/uploads/cfc40ba78ae186e735d1c63dadbfbdbd/Screenshot_from_2017-10-30_16-40-14.PNG "Form Property")
 - **ID**    
     `formDefId`  
 - **Description**  
@@ -40,7 +40,7 @@ You can use this plugin in a Post Form Submission Processing group located in Fo
 --------
 
 ### Form Destination
-![sgfdsds](/uploads/a1c33c52705930f9476f101ccb699e2a/sgfdsds.png)
+![sgfdsds](/uploads/a1c33c52705930f9476f101ccb699e2a/sgfdsds.PNG)
 - **ID**  
     `formDestId`
 - **Description**  

@@ -31,7 +31,7 @@ HTTP GET
 This example is showing the Inbox for authorized user from one of Kecak app, with the Inbox we want to get is as follow :
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-InboxPageAPI-Inbox_on_userview.png" alt="KecakMobile-InboxPageAPI-Inbox_on_userview" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-InboxPageAPI-Inbox_on_userview.PNG" alt="KecakMobile-InboxPageAPI-Inbox_on_userview" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.

@@ -29,18 +29,18 @@ HTTP GET
 This example is showing all published Kecak Workflow applications for authorized user, with the published apps on the website is as follows
 
 ![Published_Apps](/uploads/9b1c60449921578215cbc494c7d5b6dd/Published_Apps.PNG)
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KKecakMobile-PublishedAppsAPI-Published_Apps.png" alt="KecakMobile-PublishedAppsAPI-Published_Apps" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KKecakMobile-PublishedAppsAPI-Published_Apps.PNG" alt="KecakMobile-PublishedAppsAPI-Published_Apps" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 ![Authorization](/uploads/210cd74f9f34028f56a0ebf2af4f09e6/Authorization.PNG)
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KKecakMobile-PublishedAppsAPI-Authorization.png" alt="KecakMobile-PublishedAppsAPI-Authorization" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KKecakMobile-PublishedAppsAPI-Authorization.PNG" alt="KecakMobile-PublishedAppsAPI-Authorization" />
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
 ![Headers](/uploads/3f30072717166731d16c7ce28284a007/Headers.PNG)
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KKecakMobile-PublishedAppsAPI-Headers.png" alt="KecakMobile-PublishedAppsAPI-Headers" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KKecakMobile-PublishedAppsAPI-Headers.PNG" alt="KecakMobile-PublishedAppsAPI-Headers" />
 
 And this example, we just fill empty for **digest** parameter.
 

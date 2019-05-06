@@ -38,11 +38,7 @@ This example is showing the JSON of Datalist for authorized user, with the JSON 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 
-<<<<<<< HEAD
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Authorization.PNG" alt="KecakMobile-DatalistAPI-Authorization" />
-=======
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI-Authorization.PNG" alt="KecakMobile-DatalistAPI-Authorization"/>
->>>>>>> 37e80615eca6bd9adf454d7c845834ae515e4675
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
