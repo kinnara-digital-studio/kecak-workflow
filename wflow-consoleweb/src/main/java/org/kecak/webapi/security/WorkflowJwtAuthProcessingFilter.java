@@ -2,6 +2,7 @@ package org.kecak.webapi.security;
 
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.joget.apps.app.service.ApiTokenService;
 import org.joget.apps.workflow.security.WorkflowUserDetails;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.Role;
@@ -17,14 +18,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -42,7 +41,7 @@ public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String tokenHeader = "Authorization";
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private ApiTokenService apiTokenServiceImpl;
 
     @Autowired
     @Qualifier("main")
@@ -79,10 +78,10 @@ public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
             String authToken = header.substring(7);
 
             try {
-                String username = jwtTokenUtil.getUsernameFromToken(authToken);
+                String username = apiTokenServiceImpl.getUsernameFromToken(authToken);
                 logger.info("Authenticating user '{}' ", username);
                 User user = directoryManager.getUserByUsername(username);
-                if (jwtTokenUtil.validateToken(authToken, user)) {
+                if (apiTokenServiceImpl.validateToken(authToken, user)) {
                     Collection<Role> roles = directoryManager.getUserRoles(username);
                     List<GrantedAuthority> gaList = new ArrayList<GrantedAuthority>();
                     if (roles != null && !roles.isEmpty()) {
@@ -102,7 +101,7 @@ public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
                     authenticationEntryPoint.commence(request, response, new BadCredentialsException("Error when authenticating user"));
                 }
             } catch(ExpiredJwtException e) {
-                String refreshToken = jwtTokenUtil.generateRefreshToken(e.getClaims().getId(), e.getClaims().getSubject());
+                String refreshToken = apiTokenServiceImpl.generateRefreshToken(e.getClaims().getId(), e.getClaims().getSubject());
                 JSONObject jsonResponse = new JSONObject();
                 try {
                     jsonResponse.put("status", HttpServletResponse.SC_OK);

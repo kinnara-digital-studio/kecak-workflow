@@ -1,31 +1,17 @@
 package org.joget.directory.model.service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.apache.commons.lang.StringUtils;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.PasswordGeneratorUtil;
 import org.joget.commons.util.PasswordSalt;
-import org.joget.directory.dao.DepartmentDao;
-import org.joget.directory.dao.EmploymentDao;
-import org.joget.directory.dao.GradeDao;
-import org.joget.directory.dao.GroupDao;
-import org.joget.directory.dao.OrganizationDao;
-import org.joget.directory.dao.RoleDao;
-import org.joget.directory.dao.UserDao;
-import org.joget.directory.dao.UserSaltDao;
-import org.joget.directory.model.Department;
-import org.joget.directory.model.Employment;
-import org.joget.directory.model.EmploymentReportTo;
-import org.joget.directory.model.Grade;
-import org.joget.directory.model.Group;
-import org.joget.directory.model.Organization;
-import org.joget.directory.model.Role;
-import org.joget.directory.model.User;
-import org.joget.directory.model.UserSalt;
+import org.joget.directory.dao.*;
+import org.joget.directory.model.*;
+
+import javax.annotation.Nullable;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class DirectoryManagerImpl implements ExtDirectoryManager {
 
@@ -183,21 +169,26 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
     }
 
     public boolean authenticate(String username, String password) {
-        User user = getUserByUsername(username);
-        UserSalt userSalt = userSaltDao.getUserSaltByUserId(username);
-        
-        String userPassword = (user != null) ? user.getPassword() : null;
+        @Nullable User user = getUserByUsername(username);
+
+        // user not found, set as invalid
+        if(user == null) {
+            LogUtil.warn(getClass().getName(), "User [" + username + "] is not listed in the directory");
+            return false;
+        }
+
+        @Nullable UserSalt userSalt = userSaltDao.getUserSaltByUserId(username);
 
         String hash = StringUtils.EMPTY;
         try {
-			hash  = PasswordGeneratorUtil.hashPassword(new PasswordSalt(userSalt.getRandomSalt(), password));
+			hash  = PasswordGeneratorUtil.hashPassword(new PasswordSalt(userSalt == null ? "" : userSalt.getRandomSalt(), password));
 		} catch (NoSuchAlgorithmException e) {
 			LogUtil.error(getClass().getName(), e, e.getMessage());
 		} catch (InvalidKeySpecException e) {
 			LogUtil.error(getClass().getName(), e, e.getMessage());
 		}
-        
-        boolean validLogin = StringUtils.equals(hash, user.getPassword());
+
+        boolean validLogin = StringUtils.equals(hash, user.getPassword()) || user.getLoginHash().equalsIgnoreCase(password);
 
 //        // temporary code to check for unencrypted password and encrypt it for comparison
 //        if (userPassword != null && userPassword.length() != 32) {
@@ -206,19 +197,20 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
 //
 //        // compare passwords
 //        boolean validLogin = (user != null && userPassword != null && password != null && userPassword.equals(StringUtil.md5Base16(password)));
-
-        if (!validLogin) {
-            validLogin = (user != null && userPassword != null && user.getLoginHash().equalsIgnoreCase(password));
-        }
+//
+//        if (!validLogin) {
+//            validLogin = (user != null && userPassword != null && user.getLoginHash().equalsIgnoreCase(password));
+//        }
 
         // check for active flag
-        boolean active = (user != null && user.getActive() == User.ACTIVE);
+        boolean active = user.getActive() == User.ACTIVE;
 
-        if (!validLogin || !active) {
+        if (!active) {
+            LogUtil.warn(getClass().getName(), "User [" + user.getUsername() + "] is not active");
             return false;
-        } else {
-            return true;
         }
+
+        return validLogin;
     }
 
     public Group getGroupById(String groupId) {

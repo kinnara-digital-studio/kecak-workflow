@@ -12,6 +12,7 @@ import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.apps.app.service.ApiTokenService;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
 import org.joget.workflow.model.WorkflowActivity;
@@ -53,6 +54,8 @@ public class DataJsonController {
     private DataListService dataListService;
     @Autowired
     private DatalistDefinitionDao datalistDefinitionDao;
+    @Autowired
+    ApiTokenService apiTokenService;
 
     /**
      * Submit form into table, can be used to save master data

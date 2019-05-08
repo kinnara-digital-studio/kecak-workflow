@@ -1,5 +1,12 @@
-package org.kecak.webapi.security;
+package org.joget.apps.app.service;
 
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultClock;
+import org.joget.commons.util.SetupManager;
+import org.joget.directory.model.User;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,55 +14,58 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.DefaultClock;
-import org.joget.directory.model.User;
-import org.joget.directory.model.service.DirectoryManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-@Component
-public class JwtTokenUtil implements Serializable {
-
+@Service("apiTokenService")
+public class ApiTokenService implements Serializable {
 
     transient
     private static final long serialVersionUID = -3301605591108950415L;
     private Clock clock = DefaultClock.INSTANCE;
 
 
-    private final String secret = "s3cR3t";
+    private final static String DEFAULT_SECRET = "It's not secure to use default key";
+    private static final String ISSUER = "org.kecak";
 
-    private final Long expiration = new Long(600);
-    private final Long expirationRefreshToken = new Long(300);
+    @Nonnull private final String secret;
 
-    public String getUsernameFromToken(String token) throws ExpiredJwtException, Exception{
+    private final Long expiration = 600L;
+    private final Long expirationRefreshToken = 300L;
+
+    public ApiTokenService() {
+        String masterPassword = SetupManager.getSettingValue(SetupManager.MASTER_LOGIN_PASSWORD);
+        secret = masterPassword.isEmpty() ? DEFAULT_SECRET : masterPassword;
+    }
+
+    public String getUsernameFromToken(String token) throws ExpiredJwtException {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public Date getIssuedAtDateFromToken(String token) throws ExpiredJwtException, Exception {
+    public Date getIssuedAtDateFromToken(String token) throws ExpiredJwtException {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }
 
-    public Date getExpirationDateFromToken(String token) throws ExpiredJwtException, Exception {
+    public Date getExpirationDateFromToken(String token) throws ExpiredJwtException {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) throws ExpiredJwtException, Exception{
-        final Claims claims = getAllClaimsFromToken(token);
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) throws ExpiredJwtException {
+        final Claims claims = getClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException, Exception{
+    /**
+     * Get All Claims as map
+     * @param token
+     * @return map
+     * @throws ExpiredJwtException
+     */
+    public Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) throws ExpiredJwtException, Exception {
+    private Boolean isTokenExpired(String token) throws ExpiredJwtException {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(clock.now());
     }
@@ -69,8 +79,7 @@ public class JwtTokenUtil implements Serializable {
         return false;
     }
 
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
+    public String generateToken(String username, Map<String, Object> claims) {
         return doGenerateToken(claims, username);
     }
 
@@ -102,7 +111,7 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
-    public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) throws ExpiredJwtException, Exception {
+    public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) throws ExpiredJwtException {
         final Date created = getIssuedAtDateFromToken(token);
         return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
                 && (!isTokenExpired(token) || ignoreTokenExpiration(token));
@@ -112,18 +121,19 @@ public class JwtTokenUtil implements Serializable {
         final Date createdDate = clock.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
         try {
-            Claims claims = getAllClaimsFromToken(token);
+            getClaims(token);
             throw new Exception("Claims not expired");
         } catch(ExpiredJwtException e) {
             final Claims claims = e.getClaims();
-            Claims refClaims = getAllClaimsFromToken(refToken);
+            Claims refClaims = getClaims(refToken);
             if(claims.getId().equals(refClaims.get("old_id"))) {
                 claims.setIssuedAt(createdDate);
                 claims.setExpiration(expirationDate);
 
                 return Jwts.builder()
                         .setClaims(claims)
-                        .signWith(SignatureAlgorithm.HS512, secret)
+                        .signWith(SignatureAlgorithm.HS512, getSecret())
+                        .setIssuer(ISSUER)
                         .compact();
             }
             else {
@@ -132,24 +142,23 @@ public class JwtTokenUtil implements Serializable {
         }
     }
 
-    public Boolean validateToken(String token, User user) throws ExpiredJwtException, Exception{
+    public Boolean validateToken(String token, User user) throws ExpiredJwtException {
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
 
         //final Date expiration = getExpirationDateFromToken(token);
-        return (
-                user != null
-                        && username.equals(user.getUsername())
-                        && !isTokenExpired(token)
-        );
+        return (user != null && username.equals(user.getUsername()) && !isTokenExpired(token));
     }
 
-    private Date calculateExpDateRefToken(Date createdDate) {
+    private @Nonnull Date calculateExpDateRefToken(Date createdDate) {
         return new Date(createdDate.getTime() + expirationRefreshToken * 1000);
     }
 
-    private Date calculateExpirationDate(Date createdDate) {
+    private @Nonnull Date calculateExpirationDate(Date createdDate) {
         return new Date(createdDate.getTime() + expiration * 1000);
     }
 
+    public @Nonnull String getSecret() {
+        return secret;
+    }
 }

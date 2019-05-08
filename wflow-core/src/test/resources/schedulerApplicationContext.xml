@@ -11,8 +11,7 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="org.joget.apps"/>
-    <context:component-scan base-package="org.kecak"/>
+    <context:component-scan base-package="org.joget.apps, org.kecak"/>
 
 	<!-- Scheduler -->
     <bean id="schedulerLogDao" class="org.kecak.apps.scheduler.dao.SchedulerLogDao" depends-on="staticInitOfDynamicDataSourceManager">

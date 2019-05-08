@@ -1,12 +1,12 @@
 package org.kecak.webapi.json.controller;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+import org.joget.apps.app.service.ApiTokenService;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.service.DirectoryManager;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.webapi.security.JwtTokenUtil;
+import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,6 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class LoginApiController {
@@ -31,35 +37,59 @@ public class LoginApiController {
     DirectoryManager directoryManager;
 
     @Autowired
-    JwtTokenUtil jwtTokenUtil;
+    ApiTokenService apiTokenService;
 
     @RequestMapping(value = "/oauth/login", method = RequestMethod.POST)
     public void postBasicLogin(final HttpServletRequest request,
                                final HttpServletResponse response) throws IOException {
         final JSONObject jsonResponse = new JSONObject();
         String header = request.getHeader(loginHeader);
-        if ( header!= null && header.startsWith("Basic ") ) {
-            String tokens[] = extractAndDecodeHeader(header, request);
+
+        try {
+            if(header == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid request header");
+            }
+
+            if(!header.startsWith("Basic ")) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Only receive Basic Authentication");
+            }
+            String[] tokens = extractAndDecodeHeader(header, request);
 
             String username = tokens[0];
             LogUtil.debug(this.getClass().getName(), "Basic authentication found for user " + username);
             String password = tokens[1];
-            boolean validLogin = false;
-            try {
-                validLogin = directoryManager.authenticate(username, password);
-                if (!validLogin)
-                    throw new BadCredentialsException("Invalid Username or Password");
-                else {
-                    String jwtToken = jwtTokenUtil.generateToken(username);
-                    jsonResponse.put("status", HttpServletResponse.SC_OK);
-                    jsonResponse.put("message", MESSAGE_SUCCESS);
-                    jsonResponse.put("token", jwtToken);
-                    response.getWriter().write(jsonResponse.toString());
-                }
-            } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error 205: Invalid Username or Password");
-            }
+
+            boolean invalidLogin = !directoryManager.authenticate(username, password);
+            if (invalidLogin)
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Username or Password");
+
+            final JSONObject requestPayload = new JSONObject(request.getReader().lines().collect(Collectors.joining()));
+            Map<String, Object> claim = parseClaimFromRequestPayload(requestPayload);
+            String jwtToken = apiTokenService.generateToken(username, claim);
+
+            jsonResponse.put("status", HttpServletResponse.SC_OK);
+            jsonResponse.put("message", MESSAGE_SUCCESS);
+            jsonResponse.put("token", jwtToken);
+
+            response.setContentType("application/json");
+            response.getWriter().write(jsonResponse.toString());
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), "Error [" + e.getErrorCode() + "] message [" + e.getMessage() + "]");
+            response.sendError(e.getErrorCode(), "Error " + e.getErrorCode() + " : " + e.getMessage());
+        } catch (Exception e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
         }
+    }
+
+    private Map<String, Object> parseClaimFromRequestPayload(JSONObject requestPayload) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+                (Iterator<String>)requestPayload.keys(), 0), false)
+                .collect(HashMap::new, (m, k) -> {
+                    try {
+                        m.put(k, requestPayload.get(k));
+                    } catch (JSONException ignored) { }
+                }, Map::putAll);
     }
 
     @RequestMapping(value = "oauth/refresh", method = RequestMethod.POST)
@@ -74,14 +104,14 @@ public class LoginApiController {
                 && refToken != null && !refToken.isEmpty()) {
             String token = header.substring(7);
             try {
-                String newToken = jwtTokenUtil.refreshToken(token, refToken);
+                String newToken = apiTokenService.refreshToken(token, refToken);
                 response.setHeader(NEW_TOKEN, newToken);
                 jsonResponse.put("status", HttpServletResponse.SC_OK);
                 jsonResponse.put("message", MESSAGE_SUCCESS);
                 response.getWriter().write(jsonResponse.toString());
             } catch(Exception e) {
-                LogUtil.error(this.getClass().getName(), e, null);
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error when refreshing token: see log for details");
+                LogUtil.error(getClass().getName(), e, e.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error when refreshing token, see log for details");
             }
         }
     }
