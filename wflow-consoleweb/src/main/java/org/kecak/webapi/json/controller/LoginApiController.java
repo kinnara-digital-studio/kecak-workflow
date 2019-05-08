@@ -1,7 +1,7 @@
 package org.kecak.webapi.json.controller;
 
 
-import org.joget.apps.app.service.ApiTokenService;
+import org.joget.apps.app.service.AuthTokenService;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.service.DirectoryManager;
 import org.json.JSONException;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class LoginApiController {
     DirectoryManager directoryManager;
 
     @Autowired
-    ApiTokenService apiTokenService;
+    AuthTokenService authTokenService;
 
     @RequestMapping(value = "/oauth/login", method = RequestMethod.POST)
     public void postBasicLogin(final HttpServletRequest request,
@@ -65,7 +66,7 @@ public class LoginApiController {
 
             final JSONObject requestPayload = new JSONObject(request.getReader().lines().collect(Collectors.joining()));
             Map<String, Object> claim = parseClaimFromRequestPayload(requestPayload);
-            String jwtToken = apiTokenService.generateToken(username, claim);
+            String jwtToken = authTokenService.generateToken(username, claim);
 
             jsonResponse.put("status", HttpServletResponse.SC_OK);
             jsonResponse.put("message", MESSAGE_SUCCESS);
@@ -104,7 +105,7 @@ public class LoginApiController {
                 && refToken != null && !refToken.isEmpty()) {
             String token = header.substring(7);
             try {
-                String newToken = apiTokenService.refreshToken(token, refToken);
+                String newToken = authTokenService.refreshToken(token, refToken);
                 response.setHeader(NEW_TOKEN, newToken);
                 jsonResponse.put("status", HttpServletResponse.SC_OK);
                 jsonResponse.put("message", MESSAGE_SUCCESS);
@@ -119,7 +120,7 @@ public class LoginApiController {
     private String[] extractAndDecodeHeader(String header, HttpServletRequest request)
             throws IOException {
 
-        byte[] base64Token = header.substring(6).getBytes("UTF-8");
+        byte[] base64Token = header.substring(6).getBytes(StandardCharsets.UTF_8);
         byte[] decoded;
         try {
             decoded = Base64.decode(base64Token);
@@ -129,7 +130,7 @@ public class LoginApiController {
                     "Failed to decode basic authentication token");
         }
 
-        String token = new String(decoded, "UTF-8");
+        String token = new String(decoded, StandardCharsets.UTF_8);
 
         int delim = token.indexOf(":");
 

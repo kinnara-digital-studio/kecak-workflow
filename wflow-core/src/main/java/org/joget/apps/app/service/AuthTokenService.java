@@ -14,9 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-@Service("apiTokenService")
-public class ApiTokenService implements Serializable {
-
+@Service("authTokenService")
+public class AuthTokenService implements Serializable {
     transient
     private static final long serialVersionUID = -3301605591108950415L;
     private Clock clock = DefaultClock.INSTANCE;
@@ -30,7 +29,7 @@ public class ApiTokenService implements Serializable {
     private final Long expiration = 600L;
     private final Long expirationRefreshToken = 300L;
 
-    public ApiTokenService() {
+    public AuthTokenService() {
         String masterPassword = SetupManager.getSettingValue(SetupManager.MASTER_LOGIN_PASSWORD);
         secret = masterPassword.isEmpty() ? DEFAULT_SECRET : masterPassword;
     }
@@ -60,7 +59,7 @@ public class ApiTokenService implements Serializable {
      */
     public Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(getSecret())
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -90,9 +89,10 @@ public class ApiTokenService implements Serializable {
                 .setClaims(claims)
                 .setId(UUID.randomUUID().toString())
                 .setSubject(subject)
+                .setIssuer(ISSUER)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, getSecret())
                 .compact();
     }
 
@@ -101,14 +101,7 @@ public class ApiTokenService implements Serializable {
         final Date expirationDate = calculateExpDateRefToken(createdDate);
         Map<String, Object> claims = new HashMap<>();
         claims.put("old_id", tokenOldId);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setId(UUID.randomUUID().toString())
-                .setSubject(subject)
-                .setIssuedAt(createdDate)
-                .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+        return doGenerateToken(claims, subject);
     }
 
     public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) throws ExpiredJwtException {
@@ -129,14 +122,8 @@ public class ApiTokenService implements Serializable {
             if(claims.getId().equals(refClaims.get("old_id"))) {
                 claims.setIssuedAt(createdDate);
                 claims.setExpiration(expirationDate);
-
-                return Jwts.builder()
-                        .setClaims(claims)
-                        .signWith(SignatureAlgorithm.HS512, getSecret())
-                        .setIssuer(ISSUER)
-                        .compact();
-            }
-            else {
+                return doGenerateToken(claims, claims.getSubject());
+            } else {
                 throw new Exception("Invalid token/refresh token");
             }
         }
