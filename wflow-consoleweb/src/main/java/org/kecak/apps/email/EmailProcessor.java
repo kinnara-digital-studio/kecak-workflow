@@ -25,11 +25,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Class for triggering email processor plugins
+ */
 public class EmailProcessor {
     public static final String FROM = "from";
     public static final String SUBJECT = "subject";
 
-    private EmailApprovalContentDao emailApprovalContentDao;
+//    private EmailApprovalContentDao emailApprovalContentDao;
     private WorkflowManager workflowManager;
     private AppService appService;
     private WorkflowUserManager workflowUserManager;
@@ -127,13 +130,13 @@ public class EmailProcessor {
         return user.getUsername();
     }
 
-    public EmailApprovalContentDao getEmailApprovalContentDao() {
-        return emailApprovalContentDao;
-    }
-
-    public void setEmailApprovalContentDao(EmailApprovalContentDao emailApprovalContentDao) {
-        this.emailApprovalContentDao = emailApprovalContentDao;
-    }
+//    public EmailApprovalContentDao getEmailApprovalContentDao() {
+//        return emailApprovalContentDao;
+//    }
+//
+//    public void setEmailApprovalContentDao(EmailApprovalContentDao emailApprovalContentDao) {
+//        this.emailApprovalContentDao = emailApprovalContentDao;
+//    }
 
     public WorkflowManager getWorkflowManager() {
         return workflowManager;

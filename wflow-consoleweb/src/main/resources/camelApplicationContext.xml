@@ -5,7 +5,7 @@
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
 	<bean id="emailProcessor" class="org.kecak.apps.email.EmailProcessor">
-		<property name="emailApprovalContentDao" ref="emailApprovalContentDao"/>
+<!--		<property name="emailApprovalContentDao" ref="emailApprovalContentDao"/>-->
 		<property name="workflowManager" ref="workflowManager"/>
 		<property name="appService" ref="appService"/>
 		<property name="workflowUserManager" ref="workflowUserManager"/>

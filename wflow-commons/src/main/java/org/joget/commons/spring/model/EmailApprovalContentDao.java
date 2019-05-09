@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Deprecated
 public class EmailApprovalContentDao extends AbstractSpringDao {
 
 	public static final String ENTITY_NAME = "EmailApprovalContent";
