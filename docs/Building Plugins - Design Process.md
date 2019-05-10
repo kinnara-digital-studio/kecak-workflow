@@ -56,7 +56,7 @@ Activity node is used to be mapped to Form, to be used to interact with human pa
 |---|---|
 | Deadline | Multiple Deadline can be set for each activity learn about Deadlines and Escalation. |
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Deadlines.png" alt="buildingPlugins-activity-Deadlines" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-activity-Deadlines.png" alt="buildingPlugins-activity-Deadlines" />
 
 | Name | Description |
 |---|---|
