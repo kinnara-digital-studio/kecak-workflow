@@ -47,4 +47,4 @@ There are 2 types of joins:
 - Open Paranthesis
 - Close Paranthesis 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-routeOperations.png2" alt="buildingPlugins-routeOperations" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-routeOperations.png" alt="buildingPlugins-routeOperations" />
