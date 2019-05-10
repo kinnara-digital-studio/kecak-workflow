@@ -22,7 +22,7 @@ A fork is used when your process needs to split ways concurrently, meaning that 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-routeforks.png" alt="buildingPlugins-routeforks" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-routeforks.png2" alt="buildingPlugins-routeforks2" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-routeforks2.png" alt="buildingPlugins-routeforks2" />
 
 #### Joins #### 
 
