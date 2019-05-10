@@ -11,11 +11,11 @@ The Process Builder allows one to design processes for the Kecakworkflow App in 
 
 ## Create new Design Process ##
 
--click new design app 
+- click new design app 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-new.png" alt="buildingPlugins-new" />
 
--App ID  and And App Name 
+- App ID  and And App Name 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-new2.png" alt="buildingPlugins-new2" />
 
@@ -26,7 +26,7 @@ you can duplicate form existing process
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-new4.png" alt="buildingPlugins-new4" />
 
--Save 
+- Save 
 
 ### Element Available ###
 
@@ -56,7 +56,7 @@ Activity node is used to be mapped to Form, to be used to interact with human pa
 |---|---|
 | Deadline | Multiple Deadline can be set for each activity learn about Deadlines and Escalation. |
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-deadlines.png" alt="buildingPlugins-deadlines" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Deadlines.png" alt="buildingPlugins-deadlines" />
 
 | Name | Description |
 |---|---|
