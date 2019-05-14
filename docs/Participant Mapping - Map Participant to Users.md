@@ -1,6 +1,10 @@
 ## Map to Users or Group ##
 
-up the same resultant user(s) to be assigned as assignee(s).
+
+---
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapParticipantToUsers.png" alt="buildingPlugins-mapParticipantToUsers" />
+
+Up the same resultant user(s) to be assigned as assignee(s).
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapToUserOrGroup.png" alt="buildingPlugins-mapToUserOrGroup" />
 
