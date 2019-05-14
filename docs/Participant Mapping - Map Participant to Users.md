@@ -13,7 +13,9 @@ If the user mapped is inactive at the time of assignment is made, the particular
 ```
 
 ```
-If there's no valid user found to be assigned to at the time of assignment is made, the activity will be assigned to the current logged in user (previous performer).
+If there's no valid user found to be assigned to at the time of assignment is made,
+the activity will be assigned to the current logged in user (previous performer).
+
 ```
 
 #### Map to Org Chart ####
