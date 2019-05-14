@@ -8,7 +8,6 @@ Macam-macam Participant Mapping di Kecak Workflow.
 ```
 Each particaipant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
 ```
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapParticipantToUsers.png" alt="buildingPlugins-mapParticipantToUsers" />
 
 ###### Process start White list ######
 
@@ -20,11 +19,11 @@ Each particaipant declared in Process Design would have its mapping configure he
 In this section, one would be required to map the Activity to its coresponding Form.
 ```
 
-- Map Tools to Plugins
+- [Map Tools to Plugins](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/Participant%20Mapping%20-%20Map%20Tools%20to%20Plugins.md)
 
  
 
-- Variable List
+- [Variable List](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/Participant%20Mapping%20-%20VariableList.md)
 
 
 
