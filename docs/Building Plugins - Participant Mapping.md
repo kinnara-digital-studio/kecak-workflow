@@ -20,7 +20,9 @@ Each particaipant declared in Process Design would have its mapping configure he
 In this section, one would be required to map the Activity to its coresponding Form.
 ```
 
-- Map Tools to Plugins 
+- Map Tools to Plugins
+
+ 
 
 - Variable List
 
