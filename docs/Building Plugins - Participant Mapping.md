@@ -4,7 +4,7 @@ Participant Mappiing digunakan untuk memetakan Participant yang sesuai dengan ro
 
 Macam-macam Participant Mapping di Kecak Workflow.
 
-- [Map_Partipant_to_Users] (https://github.com/kinnara-digital-studio/kecak-workflow/docs/participant_mapping/map_participant_to_users.md) 
+- [Map Partipant to Users](https://github.com/kinnara-digital-studio/kecak-workflow/docs/participant_mapping/map_participant_to_users.md) 
 
 Each particaipant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
 
