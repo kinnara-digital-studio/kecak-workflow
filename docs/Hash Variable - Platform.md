@@ -42,5 +42,5 @@ To retrieve platform specific information.
 
 ***Scope of Use***
 
-- All components within the app
+
 - All components within the app
