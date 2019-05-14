@@ -2,7 +2,7 @@
 
 up the same resultant user(s) to be assigned as assignee(s).
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapToUsersOrGroup.png" alt="buildingPlugins-mapToUsersOrGroup" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapToUsersOrGroup.png" alt="buildingPlugins-mapToUserOrGroup" />
 
 ```
 If the user mapped is inactive at the time of assignment is made, the particular user will not be assigned.
