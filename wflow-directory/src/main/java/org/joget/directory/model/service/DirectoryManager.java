@@ -241,4 +241,14 @@ public interface DirectoryManager {
      * @return Collection of Grades within the directory
      */
     Collection<Grade> getGradeList();
+
+    Boolean addUser(User user);
+
+    Boolean isReadOnly();
+
+    Boolean addGroup(Group group);
+
+    Boolean deleteGroup(String id);
+
+    Boolean updateGroup(Group group);
 }

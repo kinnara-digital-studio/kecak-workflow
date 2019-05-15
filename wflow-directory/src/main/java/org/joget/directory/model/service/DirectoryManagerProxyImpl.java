@@ -502,4 +502,23 @@ public class DirectoryManagerProxyImpl implements ExtDirectoryManager {
     public Collection<Grade> getGradeList() {
         return getDirectoryManagerImpl().getGradeList();
     }
+
+    public Boolean addUser(User user) {
+        return getDirectoryManagerImpl().addUser(user);
+    }
+
+    public Boolean isReadOnly() {
+        return getDirectoryManagerImpl().isReadOnly();
+    }
+
+    public Boolean addGroup(Group group){
+        return getDirectoryManagerImpl().addGroup(group);
+    }
+
+    public Boolean deleteGroup(String id){
+        return getDirectoryManagerImpl().deleteGroup(id);
+    }
+    public Boolean updateGroup(Group group){
+        return getDirectoryManagerImpl().updateGroup(group);
+    }
 }

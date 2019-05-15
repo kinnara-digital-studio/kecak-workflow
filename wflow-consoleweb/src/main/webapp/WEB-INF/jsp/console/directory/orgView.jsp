@@ -17,11 +17,11 @@
     <div id="main-title"></div>
     <div id="main-action">
         <ul id="main-action-buttons">
-            <li><button onclick="onEdit()"><fmt:message key="console.directory.org.edit.label"/></button></li>
-            <li><button onclick="onDelete()"><fmt:message key="console.directory.org.delete.label"/></button></li>
-            <li><button onclick="onCreateDepartment()"><fmt:message key="console.directory.department.create.label"/></button></li>
-            <li><button onclick="onCreateGrade()"><fmt:message key="console.directory.grade.create.label"/></button></li>
-            <li><button onclick="assignUsers()"><fmt:message key="console.directory.org.user.assign.label"/></button></li>
+            <li class="btnOrgEdit"><button onclick="onEdit()"><fmt:message key="console.directory.org.edit.label"/></button></li>
+            <li class="btnOrgDelete"><button onclick="onDelete()"><fmt:message key="console.directory.org.delete.label"/></button></li>
+            <li class="btnCreateDepartment"><button onclick="onCreateDepartment()"><fmt:message key="console.directory.department.create.label"/></button></li>
+            <li class="btnCreateGrade"><button onclick="onCreateGrade()"><fmt:message key="console.directory.grade.create.label"/></button></li>
+            <li class="btnAssignUsers"><button onclick="assignUsers()"><fmt:message key="console.directory.org.user.assign.label"/></button></li>
         </ul>
     </div>
     <div id="main-body">
@@ -168,7 +168,7 @@
         $('#JsonGradeDataTable_searchTerm').hide();
         $('#JsonUserDataTable_searchTerm').hide();
 
-        <c:if test="${isCustomDirectoryManager || organization.readonly}">
+        <c:if test="${(isCustomDirectoryManager || organization.readonly) && isReadOnly}">
             $('#main-action-buttons').remove();
             $('#JsonDeptDataTable_departmentList-buttons').remove();
             $('#JsonGradeDataTable_gradeList-buttons').remove();

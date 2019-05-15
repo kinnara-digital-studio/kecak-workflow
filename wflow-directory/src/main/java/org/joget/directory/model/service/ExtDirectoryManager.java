@@ -257,4 +257,14 @@ public interface ExtDirectoryManager extends DirectoryManager {
      * @return 
      */
     Long getTotalGroupsByUserId(String filterString, String userId, String organizationId, Boolean inGroup);
+
+    Boolean addUser(User user);
+
+    Boolean isReadOnly();
+
+    Boolean addGroup(Group group);
+
+    Boolean deleteGroup(String id);
+
+    Boolean updateGroup(Group group);
 }

@@ -433,4 +433,16 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
     public Long getTotalGroupsByUserId(String filterString, String userId, String organizationId, Boolean inGroup) {
         return getGroupDao().getTotalGroupsByUserId(filterString, userId, organizationId, inGroup);
     }
+
+    public Boolean addUser(User user){
+        return false;
+    }
+
+    public Boolean isReadOnly() { return true; }
+
+    public Boolean addGroup(Group group){ return false; }
+
+    public Boolean deleteGroup(String id){ return false; }
+
+    public Boolean updateGroup(Group group){ return false; }
 }
