@@ -4,21 +4,35 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-formProperties.png" alt="buildingPlugins-formProperties" />
 
+<<<<<<< HEAD
 | Name | Description |
 |---|---|
 | ID | Form ID |
 | Name | Form Name |
 | Table Name | Table Name |
 | Description | Description of what the form intends to do. This is meant for developer/admin consumption only to describe the purpose of this element | 
+=======
+- ID   : Form ID
+- Name : ` Form Name `
+- Table Name :` Table Name `
+- Descripticon : `Description of what the form intends to do. This is meant for developer/admin consumption only to describe the purpose of this element ` 
+>>>>>>> d1275461d9826a120fc0c6a4cd62c8afa8a31b21
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-formPropertiesAdvanced.png" alt="buildingPlugins-formPropertiesAdvanced" />
 
 
+<<<<<<< HEAD
 ***Load Binder*** : The Load Binder is reponsible to popoulate the form data by default, workflow Form Binder 
 is the default binder used to return data form sbumitted forms 
 
 ***Store Binder*** : The Store Binder is Responsible to store the from the data. By default, [Workflow Form Binder]
 is the default used to store data from submitted forms.
+=======
+***Load Binder*** : The Load Binder is reponsible to popoulate the form data by default, workflow Form Binder is the default binder used to return data form sbumitted forms.
+
+***Store Binder*** : The Store Binder is Responsible to store the from the data. By default, [Workflow Form Binder] is the default used to store data from submitted forms.
+
+>>>>>>> d1275461d9826a120fc0c6a4cd62c8afa8a31b21
 ```
 Under Normal circumtances, the load and Store binder should be the same to maintain the same 
 source for the data to be written to/read form.
