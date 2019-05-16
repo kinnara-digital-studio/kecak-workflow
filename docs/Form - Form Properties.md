@@ -19,7 +19,7 @@ is the default binder used to return data form sbumitted forms
 
 ***Store Binder*** : The Store Binder is Responsible to store the from the data. By default, [Workflow Form Binder]
 is the default used to store data from submitted forms.
-=======
+
 ***Load Binder*** : The Load Binder is reponsible to popoulate the form data by default, workflow Form Binder is the default binder used to return data form sbumitted forms.
 
 ***Store Binder*** : The Store Binder is Responsible to store the from the data. By default, [Workflow Form Binder] is the default used to store data from submitted forms.
