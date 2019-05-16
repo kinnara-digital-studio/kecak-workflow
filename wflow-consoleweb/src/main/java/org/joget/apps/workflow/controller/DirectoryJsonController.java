@@ -372,7 +372,8 @@ public class DirectoryJsonController {
             groupId = null;
         }
 
-        users = getUserDao().getUsersNotInGroup(name, groupId, sort, desc, start, rows);
+//        users = getUserDao().getUsersNotInGroup(name, groupId, sort, desc, start, rows);
+        users = directoryManager.getUsersNotInGroup(name, groupId, sort, desc, start, rows);
 
         JSONObject jsonObject = new JSONObject();
         if (users != null) {
@@ -388,7 +389,8 @@ public class DirectoryJsonController {
             }
         }
 
-        jsonObject.accumulate("total", getUserDao().getTotalUsersNotInGroup(name, groupId));
+//        jsonObject.accumulate("total", getUserDao().getTotalUsersNotInGroup(name, groupId));
+        jsonObject.accumulate("total", directoryManager.getTotalUsersNotInGroup(name, groupId));
         jsonObject.accumulate("start", start);
         jsonObject.accumulate("sort", sort);
         jsonObject.accumulate("desc", desc);

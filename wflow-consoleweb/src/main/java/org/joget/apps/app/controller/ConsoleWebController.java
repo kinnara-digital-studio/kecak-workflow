@@ -745,7 +745,8 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            userDao.assignUserToGroup(userId, id);
+//            userDao.assignUserToGroup(userId, id);
+            directoryManager.assignUserToGroup(userId, id);
         }
         return "console/directory/groupUserAssign";
     }
@@ -755,7 +756,8 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            userDao.unassignUserFromGroup(userId, id);
+//            userDao.unassignUserFromGroup(userId, id);
+            directoryManager.unassignUserFromGroup(userId, id);
         }
         return "console/directory/groupList";
     }

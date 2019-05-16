@@ -251,4 +251,12 @@ public interface DirectoryManager {
     Boolean deleteGroup(String id);
 
     Boolean updateGroup(Group group);
+
+    Collection<User> getUsersNotInGroup(String filterString, String groupId, String sort, Boolean desc, Integer start, Integer rows);
+
+    Long getTotalUsersNotInGroup(String filterString, String groupId);
+
+    Boolean assignUserToGroup(String userId, String groupId);
+
+    Boolean unassignUserFromGroup(String userId, String groupId);
 }
