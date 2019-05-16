@@ -4,10 +4,10 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-formProperties.png" alt="buildingPlugins-formProperties" />
 
- ###### ID  ###### : ` Form ID` 
- ###### Name ###### : ` Form Name `
- ###### Table Name ###### :` Table Name `
-###### Descripticon ###### : `Description of what the form intends to do. This is meant for developer/admin consumption only to describe the purpose of this element ` 
+- ID   : Form ID
+- Name : ` Form Name `
+- Table Name :` Table Name `
+- Descripticon : `Description of what the form intends to do. This is meant for developer/admin consumption only to describe the purpose of this element ` 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-formPropertiesAdvanced.png" alt="buildingPlugins-formPropertiesAdvanced" />
 
