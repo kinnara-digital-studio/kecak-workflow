@@ -210,6 +210,7 @@ public class ConsoleWebController {
         model.addAttribute("departments", departments);
         model.addAttribute("grades", grades);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly", directoryManager.isReadOnly());
         return "console/directory/orgView";
     }
 
@@ -599,12 +600,18 @@ public class ConsoleWebController {
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
         return "console/directory/groupList";
     }
 
     @RequestMapping("/console/directory/group/create")
     public String consoleGroupCreate(ModelMap model) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = null;
+        if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+            organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
+        } else {
+            organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        }
         model.addAttribute("organizations", organizations);
         model.addAttribute("group", new Group());
         return "console/directory/groupCreate";
@@ -614,18 +621,29 @@ public class ConsoleWebController {
     public String consoleGroupView(ModelMap model, @RequestParam("id") String id) {
         model.addAttribute("group", directoryManager.getGroupById(id));
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
         return "console/directory/groupView";
     }
 
     @RequestMapping("/console/directory/group/edit/(*:id)")
     public String consoleGroupEdit(ModelMap model, @RequestParam("id") String id) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
-        model.addAttribute("organizations", organizations);
-        Group group = groupDao.getGroup(id);
-        if (group.getOrganization() != null) {
-            group.setOrganizationId(group.getOrganization().getId());
+        if(DirectoryUtil.isCustomDirectoryManager()){
+            Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
+            model.addAttribute("organizations", organizations);
+            Group group = directoryManager.getGroupById(id);
+            if (group.getOrganization() != null) {
+                group.setOrganizationId(group.getOrganization().getId());
+            }
+            model.addAttribute("group", directoryManager.getGroupById(id));
+        } else {
+            Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+            model.addAttribute("organizations", organizations);
+            Group group = groupDao.getGroup(id);
+            if (group.getOrganization() != null) {
+                group.setOrganizationId(group.getOrganization().getId());
+            }
+            model.addAttribute("group", groupDao.getGroup(id));
         }
-        model.addAttribute("group", groupDao.getGroup(id));
         return "console/directory/groupEdit";
     }
 
@@ -641,21 +659,41 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check id exist
-                if (groupDao.getGroup(group.getId()) != null) {
-                    errors.add("console.directory.group.error.label.idExists");
+                if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                    if(directoryManager.getGroupById(group.getId()) != null){
+                        errors.add("console.directory.group.error.label.idExists");
+                    } else {
+                        if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
+                            group.setOrganization(directoryManager.getOrganization(group.getOrganizationId()));
+                        }
+                        invalid = !directoryManager.addGroup(group);
+                    }
                 } else {
+                    if (groupDao.getGroup(group.getId()) != null) {
+                        errors.add("console.directory.group.error.label.idExists");
+                    } else {
+                        if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
+                            group.setOrganization(organizationDao.getOrganization(group.getOrganizationId()));
+                        }
+                        invalid = !groupDao.addGroup(group);
+                    }
+                }
+            } else {
+                if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                    Group g = directoryManager.getGroupById(group.getId());
+                    group.setUsers(g.getUsers());
+                    if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
+                        group.setOrganization( directoryManager.getOrganizationByName(group.getOrganizationId()));
+                    }
+                    invalid = !directoryManager.updateGroup(group);
+                } else {
+                    Group g = groupDao.getGroup(group.getId());
+                    group.setUsers(g.getUsers());
                     if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
                         group.setOrganization(organizationDao.getOrganization(group.getOrganizationId()));
                     }
-                    invalid = !groupDao.addGroup(group);
+                    invalid = !groupDao.updateGroup(group);
                 }
-            } else {
-                Group g = groupDao.getGroup(group.getId());
-                group.setUsers(g.getUsers());
-                if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
-                    group.setOrganization(organizationDao.getOrganization(group.getOrganizationId()));
-                }
-                invalid = !groupDao.updateGroup(group);
             }
 
             if (!errors.isEmpty()) {
@@ -687,7 +725,11 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-            groupDao.deleteGroup(id);
+            if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                directoryManager.deleteGroup(id);
+            } else {
+                groupDao.deleteGroup(id);
+            }
         }
         return "console/directory/groupList";
     }
@@ -703,7 +745,8 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            userDao.assignUserToGroup(userId, id);
+//            userDao.assignUserToGroup(userId, id);
+            directoryManager.assignUserToGroup(userId, id);
         }
         return "console/directory/groupUserAssign";
     }
@@ -713,7 +756,8 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            userDao.unassignUserFromGroup(userId, id);
+//            userDao.unassignUserFromGroup(userId, id);
+            directoryManager.unassignUserFromGroup(userId, id);
         }
         return "console/directory/groupList";
     }
@@ -723,6 +767,7 @@ public class ConsoleWebController {
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
 
         return "console/directory/userList";
     }
@@ -730,7 +775,12 @@ public class ConsoleWebController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/console/directory/user/create")
     public String consoleUserCreate(ModelMap model) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = null;
+        if(DirectoryUtil.isCustomDirectoryManager()){
+            organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
+        } else {
+            organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        }
         model.addAttribute("organizations", organizations);
         model.addAttribute("roles", roleDao.getRoles(null, "name", false, null, null));
         model.addAttribute("timezones", TimeZoneUtil.getList());
@@ -879,20 +929,6 @@ public class ConsoleWebController {
 
                 if (errors.isEmpty()) {
                     user.setId(user.getUsername());
-                    if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
-                        user.setConfirmPassword(user.getPassword());
-                        if (us != null) {
-                            user.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
-                        } else {
-                            //md5 password
-                            //user.setPassword(StringUtil.md5Base16(user.getPassword()));
-                            HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
-                            userSalt.setId(UUID.randomUUID().toString());
-                            userSalt.setRandomSalt(hashSalt.getSalt());
-
-                            user.setPassword(hashSalt.getHash());
-                        }
-                    }
 
                     //set roles
                     if (user.getRoles() != null && user.getRoles().size() > 0) {
@@ -902,11 +938,29 @@ public class ConsoleWebController {
                         }
                         user.setRoles(roles);
                     }
-                    userSalt.setUserId(user.getUsername());
-                    userSaltDao.addUserSalt(userSalt);
-                    invalid = !userDao.addUser(user);
-                    if (us != null && !invalid) {
-                        us.insertUserPostProcessing(user);
+                    if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                         invalid = !directoryManager.addUser(user);
+                    } else {
+                        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+                            user.setConfirmPassword(user.getPassword());
+                            if (us != null) {
+                                user.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
+                            } else {
+                                //md5 password
+                                //user.setPassword(StringUtil.md5Base16(user.getPassword()));
+                                HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
+                                userSalt.setId(UUID.randomUUID().toString());
+                                userSalt.setRandomSalt(hashSalt.getSalt());
+
+                                user.setPassword(hashSalt.getHash());
+                            }
+                        }
+                        userSalt.setUserId(user.getUsername());
+                        userSaltDao.addUserSalt(userSalt);
+                        invalid = !userDao.addUser(user);
+                        if (us != null && !invalid) {
+                            us.insertUserPostProcessing(user);
+                        }
                     }
                 }
             } else {
@@ -1030,66 +1084,67 @@ public class ConsoleWebController {
                 return "console/directory/userEdit";
             }
         } else {
-            String prevDepartmentId = null;
+            if(!DirectoryUtil.isCustomDirectoryManager()) {
+                String prevDepartmentId = null;
 
-            //set employment detail
-            Employment employment = null;
-            if ("create".equals(action)) {
-                employment = new Employment();
-            } else {
-                try {
-                    employment = (Employment) userDao.getUserById(user.getId()).getEmployments().iterator().next();
-                } catch (Exception e) {
+                //set employment detail
+                Employment employment = null;
+                if ("create".equals(action)) {
                     employment = new Employment();
-                }
-            }
-
-            prevDepartmentId = employment.getDepartmentId();
-
-            employment.setUserId(user.getId());
-            employment.setEmployeeCode(employeeCode);
-            employment.setRole(employeeRole);
-            employment.setOrganizationId((employeeOrganization != null && !employeeOrganization.isEmpty()) ? employeeOrganization : null);
-            employment.setDepartmentId((employeeDepartment != null && !employeeDepartment.isEmpty()) ? employeeDepartment : null);
-            employment.setGradeId((employeeGrade != null && !employeeGrade.isEmpty()) ? employeeGrade : null);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                if (employeeStartDate != null && employeeStartDate.trim().length() > 0) {
-                    employment.setStartDate(df.parse(employeeStartDate));
                 } else {
-                    employment.setStartDate(null);
+                    try {
+                        employment = (Employment) userDao.getUserById(user.getId()).getEmployments().iterator().next();
+                    } catch (Exception e) {
+                        employment = new Employment();
+                    }
                 }
-                if (employeeEndDate != null && employeeEndDate.trim().length() > 0) {
-                    employment.setEndDate(df.parse(employeeEndDate));
-                } else {
-                    employment.setEndDate(null);
-                }
-            } catch (Exception e) {
-                LogUtil.error(getClass().getName(), e, "Set Employee Date error");
-            }
-            if (employment.getId() == null) {
-                employment.setUser(user);
-                employmentDao.addEmployment(employment);
-            } else {
-                employmentDao.updateEmployment(employment);
-            }
 
-            //Hod
-            if ("yes".equals(employeeDepartmentHod) && employeeDepartment != null && employeeDepartment.trim().length() > 0) {
-                if (prevDepartmentId != null) {
+                prevDepartmentId = employment.getDepartmentId();
+
+                employment.setUserId(user.getId());
+                employment.setEmployeeCode(employeeCode);
+                employment.setRole(employeeRole);
+                employment.setOrganizationId((employeeOrganization != null && !employeeOrganization.isEmpty()) ? employeeOrganization : null);
+                employment.setDepartmentId((employeeDepartment != null && !employeeDepartment.isEmpty()) ? employeeDepartment : null);
+                employment.setGradeId((employeeGrade != null && !employeeGrade.isEmpty()) ? employeeGrade : null);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    if (employeeStartDate != null && employeeStartDate.trim().length() > 0) {
+                        employment.setStartDate(df.parse(employeeStartDate));
+                    } else {
+                        employment.setStartDate(null);
+                    }
+                    if (employeeEndDate != null && employeeEndDate.trim().length() > 0) {
+                        employment.setEndDate(df.parse(employeeEndDate));
+                    } else {
+                        employment.setEndDate(null);
+                    }
+                } catch (Exception e) {
+                    LogUtil.error(getClass().getName(), e, "Set Employee Date error");
+                }
+                if (employment.getId() == null) {
+                    employment.setUser(user);
+                    employmentDao.addEmployment(employment);
+                } else {
+                    employmentDao.updateEmployment(employment);
+                }
+
+                //Hod
+                if ("yes".equals(employeeDepartmentHod) && employeeDepartment != null && employeeDepartment.trim().length() > 0) {
+                    if (prevDepartmentId != null) {
+                        User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+                        if (prevHod != null) {
+                            employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
+                        }
+                    }
+                    employmentDao.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
+                } else if (prevDepartmentId != null) {
                     User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
-                    if (prevHod != null) {
+                    if (prevHod != null && prevHod.getId().equals(user.getId())) {
                         employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                     }
                 }
-                employmentDao.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
-            } else if (prevDepartmentId != null) {
-                User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
-                if (prevHod != null && prevHod.getId().equals(user.getId())) {
-                    employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
-                }
             }
-
             String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
             String url = contextPath;
             url += "/web/console/directory/user/view/" + user.getId() + ".";
