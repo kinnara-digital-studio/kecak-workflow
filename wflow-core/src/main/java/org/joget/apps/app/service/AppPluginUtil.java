@@ -1,7 +1,11 @@
 package org.joget.apps.app.service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.joget.apps.app.dao.PluginDefaultPropertiesDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PluginDefaultProperties;
@@ -18,6 +22,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utility class to retrieve plugin propertise value and i18n message 
@@ -149,5 +155,39 @@ public class AppPluginUtil implements ApplicationContextAware {
     public static String getMessage(String key, String pluginName, String translationPath){
         PluginManager pluginManager = (PluginManager) appContext.getBean("pluginManager");
         return pluginManager.getMessage(key, pluginName, translationPath);
+    }
+
+
+    /**
+     * Generate plugin from element select property
+     * @param elementSelectProperty
+     * @param <T>
+     * @return
+     */
+    public static <T extends Plugin> T generatePluginObject(@Nonnull Map<String, Object> elementSelectProperty) {
+        ApplicationContext applicationContext = AppUtil.getApplicationContext();
+        if(applicationContext == null) {
+            LogUtil.warn(AppPluginUtil.class.getName(), "Error retrieving Application Context");
+            return null;
+        }
+        PluginManager pluginManager = (PluginManager) applicationContext.getBean("pluginManager");
+        if(pluginManager == null) {
+            LogUtil.warn(AppPluginUtil.class.getName(), "Error retrieving Plugin Manager");
+            return null;
+        }
+
+        String className = (String)elementSelectProperty.get("className");
+        Map<String, Object> properties = (Map<String, Object>)elementSelectProperty.get("properties");
+
+        T  plugin = (T) pluginManager.getPlugin(className);
+        if(plugin == null) {
+            LogUtil.warn(AppPluginUtil.class.getName(), "Error generating plugin [" + className + "]");
+            return null;
+        }
+
+        if(plugin instanceof PropertyEditable) {
+            properties.forEach(((PropertyEditable) plugin)::setProperty);
+        }
+        return plugin;
     }
 }
