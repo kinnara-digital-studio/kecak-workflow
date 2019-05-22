@@ -6,18 +6,18 @@
 drop and drag eselon seperti pada gambar 1:
 
 *gambar 1*
-![image](/uploads/bf7c95a0dc450de30690183a3d332d5f/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets1.png" alt="spreadsheets" />
 
 selanjutnya data yang harus diisi adalah pada gambar 2, 3 dan 4:
 
 *gambar 2*
-![image](/uploads/3a9af48669646ed23aabc29abe9d6f6b/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets2.png" alt="spreadsheets" />
 
 *gambar 3*
-![image](/uploads/a2a1ea9a4ff9561cb4ba42d5ed40987c/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets3.png" alt="spreadsheets" />
 
 *gambar 4*
-![image](/uploads/54e8d5fda95f4f0f76e65c492397eeeb/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets4.png" alt="spreadsheets" />
 
 #### Keterangan ####
 * Name: auto generate **[Mandatory : NO]**
@@ -37,35 +37,35 @@ selanjutnya data yang harus diisi adalah pada gambar 2, 3 dan 4:
 mengisi data general yang telah ada seperti pada gambar 5:
 
 *gambar 5*
-![image](/uploads/6811fd916b9b2da7bc2cdf356fb52706/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets5.png" alt="spreadsheets" />
 
 ### 2. Mengisi data konfigurasi Select Box ###
 
 setelah data general diisi, tahapan selanjutnya adalah mengisi data konfigurasi type selec box dengan data-datanya seperti pada gambar 6:
 
 *gambar 6*
-![image](/uploads/a2e96ab92ae29fc7536da0fef7534e35/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets6.png" alt="spreadsheets" />
 
 ### 3. Mengisi data Select From ###
 
 pada gambar 7, data ID dan Label harus disesuaikan dengan master data yang terpilih.
 
 *gambar 7*
-![image](/uploads/b9055c904351391f7c791e9f12f6ecf6/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets7.png" alt="spreadsheets" />
 
 
 ## Tampilan Untuk Filter Eselon ##
 
 *gambar 8*
-![image](/uploads/e11c2be01827b5e675aa96751330e2eb/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets8.png" alt="spreadsheets" />
 
 *gambar 9*
-![image](/uploads/2557722b1ef9018df1312ea5212acbe3/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets9.png" alt="spreadsheets" />
 
 filter ini akan memudahkan pencarian dengan mengetikkan kata atua angka yang akan dicari, seperti contoh pada gambar 10:
 
 *gambar 10*
-![image](/uploads/8ca5e5df0fae1335c50a190f36a23c08/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/spreadsheets10.png" alt="spreadsheets" />
 
 dengan hanya mengetikkan angka 3 (kotak merah), maka data akan langsung terfilter.
 
@@ -73,8 +73,8 @@ dengan hanya mengetikkan angka 3 (kotak merah), maka data akan langsung terfilte
 ### Version History ###
 
 *  **1.1.0**
-   * 06 March 2018
+   * 22 mei 2019
 
-*  **1.0.0**
+*  **1.0.1**
    * Initial creation : Isti Fatimah
 
