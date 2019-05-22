@@ -8,10 +8,10 @@
 data yang harus diisi adalah pada gambar 1 dan 2:
 
 *gambar 1*
-![image](/uploads/48cdf48cb32ce5d9f58c655d99276e8c/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
 
 *gambar 2*
-![image](/uploads/7cac7cfafc56588d907661826ecb7675/image.png)
+![image](/uploads/7cac7cfa<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />fc56588d907661826ecb7675/image.png)
 
 
 #### Keterangan ####
@@ -30,7 +30,7 @@ data yang harus diisi adalah pada gambar 1 dan 2:
 mengisi data general yang telah ada seperti pada gambar :
 
 *gambar 3*
-![image](/uploads/9f20fc21beb25a34e53d42a934552d11/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
 
 dalam pengisian data general diantaranya adalah mengisi data **label** dan **type** .
 
@@ -39,26 +39,26 @@ dalam pengisian data general diantaranya adalah mengisi data **label** dan **typ
 Setelah data general diisi, tahapan selanjutnya adalah mengisi data Date Time dengan data-datanya dan contoh pengisiannya seperti pada gambar 4 :
 
 *gambar 4*
-![image](/uploads/c59b92134b29db10e8ed041886e58c08/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
 
 ## Tampilan Untuk Filter Date ##
 
 *gambar 5*
-![image](/uploads/01478686eaba85d82e7c5dcf93354c0b/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
 
 filter ini akan memudahkan pencarian dengan memilih tanggal dan waktu yang akan dicari, seperti contoh pada gambar 6 dan 7:
 
 *gambar 6*
-![image](/uploads/5f917d9f653ba6cafd6807bf2c581a52/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
 
 *gambar 7*
-![image](/uploads/25cb3dfb9f1df3ffcfbdc2ab630e1774/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
 
 
 ### Version History ###
 
 *  **1.1.0**
-   * 06 March 2018
+   * 22 mei 2019
 
 *  **1.0.0**
    * Initial creation : Isti Fatimah
