@@ -1,7 +1,7 @@
 ## Architecture of How the Captcha Plugins Work
 
 here is an overview of how the captha plugins work on kecak workflow.
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha.PNG" alt="kecakMobile-Captcha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha1.PNG" alt="Captcha" />
 
 #### describe :
 1. google server sends the client key to the browser (form form element) and to the kecak server (sent to the kecak validator)
