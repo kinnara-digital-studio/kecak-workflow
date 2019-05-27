@@ -22,9 +22,10 @@ maka employee membutuhkan aprrove manager perusahaan juga Warehouse keeper
 
 - Create new design the app, app name "Pengadaan Barang", ID name "pengadaanBarang"
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-newDesign.png"  alt="automatedProcess-newDesign" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-newDesign.PNG" alt="automatedProcess-newDesign" />
 
--Create new design Process, variable process name " "
+- Create new design Process, variable process name " "
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-designProcess.png" alt="automatedProcess-designProcess" />
 
 - Flow 
@@ -51,22 +52,22 @@ example datalist, for datalist pengadaanbarang :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistPengadaanBarang.png" alt="automatedProcess-contohDatalistPengadaanBarang" />
 
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistBarang.png" alt="automatedProcess-contohDatalistBarang" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistBarang.png" alt="automatedProcess-contohDatalistBarang" />
 
 ### Userview ###
 
 Buatlah Userview dengan menarik dan sesuai dengan kebutuhan dari aplikasi 
 
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohUserview.png" alt="automatedProcess-contohUserview" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohUserview.png" alt="automatedProcess-contohUserview" />
 
 Run Process view, Example :
 
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohRunProcess.png" alt="automatedProcess-contohRunProcess" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohRunProcess.png" alt="automatedProcess-contohRunProcess" />
 
 Inbox view, Example :
 
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohRunProcess.png" alt="automatedProcess-contohRunProcess" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohRunProcess.png" alt="automatedProcess-contohRunProcess" />
 
 Request List view, Example :
 
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohRequestList.png" alt="automatedProcess-contohRequestList" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohRequestList.png" alt="automatedProcess-contohRequestList" />
