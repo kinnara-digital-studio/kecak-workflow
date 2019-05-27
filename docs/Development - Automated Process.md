@@ -48,9 +48,9 @@ datalist, example :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistInbox.png" alt="automatedProcess-contohDatalistInbox" />
 
-example datalist, for datalist pengadaanbarang :
+example datalist, for datalist pengadaan barang :
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistPengadaanBarang.png" alt="automatedProcess-contohDatalistPengadaanBarang" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistPengadaaanBarang.png" alt="automatedProcess-contohDatalistPengadaaanBarang" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-contohDatalistBarang.png" alt="automatedProcess-contohDatalistBarang" />
 
