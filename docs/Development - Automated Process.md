@@ -22,7 +22,7 @@ maka employee membutuhkan aprrove manager perusahaan juga Warehouse keeper
 
 - Create new design the app, app name "Pengadaan Barang", ID name "pengadaanBarang"
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-newDesign.png" alt="automatedProcess-newDesign" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-newDesign.png"  alt="automatedProcess-newDesign" />
 
 -Create new design Process, variable process name " "
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess-designProcess.png" alt="automatedProcess-designProcess" />
