@@ -57,7 +57,6 @@ Have fun!
 ### Version History ###
 
 *  **1.1.0**
-   * 27/04/2018
-
+   * mei 2019
 *  **1.0.0**
    * Initial creation : Isti Fatimah

@@ -4,11 +4,14 @@
 kecak plugins spreadsheets is a plugins for kecak to input data like in excel/google spreadsheets
 
 image examples for kecak plugins spreadsheets :
-![image](uploads/2dfc7480d50c830887215009f191e470/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets1.png" alt="spreadsheets1" />
 
-![image](uploads/202d7bb151dba2abf79b412ede3bac92/image.png)
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets2.png" alt="spreadsheets2" />
+
 
 settings for kecak plugins spreadsheets
 
-![image](uploads/686f5575191c63cadb3124e4da1d8676/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets3.png" alt="spreadsheets3" />
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets4.png" alt="spreadsheets4" />
