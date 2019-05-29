@@ -86,5 +86,4 @@ Example output in Email notification:
 
 *  **1.0.0**
    * Initial creation
-   * Isti Fatimah (08 March 2018)
-
+   * Isti Fatimah
