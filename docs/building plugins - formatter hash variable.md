@@ -77,10 +77,11 @@ example scrpt HTML:
 Example output in Email notification:
 
 #### In Mobile Apps ####
-![image](/uploads/fd1aec48c28e2b644a94aa48b0c6d796/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterHashVariable1.png" alt="formatterHashVariable1.png" />
 
 #### In Website ####
-![image](/uploads/3b13935ecf5aa25f36dafd1f874dfd42/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterHashVariable2.png" alt="formatterHashVariable2.png" />
+
 ### Version History ###
 
 *  **1.0.0**
