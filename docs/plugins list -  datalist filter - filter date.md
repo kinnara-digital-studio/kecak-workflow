@@ -8,10 +8,10 @@
 data yang harus diisi adalah pada gambar 1 dan 2:
 
 *gambar 1*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date1.png" alt="kecakMobile-filter-date" />
 
 *gambar 2*
-![image](/uploads/7cac7cfa<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />fc56588d907661826ecb7675/image.png)
+![image](/uploads/7cac7cfa<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date2.png" alt="kecakMobile-filter-date" />
 
 
 #### Keterangan ####
@@ -30,7 +30,7 @@ data yang harus diisi adalah pada gambar 1 dan 2:
 mengisi data general yang telah ada seperti pada gambar :
 
 *gambar 3*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date3.png" alt="kecakMobile-filter-date" />
 
 dalam pengisian data general diantaranya adalah mengisi data **label** dan **type** .
 
@@ -39,20 +39,20 @@ dalam pengisian data general diantaranya adalah mengisi data **label** dan **typ
 Setelah data general diisi, tahapan selanjutnya adalah mengisi data Date Time dengan data-datanya dan contoh pengisiannya seperti pada gambar 4 :
 
 *gambar 4*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date4.png" alt="kecakMobile-filter-date" />
 
 ## Tampilan Untuk Filter Date ##
 
 *gambar 5*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date5.png" alt="kecakMobile-filter-date" />
 
 filter ini akan memudahkan pencarian dengan memilih tanggal dan waktu yang akan dicari, seperti contoh pada gambar 6 dan 7:
 
 *gambar 6*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date6.png" alt="kecakMobile-filter-date" />
 
 *gambar 7*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date.png" alt="kecakMobile-filter-date" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/filter-date7.png" alt="kecakMobile-filter-date" />
 
 
 ### Version History ###
