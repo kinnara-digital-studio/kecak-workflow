@@ -29,12 +29,12 @@
 ### berikut ini adalah field yang harus diisi pada calculation field: ###
 
 *gambar 1*
-![image](/uploads/072db733e15d9424d97f15008035d62f/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation0.png" alt="calculation0" />
 
 ### berikut adalah contoh inisialisasi variabel yang akan di hitung: ###
 
 *gambar 2*
-![image](/uploads/e66fc0445d792be835676fe10f039a3e/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation1.png" alt="calculation1" />
 
 * nomor 1 dan 2 adalah pendefinisian variabel yang akan dihitung
 * nomor 3 adalah rumus/formula yang akan dilakukan untuk perhitungan variabel yang telah di definisikan.
@@ -43,7 +43,7 @@
 
 *gambar 3*
 
-![image](/uploads/6f64bf532100741006decf121cb76856/image.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation2.png" alt="calculation2" />
 
 gambar 3 adalah contoh perhitungan sederhana yang dituliskan pada bagian equation sebelumnya (pada gambar 2)
 * nomor 1 adalah isian angka untuk field 1 
