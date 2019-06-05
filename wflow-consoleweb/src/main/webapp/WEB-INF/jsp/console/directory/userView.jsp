@@ -17,13 +17,13 @@
     <div id="main-title"></div>
     <div id="main-action">
         <ul id="main-action-buttons">
-            <li><button onclick="onEdit()"><fmt:message key="console.directory.user.edit.label"/></button></li>
-            <li><button onclick="onDelete()"><fmt:message key="console.directory.user.delete.label"/></button></li>
-            <li><button onclick="assignReportTo()"><fmt:message key="console.directory.user.reportTo.assign.label"/></button></li>
+            <li class="btnUserEdit"><button onclick="onEdit()"><fmt:message key="console.directory.user.edit.label"/></button></li>
+            <li class="btnUserDelete"><button onclick="onDelete()"><fmt:message key="console.directory.user.delete.label"/></button></li>
+            <li class="btnUserAssignReport"><button onclick="assignReportTo()"><fmt:message key="console.directory.user.reportTo.assign.label"/></button></li>
             <c:if test="${!empty employment.employmentReportTo && !empty employment.employmentReportTo.reportTo}">
-                <li><button onclick="unassignReportTo()"><fmt:message key="console.directory.user.reportTo.unassign.label"/></button></li>
+                <li class="btnUserUnAssignReport"><button onclick="unassignReportTo()"><fmt:message key="console.directory.user.reportTo.unassign.label"/></button></li>
             </c:if>
-            <li><button onclick="assignGroups()"><fmt:message key="console.directory.user.group.assign.label"/></button></li>
+            <li class="btnAssignGroups"><button onclick="assignGroups()"><fmt:message key="console.directory.user.group.assign.label"/></button></li>
         </ul>
         <c:if test="${!empty addOnButtons}">
             ${addOnButtons}
@@ -152,7 +152,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton1="console.directory.user.group.assign.label"
                        checkboxCallback1="assignGroups"
                        checkboxOptional1="true"
@@ -173,9 +173,13 @@
     $(document).ready(function(){
         $('#JsonDataTable_searchTerm').hide();
 
-        <c:if test="${isCustomDirectoryManager || user.readonly}">
+        <c:if test="${(isCustomDirectoryManager && isReadOnly) || user.readonly}">
             $('#main-action-buttons').remove();
             $('#JsonDataTable_groupList-buttons').remove();
+        </c:if>
+        <c:if test="${isCustomDirectoryManager}">
+            $('.btnUserAssignReport').remove();
+            $('.btnUserUnAssignReport').remove();
         </c:if>
     });
     

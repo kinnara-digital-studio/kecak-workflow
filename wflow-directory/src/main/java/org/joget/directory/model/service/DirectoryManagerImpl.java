@@ -438,13 +438,27 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
         return false;
     }
 
+    public Boolean deleteUser(String username){
+        return getUserDao().deleteUser(username);
+    }
+
+    public Boolean updateUser(User user){
+        return getUserDao().updateUser(user);
+    }
+
     public Boolean isReadOnly() { return true; }
 
-    public Boolean addGroup(Group group){ return false; }
+    public Boolean addGroup(Group group){
+        return getGroupDao().addGroup(group);
+    }
 
-    public Boolean deleteGroup(String id){ return false; }
+    public Boolean deleteGroup(String id){
+        return getGroupDao().deleteGroup(id);
+    }
 
-    public Boolean updateGroup(Group group){ return false; }
+    public Boolean updateGroup(Group group){
+        return getGroupDao().updateGroup(group);
+    }
 
     public Collection<User> getUsersNotInGroup(String filterString, String groupId, String sort, Boolean desc, Integer start, Integer rows){
         return getUserDao().getUsersNotInGroup(filterString, groupId, sort, desc, start, rows);
@@ -457,5 +471,85 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
     }
     public Boolean unassignUserFromGroup(String userId, String groupId) {
         return getUserDao().unassignUserFromGroup(userId, groupId);
+    }
+    public Collection<Employment> getEmploymentsNotInDepartment(String filterString, String orgId, String deptId, String sort, Boolean desc, Integer start, Integer rows){
+        return this.getEmploymentDao().getEmploymentsNotInDepartment(filterString,orgId,deptId,sort,desc,start,rows);
+    }
+    public Long getTotalEmploymentsNotInDepartment(String filterString, String organizationId, String departmentId){
+        return this.getEmploymentDao().getTotalEmploymentsNotInDepartment(filterString,organizationId,departmentId);
+    }
+
+    public Collection<Employment> getEmploymentsNotInGrade(String filterString, String orgId, String gradeId, String sort, Boolean desc, Integer start, Integer rows){
+        return this.getEmploymentDao().getEmploymentsNotInGrade(filterString,orgId,gradeId,sort,desc,start,rows);
+    }
+    public Long getTotalEmploymentsNotInGrade(String filterString, String organizationId, String gradeId){
+        return this.getEmploymentDao().getTotalEmploymentsNotInGrade(filterString,organizationId,gradeId);
+    }
+
+    public Boolean addDepartment(Department department) {
+        return this.getDepartmentDao().addDepartment(department);
+    }
+
+    public Boolean updateDepartment(Department department) {
+        return this.getDepartmentDao().updateDepartment(department);
+    }
+
+    public Boolean deleteDepartment(String id) {
+        return this.getDepartmentDao().deleteDepartment(id);
+    }
+
+    public Boolean addGrade(Grade grade) {
+        return this.getGradeDao().addGrade(grade);
+    }
+
+    public Boolean updateGrade(Grade grade) {
+        return this.getGradeDao().updateGrade(grade);
+    }
+
+    public Boolean deleteGrade(String id) {
+        return this.getGradeDao().deleteGrade(id);
+    }
+
+    public Boolean assignUserToDepartment(String userId, String departmentId) {
+        return this.getEmploymentDao().assignUserToDepartment(userId,departmentId);
+    }
+
+    public Boolean unassignUserFromDepartment(String userId, String departmentId) {
+        return this.getEmploymentDao().unassignUserFromDepartment(userId,departmentId);
+    }
+
+    public Boolean assignUserToGrade(String userId, String gradeId) {
+        return this.getEmploymentDao().assignUserToGrade(userId,gradeId);
+    }
+
+    public Boolean unassignUserFromGrade(String userId, String gradeId) {
+        return this.getEmploymentDao().unassignUserFromGrade(userId,gradeId);
+    }
+
+    public Boolean addEmployment(Employment employment) {
+        return this.getEmploymentDao().addEmployment(employment);
+    }
+
+    public Boolean updateEmployment(Employment employment) {
+        return this.getEmploymentDao().updateEmployment(employment);
+    }
+
+    public Boolean deleteEmployment(String id) {
+        return this.getEmploymentDao().deleteEmployment(id);
+    }
+    public Boolean assignUserAsDepartmentHOD(String userId, String departmentId) {
+        return this.getEmploymentDao().assignUserAsDepartmentHOD(userId,departmentId);
+    }
+
+    public Boolean unassignUserAsDepartmentHOD(String userId, String departmentId) {
+        return this.getEmploymentDao().unassignUserAsDepartmentHOD(userId,departmentId);
+    }
+
+    public Boolean assignUserReportTo(String userId, String reportToUserId) {
+        return this.getEmploymentDao().assignUserReportTo(userId,reportToUserId);
+    }
+
+    public Boolean unassignUserReportTo(String userId) {
+        return this.getEmploymentDao().unassignUserReportTo(userId);
     }
 }

@@ -1,4 +1,6 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+<%@ page import="java.net.URLEncoder" %>
+<c:set var="encodedOrgId" value="${URLEncoder.encode(organization.id.toString(),'UTF-8')}"/>
 
 <commons:popupHeader />
 
@@ -7,7 +9,7 @@
     </div>
 
     <div id="main-body-content">
-        <form:form id="createGrade" action="${pageContext.request.contextPath}/web/console/directory/grade/submit/create?orgId=${organization.id}" method="POST" commandName="grade" cssClass="form">
+        <form:form id="createGrade" action="${pageContext.request.contextPath}/web/console/directory/grade/submit/create?orgId=${encodedOrgId}" method="POST" commandName="grade" cssClass="form">
             <form:errors path="*" cssClass="form-errors"/>
             <c:if test="${!empty errors}">
                 <span class="form-errors" style="display:block">
