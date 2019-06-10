@@ -853,8 +853,6 @@ public class ConsoleWebController {
         status.put("0", "Inactive");
         model.addAttribute("status", status);
 
-        directoryManager.getUserById(id);
-
 //        User user = userDao.getUserById(id);
         User user = directoryManager.getUserById(id);
         model.addAttribute("user", user);
@@ -862,6 +860,7 @@ public class ConsoleWebController {
         Employment employment = null;
         if (user.getEmployments() != null && user.getEmployments().size() > 0) {
             employment = (Employment) user.getEmployments().iterator().next();
+            employment = directoryManager.getEmployment(employment.getId());
         } else {
             employment = new Employment();
         }

@@ -177,10 +177,6 @@
             $('#main-action-buttons').remove();
             $('#JsonDataTable_groupList-buttons').remove();
         </c:if>
-        <c:if test="${isCustomDirectoryManager}">
-            $('.btnUserAssignReport').remove();
-            $('.btnUserUnAssignReport').remove();
-        </c:if>
     });
     
     <ui:popupdialog var="popupDialog" src="${pageContext.request.contextPath}/web/console/directory/user/edit/${user.id}."/>
