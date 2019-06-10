@@ -26,6 +26,7 @@ To Run Server Type Command : sh tomcat8.sh start
 
 See Running Logs By Typing ``` tail -f apache-tomcat-8.x.20/logs/catalina.out ```
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux7.png" alt="KecakInstallManualLinux3" />
+
 When You See “info [main] org.apache.catalina.startup.catalina.start server startup in xxxx ms” It Means The Server Is Up And Running
 
 
