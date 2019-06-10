@@ -1101,6 +1101,7 @@ public class ConsoleWebController {
                 try {
 //                    employment = (Employment) userDao.getUserById(user.getId()).getEmployments().iterator().next();
                     employment = (Employment) directoryManager.getUserById(user.getId()).getEmployments().iterator().next();
+                    employment = directoryManager.getEmployment(employment.getId());
                 } catch (Exception e) {
                     employment = new Employment();
                 }
@@ -1141,7 +1142,8 @@ public class ConsoleWebController {
             //Hod
             if ("yes".equals(employeeDepartmentHod) && employeeDepartment != null && employeeDepartment.trim().length() > 0) {
                 if (prevDepartmentId != null) {
-                    User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+//                    User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+                    User prevHod = directoryManager.getDepartmentHod(prevDepartmentId);
                     if (prevHod != null) {
 //                        employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                         directoryManager.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
@@ -1150,7 +1152,8 @@ public class ConsoleWebController {
 //                employmentDao.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
                 directoryManager.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
             } else if (prevDepartmentId != null) {
-                User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+//                User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+                User prevHod = directoryManager.getDepartmentHod(prevDepartmentId);
                 if (prevHod != null && prevHod.getId().equals(user.getId())) {
 //                    employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                     directoryManager.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
