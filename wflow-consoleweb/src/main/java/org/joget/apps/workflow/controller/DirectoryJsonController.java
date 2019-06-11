@@ -372,7 +372,6 @@ public class DirectoryJsonController {
             groupId = null;
         }
 
-//        users = getUserDao().getUsersNotInGroup(name, groupId, sort, desc, start, rows);
         users = directoryManager.getUsersNotInGroup(name, groupId, sort, desc, start, rows);
 
         JSONObject jsonObject = new JSONObject();
@@ -389,7 +388,6 @@ public class DirectoryJsonController {
             }
         }
 
-//        jsonObject.accumulate("total", getUserDao().getTotalUsersNotInGroup(name, groupId));
         jsonObject.accumulate("total", directoryManager.getTotalUsersNotInGroup(name, groupId));
         jsonObject.accumulate("start", start);
         jsonObject.accumulate("sort", sort);
@@ -553,7 +551,6 @@ public class DirectoryJsonController {
 
         Collection<Employment> employments = null;
 
-//        employments = employmentDao.getEmploymentsNotInDepartment(name, orgId, deptId, sort, desc, start, rows);
         employments = directoryManager.getEmploymentsNotInDepartment(name, orgId, deptId, sort, desc, start, rows);
 
         JSONObject jsonObject = new JSONObject();
@@ -573,7 +570,6 @@ public class DirectoryJsonController {
             }
         }
 
-//        jsonObject.accumulate("total", employmentDao.getTotalEmploymentsNotInDepartment(name, orgId, deptId));
         jsonObject.accumulate("total", directoryManager.getTotalEmploymentsNotInDepartment(name, orgId, deptId));
         jsonObject.accumulate("start", start);
         jsonObject.accumulate("sort", sort);
@@ -596,7 +592,6 @@ public class DirectoryJsonController {
 
         Collection<Employment> employments = null;
 
-//        employments = employmentDao.getEmploymentsNotInGrade(name, orgId, gradeId, sort, desc, start, rows);
         employments = directoryManager.getEmploymentsNotInGrade(name, orgId, gradeId, sort, desc, start, rows);
 
         JSONObject jsonObject = new JSONObject();
@@ -616,7 +611,6 @@ public class DirectoryJsonController {
             }
         }
 
-//        jsonObject.accumulate("total", employmentDao.getTotalEmploymentsNotInGrade(name, orgId, gradeId));
         jsonObject.accumulate("total", directoryManager.getTotalEmploymentsNotInGrade(name, orgId, gradeId));
         jsonObject.accumulate("start", start);
         jsonObject.accumulate("sort", sort);

@@ -304,11 +304,9 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/directory/dept/create")
     public String consoleDeptCreate(ModelMap model, @RequestParam("orgId") String orgId, @RequestParam(value = "parentId", required = false) String parentId) {
-//        model.addAttribute("organization", organizationDao.getOrganization(orgId));
         model.addAttribute("organization", directoryManager.getOrganization(orgId));
         model.addAttribute("department", new Department());
         if (parentId != null && parentId.trim().length() > 0) {
-//            model.addAttribute("parent", departmentDao.getDepartment(parentId));
             model.addAttribute("parent", directoryManager.getDepartmentById(parentId));
         }
         return "console/directory/deptCreate";
@@ -335,12 +333,9 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/directory/dept/edit/(*:id)")
     public String consoleDeptEdit(ModelMap model, @RequestParam("id") String id, @RequestParam("orgId") String orgId, @RequestParam(value = "parentId", required = false) String parentId) {
-//        model.addAttribute("organization", organizationDao.getOrganization(orgId));
         model.addAttribute("organization", directoryManager.getOrganization(orgId));
-//        model.addAttribute("department", departmentDao.getDepartment(id));
         model.addAttribute("department", directoryManager.getDepartmentById(id));
         if (parentId != null && parentId.trim().length() > 0) {
-//            model.addAttribute("parent", departmentDao.getDepartment(parentId));
             model.addAttribute("parent", directoryManager.getDepartmentById(parentId));
         }
         return "console/directory/deptEdit";
@@ -348,11 +343,9 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/directory/dept/submit/(*:action)", method = RequestMethod.POST)
     public String consoleDeptSubmit(ModelMap model, @RequestParam("action") String action, @RequestParam("orgId") String orgId, @RequestParam(value = "parentId", required = false) String parentId, @ModelAttribute("department") Department department, BindingResult result) {
-//        Organization organization = organizationDao.getOrganization(orgId);
         Organization organization = directoryManager.getOrganization(orgId);
         Department parent = null;
         if (parentId != null && parentId.trim().length() > 0) {
-//            parent = departmentDao.getDepartment(parentId);
             parent = directoryManager.getDepartmentById(parentId);
         }
 
@@ -366,23 +359,19 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check id exist
-//                if (departmentDao.getDepartment(department.getId()) != null) {
-                if (directoryManager.getDepartmentById(department.getId()) != null) {
+\                if (directoryManager.getDepartmentById(department.getId()) != null) {
                     errors.add("console.directory.department.error.label.idExists");
                 } else {
                     department.setOrganization(organization);
                     if (parent != null) {
                         department.setParent(parent);
                     }
-//                    invalid = !departmentDao.addDepartment(department);
                     invalid = !directoryManager.addDepartment(department);
                 }
             } else {
-//                Department d = departmentDao.getDepartment(department.getId());
                 Department d = directoryManager.getDepartmentById(department.getId());
                 d.setName(department.getName());
                 d.setDescription(department.getDescription());
-//                invalid = !departmentDao.updateDepartment(d);
                 invalid = !directoryManager.updateDepartment(d);
             }
 
@@ -426,7 +415,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-//            departmentDao.deleteDepartment(id);
             directoryManager.deleteDepartment(id);
         }
         return "console/directory/orgList";
@@ -435,7 +423,6 @@ public class ConsoleWebController {
     @RequestMapping("/console/directory/dept/(*:id)/hod/set/view")
     public String consoleDeptHodSet(ModelMap model, @RequestParam(value = "id") String id) {
         model.addAttribute("id", id);
-//        Department department = departmentDao.getDepartment(id);
         Department department = directoryManager.getDepartmentById(id);
         if (department != null && department.getOrganization() != null) {
             Collection<Grade> grades = directoryManager.getGradesByOrganizationId(null, department.getOrganization().getId(), "name", false, null, null);
@@ -446,14 +433,12 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/directory/dept/(*:deptId)/hod/set/submit", method = RequestMethod.POST)
     public String consoleDeptHodSetSubmit(ModelMap model, @RequestParam(value = "deptId") String deptId, @RequestParam(value = "userId") String userId) {
-//        employmentDao.assignUserAsDepartmentHOD(userId, deptId);
         directoryManager.assignUserAsDepartmentHOD(userId, deptId);
         return "console/directory/deptHodSetView";
     }
 
     @RequestMapping(value = "/console/directory/dept/(*:deptId)/hod/remove", method = RequestMethod.POST)
     public String consoleDeptHodRemove(@RequestParam(value = "deptId") String deptId, @RequestParam(value = "userId") String userId) {
-//        employmentDao.unassignUserAsDepartmentHOD(userId, deptId);
         directoryManager.unassignUserAsDepartmentHOD(userId, deptId);
         return "console/directory/deptView";
     }
@@ -473,7 +458,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-//            employmentDao.assignUserToDepartment(userId, id);
             directoryManager.assignUserToDepartment(userId, id);
         }
         return "console/directory/deptUserAssign";
@@ -484,7 +468,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-//            employmentDao.unassignUserFromDepartment(userId, id);
             directoryManager.unassignUserFromDepartment(userId, id);
         }
         return "console/directory/deptView";
@@ -492,7 +475,6 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/directory/grade/create")
     public String consoleGradeCreate(ModelMap model, @RequestParam("orgId") String orgId) {
-//        model.addAttribute("organization", organizationDao.getOrganization(orgId));
         model.addAttribute("organization", directoryManager.getOrganization(orgId));
         model.addAttribute("grade", new Grade());
         return "console/directory/gradeCreate";
@@ -515,16 +497,13 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/directory/grade/edit/(*:id)")
     public String consoleGradeEdit(ModelMap model, @RequestParam("id") String id, @RequestParam("orgId") String orgId) {
-//        model.addAttribute("organization", organizationDao.getOrganization(orgId));
         model.addAttribute("organization", directoryManager.getOrganization(orgId));
-//        model.addAttribute("grade", gradeDao.getGrade(id));
         model.addAttribute("grade", directoryManager.getGradeById(id));
         return "console/directory/gradeEdit";
     }
 
     @RequestMapping(value = "/console/directory/grade/submit/(*:action)", method = RequestMethod.POST)
     public String consoleGradeSubmit(ModelMap model, @RequestParam("action") String action, @RequestParam("orgId") String orgId, @ModelAttribute("grade") Grade grade, BindingResult result) {
-//        Organization organization = organizationDao.getOrganization(orgId);
         Organization organization = directoryManager.getOrganization(orgId);
 
         // validate ID
@@ -537,20 +516,16 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check id exist
-//                if (gradeDao.getGrade(grade.getId()) != null) {
                 if(directoryManager.getGradeById(grade.getId()) != null){
                     errors.add("console.directory.grade.error.label.idExists");
                 } else {
                     grade.setOrganization(organization);
-//                    invalid = !gradeDao.addGrade(grade);
                     invalid = !directoryManager.addGrade(grade);
                 }
             } else {
-//                Grade g = gradeDao.getGrade(grade.getId());
                 Grade g = directoryManager.getGradeById(grade.getId());
                 g.setName(grade.getName());
                 g.setDescription(grade.getDescription());
-//                invalid = !gradeDao.updateGrade(g);
                 invalid = !directoryManager.updateGrade(g);
             }
 
@@ -587,7 +562,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-//            gradeDao.deleteGrade(id);
             directoryManager.deleteGrade(id);
         }
         return "console/directory/orgList";
@@ -608,7 +582,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-//            employmentDao.assignUserToGrade(userId, id);
             directoryManager.assignUserToGrade(userId, id);
         }
         return "console/directory/gradeUserAssign";
@@ -619,7 +592,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-//            employmentDao.unassignUserFromGrade(userId, id);
             directoryManager.unassignUserFromGrade(userId, id);
         }
         return "console/directory/gradeView";
@@ -741,7 +713,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-//            userDao.assignUserToGroup(userId, id);
             directoryManager.assignUserToGroup(userId, id);
         }
         return "console/directory/groupUserAssign";
@@ -752,7 +723,6 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-//            userDao.unassignUserFromGroup(userId, id);
             directoryManager.unassignUserFromGroup(userId, id);
         }
         return "console/directory/groupList";
@@ -773,7 +743,6 @@ public class ConsoleWebController {
     public String consoleUserCreate(ModelMap model) {
         Collection<Organization> organizations = null;
         organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
-//        organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("roles", roleDao.getRoles(null, "name", false, null, null));
         model.addAttribute("timezones", TimeZoneUtil.getList());
@@ -796,7 +765,6 @@ public class ConsoleWebController {
         Set roles = new HashSet();
         roles.add(roleDao.getRole("ROLE_USER"));
         user.setRoles(roles);
-        //user.setTimeZone(TimeZoneUtil.getServerTimeZone());
         model.addAttribute("user", user);
         model.addAttribute("employeeDepartmentHod", "no");
         return "console/directory/userCreate";
@@ -842,7 +810,6 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/directory/user/edit/(*:id)")
     public String consoleUserEdit(ModelMap model, @RequestParam("id") String id) {
-//        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("roles", roleDao.getRoles(null, "name", false, null, null));
@@ -853,7 +820,6 @@ public class ConsoleWebController {
         status.put("0", "Inactive");
         model.addAttribute("status", status);
 
-//        User user = userDao.getUserById(id);
         User user = directoryManager.getUserById(id);
         model.addAttribute("user", user);
 
@@ -1099,7 +1065,6 @@ public class ConsoleWebController {
                 employment = new Employment();
             } else {
                 try {
-//                    employment = (Employment) userDao.getUserById(user.getId()).getEmployments().iterator().next();
                     employment = (Employment) directoryManager.getUserById(user.getId()).getEmployments().iterator().next();
                     employment = directoryManager.getEmployment(employment.getId());
                 } catch (Exception e) {
@@ -1132,30 +1097,23 @@ public class ConsoleWebController {
             }
             if (employment.getId() == null) {
                 employment.setUser(user);
-//                employmentDao.addEmployment(employment);
                 directoryManager.addEmployment(employment);
             } else {
-//                employmentDao.updateEmployment(employment);
                 directoryManager.updateEmployment(employment);
             }
 
             //Hod
             if ("yes".equals(employeeDepartmentHod) && employeeDepartment != null && employeeDepartment.trim().length() > 0) {
                 if (prevDepartmentId != null) {
-//                    User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
                     User prevHod = directoryManager.getDepartmentHod(prevDepartmentId);
                     if (prevHod != null) {
-//                        employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                         directoryManager.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                     }
                 }
-//                employmentDao.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
                 directoryManager.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
             } else if (prevDepartmentId != null) {
-//                User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
                 User prevHod = directoryManager.getDepartmentHod(prevDepartmentId);
                 if (prevHod != null && prevHod.getId().equals(user.getId())) {
-//                    employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                     directoryManager.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                 }
             }
@@ -1198,7 +1156,6 @@ public class ConsoleWebController {
     @RequestMapping("/console/directory/user/(*:id)/group/assign/view")
     public String consoleUserGroupAssign(ModelMap model, @RequestParam(value = "id") String id) {
         model.addAttribute("id", id);
-//        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         return "console/directory/userGroupAssign";
@@ -1221,14 +1178,12 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/directory/user/(*:id)/reportTo/assign/submit", method = RequestMethod.POST)
     public String consoleUserReportToAssignSubmit(ModelMap model, @RequestParam(value = "id") String id, @RequestParam(value = "userId") String userId) {
-//        employmentDao.assignUserReportTo(id, userId);
         directoryManager.assignUserReportTo(id, userId);
         return "console/directory/userReportToAssign";
     }
 
     @RequestMapping(value = "/console/directory/user/(*:id)/reportTo/unassign", method = RequestMethod.POST)
     public String consoleUserReportToUnassign(@RequestParam(value = "id") String id) {
-//        employmentDao.unassignUserReportTo(id);
         directoryManager.unassignUserReportTo(id);
         return "console/directory/userView";
     }
@@ -1239,7 +1194,6 @@ public class ConsoleWebController {
         while (strToken.hasMoreTokens()) {
             String groupId = (String) strToken.nextElement();
             directoryManager.assignUserToGroup(id,groupId);
-//            userDao.assignUserToGroup(id, groupId);
         }
         return "console/directory/userGroupAssign";
     }
@@ -1250,7 +1204,6 @@ public class ConsoleWebController {
         while (strToken.hasMoreTokens()) {
             String groupId = (String) strToken.nextElement();
             directoryManager.unassignUserFromGroup(id,groupId);
-//            userDao.unassignUserFromGroup(id, groupId);
         }
         return "console/directory/userList";
     }
