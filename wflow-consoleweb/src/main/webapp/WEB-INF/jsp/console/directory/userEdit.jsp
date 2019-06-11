@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <commons:popupHeader />
 
@@ -87,7 +88,7 @@
                         <select id="employeeOrganization" name="employeeOrganization">
                             <option value=""></option>
                             <c:forEach items="${organizations}" var="org">
-                                <option value="<c:out value="${org.id}"/>" <c:if test="${org.id eq employeeOrganization}">selected</c:if>><c:out value="${org.name}"/></option>
+                                <option value="<c:out value="${URLEncoder.encode(org.id)}"/>" <c:if test="${org.id eq employeeOrganization}">selected</c:if>><c:out value="${org.name}"/></option>
                             </c:forEach>
                         </select>
                     </span>
@@ -190,7 +191,7 @@
                             }
                         }
 
-                        if($('#employeeOrganization').val() == "${employeeOrganization}"){
+                        if($('#employeeOrganization').val() == "${URLEncoder.encode(employeeOrganization)}"){
                             $('#employeeDepartment option[value=${employeeDepartment}]').attr("selected", "selected");
                             $('#employeeGrade option[value=${employeeGrade}]').attr("selected", "selected");
                         }

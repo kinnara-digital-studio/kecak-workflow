@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <commons:header />
 
@@ -42,7 +43,8 @@
         </fieldset>
         <div class="view">
             <div class="main-body-content-subheader"><span><fmt:message key="console.directory.org.view.label.departmentList"/><span></div>
-            <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/dept/list?orgId=${organization.id}&${pageContext.request.queryString}"
+            <c:set var="encodedOrgId" value="${URLEncoder.encode(organization.id.toString(),'UTF-8')}"/>
+            <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/dept/list?orgId=${encodedOrgId}&${pageContext.request.queryString}"
                        var="JsonDeptDataTable"
                        divToUpdate="departmentList"
                        jsonData="data"
@@ -58,7 +60,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton1="console.directory.department.create.label"
                        checkboxCallback1="onCreateDepartment"
                        checkboxOptional1="true"
@@ -74,7 +76,7 @@
         </div>
         <div class="view">
             <div class="main-body-content-subheader"><span><fmt:message key="console.directory.org.view.label.gradeList"/><span></div>
-            <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/grade/list?orgId=${organization.id}&${pageContext.request.queryString}"
+            <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/grade/list?orgId=${encodedOrgId}&${pageContext.request.queryString}"
                        var="JsonGradeDataTable"
                        divToUpdate="gradeList"
                        jsonData="data"
@@ -90,7 +92,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton1="console.directory.grade.create.label"
                        checkboxCallback1="onCreateGrade"
                        checkboxOptional1="true"
@@ -126,7 +128,7 @@
                 </select>
                 </form>
             </div>
-            <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/employment/list?orgId=${organization.id}&${pageContext.request.queryString}"
+            <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/employment/list?orgId=${encodedOrgId}&${pageContext.request.queryString}"
                        var="JsonUserDataTable"
                        divToUpdate="userList"
                        jsonData="data"
@@ -168,18 +170,24 @@
         $('#JsonGradeDataTable_searchTerm').hide();
         $('#JsonUserDataTable_searchTerm').hide();
 
-        <c:if test="${(isCustomDirectoryManager || organization.readonly) && isReadOnly}">
+        <c:if test="${(isCustomDirectoryManager && isReadOnly) || organization.readonly}">
             $('#main-action-buttons').remove();
             $('#JsonDeptDataTable_departmentList-buttons').remove();
             $('#JsonGradeDataTable_gradeList-buttons').remove();
             $('#JsonUserDataTable_userList-buttons').remove();
         </c:if>
+        <c:if test="${(isCustomDirectoryManager && !isReadOnly)}">
+            $('.btnOrgEdit').remove();
+            $('.btnOrgDelete').remove();
+            $('.btnAssignUsers').remove();
+            $('#JsonUserDataTable_userList-buttons').remove();
+        </c:if>
     });
 
-    <ui:popupdialog var="popupDialog" src="${pageContext.request.contextPath}/web/console/directory/org/edit/${organization.id}"/>
-    <ui:popupdialog var="popupDialog2" src="${pageContext.request.contextPath}/web/console/directory/dept/create?orgId=${organization.id}"/>
-    <ui:popupdialog var="popupDialog3" src="${pageContext.request.contextPath}/web/console/directory/grade/create?orgId=${organization.id}"/>
-    <ui:popupdialog var="popupDialog4" src="${pageContext.request.contextPath}/web/console/directory/org/${organization.id}/user/assign/view"/>
+    <ui:popupdialog var="popupDialog" src="${pageContext.request.contextPath}/web/console/directory/org/edit/${encodedOrgId}"/>
+    <ui:popupdialog var="popupDialog2" src="${pageContext.request.contextPath}/web/console/directory/dept/create?orgId=${encodedOrgId}"/>
+    <ui:popupdialog var="popupDialog3" src="${pageContext.request.contextPath}/web/console/directory/grade/create?orgId=${encodedOrgId}"/>
+    <ui:popupdialog var="popupDialog4" src="${pageContext.request.contextPath}/web/console/directory/org/${encodedOrgId}/user/assign/view"/>
 
     function onEdit(){
         popupDialog.init();

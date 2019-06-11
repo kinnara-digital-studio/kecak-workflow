@@ -553,7 +553,8 @@ public class DirectoryJsonController {
 
         Collection<Employment> employments = null;
 
-        employments = employmentDao.getEmploymentsNotInDepartment(name, orgId, deptId, sort, desc, start, rows);
+//        employments = employmentDao.getEmploymentsNotInDepartment(name, orgId, deptId, sort, desc, start, rows);
+        employments = directoryManager.getEmploymentsNotInDepartment(name, orgId, deptId, sort, desc, start, rows);
 
         JSONObject jsonObject = new JSONObject();
         if (employments != null) {
@@ -572,7 +573,8 @@ public class DirectoryJsonController {
             }
         }
 
-        jsonObject.accumulate("total", employmentDao.getTotalEmploymentsNotInDepartment(name, orgId, deptId));
+//        jsonObject.accumulate("total", employmentDao.getTotalEmploymentsNotInDepartment(name, orgId, deptId));
+        jsonObject.accumulate("total", directoryManager.getTotalEmploymentsNotInDepartment(name, orgId, deptId));
         jsonObject.accumulate("start", start);
         jsonObject.accumulate("sort", sort);
         jsonObject.accumulate("desc", desc);
@@ -594,7 +596,8 @@ public class DirectoryJsonController {
 
         Collection<Employment> employments = null;
 
-        employments = employmentDao.getEmploymentsNotInGrade(name, orgId, gradeId, sort, desc, start, rows);
+//        employments = employmentDao.getEmploymentsNotInGrade(name, orgId, gradeId, sort, desc, start, rows);
+        employments = directoryManager.getEmploymentsNotInGrade(name, orgId, gradeId, sort, desc, start, rows);
 
         JSONObject jsonObject = new JSONObject();
         if (employments != null) {
@@ -613,7 +616,8 @@ public class DirectoryJsonController {
             }
         }
 
-        jsonObject.accumulate("total", employmentDao.getTotalEmploymentsNotInGrade(name, orgId, gradeId));
+//        jsonObject.accumulate("total", employmentDao.getTotalEmploymentsNotInGrade(name, orgId, gradeId));
+        jsonObject.accumulate("total", directoryManager.getTotalEmploymentsNotInGrade(name, orgId, gradeId));
         jsonObject.accumulate("start", start);
         jsonObject.accumulate("sort", sort);
         jsonObject.accumulate("desc", desc);
