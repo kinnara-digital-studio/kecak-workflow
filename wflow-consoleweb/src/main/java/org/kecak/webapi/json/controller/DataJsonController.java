@@ -969,10 +969,15 @@ public class DataJsonController {
     private Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
         return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
             Element element = FormUtil.findElement(e.getKey(), form, formData, true);
+            if(Objects.isNull(element))
+                return;
+
             String workflowVariable = element.getPropertyString("workflowVariable");
 
-            if(!Objects.isNull(workflowVariable) && !workflowVariable.isEmpty())
-                m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
+            if(Objects.isNull(workflowVariable) || workflowVariable.isEmpty())
+                return;
+
+            m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
         }, Map::putAll);
     }
 }
