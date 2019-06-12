@@ -18,20 +18,16 @@
 	<br>
 	
 		- [Installation Docker Using Windows](DockerInstallWindows.md)
-	
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
 		
 	</details>
 	
 	- Manual
   - Server Maintenance
-
+   -Bulding flow
 	- [Flow](Building Flow - Flow.md)
-
 	- [Participant Mapping](Building Flow - Participant Mapping.md)
-
 	- [Building Architecture](Building Flow - Plugins Architecture.md)
-
 	- [Building UI](Building Flow - UI.md)
 
 <details>
