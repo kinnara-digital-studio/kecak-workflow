@@ -1,53 +1,71 @@
-## Overview
-Email Approval is one way approval is implemented on email (not through the form), so approval can be done more easily without having to open the website first.
+# Welcome to My Github!
 
-## Email Format
+Hi,
+Im Isti Fatimah...
+This is my first time i editing my github. hehehe
 
-Example of very basic Email Tool setting
+## Save a file
 
-`<a href="mailto:admin@domain?subject=Approval processId:#assignment.processId#&body=approved" data-rel="external">APPROVE</a>`
-`<br>`
-`<br>`
-`<a href="mailto:admin@domain?subject=Revision processId:#assignment.processId#&body=revised" data-rel="external">REVISE</a>`
-`<br>`
-`<br>`
-`<a href="mailto:admin@domain?subject=Rejection processId:#assignment.processId#&body=rejected" data-rel="external">REJECT</a>`
+You can save any file of the workspace to **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Save on**. Even if a file in the workspace is already synced, you can save it to another location. StackEdit can sync one file with multiple locations and accounts.
 
-## Approval Settings
+## Synchronize a file
 
-##### Parameters
-* ID - Application ID
-* Process ID - Application Version (optional) : if not included will retrieve the latest version
-* Activity ID - The activity ID to do
-* Content - display any pop-ups that will be sent to the corresponding email.
+Once your file is linked to a synchronized location, StackEdit will periodically synchronize it by downloading/uploading any modification. A merge will be performed if necessary and conflicts will be resolved.
 
-Here is an example of filling fields in email approval:
+If you just have modified your file and you want to force syncing, click the **Synchronize now** button in the navigation bar.
 
-![image](/uploads/00468fab18ec8d41be0458f963b4d9f9/image.png)
+> **Note:** The **Synchronize now** button is disabled if you have no file to synchronize.
+
+# Publication
+
+Publishing in StackEdit makes it simple for you to publish online your files. Once you're happy with a file, you can publish it to different hosting platforms like **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **WordPress** and **Zendesk**. With [Handlebars templates](http://handlebarsjs.com/), you have full control over what you export.
+
+> Before starting to publish, you must link an account in the **Publish** sub-menu.
+
+## SmartyPants
+
+SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
+
+|                |ASCII                          |HTML                         |
+|----------------|-------------------------------|-----------------------------|
+|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
+|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
+|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
 
 
-1. Open Options * Settings * on the options on the right
-2. Select * Email Approval Content * on the left selection
-3. Click * Approval * on Activity ID
+## KaTeX
 
-![image](/uploads/81303da410e5873880727a63ea41f686/image.png)
+You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
 
-## How to Determine what Content will be displayed in Email Approval ##
+The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
 
-in this case are an example for content Arya Noble email approval, the content is
-``` javascript
-Approval Status: {form_sf_approval_sf_appr_approval} {form_sf_approval_sf_appr_sf_remark_sf_app_history_approval_status} Remarks:[{form_sf_approval_sf_appr_sf_remark_sf_app_history_remark}]{nouse}
+$$
+\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
+$$
+
+> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
+
+## UML diagrams
+
+You can render UML diagrams using [Mermaid](https://mermaidjs.github.io/). For example, this will produce a sequence diagram:
+
+```mermaid
+sequenceDiagram
+Alice ->> Bob: Hello Bob, how are you?
+Bob-->>John: How about you John?
+Bob--x Alice: I am good thanks!
+Bob-x John: I am good thanks!
+Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
+
+Bob-->Alice: Checking with John...
+Alice->John: Yes... John, how are you?
 ```
 
-### * For {form_sf_approval_sf_appr_approval} ###
-#### the order is as follows : ####
-* form - form
-* sf_approval - subform (if its form type is subform)
-* sf_appr subform (if its form type is subform)
-* approval - 
+And this will produce a flow chart:
 
-#### The trick is as follows: ####
-1. open *All Apps* in the menu options on the right
-2. Select *Payment Request Application*
-3. Find the form which will be taken (in this case the form will be taken is EAF-Approval form)
-4. Select the approval form and edit from approval to see the ID of the Approval Form (green box) and what form it uses (blue box)
+```mermaid
+graph LR
+A[Square Rect] -- Link text --> B((Circle))
+A --> C(Round Rect)
+B --> D{Rhombus}
+C --> D
