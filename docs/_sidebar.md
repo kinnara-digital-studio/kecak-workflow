@@ -13,8 +13,8 @@
   - Requirement
   - Installation
 	- Docker
-		- [Installation Docker Using Windows](plugins list - Docker - install windows.md)
-		- [Installation Docker Using Linux](plugins list - Docker - install linux.md)
+		- [Installation Docker Using Windows](DockerInstallWindows.md)
+		- [Installation Docker Using Linux](DockerInstallLinux.md)
 	- Manual
   - Server Maintenance
 
