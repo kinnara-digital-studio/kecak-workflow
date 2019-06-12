@@ -24,63 +24,62 @@
 	- Manual
   - Server Maintenance
 
-		<details>
-		<summary> - Building Flow </summary>
-		<br>
-		- [Flow] (Building Flow - Flow.md)
+<details>
+<summary> - Building Flow </summary>
+<br>
+- [Flow] (Building Flow - Flow.md)
 
-		- [Participant Mapping] (Building Flow - Participant Mapping.md)
+- [Participant Mapping] (Building Flow - Participant Mapping.md)
 
-		- [Building Architecture] (Building Flow - Plugins Architecture.md)
+- [Building Architecture] (Building Flow - Plugins Architecture.md)
 
-		- [Building UI] (Building Flow - UI.md	)
-		</br>
-		</details>
-  
-		  <details>
-		  <summary> - Development </summary>
-		  <br>  
-		  - [Compiling Core] (Development - Compiling Core.md)
-		  
-		  - [Automated Process] (Development - Automated Process.md)
-		  
-		  </br>
-		  </details>
-  
-		  <details>
-		  <summary> - Hash Variable </summary>
-		  
-		  - [App Definition] (App Definition.md)
-		  
-		  - [Bean Shell] (Bean Shell.md)
-		  
-		  - [Current User] (Current User.md)	
-		  
-		  - [Data Hash Variable] (Hash Variable - Data Hash Variable.md)
-		  
-		  - [Form Binder] (Form Binder.md)
-		  
-		  - [Performer] (Performer.md)
-		  
-		  - [Platform] (Platform.md)
-		  
-		  - [Request Parameter] (Hash Variable - Request Parameter.md)
-		  
-		  - [Request] (Request.md)
-		  
-		  - [User] (User.md)
-		  
-		  - [Users] (Users.md)
-		  
-		  - [Userview Key] (Userview Key.md)
-		  
-		  - [Workflow Process Hash Variable] (Workflow Process Hash Variable.md)
-		  
-		  - [Workflow Variable] (Workfolw Variable.md	)
-		  
-		  - [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
+- [Building UI] (Building Flow - UI.md	)
+</details>
 
-		  </details>
+<details>
+<summary> - Development </summary>
+<br>  
+- [Compiling Core] (Development - Compiling Core.md)
+
+- [Automated Process] (Development - Automated Process.md)
+
+</details>
+
+<details>
+<summary> - Hash Variable </summary>
+<br>
+
+- [App Definition] (App Definition.md)
+
+- [Bean Shell] (Bean Shell.md)
+
+- [Current User] (Current User.md)	
+
+- [Data Hash Variable] (Hash Variable - Data Hash Variable.md)
+
+- [Form Binder] (Form Binder.md)
+
+- [Performer] (Performer.md)
+
+- [Platform] (Platform.md)
+
+- [Request Parameter] (Hash Variable - Request Parameter.md)
+
+- [Request] (Request.md)
+
+- [User] (User.md)
+
+- [Users] (Users.md)
+
+- [Userview Key] (Userview Key.md)
+
+- [Workflow Process Hash Variable] (Workflow Process Hash Variable.md)
+
+- [Workflow Variable] (Workfolw Variable.md	)
+
+- [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
+
+</details>
   
 - Requirement
 
