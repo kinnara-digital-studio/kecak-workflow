@@ -1,14 +1,28 @@
 - Introduction
 
-  - [Getting Started](gettingstarted.md)
-  - [Why Bloc?](whybloc.md)
-  - [Core Concepts](coreconcepts.md)
-  - [Architecture](architecture.md)
-  - [Testing](testing.md)
+  - Overview
+	- Kecak vs Joget 
+		- Scheduler
+		- Email Processor
+		- Mobile App
+		- Apps
+			- [Role Management]
+			- [Interim Participant]
+		- Features
+			- [Currency Handling]
+  - Requirement
+  - Installation
+	- Docker
+		- Installation Docker Using Windows
+		- Installation Docker Using Linux
+		- Pull Docker Kecak
+		- Run Docker Compose
+	- Manual
+  - Server Maintenance
 
-- Tutorials
+- Requirement
 
-  - Flutter
+  - Installation
     - [Testing Side Bar](testingSidebar.md)
     - [Infinite List](flutterinfinitelisttutorial.md)
     - [Login](flutterlogintutorial.md)
