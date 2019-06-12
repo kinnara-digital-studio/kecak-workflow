@@ -15,25 +15,31 @@
 	<details>
 	<summary> Docker </summary>
 	<br>
+	
 		- [Installation Docker Using Windows](DockerInstallWindows.md)
 		
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
 	</br>
+	
 	</details>
+	
 	- Manual
   - Server Maintenance
 
-<<<<<<< HEAD
+
 <details>
 <summary> - Building Flow </summary>
 <br>
+
 - [Flow] (Building Flow - Flow.md)
 
 - [Participant Mapping] (Building Flow - Participant Mapping.md)
 
 - [Building Architecture] (Building Flow - Plugins Architecture.md)
 
-- [Building UI] (Building Flow - UI.md	)
+- [Building UI] (Building Flow - UI.md)
+
+</br>
 </details>
 
 <details>
@@ -79,69 +85,4 @@
 
 - [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
 
-</details>
-=======
-  <details>
-  <summary> - Building Flow </summary>
-  <br>
-  - [Flow] (Building Flow - Flow.md)
-  
-  - [Participant Mapping] (Building Flow - Participant Mapping.md)
-  
-  - [Building Architecture] (Building Flow - Plugins Architecture.md)
-  
-  - [Building UI] (Building Flow - UI.md	)
-  </br>
-  </details>
-  
- 
-  <details>
-  <summary> - Development </summary>
-  <br>  
-  - [Compiling Core] (Development - Compiling Core.md)
-  
-  - [Automated Process] (Development - Automated Process.md)
-  
-  </br>
-  </details>
-  
-  <details>
-  <summary> - Hash Variable </summary>
-  
-  - [App Definition] (App Definition.md)
-  
-  - [Bean Shell] (Bean Shell.md)
-  
-  - [Current User] (Current User.md)
-  
-  - [Data Hash Variable] (Hash Variable - Data Hash Variable.md)
-  
-  - [Form Binder] (Form Binder.md)
-  
-  - [Performer] (Performer.md)
-  
-  - [Platform] (Platform.md)
-  
-  - [Request Parameter] (Hash Variable - Request Parameter.md)
-  
-  - [Request] (Request.md)
-  
-  - [User] (User.md)
-  
-  - [Users] (Users.md)
-  
-  - [Userview Key] (Userview Key.md)
-  
-  - [Workflow Process Hash Variable] (Workflow Process Hash Variable.md)
-  
-  - [Workflow Variable] (Workfolw Variable.md	)
-  
-  - [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
->>>>>>> 05c667fff93a050a444fc4d61d9edae4bcb856ba
-  
-
-
-- API Reference
-  - [bloc](https://pub.dartlang.org/documentation/bloc/latest/bloc/bloc-library.html)
-  - [flutter_bloc](https://pub.dartlang.org/documentation/flutter_bloc/latest/flutter_bloc/flutter_bloc-library.html)
-  - [angular_bloc](https://pub.dartlang.org/documentation/angular_bloc/latest/angular_dart/angular_dart-library.html)
+</br>
