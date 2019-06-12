@@ -16,6 +16,8 @@
   <details>
   <summary> Development </summary>
   <br>
-		Test 
+		[Compliling Core](development_compilingCore.md)
+		
+		[Automated Process](development_automatedProcess.md)
 		
   </details>
