@@ -14,11 +14,12 @@
   - Installation
 	- Docker
 	<details>
-	<summary> test </summary>
+	<summary> Docker </summary>
 	<br>
 		- [Installation Docker Using Windows](DockerInstallWindows.md)
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
-		</details>
+	</br>
+	</details>
 	- Manual
   - Server Maintenance
 
