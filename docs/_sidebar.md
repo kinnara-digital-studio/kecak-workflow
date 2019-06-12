@@ -12,13 +12,15 @@
 			- [Currency Handling]()
   - Requirement
   - Installation
+  
 	<details>
 	<summary> Docker </summary>
 	<br>
 	
 		- [Installation Docker Using Windows](DockerInstallWindows.md)
-		
+	
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
+		
 	</br>
 	
 	</details>
@@ -28,16 +30,16 @@
 
 
 <details>
-<summary> - Building Flow </summary>
+<summary> Building Flow </summary>
 <br>
 
-- [Flow] (Building Flow - Flow.md)
+	- [Flow] (Building Flow - Flow.md)
 
-- [Participant Mapping] (Building Flow - Participant Mapping.md)
+	- [Participant Mapping] (Building Flow - Participant Mapping.md)
 
-- [Building Architecture] (Building Flow - Plugins Architecture.md)
+	- [Building Architecture] (Building Flow - Plugins Architecture.md)
 
-- [Building UI] (Building Flow - UI.md)
+	- [Building UI] (Building Flow - UI.md)
 
 </br>
 </details>
@@ -45,9 +47,10 @@
 <details>
 <summary> - Development </summary>
 <br>  
-- [Compiling Core] (Development - Compiling Core.md)
 
-- [Automated Process] (Development - Automated Process.md)
+	- [Compiling Core] (Development - Compiling Core.md)
+
+	- [Automated Process] (Development - Automated Process.md)
 
 </details>
 
@@ -55,34 +58,34 @@
 <summary> - Hash Variable </summary>
 <br>
 
-- [App Definition] (App Definition.md)
+	- [App Definition] (App Definition.md)
 
-- [Bean Shell] (Bean Shell.md)
+	- [Bean Shell] (Bean Shell.md)
 
-- [Current User] (Current User.md)	
+	- [Current User] (Current User.md)	
 
-- [Data Hash Variable] (Hash Variable - Data Hash Variable.md)
+	- [Data Hash Variable] (Hash Variable - Data Hash Variable.md)
 
-- [Form Binder] (Form Binder.md)
+	- [Form Binder] (Form Binder.md)
 
-- [Performer] (Performer.md)
+	- [Performer] (Performer.md)
 
-- [Platform] (Platform.md)
+	- [Platform] (Platform.md)
 
-- [Request Parameter] (Hash Variable - Request Parameter.md)
+	- [Request Parameter] (Hash Variable - Request Parameter.md)
 
-- [Request] (Request.md)
+	- [Request] (Request.md)
 
-- [User] (User.md)
+	- [User] (User.md)
 
-- [Users] (Users.md)
+	- [Users] (Users.md)
 
-- [Userview Key] (Userview Key.md)
+	- [Userview Key] (Userview Key.md)
 
-- [Workflow Process Hash Variable] (Workflow Process Hash Variable.md)
+	- [Workflow Process Hash Variable] (Workflow Process Hash Variable.md)
 
-- [Workflow Variable] (Workfolw Variable.md	)
+	- [Workflow Variable] (Workfolw Variable.md	)
 
-- [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
+	- [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
 
 </br>
