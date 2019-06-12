@@ -12,7 +12,6 @@
 			- [Currency Handling]()
   - Requirement
   - Installation
-	- Docker
 	<details>
 	<summary> Docker </summary>
 	<br>
@@ -22,35 +21,15 @@
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
 	</br>
 	</details>
-	- Manual
-  - Server Maintenance
-
-- Requirement
-
-  - Installation
-    - [Testing Side Bar](testingSidebar.md)
-    - [Infinite List](flutterinfinitelisttutorial.md)
-    - [Login](flutterlogintutorial.md)
-    - [Weather](flutterweathertutorial.md)
-    - [Todos](fluttertodostutorial.md)
-    - [Firebase Login](flutterfirebaselogintutorial.md)
-  - AngularDart
-    - [Counter](angularcountertutorial.md)
-  - Flutter + AngularDart
-    - [Github Search](flutterangulargithubsearch.md)
-
-- Recipes
-
-  - Flutter
-    - [Show SnackBar](recipesfluttershowsnackbar.md)
-    - [Navigation](recipesflutternavigation.md)
-
-- Tools
-
-  - Extensions
-
-    - [IntelliJ](blocintellijextension.md)
-    - [VSCode](blocvscodeextension.md)
+	<summary> Manual </summary>
+	<br>
+	
+		- [Installation Manual Using Windows](installManualWindows.md)
+		
+		- [Installation Manual Using Linux](installManualLinux.md)
+	</br>
+	</details>
+  - [Server Maintenance](GettingStartedServerMaintenance.md)
 
 - API Reference
   - [bloc](https://pub.dartlang.org/documentation/bloc/latest/bloc/bloc-library.html)
