@@ -12,7 +12,6 @@
 			- [Currency Handling]()
   - Requirement
   - Installation
-	- Docker
 	<details>
 	<summary> Docker </summary>
 	<br>
@@ -21,6 +20,7 @@
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
 	</br>
 	</details>
+<<<<<<< HEAD
 	- Manual
   - Server Maintenance
 
@@ -105,9 +105,20 @@
 - Tools
 
   - Extensions
+=======
+	
+	<summary> Manual </summary>
+	<br>
+	
+		- [Installation Manual Using Windows](installManualWindows.md)
+		
+		- [Installation Manual Using Linux](installManualLinux.md)
+	</br>
+	</details>
+  - [Server Maintenance](GettingStartedServerMaintenance.md)
+  - 
+>>>>>>> 8c997fa9ce3a85c15bd26965b262464b85c9650f
 
-    - [IntelliJ](blocintellijextension.md)
-    - [VSCode](blocvscodeextension.md)
 
 - API Reference
   - [bloc](https://pub.dartlang.org/documentation/bloc/latest/bloc/bloc-library.html)
