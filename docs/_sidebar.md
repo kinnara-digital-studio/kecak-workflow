@@ -13,4 +13,4 @@
   - Requirement
   - Installation
   - Development
-
+	- [Compliling Core](development_compilingCore.md)
