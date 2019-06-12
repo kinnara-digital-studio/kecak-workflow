@@ -20,10 +20,10 @@
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
 	</br>
 	</details>
-	
 	- Manual
   - Server Maintenance
 
+<<<<<<< HEAD
 <details>
 <summary> - Building Flow </summary>
 <br>
@@ -80,42 +80,65 @@
 - [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
 
 </details>
+=======
+  <details>
+  <summary> - Building Flow </summary>
+  <br>
+  - [Flow] (Building Flow - Flow.md)
   
-- Requirement
-
-  - Installation
-    - [Testing Side Bar](testingSidebar.md)
-    - [Infinite List](flutterinfinitelisttutorial.md)
-    - [Login](flutterlogintutorial.md)
-    - [Weather](flutterweathertutorial.md)
-    - [Todos](fluttertodostutorial.md)
-    - [Firebase Login](flutterfirebaselogintutorial.md)
-  - AngularDart
-    - [Counter](angularcountertutorial.md)
-  - Flutter + AngularDart
-    - [Github Search](flutterangulargithubsearch.md)
-
-- Recipes
-
-  - Flutter
-    - [Show SnackBar](recipesfluttershowsnackbar.md)
-    - [Navigation](recipesflutternavigation.md)
-
-- Tools
-
-  - Extensions
-
-	
-	<summary> Manual </summary>
-	<br>
-	
-		- [Installation Manual Using Windows](installManualWindows.md)
-		
-		- [Installation Manual Using Linux](installManualLinux.md)
-	</br>
-	</details>
-  - [Server Maintenance](GettingStartedServerMaintenance.md)
-  - 
+  - [Participant Mapping] (Building Flow - Participant Mapping.md)
+  
+  - [Building Architecture] (Building Flow - Plugins Architecture.md)
+  
+  - [Building UI] (Building Flow - UI.md	)
+  </br>
+  </details>
+  
+ 
+  <details>
+  <summary> - Development </summary>
+  <br>  
+  - [Compiling Core] (Development - Compiling Core.md)
+  
+  - [Automated Process] (Development - Automated Process.md)
+  
+  </br>
+  </details>
+  
+  <details>
+  <summary> - Hash Variable </summary>
+  
+  - [App Definition] (App Definition.md)
+  
+  - [Bean Shell] (Bean Shell.md)
+  
+  - [Current User] (Current User.md)
+  
+  - [Data Hash Variable] (Hash Variable - Data Hash Variable.md)
+  
+  - [Form Binder] (Form Binder.md)
+  
+  - [Performer] (Performer.md)
+  
+  - [Platform] (Platform.md)
+  
+  - [Request Parameter] (Hash Variable - Request Parameter.md)
+  
+  - [Request] (Request.md)
+  
+  - [User] (User.md)
+  
+  - [Users] (Users.md)
+  
+  - [Userview Key] (Userview Key.md)
+  
+  - [Workflow Process Hash Variable] (Workflow Process Hash Variable.md)
+  
+  - [Workflow Variable] (Workfolw Variable.md	)
+  
+  - [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
+>>>>>>> 05c667fff93a050a444fc4d61d9edae4bcb856ba
+  
 
 
 - API Reference
