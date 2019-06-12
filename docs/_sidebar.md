@@ -26,11 +26,6 @@
 	- Manual
   - Server Maintenance
 
-
-<details>
-<summary> Building Flow </summary>
-<br>
-
 	- [Flow](Building Flow - Flow.md)
 
 	- [Participant Mapping](Building Flow - Participant Mapping.md)
@@ -38,9 +33,6 @@
 	- [Building Architecture](Building Flow - Plugins Architecture.md)
 
 	- [Building UI](Building Flow - UI.md)
-
-
-</details>
 
 <details>
 <summary> - Development </summary>
