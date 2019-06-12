@@ -21,8 +21,6 @@
 	
 		- [Installation Docker Using Linux](DockerInstallLinux.md)
 		
-	</br>
-	
 	</details>
 	
 	- Manual
@@ -33,15 +31,15 @@
 <summary> Building Flow </summary>
 <br>
 
-	- [Flow] (Building Flow - Flow.md)
+	- [Flow](Building Flow - Flow.md)
 
-	- [Participant Mapping] (Building Flow - Participant Mapping.md)
+	- [Participant Mapping](Building Flow - Participant Mapping.md)
 
-	- [Building Architecture] (Building Flow - Plugins Architecture.md)
+	- [Building Architecture](Building Flow - Plugins Architecture.md)
 
-	- [Building UI] (Building Flow - UI.md)
+	- [Building UI](Building Flow - UI.md)
 
-</br>
+
 </details>
 
 <details>
@@ -88,4 +86,4 @@
 
 	- [Wokflow Assignment] (Workflow Assignment Hash Variable.md)
 
-</br>
+</details>
