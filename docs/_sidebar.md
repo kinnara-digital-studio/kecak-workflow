@@ -15,6 +15,10 @@
   
   <details>
   <summary> Development </summary>
-		[Compliling Core](development_compilingCore.md)
-		[Automated Process](development_automatedProcess.md)
+	
+	
+	- [Compliling Core](development_compilingCore.md)
+	
+	- [Automated Process](development_automatedProcess.md)
+	
   </details>
