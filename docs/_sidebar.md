@@ -1,4 +1,4 @@
-- Introduction
+- Getting Started
 
   - Overview
 	- Kecak vs Joget 
@@ -12,6 +12,23 @@
 			- [Currency Handling]()
   - Requirement
   - Installation
+	  <details>
+	  <summary> Docker </summary>
+			
+	- [Install Docker Using Linux](Docker_InstallLinux.md)
+	- [Install Docker Using Windows](Docker_InstallWindows.md)
+	
+      </details>
+	  
+	  <details>
+	  <summary> Manual </summary>
+			
+	- [Install Manual Using Linux](install_ManualLinux.md)
+	- [Install Manual Using Windows](install_ManualWindows.md)
+	
+      </details>
+	  
+  - Server Maintenance
   
   <details>
   <summary> Development </summary>

@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_logo_full.png" height="60" alt="Bloc" /><small>0.13.0</small>
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakLogo.jpg" height="60" alt="Kecak" /><small>0.1.0</small>
 
 [![Build Status](https://travis-ci.org/felangel/bloc.svg?branch=master)](https://travis-ci.org/felangel/bloc)
 [![codecov](https://codecov.io/gh/felangel/Bloc/branch/master/graph/badge.svg)](https://codecov.io/gh/felangel/bloc)
@@ -9,11 +9,10 @@
 [![Gitter](https://img.shields.io/badge/gitter-chat-hotpink.svg)](https://gitter.im/bloc_package/Lobby)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
-> a predictable state management library for Dart.
+> Kinnara Digital Studio
 
-- Simple & Lightweight
-- Highly Testable
-- For Dart, Flutter, and AngularDart
+- blablabla
+- blablabla
+- blablabla
 
-[GitHub](https://github.com/felangel/bloc/)
-[Get Started](gettingstarted.md)
+[GitHub](https://github.com/kinnara-digital-studio/kecak-workflow/)
