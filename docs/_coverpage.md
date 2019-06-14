@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakLogo.jpg" alt="Kecak" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakLogo.jpg" height="120" alt="Kecak" />
 
 
 > Kinnara Digital Studio
