@@ -6,7 +6,7 @@
 		- Email Processor
 		- Mobile App
 		- Apps
-			- [Role Management](.md)
+			- [Role Management](testtttt.md)
 			- [Interim Participant](.md)
 		- Features
 			- [Currency Handling]()
@@ -20,7 +20,7 @@
 	
       </details>
 	  
-  - Installation  
+
 	  <details>
 	  <summary> Manual </summary>
 			
@@ -43,7 +43,9 @@
 - Building Flow
   - Flow
   - UI
-
+  
+  - Plugins List
+  
 	  <details>
 	  <summary> Plugins List </summary>
 	
@@ -61,8 +63,6 @@
 	- [Kecak Mobile Store Binder Edit Profile Picture API](PluginsList_ KecakMobile_storeBinder_editProfilePictureAPI.md)
 	- [Kecak Mobile Store Binder File Upload API](PluginsList_ KecakMobile_StoreBinder-FileUploadAPI.md)
 	- [Kecak Mobile Userview UI API](PluginsList_ KecakMobile_userviewUiAPI.md)
-	- []()
-	
 	
       </details>
 	  
