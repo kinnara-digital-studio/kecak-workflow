@@ -6,8 +6,8 @@
 		- Email Processor
 		- Mobile App
 		- Apps
-			- [Role Management]()
-			- [Interim Participant]()
+			- [Role Management](.md)
+			- [Interim Participant](.md)
 		- Features
 			- [Currency Handling]()
   - Requirement
@@ -20,7 +20,7 @@
 	
       </details>
 	  
-	- Installation  
+  - Installation  
 	  <details>
 	  <summary> Manual </summary>
 			
@@ -44,8 +44,8 @@
   - Flow
   - UI
 
-	<details>
-	<summary> Plugins List </summary>
+	  <details>
+	  <summary> Plugins List </summary>
 	
 	- [Start and Stop Kecak Workflow](PluginsList_ KecakMobile_ InboxPageAPI.md)
 	- [Start and Stop MySQL Service](PluginsList_ KecakMobile_CheckTokenAPI.md)
@@ -64,7 +64,8 @@
 	- []()
 	
 	
-    </details>
+      </details>
+	  
   - Plugins Architecture
   
   <details>
