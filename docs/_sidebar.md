@@ -6,10 +6,10 @@
 		- Email Processor
 		- Mobile App
 		- Apps
-			- [Role Management](testtttt.md)
-			- [Interim Participant](.md)
+			- [Role Management](tesst.md)
+			- [Interim Participant](InterimParticipant.md)
 		- Features
-			- [Currency Handling]()
+			- [Currency Handling](CurrencyHandling.md)
   - Requirement
   - Installation
 	  <details>
@@ -21,11 +21,9 @@
       </details>
 	  <details>
 	  <summary> Manual </summary>
-			
 	- [Install Manual Using Linux](install_ManualLinux.md)
 	- [Install Manual Using Windows](install_ManualWindows.md)
 	- [Database Set Up](databaseSetUp_manual.md)
-	
       </details>
 	  
   - Server Maintenance
