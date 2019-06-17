@@ -29,9 +29,9 @@
   - Server Maintenance
 	  <details>
 	  <summary> Manual </summary>
-	- [Start and Stop Kecak Workflow](.md)
-	- [Start and Stop MySQL Service](.md)
-	- [Set Up Java Memory](.md)
+		- [Start and Stop Kecak Workflow](.md)
+		- [Start and Stop MySQL Service](.md)
+		- [Set Up Java Memory](.md)
 	
       </details>
 	  
