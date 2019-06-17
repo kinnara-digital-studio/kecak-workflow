@@ -64,9 +64,9 @@
   - Delevelopemt
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
-	- [Building Aplication]
-	- [API]
-	- [Plugin Suite]
+	- Building Aplication
+	- API
+	- Plugin Suite
 
 
 	 <details>
@@ -76,6 +76,6 @@
 	- [Building Plugins - Overview](buildingPlugins_Routes.md)
 	- [Building Plugins - Routes](buildingPlugins_Userview.md)
 	- [Building Plugins - Workflow Variable](buildingPlugins_WorkflowVariable.md)
-	  /details>
+	  </details>
    
 
