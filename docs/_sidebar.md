@@ -36,7 +36,7 @@
       </details>
 	  
 	- Building Flow
- 	 - Flow
+ 	- Flow
   	- UI
   
   - Plugins List
@@ -60,17 +60,14 @@
 	- [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
 	
 	</details>
-	  
-	 <details>
-	 <summary> Development </summary>
-
+	
+  - Delevelopemt
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
 	- [Building Aplication]
 	- [API]
 	- [Plugin Suite]
 
-	 </details>
 
 	 <details>
 	 <summary> Building Plugins </summary>
