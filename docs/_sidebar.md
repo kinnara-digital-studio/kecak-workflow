@@ -99,18 +99,18 @@
 	
  - System Administration 
  - SLA Limit
- 
-   <details>
+ - Advande Insignt into form Builder 
+ - Building Fornt End App
+ - Insight into Joget Workflow
+    <details>
    <summary> Participant Mapping</summary>
 
    - [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
    - [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
    - [Variable List](ParticipantMapping_Variable List.md)
+   
    </details>
   
- - Advande Insignt into form Builder 
- - Building Fornt End App
- - Insight into Joget Workflow
  	
   </details>
   
