@@ -3,11 +3,8 @@
 
 > Kinnara Digital Studio
 
-- Kecak Workflow
-- Mobile Kecak Workflow
-- Fast and Reliable Business Process Management
+Building Fast and Reliable Business Process Management and Business Integration software. Kecak Digital Studio fills the deficiency of others business process applications
 
 
 
 [GitHub](https://github.com/kinnara-digital-studio/kecak-workflow/)
-[Info Kinnara](info@kinnarastudio.com)
