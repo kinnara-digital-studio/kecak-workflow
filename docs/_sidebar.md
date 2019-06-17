@@ -78,10 +78,9 @@
 	- [Building Plugins - Routes](buildingPlugins_Userview.md)
 	- [Building Plugins - Workflow Variable](buildingPlugins_WorkflowVariable.md)
 
-</details>
+	</details>
 	
-- [Building Aplication]()
-- [API]()
-- [Plugin Suite]()
+	- [Building Aplication]()- [API]()
+	- [Plugin Suite]()
 	
-  </details>
+ </details>
