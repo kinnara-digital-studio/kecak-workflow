@@ -19,6 +19,7 @@
       </details>
       
 	  <details>
+	
 	<summary> Manual </summary>
 	
 		- [Install Manual Using Linux](install_ManualLinux.md)
