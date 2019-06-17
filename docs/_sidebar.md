@@ -81,7 +81,8 @@
  - [Plugins](PluginsList_WorkflowVariable.md)
 
  </details>
-	
+
+
  <details>
  <summary> Delevelopemt </summary>
  
@@ -99,13 +100,13 @@
  - System Administration 
  - SLA Limit
  
-  <details>
-  <summary> Participant Mapping</summary>
+   <details>
+   <summary> Participant Mapping</summary>
 
-  - [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
-  - [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
-  - [Variable List](ParticipantMapping_Variable List.md)
-  </details>
+   - [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
+   - [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
+   - [Variable List](ParticipantMapping_Variable List.md)
+   </details>
   
  - Advande Insignt into form Builder 
  - Building Fornt End App
