@@ -37,7 +37,6 @@
 	
      </details>
   
-- Plugins List
 
   <details>
   <summary> Plugins List </summary>
@@ -81,7 +80,7 @@
  - [Plugins](PluginsList_Userview.md)
  - [Plugins](PluginsList_WorkflowVariable.md)
 
-</details>
+ </details>
 	
  <details>
  <summary> Delevelopemt </summary>
@@ -109,8 +108,8 @@
   
   
 
- <details>
- <summary> Hash Variable </summary>
+  <details>
+  <summary> Hash Variable </summary>
 	
 - [What is Hash Variable](buildingAplication_HashVariabel.md)
 - [Hash Variable - App Devintion](hashVariable_AppDefinition.md)
@@ -127,6 +126,4 @@
 - [Hash Variable - Workflow Process Hash Variable](HashVariable_WorkflowProcessHash Variable.md)
 - [Hash Variable - Workflow Variable](hashVariable_Workfolw Variable.md)
 - [Hash Variable - Workflow Assignment](HashVariable_WorkflowAssignmentHash Variable.md)
-
-
- </details>
+  </details>
