@@ -70,18 +70,18 @@
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
 
-	<details>
-  	<summary> Building Plugins </summary>
+  <details>
+  <summary> Building Plugins </summary>
+
+- [Building Plugins - UI](buildingFlow_Ui.md)
+- [Building Plugins - Overview](buildingPlugins_Routes.md)
+- [Building Plugins - Routes](buildingPlugins_Userview.md)
+- [Building Plugins - Workflow Variable](buildingPlugins_WorkflowVariable.md)
+
+</details>
 	
-	- [Building Plugins - UI](buildingFlow_Ui.md)
-	- [Building Plugins - Overview](buildingPlugins_Routes.md)
-	- [Building Plugins - Routes](buildingPlugins_Userview.md)
-	- [Building Plugins - Workflow Variable](buildingPlugins_WorkflowVariable.md)
-	
-	</details>
-	
-	- [Building Aplication]()
-	- [API]()
-	- [Plugin Suite]()
+- [Building Aplication]()
+- [API]()
+- [Plugin Suite]()
 	
   </details>
