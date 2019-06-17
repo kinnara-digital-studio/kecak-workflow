@@ -1,5 +1,5 @@
 - [Getting Started](README.md)
-	- [Overview tess](gettingStarted_Overview.md)
+	- [Overview tess]
 	- [Kecak vs Joget] 
 	- [Scheduler]
 	- [Email Processor]
