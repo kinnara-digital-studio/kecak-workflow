@@ -26,7 +26,7 @@
 		- [Install Manual Using Windows](install_ManualWindows.md)
 		- [Database Set Up](databaseSetUp_manual.md)
       </details>
-	 - Server Maintenance
+	- Server Maintenance
 		 <details>
 		 <summary> Maintenance </summary>
 	
