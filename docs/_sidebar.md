@@ -88,8 +88,8 @@
  
  - [Compliling Core](development_compilingCore.md)
  - [Automated Process](development_automatedProcess.md)
- - [API]() 
- - [Plugin Suite]()
+ - [API](develpoment_API.md) 
+ - [Plugin Suite](development_PluginSuite.md)
  
   </details>
   
