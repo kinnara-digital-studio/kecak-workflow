@@ -102,7 +102,8 @@
  - Advande Insignt into form Builder 
  - Building Fornt End App
  - Insight into Joget Workflow
-    <details>
+ 
+   <details>
    <summary> Participant Mapping</summary>
 
    - [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
@@ -110,8 +111,7 @@
    - [Variable List](ParticipantMapping_Variable List.md)
    
    </details>
-  
- 	
+   	
   </details>
   
  
@@ -134,4 +134,5 @@
 - [Hash Variable - Workflow Process Hash Variable](HashVariable_WorkflowProcessHash Variable.md)
 - [Hash Variable - Workflow Variable](hashVariable_Workfolw Variable.md)
 - [Hash Variable - Workflow Assignment](HashVariable_WorkflowAssignmentHash Variable.md)
+
   </details>
