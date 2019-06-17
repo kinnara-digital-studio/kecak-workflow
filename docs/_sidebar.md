@@ -1,4 +1,4 @@
-- [Getting Started](gettingStarted.md)
+- [Getting Started](gettingstarted.md)
 
   - Overview
 	- Kecak vs Joget 
