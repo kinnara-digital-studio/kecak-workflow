@@ -16,8 +16,8 @@
 			
 	- [Install Docker Using Linux](Docker_InstallLinux.md)
 	- [Install Docker Using Windows](Docker_InstallWindows.md)
-
       </details>
+      
 	  <details>
 	<summary> Manual </summary>
 	
@@ -34,7 +34,7 @@
 			 - [Start and Stop MySQL Service](.md)
 			 - [Set Up Java Memory](.md)
 	
-</details>
+      </details>
   
 - Plugins List
 
