@@ -76,7 +76,6 @@
 	- [Building Plugins - Workflow Variable](buildingPlugins_WorkflowVariable.md)
 
 	</details>
-	
 	- [Building Aplication]()- [API]()
 	- [Plugin Suite]()
 	
