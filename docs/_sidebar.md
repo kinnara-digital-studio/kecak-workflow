@@ -88,8 +88,12 @@
  
  - [Compliling Core](development_compilingCore.md)
  - [Automated Process](development_automatedProcess.md)
+ - [API]() 
+ - [Plugin Suite]()
  
- 
+  </details>
+  
+  
   <details>
   <summary> Building Aplication </summary>
 	
@@ -100,14 +104,10 @@
  - Advande Insignt into form Builder 
  - Building Fornt End App
  - Insight into Joget Workflow
-	
+ 	
   </details>
   
   
- - API
- - Plugin Suite
- </details>
-
 
  <details>
  <summary> Hash Variable </summary>
