@@ -1,4 +1,4 @@
-- Getting Started
+- [Getting Started](gettingStarted.md)
 
   - Overview
 	- Kecak vs Joget 
@@ -63,7 +63,7 @@
       </details>
 	  
   - Plugins Architecture
-  
+  k
   <details>
   <summary> Development </summary>
 			
