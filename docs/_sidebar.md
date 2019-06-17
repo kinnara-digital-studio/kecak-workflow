@@ -26,40 +26,40 @@
 		- [Database Set Up](databaseSetUp_manual.md)
       </details>
 	  
-  - Server Maintenance
-	  <details>
-	  <summary> Manual </summary>
-		- [Start and Stop Kecak Workflow](.md)
-		- [Start and Stop MySQL Service](.md)
-		- [Set Up Java Memory](.md)
+- Server Maintenance
+<details>
+  <summary> Maintenance </summary>
 	
-      </details>
-	  
-	- Building Flow
- 	- Flow
-  	- UI
-  
-  - Plugins List
-  
-	  <details>
-	  <summary> Plugins List </summary>
-	
-	- [Start and Stop Kecak Workflow](PluginsList_KecakMobile_InboxPageAPI.md)
-	- [Start and Stop MySQL Service](PluginsList_KecakMobile_CheckTokenAPI.md)
-	- [Set Up Java Memory](PluginsList_KecakMobile_DataListActionAPI.md)
-	- [Kecak Mobile Datalist UI API](PluginsList_KecakMobile_datalistUiAPI.md)
-	- [Kecak Mobile Form UI API](PluginsList_KecakMobile_FormUiAPI.md)
-	- [Kecak Mobile Load Binder](PluginsList_KecakMobile_LoadBinder.md)
-	- [Kecak Mobile Login API](PluginsList_KecakMobile_LoginAPI.md)
-	- [Kecak Mobile Option Binder User Locale](PluginsList_KecakMobile_optionBinderUserLocale.md)
-	- [Kecak Mobile Published App UI API](PluginsList_KecakMobile_publishedAppUiAPI.md)
-	- [Kecak Mobile Refresh Token API](PluginsList_KecakMobile_refreshTokenAPI.md)
-	- [Kecak Mobile Run Process API](PluginsList_KecakMobile_runProcessPageAPI.md)
-	- [Kecak Mobile Store Binder Edit Profile Picture API](PluginsList_KecakMobile_storeBinder_editProfilePictureAPI.md)
-	- [Kecak Mobile Store Binder File Upload API](PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
-	- [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
-	
+  <details>
+  <summary> Manual </summary>
+	- [Start and Stop Kecak Workflow](.md)
+	- [Start and Stop MySQL Service](.md)
+	- [Set Up Java Memory](.md)
 	</details>
+	
+ </details>
+  
+- Plugins List
+
+  <details>
+  <summary> Plugins List </summary>
+
+- [Start and Stop Kecak Workflow](PluginsList_KecakMobile_InboxPageAPI.md)
+- [Start and Stop MySQL Service](PluginsList_KecakMobile_CheckTokenAPI.md)
+- [Set Up Java Memory](PluginsList_KecakMobile_DataListActionAPI.md)
+- [Kecak Mobile Datalist UI API](PluginsList_KecakMobile_datalistUiAPI.md)
+- [Kecak Mobile Form UI API](PluginsList_KecakMobile_FormUiAPI.md)
+- [Kecak Mobile Load Binder](PluginsList_KecakMobile_LoadBinder.md)
+- [Kecak Mobile Login API](PluginsList_KecakMobile_LoginAPI.md)
+- [Kecak Mobile Option Binder User Locale](PluginsList_KecakMobile_optionBinderUserLocale.md)
+- [Kecak Mobile Published App UI API](PluginsList_KecakMobile_publishedAppUiAPI.md)
+- [Kecak Mobile Refresh Token API](PluginsList_KecakMobile_refreshTokenAPI.md)
+- [Kecak Mobile Run Process API](PluginsList_KecakMobile_runProcessPageAPI.md)
+- [Kecak Mobile Store Binder Edit Profile Picture API](PluginsList_KecakMobile_storeBinder_editProfilePictureAPI.md)
+- [Kecak Mobile Store Binder File Upload API](PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
+- [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
+
+</details>
 	
  <details>
  <summary> Delevelopemt </summary>
