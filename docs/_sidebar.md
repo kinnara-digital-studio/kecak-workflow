@@ -14,28 +14,28 @@
 	  <details>
 	  <summary> Docker </summary>
 			
-	- [Install Docker Using Linux](Docker_InstallLinux.md)
-	- [Install Docker Using Windows](Docker_InstallWindows.md)
+		- [Install Docker Using Linux](Docker_InstallLinux.md)
+		- [Install Docker Using Windows](Docker_InstallWindows.md)
       </details>
       
 	  <details>
-	
-	<summary> Manual </summary>
+	  <summary> Manual </summary>
 	
 		- [Install Manual Using Linux](install_ManualLinux.md)
 		- [Install Manual Using Windows](install_ManualWindows.md)
 		- [Database Set Up](databaseSetUp_manual.md)
       </details>
       
-	   - Server Maintenance
-			 <details>
-			 <summary> Maintenance </summary>
+      
+   - Server Maintenance
+	  <details>
+	  <summary> Maintenance </summary>
 
-			 - [Start and Stop Kecak Workflow](.md)
-			 - [Start and Stop MySQL Service](.md)
-			 - [Set Up Java Memory](.md)
+	- [Start and Stop Kecak Workflow](.md)
+	- [Start and Stop MySQL Service](.md)
+	- [Set Up Java Memory](.md)
 	
-      </details>
+     </details>
   
 - Plugins List
 
