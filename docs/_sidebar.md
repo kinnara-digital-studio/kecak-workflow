@@ -20,24 +20,19 @@
 
       </details>
 	  <details>
-	  <summary> Manual </summary>
+	<summary> Manual </summary>
+	
 		- [Install Manual Using Linux](install_ManualLinux.md)
 		- [Install Manual Using Windows](install_ManualWindows.md)
 		- [Database Set Up](databaseSetUp_manual.md)
       </details>
-	  
-- Server Maintenance
-<details>
-  <summary> Maintenance </summary>
+	- Server Maintenance
+		<details>
+		<summary> Maintenance </summary>
 	
-  <details>
-  <summary> Manual </summary>
-	
-- [Start and Stop Kecak Workflow](.md)
-- [Start and Stop MySQL Service](.md)
-- [Set Up Java Memory](.md)
-	
-</details>
+		- [Start and Stop Kecak Workflow](.md)
+		- [Start and Stop MySQL Service](.md)
+		- [Set Up Java Memory](.md)
 	
 </details>
   
