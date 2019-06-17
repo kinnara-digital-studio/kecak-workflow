@@ -3,7 +3,7 @@
 
 > Kinnara Digital Studio
 
-Building Fast and Reliable Business Process Management and Business Integration software. Kecak Digital Studio fills the deficiency of others business process applications
+Kecak Workflow:tm:  is open source Business Process Management software which is packed with Web Application Builder to provide bundled solution for workflow application
 
 
 
