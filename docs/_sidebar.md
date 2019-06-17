@@ -44,7 +44,7 @@
 	  <details>
 	  <summary> Plugins List </summary>
 	
-	- [Start and Stop Kecak Workflow](PluginsList_KecakMobile_ InboxPageAPI.md)
+	- [Start and Stop Kecak Workflow](PluginsList_KecakMobile_InboxPageAPI.md)
 	- [Start and Stop MySQL Service](PluginsList_KecakMobile_CheckTokenAPI.md)
 	- [Set Up Java Memory](PluginsList_KecakMobile_DataListActionAPI.md)
 	- [Kecak Mobile Datalist UI API](PluginsList_KecakMobile_datalistUiAPI.md)
