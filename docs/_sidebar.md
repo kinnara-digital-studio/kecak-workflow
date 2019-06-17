@@ -61,13 +61,15 @@
 	
 	</details>
 	
-  - Delevelopemt
-	- [Compliling Core](development_compilingCore.md)
-	- [Automated Process](development_automatedProcess.md)
-	- Building Aplication
-	- API
-	- Plugin Suite
-
+ <details>
+ <summary> Delevelopemt </summary>
+ 
+ - [Compliling Core](development_compilingCore.md)
+ - [Automated Process](development_automatedProcess.md)
+ - Building Aplication
+ - API
+ - Plugin Suite
+ </details>
 
    
 
