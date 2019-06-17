@@ -108,7 +108,7 @@
 
    - [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
    - [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
-   - [Variable List](ParticipantMapping_Variable List.md)
+   - [Variable List](ParticipantMapping_VariableList.md)
    
    </details>
    	
@@ -126,13 +126,13 @@
 - [Hash Variable - Form Binder](hashVariable_AppDefinition.md)
 - [Hash Variable - Performer](hashVariable_Performer.md)
 - [Hash Variable - Platform](hashVariable_Platform.md)
-- [Hash Variable - Request Parameter](HashVariable_RequestParameter.md	)
+- [Hash Variable - Request Parameter](HashVariable_RequestParameter.md)
 - [Hash Variable - Request](hashVariable_Request.md)
 - [Hash Variable - User](hashVariable_User.md)
 - [Hash Variable - Users](hashVariable_Users.md)
 - [Hash Variable - Userview Key](hashVariable_Userview Key.md)
-- [Hash Variable - Workflow Process Hash Variable](HashVariable_WorkflowProcessHash Variable.md)
-- [Hash Variable - Workflow Variable](hashVariable_Workfolw Variable.md)
-- [Hash Variable - Workflow Assignment](HashVariable_WorkflowAssignmentHash Variable.md)
+- [Hash Variable - Workflow Process Hash Variable](HashVariable_WorkflowProcessHashVariable.md)
+- [Hash Variable - Workflow Variable](hashVariable_WorkflowVariable.md)
+- [Hash Variable - Workflow Assignment](HashVariable_WorkflowAssignmentHashVariable.md)
 
   </details>
