@@ -355,11 +355,11 @@ public class ConsoleWebController {
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
-            Collection<String> errors = new ArrayList<String>();
+            Collection<String> errors = new ArrayList<>();
 
             if ("create".equals(action)) {
                 // check id exist
-\                if (directoryManager.getDepartmentById(department.getId()) != null) {
+                if (directoryManager.getDepartmentById(department.getId()) != null) {
                     errors.add("console.directory.department.error.label.idExists");
                 } else {
                     department.setOrganization(organization);

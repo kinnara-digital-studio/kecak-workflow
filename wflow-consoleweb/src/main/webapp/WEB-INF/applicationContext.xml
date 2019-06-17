@@ -128,12 +128,16 @@
             <security:concurrency-control max-sessions="3" error-if-maximum-exceeded="true" expired-url="/web/login" />
         </security:session-management>
 
+        <security:http-basic />
+
+        <security:custom-filter ref="workflowHttpAuthFilter" after="BASIC_AUTH_FILTER" />
 
         <!-- Support Basic Authentication -->
-        <security:custom-filter ref="workflowJwtAuthFilter" position="BASIC_AUTH_FILTER" />
+<!--        <security:custom-filter ref="workflowJwtAuthFilter" position="BASIC_AUTH_FILTER" />-->
 
-        
-        <security:custom-filter ref="workflowHttpAuthFilter" after="FORM_LOGIN_FILTER" />
+<!--        <security:custom-filter ref="workflowHttpAuthFilter" after="FORM_LOGIN_FILTER" />-->
+
+        <!-- Support Basic Authentication -->
 
     </security:http>
 
