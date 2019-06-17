@@ -1,8 +1,8 @@
-# Welcome to My Github!
+# Welcome to Kinnara Digital Studio !
 
 Hi,
-Im Isti Fatimah...
-This is my first time i editing my github. hehehe
+this is Kinnara Digital Studio Github Documentation..
+let's check out our products..
 
 ## Save a file
 
