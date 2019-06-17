@@ -1,6 +1,6 @@
-- [Getting Started](gettingstarted.md)
+- [Getting Started](README.md)
 
-  - Overview
+  - [Overview](gettingStarted_Overview.md)
 	- Kecak vs Joget 
 		- Scheduler
 		- Email Processor
@@ -63,11 +63,23 @@
       </details>
 	  
   - Plugins Architecture
-  k
+  
   <details>
   <summary> Development </summary>
 			
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
+	<details>
+  	<summary> Building Plugins </summary>
+	
+	- [Building Plugins - UI](buildingFlow_Ui.md)
+	- [Building Plugins - Overview](buildingPlugins_Routes.md)
+	- [Building Plugins - Routes](buildingPlugins_Userview.md)
+	- [Building Plugins - Workflow Variable](buildingPlugins_WorkflowVariable.md)
+	
+	</details>
+	- [Building Aplication]()
+	- [API]()
+	- [Plugin Suite]()
 	
   </details>
