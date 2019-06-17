@@ -1,10 +1,9 @@
 - [Getting Started](README.md)
-
-  - [Overview](gettingStarted_Overview.md)
-	- Kecak vs Joget 
-	- Scheduler
-	- Email Processor
-	- Mobile App
+	- [Overview](gettingStarted_Overview.md)
+	- [Kecak vs Joget] 
+	- [Scheduler]
+	- [Email Processor]
+	- [Mobile App]
 	- Apps
 		- [Role Management](tesst.md)
 		- [Interim Participant](InterimParticipant.md)
