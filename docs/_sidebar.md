@@ -82,6 +82,8 @@
 
 	 </details>
 
+
+
 - Development
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
