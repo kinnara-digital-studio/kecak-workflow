@@ -41,76 +41,79 @@
   <details>
   <summary> Plugins List </summary>
 
- - [Start and Stop Kecak Workflow](PluginsList_KecakMobile_InboxPageAPI.md)
- - [Start and Stop MySQL Service](PluginsList_KecakMobile_CheckTokenAPI.md)
- - [Set Up Java Memory](PluginsList_KecakMobile_DataListActionAPI.md)
- - [Kecak Mobile Datalist UI API](PluginsList_KecakMobile_datalistUiAPI.md)
- - [Kecak Mobile Form UI API](PluginsList_KecakMobile_FormUiAPI.md)
- - [Kecak Mobile Load Binder](PluginsList_KecakMobile_LoadBinder.md)
- - [Kecak Mobile Login API](PluginsList_KecakMobile_LoginAPI.md)
- - [Kecak Mobile Option Binder User Locale](PluginsList_KecakMobile_optionBinderUserLocale.md)
- - [Kecak Mobile Published App UI API](PluginsList_KecakMobile_publishedAppUiAPI.md)
- - [Kecak Mobile Refresh Token API](PluginsList_KecakMobile_refreshTokenAPI.md)
- - [Kecak Mobile Run Process API](PluginsList_KecakMobile_runProcessPageAPI.md)
- - [Kecak Mobile Store Binder Edit Profile Picture API](PluginsList_KecakMobile_storeBinder_editProfilePictureAPI.md)
- - [Kecak Mobile Store Binder File Upload API](PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
- - [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
- - [Plugins Calculation Field](pluginsList_CalculationField.md)
- - [Plugins Captcha](pluginsList_Captcha.md)
- - [Plugins Audit Trail](PluginsList_auditTrail.md)
- - [Plugins Auto Fill Select Box](PluginsList_autoFillSelectBox.md)
- - [Plugins Cancel Button](PluginsList_cancelButton.md)
- - [Plugins Datalist](PluginsList_datalist.md)
- - [Plugins Datalist Filter Select Box](pluginsList_datalistFilter_selectBox.md)
- - [Plugins Design Process](PluginsList_DesignProcess.md)
- - [Plugins Excel Import](PluginsList_excelImport.md)
- - [Plugins Form](PluginsList_Form.md)
- - [Plugins ](PluginsList_FormatterHashVariable.md)
- - [Plugins](PluginsList_formGrid.md)
- - [Plugins](pluginsList_kecakCancelButton.md)
- - [Plugins](pluginsList_mobileApprovalAPI.md)
- - [Plugins](pluginsList_mobileRequestAPI.md)
- - [Plugins](PluginsList_ParticipantMapping.md)
- - [Plugins](pluginsList_permissions.md)
- - [Plugins](PluginsList_RoleManagement.md)
- - [Plugins](PluginsList_Routes.md)
- - [Plugins](pluginsList_soap.md)
- - [Plugins](pluginsList_spreadsheets.md)
- - [Plugins](pluginsList_timePicker.md)
- - [Plugins](PluginsList_Userview.md)
- - [Plugins](PluginsList_WorkflowVariable.md)
+	 - [Start and Stop Kecak Workflow](PluginsList_KecakMobile_InboxPageAPI.md)
+	 - [Start and Stop MySQL Service](PluginsList_KecakMobile_CheckTokenAPI.md)
+	 - [Set Up Java Memory](PluginsList_KecakMobile_DataListActionAPI.md)
+	 - [Kecak Mobile Datalist UI API](PluginsList_KecakMobile_datalistUiAPI.md)
+	 - [Kecak Mobile Form UI API](PluginsList_KecakMobile_FormUiAPI.md)
+	 - [Kecak Mobile Load Binder](PluginsList_KecakMobile_LoadBinder.md)
+	 - [Kecak Mobile Login API](PluginsList_KecakMobile_LoginAPI.md)
+	 - [Kecak Mobile Option Binder User Locale](PluginsList_KecakMobile_optionBinderUserLocale.md)
+	 - [Kecak Mobile Published App UI API](PluginsList_KecakMobile_publishedAppUiAPI.md)
+	 - [Kecak Mobile Refresh Token API](PluginsList_KecakMobile_refreshTokenAPI.md)
+	 - [Kecak Mobile Run Process API](PluginsList_KecakMobile_runProcessPageAPI.md)
+	 - [Kecak Mobile Store Binder Edit Profile Picture API](PluginsList_KecakMobile_storeBinder_editProfilePictureAPI.md)
+	 - [Kecak Mobile Store Binder File Upload API](PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
+	 - [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
+	 - [Plugins Calculation Field](pluginsList_CalculationField.md)
+	 - [Plugins Captcha](pluginsList_Captcha.md)
+	 - [Plugins Audit Trail](PluginsList_auditTrail.md)
+	 - [Plugins Auto Fill Select Box](PluginsList_autoFillSelectBox.md)
+	 - [Plugins Cancel Button](PluginsList_cancelButton.md)
+	 - [Plugins Datalist](PluginsList_datalist.md)
+	 - [Plugins Datalist Filter Select Box](pluginsList_datalistFilter_selectBox.md)
+	 - [Plugins Design Process](PluginsList_DesignProcess.md)
+	 - [Plugins Excel Import](PluginsList_excelImport.md)
+	 - [Plugins Form](PluginsList_Form.md)
+	 - [Plugins Formatter Hash Variable](PluginsList_FormatterHashVariable.md)
+	 - [Plugins Form Grid](PluginsList_formGrid.md)
+	 - [Plugins Kecak Cancel Button](pluginsList_kecakCancelButton.md)
+	 - [Plugins Mobile Approval API](pluginsList_mobileApprovalAPI.md)
+	 - [Plugins Mobile Request API](pluginsList_mobileRequestAPI.md)
+	 - [Plugins Participant Mapping](PluginsList_ParticipantMapping.md)
+	 - [Plugins Permissions](pluginsList_permissions.md)
+	 - [Plugins Role Management](PluginsList_RoleManagement.md)
+	 - [Plugins Routes](PluginsList_Routes.md)
+	 - [Plugins Soap](pluginsList_soap.md)
+	 - [Plugins Spreadsheets](pluginsList_spreadsheets.md)
+	 - [Plugins Time Picker](pluginsList_timePicker.md)
+	 - [Plugins Userview](PluginsList_Userview.md)
+	 - [Plugins Workflow Variable](PluginsList_WorkflowVariable.md)
 
- </details>
-
-
-
- - Development
-	- [Compliling Core](development_compilingCore.md)
-	- [Automated Process](development_automatedProcess.md)
-	- [API](develpoment_API.md) 
-	- [Plugin Suite](development_PluginSuite.md)
-	- [Hash Variable](hashVariableList.md)
+	 </details>
 
 
-<details>
-<summary> Building Aplication </summary>
+ 
+- [Compliling Core](development_compilingCore.md)
 
-- System Administration 
-- SLA Limit
-- Advande Insignt into form Builder 
-- Building Fornt End App
-- Insight into Joget Workflow
+- [Automated Process](development_automatedProcess.md)
 
-<details>
-<summary> Participant Mapping</summary>
+- [API](develpoment_API.md) 
 
-- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
-- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
-- [Variable List](ParticipantMapping_VariableList.md)
+- [Plugin Suite](development_PluginSuite.md)
 
-</details>
+- [Hash Variable](hashVariableList.md)
 
-</details>
+
+	<details>
+	<summary> Building Aplication </summary>
+
+	- System Administration 
+	- SLA Limit
+	- Advande Insignt into form Builder 
+	- Building Fornt End App
+	- Insight into Joget Workflow
+
+	<details>
+	<summary> Participant Mapping</summary>
+
+	- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
+	- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
+	- [Variable List](ParticipantMapping_VariableList.md)
+
+	</details>
+
+	</details>
 
 <details>
 <summary> Hash Variable </summary>
