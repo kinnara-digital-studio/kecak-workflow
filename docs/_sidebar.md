@@ -9,49 +9,37 @@
 		- [Interim Participant](InterimParticipant.md)
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
-		
-		
-<details>
-<summary> Docker </summary>
-
-- [Install Docker Using Linux](Docker_InstallLinux.md)
-- [Install Docker Using Windows](Docker_InstallWindows.md)
-
-</details>
+  - Requirement
+  - Installation
+	  <details>
+	  <summary> Docker </summary>
+			
+		 - [Install Docker Using Linux](Docker_InstallLinux.md)
+		 - [Install Docker Using Windows](Docker_InstallWindows.md)
+      </details>
+      
+	  <details>
+	  <summary> Manual </summary>
 	
+		- [Install Manual Using Linux](install_ManualLinux.md)
+		- [Install Manual Using Windows](install_ManualWindows.md)
+		- [Database Set Up](databaseSetUp_manual.md)
+      </details>
+      
+      
+   - Server Maintenance
+	  <details>
+	  <summary> Maintenance </summary>
+
+	- [Start and Stop Kecak Workflow](start.md)
+	- [Start and Stop MySQL Service](stop.md)
+	- [Set Up Java Memory](tesss.md)
 	
-<details>
-<summary> Manual </summary>
+     </details>
+  
 
-- [Install Manual Using Linux](install_ManualLinux.md)
-- [Install Manual Using Windows](install_ManualWindows.md)
-- [Database Set Up](databaseSetUp_manual.md)
-
-</details>
-
-
-<details>
-<summary> Maintenance </summary>
-
-- Start and Stop Kecak Workflow
-- Start and Stop MySQL Service
-- Set Up Java Memory
-
-</details>
-
-
-<details>
-<summary> Building FLow </summary>
-
-- [Flow](buildingFlow_Flow.md)
-- [UI](buildingFlow_Ui.md)
-- [Plugins Architecture](buildingFlow_PluginArchitecture.md)
-
-</details>
- 
-	
-<details>
-<summary> Plugins List </summary>
+  <details>
+  <summary> Plugins List </summary>
 
  - [Start and Stop Kecak Workflow](PluginsList_KecakMobile_InboxPageAPI.md)
  - [Start and Stop MySQL Service](PluginsList_KecakMobile_CheckTokenAPI.md)
@@ -92,10 +80,10 @@
  - [Plugins](PluginsList_Userview.md)
  - [Plugins](PluginsList_WorkflowVariable.md)
 
-</details>
+ </details>
 
 
-<details>
+ <details>
 <summary> Delevelopment </summary>
 
 - [Compliling Core](development_compilingCore.md)
