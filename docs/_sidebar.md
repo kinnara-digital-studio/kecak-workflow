@@ -9,6 +9,8 @@
 		- [Interim Participant](InterimParticipant.md)
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
+		
+		
   <details>
   <summary> Docker </summary>
 
