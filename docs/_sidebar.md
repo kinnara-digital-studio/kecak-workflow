@@ -20,15 +20,14 @@
 
 	</details>
 
+	<details>
+	<summary> Manual </summary>
 
-  <details>
-  <summary> Manual </summary>
+	- [Install Manual Using Linux](install_ManualLinux.md)
+	- [Install Manual Using Windows](install_ManualWindows.md)
+	- [Database Set Up](databaseSetUp_manual.md)
 
-- [Install Manual Using Linux](install_ManualLinux.md)
-- [Install Manual Using Windows](install_ManualWindows.md)
-- [Database Set Up](databaseSetUp_manual.md)
-
-  </details>
+	</details>
 
   
   <details>
