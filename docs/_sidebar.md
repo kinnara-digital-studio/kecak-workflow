@@ -91,22 +91,18 @@
 
 
 
-	<details>
-	<summary> Building Aplication </summary>
+- Buiding Application
 
 	- System Administration 
 	- SLA Limit
 	- Advande Insignt into form Builder 
 	- Building Fornt End App
 	- Insight into Joget Workflow
+	- Particitpant Mapping 
+		- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
+		- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
+		- [Variable List](ParticipantMapping_VariableList.md)
 
-	<details>
-	<summary> Participant Mapping</summary>
 
-	- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
-	- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
-	- [Variable List](ParticipantMapping_VariableList.md)
-
-	</details>
 
 
