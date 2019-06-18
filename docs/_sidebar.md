@@ -9,8 +9,10 @@
 		- [Interim Participant](InterimParticipant.md)
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
-		
-		
+
+  <details>
+  <summary> Installation </summary>
+	
   <details>
   <summary> Docker </summary>
 
@@ -27,6 +29,8 @@
   - [Install Manual Using Windows](install_ManualWindows.md)
   - [Database Set Up](databaseSetUp_manual.md)
 
+  </details>
+  
   </details>
   
   <details>
