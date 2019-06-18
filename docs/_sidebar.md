@@ -26,12 +26,13 @@
 
   </details>
       
+      
   <details>
   <summary> Maintenance </summary>
 
-- Start and Stop Kecak Workflow
-- Start and Stop MySQL Service
-- Set Up Java Memory
+ - Start and Stop Kecak Workflow
+ - Start and Stop MySQL Service
+ - Set Up Java Memory
 	
   </details>
   
