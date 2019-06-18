@@ -28,18 +28,16 @@
   - [Database Set Up](databaseSetUp_manual.md)
 
   </details>
-      
-      
+  
   <details>
   <summary> Maintenance </summary>
 
- - Start and Stop Kecak Workflow
- - Start and Stop MySQL Service
- - Set Up Java Memory
+  - Start and Stop Kecak Workflow
+  - Start and Stop MySQL Service
+  - Set Up Java Memory
 	
   </details>
   
-
   <details>
   <summary> Plugins List </summary>
 
