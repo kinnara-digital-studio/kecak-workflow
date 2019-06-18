@@ -85,40 +85,40 @@
  </details>
 
 
- <details>
- <summary> Delevelopment </summary>
- 
- - [Compliling Core](development_compilingCore.md)
- - [Automated Process](development_automatedProcess.md)
- - [API](develpoment_API.md) 
- - [Plugin Suite](development_PluginSuite.md)
- 
-  </details>
-  
-  
-  <details>
-  <summary> Building Aplication </summary>
-	
- - System Administration 
- - SLA Limit
- - Advande Insignt into form Builder 
- - Building Fornt End App
- - Insight into Joget Workflow
- 
    <details>
-   <summary> Participant Mapping</summary>
+   <summary> Delevelopment </summary>
 
-   - [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
-   - [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
-   - [Variable List](ParticipantMapping_VariableList.md)
-   
-  </details>
-   	
-  </details>
-  
-  <details>
-  <summary> Hash Variable </summary>
-	
+- [Compliling Core](development_compilingCore.md)
+- [Automated Process](development_automatedProcess.md)
+- [API](develpoment_API.md) 
+- [Plugin Suite](development_PluginSuite.md)
+
+   </details>
+
+
+<details>
+<summary> Building Aplication </summary>
+
+- System Administration 
+- SLA Limit
+- Advande Insignt into form Builder 
+- Building Fornt End App
+- Insight into Joget Workflow
+
+<details>
+<summary> Participant Mapping</summary>
+
+- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
+- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
+- [Variable List](ParticipantMapping_VariableList.md)
+
+</details>
+
+</details>
+
+<details>
+<summary> Hash Variable </summary>
+
 - [What is Hash Variable](buildingAplication_HashVariabel.md)
 - [Hash Variable - App Devintion](hashVariable_AppDefinition.md)
 - [Hash Variable - Bean Shell](hashVariable_BeanShell.md)
@@ -135,4 +135,4 @@
 - [Hash Variable - Workflow Variable](hashVariable_WorkflowVariable.md)
 - [Hash Variable - Workflow Assignment](HashVariable_WorkflowAssignmentHashVariable.md)
 
-  </details>
+</details>
