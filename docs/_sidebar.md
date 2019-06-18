@@ -13,25 +13,24 @@
 
  - Installation
 	
-	
- 	<details>
- 	<summary> Docker </summary>
 
- 	- [Install Docker Using Linux](Docker_InstallLinux.md)
- 	- [Install Docker Using Windows](Docker_InstallWindows.md)
+  <details>
+  <summary> Docker </summary>
 
- 	</details>
-	
-	
-	
- 	<details>
- 	<summary> Manual </summary>
+- [Install Docker Using Linux](Docker_InstallLinux.md)
+- [Install Docker Using Windows](Docker_InstallWindows.md)
 
- 	- [Install Manual Using Linux](install_ManualLinux.md)
- 	- [Install Manual Using Windows](install_ManualWindows.md)
- 	- [Database Set Up](databaseSetUp_manual.md)
+  </details>
 
- 	</details>
+
+  <details>
+  <summary> Manual </summary>
+
+- [Install Manual Using Linux](install_ManualLinux.md)
+- [Install Manual Using Windows](install_ManualWindows.md)
+- [Database Set Up](databaseSetUp_manual.md)
+
+  </details>
 
   
   <details>
