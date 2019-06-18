@@ -83,15 +83,10 @@
 	 </details>
 
 - Development
- 
 	- [Compliling Core](development_compilingCore.md)
-
 	- [Automated Process](development_automatedProcess.md)
-
 	- [API](develpoment_API.md) 
-
 	- [Plugin Suite](development_PluginSuite.md)
-
 	- [Hash Variable](hashVariableList.md)
 
 
@@ -114,5 +109,4 @@
 
 	</details>
 
-	</details>
 
