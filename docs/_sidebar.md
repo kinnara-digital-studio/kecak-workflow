@@ -10,8 +10,7 @@
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
 		
-
- - Installation
+		
 	<details>
 	<summary> Docker </summary>
 
@@ -30,7 +29,7 @@
 
 	</details>
 
-  - Maintenance 
+
   	<details>
   	<summary> Maintenance </summary>
 
@@ -39,7 +38,7 @@
   	- Set Up Java Memory
 	
   	</details>
-  - Plugin List
+
   	<details>
   	<summary> Plugins List </summary>
 
