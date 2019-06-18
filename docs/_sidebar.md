@@ -9,14 +9,13 @@
 		- [Interim Participant](InterimParticipant.md)
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
-  
-  <details>
-  <summary> Docker </summary>
+ <details>
+ <summary> Docker </summary>
 
  - [Install Docker Using Linux](Docker_InstallLinux.md)
  - [Install Docker Using Windows](Docker_InstallWindows.md)
-
-</details>
+ 
+ </details>
 
   <details>
   <summary> Manual </summary>
