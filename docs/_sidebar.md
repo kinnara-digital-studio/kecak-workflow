@@ -83,7 +83,7 @@
 
  	</details>
 
-- Development
+
 	<details>
 	<summary> Delevelopment </summary>
 
