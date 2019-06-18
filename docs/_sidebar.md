@@ -82,17 +82,18 @@
 
 	 </details>
 
-
+- Development
  
-- [Compliling Core](development_compilingCore.md)
+	- [Compliling Core](development_compilingCore.md)
 
-- [Automated Process](development_automatedProcess.md)
+	- [Automated Process](development_automatedProcess.md)
 
-- [API](develpoment_API.md) 
+	- [API](develpoment_API.md) 
 
-- [Plugin Suite](development_PluginSuite.md)
+	- [Plugin Suite](development_PluginSuite.md)
 
-- [Hash Variable](hashVariableList.md)
+	- [Hash Variable](hashVariableList.md)
+
 
 
 	<details>
@@ -115,23 +116,3 @@
 
 	</details>
 
-<details>
-<summary> Hash Variable </summary>
-
-- [What is Hash Variable](buildingAplication_HashVariabel.md)
-- [Hash Variable - App Devintion](hashVariable_AppDefinition.md)
-- [Hash Variable - Bean Shell](hashVariable_BeanShell.md)
-- [Hash Variable - Data Hash Variable](hashVariable-DataHashVariable.md)
-- [Hash Variable - Form Binder](hashVariable_AppDefinition.md)
-- [Hash Variable - Performer](hashVariable_Performer.md)
-- [Hash Variable - Platform](hashVariable_Platform.md)
-- [Hash Variable - Request Parameter](HashVariable_RequestParameter.md)
-- [Hash Variable - Request](hashVariable_Request.md)
-- [Hash Variable - User](hashVariable_User.md)
-- [Hash Variable - Users](hashVariable_Users.md)
-- [Hash Variable - Userview Key](hashVariable_UserviewKey.md)
-- [Hash Variable - Workflow Process Hash Variable](HashVariable_WorkflowProcessHashVariable.md)
-- [Hash Variable - Workflow Variable](hashVariable_WorkflowVariable.md)
-- [Hash Variable - Workflow Assignment](HashVariable_WorkflowAssignmentHashVariable.md)
-
-</details>
