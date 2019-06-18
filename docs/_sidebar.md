@@ -11,31 +11,34 @@
 		- [Currency Handling](CurrencyHandling.md)
   - Requirement
   - Installation
-	  <details>
-	  <summary> Docker </summary>
-			
-		 - [Install Docker Using Linux](Docker_InstallLinux.md)
-		 - [Install Docker Using Windows](Docker_InstallWindows.md)
-      </details>
-      
-	  <details>
-	  <summary> Manual </summary>
-	
-		- [Install Manual Using Linux](install_ManualLinux.md)
-		- [Install Manual Using Windows](install_ManualWindows.md)
-		- [Database Set Up](databaseSetUp_manual.md)
-      </details>
-      
-      
-   - Server Maintenance
-	  <details>
-	  <summary> Maintenance </summary>
+  
+  <details>
+  <summary> Docker </summary>
 
-	- Start and Stop Kecak Workflow
-	- Start and Stop MySQL Service
-	- Set Up Java Memory
+	 - [Install Docker Using Linux](Docker_InstallLinux.md)
+	 - [Install Docker Using Windows](Docker_InstallWindows.md)
+
+</details>
+
+  <details>
+  <summary> Manual </summary>
+
+	- [Install Manual Using Linux](install_ManualLinux.md)
+	- [Install Manual Using Windows](install_ManualWindows.md)
+	- [Database Set Up](databaseSetUp_manual.md)
+
+</details>
+      
+      
+
+  <details>
+  <summary> Maintenance </summary>
+
+- Start and Stop Kecak Workflow
+- Start and Stop MySQL Service
+- Set Up Java Memory
 	
-     </details>
+   </details>
   
 
   <details>
@@ -110,12 +113,10 @@
    - [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
    - [Variable List](ParticipantMapping_VariableList.md)
    
-   </details>
+  </details>
    	
   </details>
   
- 
-
   <details>
   <summary> Hash Variable </summary>
 	
