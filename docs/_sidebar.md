@@ -11,13 +11,13 @@
 		- [Currency Handling](CurrencyHandling.md)
 		
 		
-	<details>
-	<summary> Docker </summary>
+<details>
+<summary> Docker </summary>
 
-	- [Install Docker Using Linux](Docker_InstallLinux.md)
-	- [Install Docker Using Windows](Docker_InstallWindows.md)
+- [Install Docker Using Linux](Docker_InstallLinux.md)
+- [Install Docker Using Windows](Docker_InstallWindows.md)
 
-	</details>
+</details>
 	
 	
 <details>
@@ -39,11 +39,16 @@
 
 </details>
 
-- Building Flow 
-	- [Flow](buildingFlow_Flow.md)
-	- [UI](buildingFlow_Ui.md)
-	- [Plugins Architecture](buildingFlow_PluginArchitecture.md)
-	
+
+<details>
+<summary> Building FLow </summary>
+
+- [Flow](buildingFlow_Flow.md)
+- [UI](buildingFlow_Ui.md)
+- [Plugins Architecture](buildingFlow_PluginArchitecture.md)
+
+</details>
+ 
 	
 <details>
 <summary> Plugins List </summary>
