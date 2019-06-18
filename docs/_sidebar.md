@@ -83,15 +83,12 @@
  </details>
 
 
- <details>
-<summary> Delevelopment </summary>
-
+ 
 - [Compliling Core](development_compilingCore.md)
 - [Automated Process](development_automatedProcess.md)
 - [API](develpoment_API.md) 
 - [Plugin Suite](development_PluginSuite.md)
-
-</details>
+- [Hash Variable](hashVariableList.md)
 
 
 <details>
