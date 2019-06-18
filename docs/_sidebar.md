@@ -9,8 +9,6 @@
 		- [Interim Participant](InterimParticipant.md)
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
-  - Requirement
-  - Installation
   
   <details>
   <summary> Docker </summary>
