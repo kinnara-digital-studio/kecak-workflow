@@ -9,27 +9,28 @@
 		- [Interim Participant](InterimParticipant.md)
 	- Features
 		- [Currency Handling](CurrencyHandling.md)
+		
 
   <details>
   <summary> Installation </summary>
 	
-  <details>
-  <summary> Docker </summary>
+	<details>
+	<summary> Docker </summary>
 
-  - [Install Docker Using Linux](Docker_InstallLinux.md)
-  - [Install Docker Using Windows](Docker_InstallWindows.md)
- 
-  </details>
+	- [Install Docker Using Linux](Docker_InstallLinux.md)
+	- [Install Docker Using Windows](Docker_InstallWindows.md)
+
+	</details>
 
 
-  <details>
-  <summary> Manual </summary>
+	<details>
+	<summary> Manual </summary>
 
-  - [Install Manual Using Linux](install_ManualLinux.md)
-  - [Install Manual Using Windows](install_ManualWindows.md)
-  - [Database Set Up](databaseSetUp_manual.md)
-
-  </details>
+	- [Install Manual Using Linux](install_ManualLinux.md)
+	- [Install Manual Using Windows](install_ManualWindows.md)
+	- [Database Set Up](databaseSetUp_manual.md)
+	
+	</details>
   
   </details>
   
