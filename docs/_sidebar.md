@@ -11,8 +11,7 @@
 		- [Currency Handling](CurrencyHandling.md)
 		
 
- <details>
- <summary> Installation </summary>
+ - Installation
 	
  <details>
  <summary> Docker </summary>
