@@ -1,4 +1,4 @@
-# how to install kecak manual using MySQL
+# how to install kecak manual using windows
 
 
 ## Follow This Link Kecak Workflow Installer :
