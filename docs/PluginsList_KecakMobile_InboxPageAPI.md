@@ -4,7 +4,7 @@
 
 Inbox API is plugin to view all data in certain Inbox menu from Userview, and when the data on the application is updated, then the data on Inbox API also changed.
 
-on this plugin can be set in accordance with our desire to display any data that will be inserted into Inbox API.
+On this plugin can be set in accordance with our desire to display any data that will be inserted into Inbox API.
 
 ##### Url #####
 
@@ -25,7 +25,9 @@ HTTP GET
 * processId - Process ID (optional): Process ID to be filtered
 
 ##### Example #####
-`https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.InboxApi/service?appId=trainingREST&appVersion=1`
+```json
+https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.InboxApi/service?appId=trainingREST&appVersion=1`
+```
 
 ## Use of Inbox ##
 This example is showing the Inbox for authorized user from one of Kecak app, with the Inbox we want to get is as follow :
