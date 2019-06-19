@@ -1,11 +1,7 @@
-# Mobile API #
-
-## Overview ##
-
 ### DataList Action API ###
 
 ##### Url #####
-`/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service`
+```/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service```
 
 ##### Method #####
 HTTP POST
@@ -17,5 +13,5 @@ HTTP POST
 * actionId - Action ID
 
 ##### Example #####
-`http://kecak.kinnarastudio.com:8080/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service?appId=pttimah_pobijih&dataListId=master_jabatan&actionId=rowAction_1`
+```http://kecak.kinnarastudio.com:8080/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service?appId=pttimah_pobijih&dataListId=master_jabatan&actionId=rowAction_1```
 
