@@ -14,7 +14,7 @@
 
 # Building Plugins #
 
-### What is Plugins ###
+## What is Plugins ##
 
 Plugins are a software extensions that add capabilities an app.
 
@@ -28,32 +28,22 @@ Kecak Workflow plugins architecture support 2 types of plugins structures :
 -Standard Java Plugin
 -Dynamic OSGi plugin
 
-## Activities ##
+### Standard Java Plugin ###
 
-### What is Activities ? ###
+- Build as a standard java JAR
+- Plugin classes should place name start with "org.kecak"
+- Make JAR avaible in java classpath e.g. place it under WEB-INF/lib
+- Requires restarting the JVM version conflict with base libraries or other plugins 
+- Easier to develop and test using normal java classes and libraries
 
-All processes running in the program 
+### Dynamic Osgi ###
 
-## Participant ##
+- Build as an Osgi (Open Services Gateway initiative framework) JAR bundle
+- Deploy JAR using th manage plugins int the web console 
+- Support dynamic loading/unloading/realoading without restarting
+- Runs in isolated mode thus prevents library version conflit with base libraries or other plugins 
+- More dificult to develop and test due to OSGI configuration and isolation
 
-### What is Participant ? ###
+"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsType.png" alt="buildingPluginspluginsType" />
 
-People who are charge with an assigment in an activity 
 
-example :
-
-In a simple activity there are two people right execute this activity 
-
-```
-picture
-```
-
-### Process ###
-
-Step by step from start until finish the program 
-
-example 
-
-```
-picture
-```
