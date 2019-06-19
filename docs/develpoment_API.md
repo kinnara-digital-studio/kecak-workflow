@@ -1,8 +1,7 @@
 # Rest API #
 
-## APP ##
----
-/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/submit
+
+## /json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/submit
 	
 ### Description ###
 
