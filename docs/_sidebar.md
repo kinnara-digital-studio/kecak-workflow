@@ -47,7 +47,3 @@
 		- [Hash Variable](hashVariableList.md)
 		- Builder
 		- Enterprise
-
-		- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
-		- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
-		- [Variable List](ParticipantMapping_VariableList.md)
