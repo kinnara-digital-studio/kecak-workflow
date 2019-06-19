@@ -1,15 +1,11 @@
 - [Getting Started](README.md)
-	<details>
-		<summary> Overview </summary>
-	
+	- Overview
 		- [Kecak vs Joget](kecakVsJoget.md) 
 		- [Scheduler](scheduler.md)
 		- [Email Processor](emailProcessor.md)
 		- [Mobile App](mobileApp.md)
 		- [Apps](apps.md)
-		- Features
-	</details>
-	
+		- [Features](features.md)
 	- Requirement
  	- [Installation](installation.md)
 	- [Server Maintenance](serverMaintenance.md)
