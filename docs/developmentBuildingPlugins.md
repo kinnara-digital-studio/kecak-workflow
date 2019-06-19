@@ -12,7 +12,6 @@
 - [Userview](buildingPlugins_Userview.md)
 - Publishing Apps (Versioning, Export / Import Apps)
 
-# Building Plugins #
 
 ## What is Plugins ##
 
