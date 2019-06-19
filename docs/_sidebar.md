@@ -24,17 +24,17 @@
 	- [Automated Process](development_automatedProcess.md)
 	- [API](develpoment_API.md) 
 	- [Plugin Suite](development_PluginSuite.md)
-	- Building Plugins
-		- Participants
-		- Activities
-		- Process
+	- [Building Plugins](buildingPlugins.md)
+		- [Participants](buildingFlow_ParticipantMapping.md)
+		- [Activities](buildingPlugins_Activities.md)
+		- [Process](buidingPlugins_Process.md)
 		- [Workflow Variables](buildingAplication_WorkflowVariable.md)
 		- [Routes](buildingPlugins_Routes.md)
 		- Publishing Process
 		- [Participants Mapping](buildingPlugins_ParticipantMapping.md)
-		- Form (Elements, Properties, Section& permission)(buildingPlugins_form.md)
-		- DataList (DataList Binder, Column Format, Datalist Action)
-		- Userview (Userview Menu, Permission)[buildingPlugins_Userview.md]
+		- [Form (Elements, Properties, Section& permission)](buildingPlugins_form.md)
+		- [DataList (DataList Binder, Column Format, Datalist Action)](datalist_DatalistAction.md)
+		- [Userview (Userview Menu, Permission)](buildingPlugins_Userview.md)
 		- Publishing Apps (Versioning, Export / Import Apps)
 
 	- Buiding Application
