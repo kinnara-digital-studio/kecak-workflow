@@ -10,7 +10,7 @@ https://drive.google.com/drive/folders/1FwhuJbvb9Rr1KHFv5_nQzDSwp96zVRSF?usp=sha
 
 1. Kecak Installer .rar Extract File
 After the file is extracted, it will appear as follows:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManual.png" height="30" alt="KecakInstallManual" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManual.png" height="45" alt="KecakInstallManual" />
 
 
 2. Open the Kecak Installer File
