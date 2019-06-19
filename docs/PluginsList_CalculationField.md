@@ -1,62 +1,60 @@
 ## Description
-   Calculation Field ini adalah plugins untuk mengkalkulasikan data yang ada dengan rumus kalkukasi yang bisa di sesuaikan dengan requirement yang ada.
+Calculation This field is a plugins to calculate existing data with a calculation formula that can be adjusted to the existing requirements.
 
 ### ID
-    ID dari form yang akan dibuat dari Reference Text Field
- **Mandatory** : Yes
+    ID of the form that will be created from Reference Text Field
+ ** Mandatory **: Yes
 
 ### Label
-    penamaan untuk Referensi yang akan digunakan
-**Mandatory**  
-    No
+    naming for References to be used
+** Mandatory **
+    No.
 
 
 ### Variables
-    penamaan untuk Referensi yang akan digunakan
-- **Mandatory**  
-    No
+    naming for References to be used
+- ** Mandatory **
+    No.
 
 
 ### Equation
-    Rumus / formula yang akan di lakukan
-- **Mandatory**  
-    No
+    The formula / formula that will be done
+- ** Mandatory **
+    No.
 
 ---------
 
-# Cara Penggunaan Calculation Field
+# How to Use Calculation Field
 
-### berikut ini adalah field yang harus diisi pada calculation field: ###
+The following ### is the field that must be filled in the calculation field: ###
 
-*gambar 1*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation0.png" alt="calculation0" />
+*picture 1*
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation0.png" alt = "calculation0" />
 
-### berikut adalah contoh inisialisasi variabel yang akan di hitung: ###
+### The following are examples of variable initialization to be calculated: ###
 
-*gambar 2*
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation1.png" alt="calculation1" />
+* image 2 *
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation1.png" alt = "calculation1" />
 
-* nomor 1 dan 2 adalah pendefinisian variabel yang akan dihitung
-* nomor 3 adalah rumus/formula yang akan dilakukan untuk perhitungan variabel yang telah di definisikan.
+* numbers 1 and 2 are defining variables to be calculated
+* number 3 is a formula / formula that will be done for the calculation of variables that have been defined.
 
-### contoh hasil dari perhitungan dua variabel: ###
+### example results from the calculation of two variables: ###
 
-*gambar 3*
+* image 3 *
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation2.png" alt="calculation2" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation2.png" alt = "calculation2" />
 
-gambar 3 adalah contoh perhitungan sederhana yang dituliskan pada bagian equation sebelumnya (pada gambar 2)
-* nomor 1 adalah isian angka untuk field 1 
-* nomor 2 adalah isian angka untuk field 2
-* nomor 3 adalah hasil dari rumus/formula yang dituliskan pada equation
+Figure 3 is an example of a simple calculation written in the previous equation (in figure 2)
+* number 1 is a number for field 1
+* number 2 is the number entry for field 2
+* number 3 is the result of the formula / formula written in the equation
 
 
 ### Version History ###
 
-*  **1.1.0**
-   * 
+* ** 1.1.0 **
+   *
 
-*  **1.0.0**
-   * Initial creation : Isti Fatimah
-
-
+* ** 1.0.0 **
+   * Initial creation: Isti Fatimah
