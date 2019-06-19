@@ -33,8 +33,8 @@
 		- Publishing Process
 		- [Participants Mapping](buildingPlugins_ParticipantMapping.md)
 		- [Form (Elements, Properties, Section& permission)](buildingPlugins_form.md)
-		- [DataList (DataList Binder, Column Format, Datalist Action)](datalist_DatalistAction.md)
-		- [Userview (Userview Menu, Permission)](buildingPlugins_Userview.md)
+		- [DataList](datalist_DatalistAction.md)
+		- [Userview](buildingPlugins_Userview.md)
 		- Publishing Apps (Versioning, Export / Import Apps)
 
 	- Buiding Application
