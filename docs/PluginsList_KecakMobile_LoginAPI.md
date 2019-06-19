@@ -25,7 +25,7 @@ HTTP POST
 
 The example below shows you that you have to fill basic authorization form which contains username and password to log into https://kecak.kinnarastudio.com using Login API plugin.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-Login.png" alt="kecakMobile-Login.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-Login.PNG" alt="kecakMobile-Login.png" />
 
 After you have filled basic authorization form, you have to write request body in JSON format which contains FCM token and device ID of your mobile device.
 
@@ -36,11 +36,11 @@ After you have filled basic authorization form, you have to write request body i
 }
 ```
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-Login2.png" alt="kecakMobile-Login.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-Login2.PNG" alt="kecakMobile-Login.png" />
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-Login3.png" alt="kecakMobile-Login.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-Login3.PNG" alt="kecakMobile-Login.png" />
 
 If you have done all steps above, the server will responses by giving you the token and the user data in **Response Body**
 
