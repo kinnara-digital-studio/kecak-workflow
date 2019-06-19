@@ -17,8 +17,8 @@
 
 Plugins are a software extensions that add capabilities an app.
 
--Allow the fuctionality of the system to be extended dynamically. 
--Bring about extensibility and adabtability of product features.
+- Allow the fuctionality of the system to be extended dynamically. 
+- Bring about extensibility and adabtability of product features.
 
 Any kind of integration that is not yet available in Kecak Workflow as a standard feature can be accomplished by developing a plugin, without breaking the fundamental core of the product.
 
@@ -43,6 +43,6 @@ Kecak Workflow plugins architecture support 2 types of plugins structures :
 - Runs in isolated mode thus prevents library version conflit with base libraries or other plugins 
 - More dificult to develop and test due to OSGI configuration and isolation
 
-"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsType.png" alt="buildingPluginspluginsType" />
+"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsType.png" alt="buildingPlugins-pluginsType" />
 
 
