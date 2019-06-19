@@ -32,7 +32,7 @@
 		- [Routes](buildingPlugins_Routes.md)
 		- Publishing Process
 		- [Participants Mapping](buildingPlugins_ParticipantMapping.md)
-		- [Form (Elements, Properties, Section& permission)](buildingPlugins_form.md)
+		- [Form](buildingPlugins_form.md)
 		- [DataList](datalist_DatalistAction.md)
 		- [Userview](buildingPlugins_Userview.md)
 		- Publishing Apps (Versioning, Export / Import Apps)
