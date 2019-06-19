@@ -1,6 +1,5 @@
 - [Getting Started](README.md)
-	- [Overview](overview.md)
-		- [Kecak vs Joget](kecakVsJoget.md) 
+	- [Overview](kecakVsJoget.md)
 		- [Scheduler](scheduler.md)
 		- [Email Processor](emailProcessor.md)
 		- [Mobile App](mobileApp.md)
