@@ -12,7 +12,7 @@
 	
  - Building Flow
  	- [Flow](flow.md)
-	- [UI](ui.md
+	- [UI](ui.md)
 	- [Plugins List](pluginsList.md)
 	- [Plugins Architecure](pluginsArchitecture.)
 	
