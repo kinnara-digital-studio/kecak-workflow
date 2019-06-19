@@ -15,4 +15,6 @@ HTTP POST
 * actionId - Action ID
 
 ##### Example #####
-`http://kecak.kinnarastudio.com:8080/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service?appId=pttimah_pobijih&dataListId=master_jabatan&actionId=rowAction_1`
+```json
+http://kecak.kinnarastudio.com:8080/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service?appId=pttimah_pobijih&dataListId=master_jabatan&actionId=rowAction_1`
+```
