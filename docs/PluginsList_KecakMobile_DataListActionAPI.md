@@ -1,7 +1,9 @@
 ### DataList Action API ###
 
 ##### Url #####
-`/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service`
+```json
+/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service
+```
 
 ##### Method #####
 HTTP POST
