@@ -25,13 +25,30 @@
 	- [API](develpoment_API.md) 
 	- [Plugin Suite](development_PluginSuite.md)
 	- [Hash Variable](hashVariableList.md)
+	- Building Plugins
+		- Participants
+		- Activities
+		- Process
+		- Workflow Variables
+		- Routes
+		- Publishing Process
+		- Participants Mapping
+		- Form (Elements, Properties, Section& permission)
+		- DataList (DataList Binder, Column Format, Datalist Action)
+		- Userview (Userview Menu, Permission)
+		- Publishing Apps (Versioning, Export / Import Apps)
+
 	- Buiding Application
-	- System Administration 
-	- SLA Limit
-	- Advande Insignt into form Builder 
-	- Building Fornt End App
-	- Insight into Joget Workflow
-	- Particitpant Mapping 
+		- System Administration 
+		- SLA Limit, Deadline, Exeption
+		- Advande Insignt into form Builder 
+		- Advanced Application Plugins
+		- Building Fornt End App
+		- Insight into Joget Workflow
+		- [Hash Variable](hashVariableList.md)
+		- Builder
+		- Enterprise
+
 		- [Map Activities to Form](ParticipantMapping_MapActivitiestoForms.md)
 		- [Map Activities to Plugins](ParticipantMapping_MapoolstoPlugins.md)
 		- [Variable List](ParticipantMapping_VariableList.md)
