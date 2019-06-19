@@ -5,7 +5,7 @@
 - [Process](buidingPlugins_Process.md)
 - [Workflow Variables](buildingAplication_WorkflowVariable.md)
 - [Routes](buildingPlugins_Routes.md)
-- Publishing Process
+- [Publishing Process](buidingPlugins_PublishingProcess.md	)
 - [Participants Mapping](buildingPlugins_ParticipantMapping.md)
 - [Form](buildingPlugins_form.md)
 - [DataList](datalist_DatalistAction.md)
