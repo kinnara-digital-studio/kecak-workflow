@@ -24,4 +24,4 @@
 	- [API](develpoment_API.md) 
 	- [Plugin Suite](development_PluginSuite.md)
 	- [Building Plugins](developmentBuildingPlugins.md)
-	- [Buiding Application](developmentBuildingApp.md)
+	- [Buiding Application](developmentBuildingApps.md)
