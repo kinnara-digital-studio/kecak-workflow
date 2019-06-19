@@ -13,10 +13,10 @@
 	- [Server Maintenance](serverMaintenance.md)
 	
  - Building Flow
- 	- [Flow](flow.md)
-	- [UI](ui.md)
+ 	- [Flow](buildingFlow_Flow.md)
+	- [UI](buildingFlow_Ui.md)
 	- [Plugins List](pluginsList.md)
-	- [Plugins Architecure](pluginsArchitecture.)
+	- [Plugins Architecure](buildingFlow_PluginArchitecture.md)
 	
 - Development
 	- [Compliling Core](development_compilingCore.md)
@@ -29,7 +29,7 @@
 		- [Process](buidingPlugins_Process.md)
 		- [Workflow Variables](buildingAplication_WorkflowVariable.md)
 		- [Routes](buildingPlugins_Routes.md)
-		- Publishing Process
+		- [Publishing Process](buidingPlugins_Process.md)
 		- [Participants Mapping](buildingPlugins_ParticipantMapping.md)
 		- [Form](buildingPlugins_form.md)
 		- [DataList](datalist_DatalistAction.md)
