@@ -36,21 +36,16 @@ HTTP GET
 This example is showing the Form Data for authorized user from one of Kecak app, with the form data we want to get is as follow
 
 
-![Form_Data](/uploads/cacc03d433bc16298a3c130d0e0b5976/Form_Data.PNG)
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Form_Data.PNG" alt="KecakMobile-LoadBinderAPI-Form_Data" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
-
-![Authorization](/uploads/05ac49e6c5f812b2107b89802005c0d4/Authorization.PNG)
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Form_Data-Authorization.PNG" alt="KecakMobile-LoadBinderAPI-Authorization" />
 
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
-
-![Headers](/uploads/696188b795c078740e980071f6eb3769/Headers.PNG)
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Form_Data-Headers.PNG" alt="KecakMobile-LoadBinderAPI-Headers" />
 
 
