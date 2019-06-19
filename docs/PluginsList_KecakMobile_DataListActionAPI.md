@@ -14,4 +14,3 @@ HTTP POST
 
 ##### Example #####
 ```http://kecak.kinnarastudio.com:8080/web/json/plugin/com.kinnara.kecakplugins.mobileapi.DataListActionApi/service?appId=pttimah_pobijih&dataListId=master_jabatan&actionId=rowAction_1```
-
