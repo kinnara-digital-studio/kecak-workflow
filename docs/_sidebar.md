@@ -34,7 +34,7 @@
 		- [Form](buildingPlugins_form.md)
 		- [DataList](datalist_DatalistAction.md)
 		- [Userview](buildingPlugins_Userview.md)
-		- Publishing Apps (Versioning, Export / Import Apps)
+		- Publishing Apps 
 
 	- Buiding Application
 		- System Administration 
