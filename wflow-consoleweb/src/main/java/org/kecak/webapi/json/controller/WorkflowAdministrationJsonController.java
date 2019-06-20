@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Controller
-public class AdminWorkflowJsonController {
+public class WorkflowAdministrationJsonController {
     @Autowired
     private WorkflowUserManager workflowUserManager;
     @Autowired
