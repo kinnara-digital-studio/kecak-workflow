@@ -21,7 +21,8 @@ RequestMethod.POST
 
 ### Sample Result ###
 
-```
+```json
+
 {
 	"data" : " ",
 	"message" : " ",
