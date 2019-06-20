@@ -43,8 +43,4 @@ RequestMethod.POST
 }
 ```
 
-<<<<<<< HEAD
 < img src ="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/api_example.png" alt="api_example" />
-=======
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/api_example.png" alt="api_example />
->>>>>>> 4242aa7e6fd201a54e511f690836bf845e117b74
