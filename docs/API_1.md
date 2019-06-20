@@ -24,8 +24,7 @@ RequestMethod.POST
 ```
 {
 	"data" : " "
-	
 	"message" : " "
-	
 	"digest" : " "
 }
+```
