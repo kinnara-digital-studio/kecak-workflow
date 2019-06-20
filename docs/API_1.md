@@ -43,4 +43,4 @@ RequestMethod.POST
 }
 ```
 
-"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/api_example.png" alt="api_example" />
+https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/api_example.png" alt="api_example />
