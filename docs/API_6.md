@@ -19,3 +19,18 @@ RequestMethod.POST
 | processId | Process ID |
 
 ### Sample Result
+
+```json
+{
+	"processId" : "",
+	"activityId" : "",
+	"dateCreated" : "",
+	"dueDate" : "",
+	"priority" : ""
+}
+{
+	"processId" : "",
+	"activityId" : ""
+}
+```
+

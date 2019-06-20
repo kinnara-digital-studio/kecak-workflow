@@ -22,3 +22,11 @@ RequestMethod.PUT
  JSONException |  |
  
 ### Sample Result
+
+```json
+{
+	"data" : "",
+	"message" : "",
+	"digest" : ""
+}
+```

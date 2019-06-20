@@ -24,7 +24,7 @@ RequestMethod.POST
 ```json
 
 {
-	"data" : " "
-	"message" : " "
+	"data" : " ",
+	"message" : " ",
 	"digest" : " "
 }

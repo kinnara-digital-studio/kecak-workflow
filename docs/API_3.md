@@ -23,3 +23,10 @@ RequestMethod.GET
 | digest | hash calculation of data json |
 
 ### Sample Result
+
+```json
+{
+	"total" : "",
+	"data" : "",
+	"digest" ""
+}

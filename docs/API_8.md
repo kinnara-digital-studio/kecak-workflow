@@ -14,3 +14,10 @@ RequestMethod.GET
 | digest |  |
 
 ### Sample Result
+
+```json
+
+{
+	"total" : ""
+}
+```

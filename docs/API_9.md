@@ -20,3 +20,12 @@ RequestMethod.GET
 
 
 ### Sample Result
+
+```json
+
+{
+	"activity" : "",
+	"process" : "",
+	"assigneId" : ""
+}
+```

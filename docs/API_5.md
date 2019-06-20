@@ -13,3 +13,9 @@ RequestMethod.GET
 | dataListId |  |
 
 ### Sample Result
+
+```json
+{
+	"total" : ""
+}
+```

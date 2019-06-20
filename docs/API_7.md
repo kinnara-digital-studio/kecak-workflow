@@ -17,3 +17,14 @@ RequestMethod.POST
 | assignmentId | Assignment ID |
 
 ### Sample Result
+
+```json
+{
+	"activityId" : "",
+	"processId" : "",
+	"digest" : "",
+	"message" : "",
+	"data" : ""
+}
+
+```

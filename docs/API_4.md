@@ -18,3 +18,11 @@ RequestMethod.GET
 | digest | Hash calculation of data json |
 
 ### Sample Result
+
+```json
+{
+	"message" : "",
+	"digest" : ""
+}
+
+```
