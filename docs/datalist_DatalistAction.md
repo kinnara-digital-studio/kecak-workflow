@@ -116,3 +116,22 @@ Add parameter value to the hyperlink define above
 | Name | Description |
 |---|---|
 | Rules | Controls on when eh action should appear |
+
+
+
+
+- JSON Datalist Binder 
+
+- SOAP Datalist Binder :
+	- Plugins bundel content several SOAP components 
+	- Plugins bundel consist of :
+		- SOAP options binder : data provider fo element options (Select box / radio button/ check box/ submit button)
+		- SOAP tool : send SOAP request 
+		- multirow SOAP tool : send SOAP request and use form table record as SOAP body request
+		- SOAP datalist binder : data binder for data list table 
+		- SOAP binder
+		
+
+
+- JDBC Datalist Binder
+- Currency Format
