@@ -32,3 +32,16 @@ Kecak Workflow plugins architecture support 2 types of plugins structures :
 
 "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsType.png" alt="buildingPluginspluginsType" />
 
+
+
+
+- [Participant]()
+- [Activities]()
+- [Process]()
+- [Workflow Variable]()
+- [Routes]()
+- [Publishing Process]()
+- [Form]()
+- [Datalist]()
+- [Userview]()
+- [Publising Apps]()

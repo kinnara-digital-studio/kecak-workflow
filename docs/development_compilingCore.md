@@ -1,7 +1,8 @@
 ## Compiling Kecak-Core
 
 ### Clone Kecak-Core
-clone kecak-workflow to your local ccomputer 
+
+Clone kecak-workflow to your local computer 
 ```html
 https://gitlab.com/kinnarastudio/kecak-workflow.git
 ```
@@ -9,13 +10,14 @@ or use this
 ```html
 git@gitlab.com:kinnarastudio/kecak-workflow.git
 ```
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compilingcore.PNG" alt="compilingcore" />
 
 ### Compile Kecak-Core
 
 Prepare to compile Kecak-Core on your windows :
 
-Open folder wfolw-app , for example : thispc > Local Disk (C:) > wflow-app
+Open folder wfolw-app , for example : this pc > Local Disk (C:) > wflow-app
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compilingcore2.png" alt="compilingcore2" />
 

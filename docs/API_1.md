@@ -18,6 +18,10 @@ RequestMethod.POST
 | appVersion | put 0 for current published app |
 | formDefId | Form ID |
 
+### Example 
+
+https://kecak.kinnarastudio.com/web/json/app/testing/3/data/form/masterUser/submit
+
 
 ### Sample Result ###
 
