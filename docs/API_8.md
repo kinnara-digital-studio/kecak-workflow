@@ -1,6 +1,10 @@
-### /json/data/assignment/(*:assignmentId)
+### Get Assignment Count
 
 ### Description
+
+### Value
+
+`/json/data/assignments/count`
 
 ### Method
 

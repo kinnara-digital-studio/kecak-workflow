@@ -1,21 +1,30 @@
-### /json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)/count
+## Get List 
 
-### Description
+### Description 
 
-### Method
+API to retrieve datalist data 
 
-RequestMethod.GET
+### Value 
+
+`/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)`
+
+### Parameters
 
 | Parameters | Description |
 |---|---|
 | appId |  |
 | appVersion |  |
 | dataListId |  |
+| page |  |
+| sort |  |
+| desc |  |
+| digest |  |
 
-### Sample Result
+# Sample Result
 
 ```json
 {
-	"total" : ""
+	
 }
+
 ```

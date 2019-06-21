@@ -1,6 +1,10 @@
-### /json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/(*:primaryKey)
+### Get List Count 
 
-### Description 
+### Description
+
+### Value
+
+`/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)/count`
 
 
 ### Method
@@ -13,16 +17,12 @@ RequestMethod.GET
 |---|---|
 | appId |  |
 | appVersion |  |
-| formDefId |  |
-| primaryKey |  |
-| digest | Hash calculation of data json |
+| dataListId |  |
 
 ### Sample Result
 
 ```json
 {
-	"message" : "",
-	"digest" : ""
+	"total" : ""
 }
-
 ```

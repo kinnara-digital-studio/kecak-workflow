@@ -1,8 +1,12 @@
-### /json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/submit
-	
+### Post Form Submit 
+
 ### Description ###
 
 Submit Form into table, can be used to save master data
+
+### Value
+
+`/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/submit`
 
 ### Method ###
 

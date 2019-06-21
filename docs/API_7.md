@@ -1,8 +1,12 @@
-### /json/data/assignment/(*:assignmentId)
+### Post Assignment Complete
 
 ### Description 
 
 Complete assignment form
+
+### Value 
+
+`/json/data/assignment/(*:assignmentId)`
 
 ### Method
 

@@ -1,8 +1,12 @@
-### /json/data/assignments
+## Get Assignmets
 
 ### Description
 
-## Method
+### Value  
+
+/json/data/assignments
+
+### Method
 
 RequestMethod.GET
 
