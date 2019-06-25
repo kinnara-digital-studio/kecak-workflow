@@ -1,8 +1,8 @@
 ## Res API 
 
-- [/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/submit](API_1.md)
-- [/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/(*:primaryKey)](API_2.md)
-- [/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)](API_3.md)
+- [Post Form Submit ](API_1.md)
+- [Put Form Data](API_2.md)
+- [](API_3.md)
 - [/json/data/app/(*:appId)/version/(*:appVersion)/form/(*:formDefId)/(*:primaryKey)](API_4.md)
 - [/json/data/app/(*:appId)/version/(*:appVersion)/list/(*:dataListId)/count](API_5.md)
 - [/json/data/app/(*:appId)/version/(*:appVersion)/process/(*:processId)](API_6.md)

@@ -1,6 +1,6 @@
 ## Participant Mapping ##
 
-Participant Mappiing digunakan untuk memetakan Participant yang sesuai dengan role's nya.
+Participant Mapping digunakan untuk memetakan Participant yang sesuai dengan role's nya.
 
 ### Map Partipant to Users ##
 
