@@ -30,3 +30,6 @@ RequestMethod.GET
 {
 	
 }
+
+---
+- [JSON API](ResAPI.md)

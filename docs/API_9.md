@@ -33,3 +33,6 @@ RequestMethod.GET
 	"assigneId" : ""
 }
 ```
+
+---
+- [JSON API](ResAPI.md)

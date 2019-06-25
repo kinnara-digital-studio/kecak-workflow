@@ -28,3 +28,6 @@ API to retrieve datalist data
 }
 
 ```
+
+---
+- [JSON API](ResAPI.md)

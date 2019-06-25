@@ -25,3 +25,6 @@ RequestMethod.GET
 	"total" : ""
 }
 ```
+
+---
+- [JSON API](ResAPI.md)

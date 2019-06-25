@@ -38,3 +38,5 @@ RequestMethod.POST
 }
 ```
 
+---
+- [JSON API](ResAPI.md)

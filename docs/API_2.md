@@ -36,3 +36,6 @@ RequestMethod.PUT
 	"digest" : ""
 }
 ```
+
+---
+- [JSON API](ResAPI.md)
