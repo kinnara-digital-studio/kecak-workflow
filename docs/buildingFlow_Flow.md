@@ -2,15 +2,15 @@
 
 ## Indetify start and and proses 
 Start of the Process
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-1" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-1.PNG" alt="flow" />
 End of the Process
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.png" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow" />
 
 ## Indentify Process Participant
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-3" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-3.PNG" alt="flow" />
 
 ## Indentify As is Process activities 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/as-is-process" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/as-is-process.PNG" alt="flow" />
 
 ## Identify Bussines Rule
 	If leave balance is sufficient:
