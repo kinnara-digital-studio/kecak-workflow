@@ -16,7 +16,7 @@
  	- [Flow](buildingFlow_Flow.md)
 	- [UI](buildingFlow_Ui.md)
 	- [Plugins List](pluginsList.md)
-	- [Plugins Architecure](pluginsArchitecture.)
+	- [Plugins Architecure](buildingFlow_PluginArchitecture.md)
 	
 - Development
 	- [Compliling Core](development_compilingCore.md)
