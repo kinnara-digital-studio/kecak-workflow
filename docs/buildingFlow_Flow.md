@@ -25,4 +25,4 @@ End of the Process
 		Inform applicant on the rejected leave
 
 ## Draw the Improved / To-be Process as flowchart
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-4" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-4.PNG" alt="flow" />
