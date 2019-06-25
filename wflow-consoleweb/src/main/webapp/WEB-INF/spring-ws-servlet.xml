@@ -28,4 +28,39 @@
 					  targetNamespace = "http://kecak.org/soap/form/definitions">
 		<sws:xsd location = "/WEB-INF/form.xsd"/>
 	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "audittrail"
+					  portTypeName = "Audit Trail"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/audittrail.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "sla"
+					  portTypeName = "SLA"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/sla.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "monitoring"
+					  portTypeName = "Monitoring"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/monitoring.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "app"
+					  portTypeName = "App"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/app.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "assignment"
+					  portTypeName = "Assignment"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/assignment.xsd"/>
+	</sws:dynamic-wsdl>
 </beans>

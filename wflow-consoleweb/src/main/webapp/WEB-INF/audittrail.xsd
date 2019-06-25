@@ -1,0 +1,44 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/process/schemas">
+
+    <xs:element name = "AuditTrailListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "dateFrom" type = "xs:string"/>
+                <xs:element name = "dateTo" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AuditTrailListResponse" />
+
+    <xs:element name="map">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="xps:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="item">
+            <xs:selector xpath="item"/>
+            <xs:field xpath="key"/>
+        </xs:unique>
+    </xs:element>
+
+    <xs:complexType name="MapType">
+        <xs:sequence>
+            <xs:element ref="xps:map"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MapItemType">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
