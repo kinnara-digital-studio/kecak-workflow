@@ -51,7 +51,7 @@ https://kecak.kinnarastudio.com/web/json/app/testing/3/data/form/masterUser/subm
 }
 ```
 
-< img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/api_example.png" alt="api_example" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/api_example.png" alt="api_example" />
 
 ---
 
