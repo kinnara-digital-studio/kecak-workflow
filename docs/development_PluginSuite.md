@@ -1,5 +1,36 @@
 ## Plugin Suite ##
 
+- Advance Datalist Filter                                        
+- Audit Trail Plugins Bundle 
+- Autofill Select Box Plugins Bundle 
+- Composite Tools 
+- CRUD Menu 
+- Dashboard Report Menu 
+- Datalist Inbox Menu 
+- Doc to PDF Tool 
+- Directory Manager 
+- Environment Variable Form Binder 
+- Form Attachment Grid 
+- Form Grid 
+- Heatmap Report 
+- Jasper Report 
+- JDBC Plugins Bundle 
+- Mobile Approval API 
+- Multipurpose Text Field 
+- Popup Select 
+- Run Process Datalist Actions 
+- REST Plugins Bundle 
+- SOAP Plugins Bundle 
+- SLA Report 
+- Submit Buttons 
+- Workflow Variable Update Tool 
+- Workflow Components Options Binder 
+
+
+
+
+---
+
 ### Advance Advance Datalist Filter ###
 
 Datalist filter with select box layout and searchable functionality 
