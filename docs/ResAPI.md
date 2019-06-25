@@ -7,5 +7,5 @@
 - [Get List Count](API_5.md)
 - [Start New Process](API_6.md)
 - [Post Assignment Complete](API_7.md)
-- [Get Assignmeng](API_8.md)
+- [Get Assignment](API_8.md)
 - [Get Assignment Count](API_8.md)
