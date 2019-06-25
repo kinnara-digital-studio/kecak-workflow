@@ -69,7 +69,7 @@ Kecak Workflow plugins architecture support 2 types of plugins structures :
 
 	- The activator class is the bundle's hook to the lifecycle layer for management.
 
-	-Used to register your plugin class in start method
+	- Used to register your plugin class in start method
 
 
 
@@ -82,4 +82,4 @@ Kecak Workflow plugins architecture support 2 types of plugins structures :
 - [Form](buildingPlugins_form.md)
 - [Datalist](datalist_DatalistAction.md)
 - [Userview](buildingPlugins_Userview.md)
-- [Publising Apps]()
+- [Publising Apps](developmentBuildingApps.md)
