@@ -1,37 +1,47 @@
 # Building Plugins #
 
-## What is Plugins ##
+### Setting up JDK and Apache Maven 2
 
-Plugins are a software extensions that add capabilities an app.
+#### For Windows
 
-- Allow the fuctionality of the system to be extended dynamically. 
-- Bring about extensibility and adabtability of product features.
+1. Open windows system properties dialog
+2. Selecting the `Advanced` tab, and the `Environment Variables` button.
+3. Add new System Variable named `JAVA_HOME`, and set its value to JDK installation directory. E.g. `C:\Program Files\Java\jdk1.6.0_27`
+4. Add new System Variable named `M2_HOME, and set its value to Apache Maven 2 installation directory. E.g. `C:\Program Files\apache-maven-2.2.1`.
+5. Append `;%JAVA_HOME%\bin;%M2_HOME%\bin` to System Variable named `Path`.
+6. Open Command Prompt and run `mvn –version` to verify.
 
-Any kind of integration that is not yet available in Kecak Workflow as a standard feature can be accomplished by developing a plugin, without breaking the fundamental core of the product.
+#### For Linux
 
-Kecak Workflow plugins architecture support 2 types of plugins structures :
+1. Open Command Terminal
+2. Set Environment Variable `JAVA_HOME` to the location of JDK. E.G `export JAVA_HOME=/usr/java/jdk1.6.0_27`.
+3. Set environment variable `M2_HOME` to the location of your Apache Maven 2. E.g. `export M2_HOME=/usr/apache-maven-2.2.1`.
+4. Run `export PATH=$PATH:$JAVA_HOME/bin: $M2_HOME/bin` to add both into environment variable named `PATH`.
+5. Run `mvn –version` to verify.
 
-- Standard Java Plugin
-- Dynamic OSGi plugin
+### Setting up Joget Workflow Maven Depedencies 
 
-### Standard Java Plugin ###
+This is one time setup only
 
-- Build as a standard java JAR
-- Plugin classes should place name start with "org.kecak"
-- Make JAR avaible in java classpath e.g. place it under WEB-INF/lib
-- Requires restarting the JVM version conflict with base libraries or other plugins 
-- Easier to develop and test using normal java classes and libraries
+#### For Windows
 
-### Dynamic Osgi ###
+1. Open Command Prompt
+2. Go to the location of your Developer Training Materials, go into Maven Dependency folder.
+3. Run `setup-dependency-window.bat`.
 
-- Build as an Osgi (Open Services Gateway initiative framework) JAR bundle
-- Deploy JAR using th manage plugins int the web console 
-- Support dynamic loading/unloading/realoading without restarting
-- Runs in isolated mode thus prevents library version conflit with base libraries or other plugins 
-- More dificult to develop and test due to OSGI configuration and isolation
+#### For Linux 
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsType.png" alt="buildingPluginspluginsType" />
+1. Open Command Terminal.
+2. Go to the location of your Developer Training Materials, go into Maven Dependency folder.
+3. Run `setup-dependency-linux.sh`.
 
+### Getting and Building Joget WOrkflow Source Code 
+
+- Checkout the source from public mirror at GitHub at or main SVN repository at `http://svn.github.com/jogetworkflow/jw-community.git http://dev.joget.org/svn/jw-community/trunk` (requires login) or get it in your Developer Training Materials
+
+- Assuming you are using the CollabNet client, in the directory you created for Joget source, run `svn co http://svn.github.com/jogetworkflow/jw-community.git` to check out code from GitHub.
+
+- Run “mvn clean install” in wflow-app project directory to build it.
 
 ### Creating a maven project for your plugins
 
