@@ -13,8 +13,8 @@
 	- [Server Maintenance](serverMaintenance.md)
 	
  - Building Flow
- 	- [Flow](flow.md)
-	- [UI](ui.md)
+ 	- [Flow](buildingFlow_Flow.md)
+	- [UI](buildingFlow_Ui.md)
 	- [Plugins List](pluginsList.md)
 	- [Plugins Architecure](pluginsArchitecture.)
 	
