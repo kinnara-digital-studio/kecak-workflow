@@ -79,7 +79,7 @@ This is one time setup only
 
 	- The activator class is the bundle's hook to the lifecycle layer for management.
 
-	-Used to register your plugin class in start method
+	- Used to register your plugin class in start method
 
 
 
@@ -92,4 +92,4 @@ This is one time setup only
 - [Form](buildingPlugins_form.md)
 - [Datalist](datalist_DatalistAction.md)
 - [Userview](buildingPlugins_Userview.md)
-- [Publising Apps]()
+- [Publising Apps](buidingPlugins_PublishingApps.md)
