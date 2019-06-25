@@ -82,4 +82,4 @@ Kecak Workflow plugins architecture support 2 types of plugins structures :
 - [Form](buildingPlugins_form.md)
 - [Datalist](datalist_DatalistAction.md)
 - [Userview](buildingPlugins_Userview.md)
-- [Publising Apps](developmentBuildingApps.md)
+- [Publising Apps](buidingPlugins_PublishingApps.md)
