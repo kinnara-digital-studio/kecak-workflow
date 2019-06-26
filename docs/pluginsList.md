@@ -13,7 +13,7 @@
 - [Kecak Mobile Store Binder Edit Profile Picture API](PluginsList_KecakMobile_storeBinder_editProfilePictureAPI.md)
 - [Kecak Mobile Store Binder File Upload API](PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
 - [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
-- [Plugins Calculation Field](pluginsList_CalculationField.md)
+- [Plugins Calculation Field](PluginsList_CalculationField.md)
 - [Plugins Captcha](pluginsList_Captcha.md)
 - [Plugins Audit Trail](PluginsList_auditTrail.md)
 - [Plugins Auto Fill Select Box](PluginsList_autoFillSelectBox.md)
