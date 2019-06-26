@@ -17,6 +17,7 @@ Navigate To kecak-workflow Folder
 
 (Optional, Not Necessary For Newer Versions) Execute Setup.Sh Using Command :
 ``` sh setup.sh [host] [dbname] [dbuser] [dbpassword] ```
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux4.png" height="60" alt="KecakInstallManualLinux3" />
 
 
@@ -25,6 +26,7 @@ Wait Until Setup Process Finished
 
 
 To Run Server Type Command : sh tomcat8.sh start
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux6.png" height="60" alt="KecakInstallManualLinux3" />
 
 
