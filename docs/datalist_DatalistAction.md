@@ -13,7 +13,7 @@ List Datalist Action
 ## Delete Action ##
 Drag Deleted into row action 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deletedDrag" alt="datalist-deletedDrag" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deletedDrag.png" alt="datalist-deletedDrag" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteTop.png" alt="datalist-deleteTop" />
 
