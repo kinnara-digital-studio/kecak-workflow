@@ -11,7 +11,7 @@ List Datalist Action
 - Process Admin 
 
 ## Delete Action ##
-Drag Deleted into row action 
+Drag delete action plugin into row action 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deletedDrag.png" alt="datalist-deletedDrag" />
 
