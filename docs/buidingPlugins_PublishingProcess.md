@@ -2,8 +2,8 @@
 
 Publishing Process is section where is users can start processes of published application without having to go through without having to go through the user view
 
-"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-publishingProcess.png" alt="buildingPluginspublishingProcess" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-publishingProcess.png" alt="buildingPluginspublishingProcess" />
 
 You can Control who starts a process through Process Start White List setting.
 
-"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Processs.png" alt="buildingPluginsProcess" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Processs.png" alt="buildingPluginsProcess" />
