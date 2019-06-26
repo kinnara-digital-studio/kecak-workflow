@@ -19,7 +19,7 @@ Each particaipant declared in Process Design would have its mapping configure he
 In this section, one would be required to map the Activity to its coresponding Form.
 ```
 
-- [Map Tools to Plugins](ParticipantMapping_MapoolstoPlugins.md)
+- [Map Tools to Plugins](https://kinnara-digital-studio.github.io/kecak-workflow/#/ParticipantMapping_MapoolstoPlugins)
 ```
 Process Tool Plugin is used to execute Tool inserted as part of the process flow.
 ```
