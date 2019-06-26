@@ -52,7 +52,7 @@ Request parameters are needed to filter the userview by its *appId*, *appVersion
 *id*         : training_REST <br/>
 *digest*     : <br/>
 
-![Request_Parameters](/uploads/3c3d6e24eadc7cfc74f829181c1eaad0/Request_Parameters.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-Userview4.PNG" alt="KecakMobile-Userview" />
 
 
 If you have done all steps above, the server will responses by giving you JSONBody in **Response Body** which contains *appId*, *userviewId*, *digest*, *json*, and *status*.
