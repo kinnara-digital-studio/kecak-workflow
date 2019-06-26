@@ -3,13 +3,16 @@
 
 Prepare For Database, Make Sure Your Database Up And Running
 Download kecak-workflow From Here Using Command Line (Curl Or Wget)
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux1.png" alt="KecakInstallManualLinux1" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux1.png" height="60" alt="KecakInstallManualLinux1" />
 
 Extract Downloaded File Using Command tar -xvf [downloaded file]
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux2.png" height="60" alt="KecakInstallManualLinux2" />
 
 Navigate To kecak-workflow Folder
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux3.png" alt="KecakInstallManualLinux3" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux3.png" height="60" alt="KecakInstallManualLinux3" />
 
 
 (Optional, Not Necessary For Newer Versions) Execute Setup.Sh Using Command :
