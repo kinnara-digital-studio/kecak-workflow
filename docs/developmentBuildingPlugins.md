@@ -7,7 +7,7 @@
 1. Open windows system properties dialog
 2. Selecting the `Advanced` tab, and the `Environment Variables` button.
 3. Add new System Variable named `JAVA_HOME`, and set its value to JDK installation directory. E.g. `C:\Program Files\Java\jdk1.6.0_27`
-4. Add new System Variable named `M2_HOME, and set its value to Apache Maven 2 installation directory. E.g. `C:\Program Files\apache-maven-2.2.1`.
+4. Add new System Variable named `M2_HOME`, and set its value to Apache Maven 2 installation directory. E.g. `C:\Program Files\apache-maven-2.2.1`.
 5. Append `;%JAVA_HOME%\bin;%M2_HOME%\bin` to System Variable named `Path`.
 6. Open Command Prompt and run `mvn –version` to verify.
 
