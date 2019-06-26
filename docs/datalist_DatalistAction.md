@@ -75,7 +75,7 @@ Delete Action on Buttom
 
 #### Download PDF - Properties - Visibility Control ####
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDFvisibiltyControl.png" alt="datalist-downloadPDFvisibiltyControl" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDFvisibilyControl.png" alt="datalist-downloadPDFvisibilyControl" />
 
 ## Datalist Action - Hyperlink ##
 
