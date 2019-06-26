@@ -53,7 +53,6 @@ Request parameters are needed to filter the form by its *appId*, *appVersion*, *
 *id*         : testDuaForm1 <br/>
 *digest*     : <br/>
 
-![Request_Parameters](/uploads/c7ec46ad4f2da54589bce4b627694711/Request_Parameters.PNG)
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Request_Parameters.PNG" alt="KecakMobile-FormPageAPI-Request_Parameters" />
 
 
