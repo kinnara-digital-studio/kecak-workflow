@@ -1,7 +1,7 @@
 # Hash Variable #
 
 - [What is Hash Variable](buildingAplication_HashVariabel.md)
-- [Hash Variable - App Devintion](hashVariable_AppDefinition.md)
+- [Hash Variable - App Definition](hashVariable_AppDefinition.md)
 - [Hash Variable - Bean Shell](hashVariable_BeanShell.md)
 - [Hash Variable - Data Hash Variable](hashVariable-DataHashVariable.md)
 - [Hash Variable - Form Binder](hashVariable_AppDefinition.md)
