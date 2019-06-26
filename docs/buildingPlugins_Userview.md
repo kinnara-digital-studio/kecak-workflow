@@ -2,7 +2,7 @@
 
 ### Create New Userview 
 
-<img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-createNewUserview.png" alt="userview-createNewUserview" />
+<img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-createnewUserview.png" alt="userview-createNewUserview" />
 
 
 #### ID 
