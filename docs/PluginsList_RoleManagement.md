@@ -171,10 +171,10 @@ The data has been stored, then the data display is as follows (red marked):
 : active directory. Employee database. Name, phone number username, address, etc. [RELATED WITH EMAIL]
 
 example data from LDAP in Users when Field Role Group:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement11.png" alt="roleManagement11" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_group_user.png" alt="roleManagement11" />
 
 example data from LDAP in Groups when Field Role Group:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement12.png" alt="roleManagement12" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_group_groups.png" alt="roleManagement12" />
 
 
 ### Version History ###
