@@ -13,6 +13,8 @@ b. The second, called "Supervisor approval", is required of the Supervisor.
 c. The third, called "HOD approval", is required of the HOD.
 
 In your Workflow Designer, click on the Activity element icon on the element menu and then click on the Requestor swimlane.
+
+
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-activity1.png" alt="buildingPlugins-activity1" />
 
 This will add an activity for your Requestor. To change the activity name from "Activity 1" to "Apply leave", click on the Selection element icon on the element menu and then double-click on Activity 1 in the swimlane.  In the resulting dialog box, change "Activity 1" to "Apply leave" in the Name field.
