@@ -15,8 +15,11 @@ Drag delete action plugin into row action
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deletedDrag.png" alt="datalist-deletedDrag" />
 
+Delete Action on Side 
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteTop.png" alt="datalist-deleteTop" />
 
+Delete Action on Buttom
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteButton.png" alt="datalist-deleteButton" />
 
