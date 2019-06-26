@@ -1,17 +1,11 @@
 ## Description
-   Plugins From Grid functions to display Grid data which usually can be more than 1 data.
-   This Form Grid requires an additional form as a place to store data.
-
-   The following is data that must be filled when using Form Grid:
-
-   An example of using Form Grid is in the PT Timah Application for SHP Submission
+Plugins From Grid functions to display Grid data which usually can be more than 1 data.
+This Form Grid requires an additional form as a place to store data.
 
 
-#### Information ####
+The following is data that must be filled when using Form Grid:
 
-## Creating a Data Form (example for Attachment data) ##
-
-* image 2 *
+An example of using Form Grid is in the PT Timah Application for SHP Submission
 
 # Kecak Audit Trail Plugin
 
