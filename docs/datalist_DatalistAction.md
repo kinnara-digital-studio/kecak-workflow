@@ -117,7 +117,7 @@ Add parameter value to the hyperlink define above
 
 #### Hyperlink properties - Visibilty Control ####
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlinkVisibiltyControl.png" alt="datalist-hyperlinkVisibiltyControl" />
+<img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlinkVisibiltyControl.png" alt="datalist-hyperlinkVisibiltyControl" />
 
 | Name | Description |
 |---|---|
