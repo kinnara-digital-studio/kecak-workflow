@@ -25,7 +25,7 @@ Wait Until Setup Process Finished
 
 
 To Run Server Type Command : sh tomcat8.sh start
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux6.png" alt="KecakInstallManualLinux3" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakInstallManualLinux6.png" height="60" alt="KecakInstallManualLinux3" />
 
 
 See Running Logs By Typing ``` tail -f apache-tomcat-8.x.20/logs/catalina.out ```
