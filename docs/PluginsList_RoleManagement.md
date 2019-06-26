@@ -133,6 +133,9 @@ in Object Type Field must input Object Name (not mandatory)
 
 
 The data has been stored, then the data display is as follows (red marked):
+
+list auth object role management
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4.png" alt="roleManagement4" />
 
 
@@ -148,7 +151,7 @@ The following is an example of data filling:
 
 
 The data has been stored, then the data display is as follows (red marked):
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement7.png" alt="roleManagement7" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_roleList.png" alt="roleList" />
 
 - **Role Group**
 : attached to the person (user) user / group access
@@ -158,10 +161,11 @@ The data has been stored, then the data display is as follows (red marked):
 The image above is the image of the fill field for the Role Group, which is fill Group ID, Roles, Users and Groups.
 
 The following is an example of data filling:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement9.png" alt="roleManagement9" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_roleGroup.png" alt="roleManagement_roleGroup" />
 
 The data has been stored, then the data display is as follows (red marked):
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement10.png" alt="roleManagement10" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleGroupList.png" alt="roleGroupList" />
 
 - **LDAP**
 : active directory. Employee database. Name, phone number username, address, etc. [RELATED WITH EMAIL]
