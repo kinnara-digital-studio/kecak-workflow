@@ -27,7 +27,7 @@ docker-compose up
 
 Which will look like this:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-2png" alt="docker windows" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-2.png" alt="docker windows" />
 
 
 If there is an access confirmation as shown below, then select "allowed access
