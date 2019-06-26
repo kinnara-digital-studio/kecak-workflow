@@ -6,4 +6,4 @@ Publishing Process is section where is users can start processes of published ap
 
 You can Control who starts a process through Process Start White List setting.
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Processs.png" alt="buildingPluginsProcess" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Process.png" alt="buildingPluginsProcess" />
