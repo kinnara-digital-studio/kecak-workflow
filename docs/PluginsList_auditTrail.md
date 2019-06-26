@@ -1,17 +1,17 @@
 ## Description
-   Plugins From Grid berfungsi untuk menampilkan data Grid yang biasanya data tersebut bisa lebih dari 1 data.
-   Form Grid ini membutuhkan form tambahan sebagai tempat penyimpanan datanya.
+   Plugins From Grid functions to display Grid data which usually can be more than 1 data.
+   This Form Grid requires an additional form as a place to store data.
 
-   berikut adalah data yang harus diisi ketika akan menggunakan Form Grid :
+   The following is data that must be filled when using Form Grid:
 
-   Contoh penggunaan Form Grid ini adalah pada aplikasi PT Timah Pengajuan SHP 
+   An example of using Form Grid is in the PT Timah Application for SHP Submission
 
 
-#### Keterangan ####
+#### Information ####
 
-## Membuat Form Data (contoh untuk data Attachment) ##
+## Creating a Data Form (example for Attachment data) ##
 
-*gambar 2*
+* image 2 *
 
 # Kecak Audit Trail Plugin
 
@@ -27,36 +27,36 @@ Kecak Audit Trail Plugin bundle contains a set of plugins to support field-level
 
 There are 3 main steps to need to be configured when implementing the plugins
 
-1. Develop **Main Form**
-2. Develop **Audit Form**
-3. Bind **Main Form** with **Audit Form**
+1. Develop ** Main Form **
+2. Develop ** Audit Form **
+3. Bind ** Main Form ** with ** Audit Form **
 
 ### Develop Main Form
 
-**Main Form** is the form that contains fields that will be captured. Basically this is the normal transactional form for user to fill in.
+** Main Form ** is the form that contains fields that will be captured. Basically this is the normal transactional form for user to fill in.
 
 ### Develop Audit Form
 
-**Audit Form** is the form which structure is needed to capture the audit history for fields in **Main Form**. You need to use the same field name with the one in **Main Form** in order to capture the data. The field type is not necessarily have to be the same. Add another field that can be used to store foreign key (**Main Form**'s id).
+** Audit Form ** history form fields for ** Main Form **. You need to use the same name field with the one in ** Main Form ** in order to capture the data. The field type is not necessarily have to be the same. Add another field that can be used to store foreign keys (** Main Form **'s id).
 
-### Bind **Main Form** with **Audit Form**
+### Bind ** Main Form ** with ** Audit Form **
 
-Easiest way to implement Kecak Audit Trail Plugins is by binding using section's store binder of **Main Form* *which contains fields need to be audited to **Audit Form** by using **Kecak Audit Trail Form Binder**. Set the 
-Audit Form properties to **Audit Form**.
+Easiest way to implement Kecak Audit Trail Plugins are bindings using store binder section of ** Main Form * * which contains fields needed to be audited ** Audit Form ** by using ** Kecak Audit Trail Form Binder **. Set the
+Audit Form properties to ** Audit Form **.
 
 # Development
 
 To start developing:
 
-```
-$ git clone https://kinnarastudio@bitbucket.org/kinnarastudio/kecak-plugins-audit-trail.git/wiki
-```
+`` `
+$ git clone https: //kinnarastudio@bitbucket.org/kinnarastudio/kecak-plugins-audit-trail.git/wiki
+`` `
 
 Have fun!
 
 ### Version History ###
 
-*  **1.1.0**
-   * mei 2019
-*  **1.0.0**
-   * Initial creation : Isti Fatimah
+* ** 1.1.0 **
+   * May 2019
+* ** 1.0.0 **
+   * Initial creation: Isti Fatimah
