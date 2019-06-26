@@ -31,20 +31,18 @@ HTTP GET
 
 This example is showing the JSON of Userview for authorized user, with the JSON of Userview on Kecak is as follows
 
-
-![Userview_JSON](/uploads/436fb5efeb5e434613ac759b59616f75/Userview_JSON.PNG)
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-Userview1.PNG" alt="KecakMobile-Userview" />
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
 
-![Authorization](/uploads/131c9b14a3bc356689bf75ce89f6eb3c/Authorization.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-Userview2.PNG" alt="KecakMobile-Userview" />
 
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
 
-![Headers](/uploads/5fd872b62ae790f606908421c23ca022/Headers.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-Userview3.PNG" alt="KecakMobile-Userview" />
 
 
 Request parameters are needed to filter the userview by its *appId*, *appVersion*, *id*, and *digest*. For this example request parameters is as follow :
