@@ -21,4 +21,5 @@ Not available
 * type : elementselect
 * options : classname=org.joget.apps.form.model.FormPermission
 
-![Screen_Shot_2017-09-25_at_5.08.48_PM](/uploads/ac8f32ce7b402e1f049ec8b37d0d3b0d/Screen_Shot_2017-09-25_at_5.08.48_PM.png)![Screen_Shot_2017-09-25_at_5.09.00_PM](/uploads/faa0167c1a693bd5f0ef65cac636d975/Screen_Shot_2017-09-25_at_5.09.00_PM.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissions.png" alt="permissions" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissions1.png" alt="permissions1" />
