@@ -1,4 +1,4 @@
-# TES Map Tools to Plugins #
+# Map Tools to Plugins #
 
 Process Tool Plugin is used to execute Tool inserted as part of the process flow.
 
