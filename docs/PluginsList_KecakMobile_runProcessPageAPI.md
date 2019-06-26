@@ -26,10 +26,10 @@ https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobilea
 
 ### Use of API Plugin ###
 The example below shows then, you have to fill the authorization with your access token to authorize you as authorized user.
-![Capture](uploads/970ea207dc4f7035432c81d78bc677ac/Capture.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-RunProcessPageAPI-captures.PNG" alt="captures" />
 
 And also, you have to fill the header section by **Accept**, **Referer** and **Content-Type**. For this example,**Accept** is **application/json** **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
-![headers](uploads/b210f55cab5612f2fb8de87703ea07f7/headers.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-RunProcessPageAPI-headers.PNG" alt="headers" />
 
 Request parameters are needed to filter the form by its *appId*,*processDefId*,*digest* *appVersion*, and *digest*. For this example request parameters is as follow :
 
@@ -38,7 +38,7 @@ Request parameters are needed to filter the form by its *appId*,*processDefId*,*
 *digest*       : <br/>
 *appVersion*   : 1 <br/>
 
-![params](uploads/4e8505261aa753b84a994fb1b30040de/params.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-RunProcessPageAPI-params.PNG" alt="params" />
 
 If you have done all steps above, the server will responses by giving you JSONBody in **Response Body** which contains *appId*, *appVersion*, *digest*, *json*, and *status*.
   
