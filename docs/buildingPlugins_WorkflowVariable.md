@@ -20,5 +20,5 @@ To create Workflow variable :
 
 4. Look at Workflow Variable in condition
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable3.png" alt="buildingPlugins-workflowVariable3" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workfloVariable3.png" alt="buildingPlugins-workfloVariable3" />
 
