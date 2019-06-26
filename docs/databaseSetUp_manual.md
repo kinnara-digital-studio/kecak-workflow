@@ -1,3 +1,9 @@
+# Database Set Up
+
+For set up database Workflow, please following this:
+
+- Open the browser and enter the following link
+`http://localhost:8080/kecak/web`
 
 -Field Database Port is changed to 3307 
 -If the database used does not have a password, then clear the Database Password field as in the example image below:
