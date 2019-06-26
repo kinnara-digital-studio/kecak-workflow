@@ -13,5 +13,3 @@ Image examples for kecak plugins spreadsheets:
 Settings for kecak plugins spreadsheets:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets3.png" alt="spreadsheets3" />
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets4.png" alt="spreadsheets4" />
