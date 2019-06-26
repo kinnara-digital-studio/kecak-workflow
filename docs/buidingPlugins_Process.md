@@ -21,27 +21,28 @@ The Process builder allows one to design process(es) for the joget Workflow App 
 	
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProperties.png" alt="buildingPlugins-participantProperties" />
 
+
 	
-	| Name | Description |
-	|---|---|
-	| ID | Participant |
-	| Name | Participant Name |
-	
-	
+| Name | Description |
+|---|---|
+| ID | Participant |
+| Name | Participant Name |	
+
+
 - Activity
 
 	Activity node is used to be mapped to Form, to used to interact with human participant, as part of process flow.
 	
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantActivity.png" alt="buildingPlugins-participantActivity" />
-	
-	| Name | Description |
-	|---|---|
-	| ID | Activity |
-	| Name | Activity Name | 
+
+| Name | Description |
+|---|---|
+| ID | Activity |
+| Name | Activity Name | 
 	
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-processDeadline.png" alt="buildingPlugins-processDeadline" />
-	
-	| Name | Description |
-	|---|---|
-	| Deadline | Multiple deadline can be set for each activity |
+
+| Name | Description |
+|---|---|
+| Deadline | Multiple deadline can be set for each activity |
 	
