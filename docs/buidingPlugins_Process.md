@@ -2,7 +2,7 @@
 
 Step by step from start until finish the program 
 
-"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-Process.png" alt="buildingPlugins-Process" />
+"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProcess.png" alt="buildingPlugins-participantProcess" />
 
 ### Design Process ###
  Design Process will open up the Process builder. Process bulider is one of the highlight of Kecak Workflow where it allow one to design process ont the browser it self wthout the need of installing any additional components 
