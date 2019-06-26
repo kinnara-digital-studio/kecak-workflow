@@ -1,8 +1,5 @@
 # Role Management #
 
-### Plugin Type ###
-[Userview Menu]
-
 ### Overview ###
 displays the role management settings
 
@@ -138,7 +135,6 @@ in Object Type Field must input Object Name (not mandatory)
 The data has been stored, then the data display is as follows (red marked):
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4.png" alt="roleManagement4" />
 
-.
 
 - **Role**
 : specifies the authorization whether Read, Write or Hidden.
@@ -153,7 +149,6 @@ The following is an example of data filling:
 
 The data has been stored, then the data display is as follows (red marked):
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement7.png" alt="roleManagement7" />
-.
 
 - **Role Group**
 : attached to the person (user) user / group access
@@ -179,7 +174,6 @@ example data from LDAP in Groups when Field Role Group:
 
 
 ### Version History ###
-
 *  **1.0.0**
    * Initial creation : Isti Fatimah
 
