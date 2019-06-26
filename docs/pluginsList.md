@@ -35,5 +35,4 @@
 - [Plugins Soap](pluginsList_soap.md)
 - [Plugins Spreadsheets](pluginsList_spreadsheets.md)
 - [Plugins Time Picker](pluginsList_timePicker.md)
-- [Plugins Userview](PluginsList_Userview.md)
 - [Plugins Workflow Variable](PluginsList_WorkflowVariable.md)
