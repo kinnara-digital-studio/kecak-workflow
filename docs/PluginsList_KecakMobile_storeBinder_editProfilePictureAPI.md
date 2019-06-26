@@ -30,9 +30,7 @@ The example below shows you that how to test Edit Profile Picture API plugin. Fi
 
 After that, you have to choose the file of picture in request body in binary format.
 
-
-![Request_Body](/uploads/22657cc4a805bef9b7195d62206c3ca2/Request_Body.PNG)
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-StoreBinderEditProfilePictureAPI-request_body.PNG" alt="request_body" />
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
@@ -41,7 +39,7 @@ If you have done all steps above, the server will responses by giving you its bi
 
 **Response is as follow** :
 
-![Response_Body](/uploads/33e1c84bc0c8cef3d3d9a06aeee36a01/Response_Body.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-StoreBinderEditProfilePictureAPI-Response_Body2.PNG" alt="response_body" />
 
 
 ### Version History ###
