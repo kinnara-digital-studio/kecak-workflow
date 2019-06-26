@@ -35,5 +35,6 @@ If there is an access confirmation as shown below, then select "allowed access
 
 
 After that, the server can be used as shown below:
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-4.png" alt="docker windows" />
 
