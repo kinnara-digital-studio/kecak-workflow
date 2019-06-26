@@ -58,8 +58,6 @@ Request parameters are needed to filter the Load Binder by its *appId*, *formId*
 
 and there are more request parameter you can fill if you want change your request parameter.
 
-
-![Request_Parameters](/uploads/42052c7bf149994f702eadf1f42c8fba/Request_Parameters.PNG)
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-LoadBinderAPI-Form_Data-Request_Parameters.PNG" alt="KecakMobile-LoadBinderAPI-Request_Parameters" />
 
 
