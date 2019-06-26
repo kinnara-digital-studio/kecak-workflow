@@ -1,7 +1,6 @@
 ## Participant Mapping ##
 
-Participants in Kecak Workflow is the actor who will used this
-application.
+Participants in Kecak Workflow is the actor who will used this application.
 
 ### Map Participant to Users ##
 
