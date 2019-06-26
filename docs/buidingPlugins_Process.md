@@ -10,16 +10,16 @@ Step by step from start until finish the program
  
 ### Process Builder ###
 
-"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsProcessBuilder.png" alt="buildingPlugins-pluginsProcessBuilder" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsProcessBuilder.png" alt="buildingPlugins-pluginsProcessBuilder" />
 
 The Process builder allows one to design process(es) for the joget Workflow App in an easy drag and drop manner
 
 - Participant 
 	The participant node is used to declare a new participant swimlane to present a role/person/entty (e.g Claimnt). 
 	
-	"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProcess.png" alt="buildingPlugins-participantProcess" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProcess.png" alt="buildingPlugins-participantProcess" />
 	
-	"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProperties.png" alt="buildingPlugins-participantProperties" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProperties.png" alt="buildingPlugins-participantProperties" />
 
 	
 	| Name | Description |
@@ -32,14 +32,14 @@ The Process builder allows one to design process(es) for the joget Workflow App 
 
 	Activity node is used to be mapped to Form, to used to interact with human participant, as part of process flow.
 	
-	"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantActivity.png" alt="buildingPlugins-participantActivity" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantActivity.png" alt="buildingPlugins-participantActivity" />
 	
 	| Name | Description |
 	|---|---|
 	| ID | Activity |
 	| Name | Activity Name | 
 	
-	"https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-processDeadline.png" alt="buildingPlugins-processDeadline" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-processDeadline.png" alt="buildingPlugins-processDeadline" />
 	
 	| Name | Description |
 	|---|---|
