@@ -1,10 +1,11 @@
 ## Participant Mapping ##
 
-Participant Mapping digunakan untuk memetakan Participant yang sesuai dengan role's nya.
+Participants in Kecak Workflow is the actor who will used this
+application.
 
-### Map Partipant to Users ##
+### Map Participant to Users ##
 
-Each particaipant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
+Each participant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapParticipantToUsers.png" alt="buildingPlugins-mapParticipantToUsers" />
 
@@ -19,7 +20,7 @@ Process Start White List defines who is permitted to start the process. By defau
 
 One may map a participant to a selected user(s) or group(s). By doing so, every time a new activity is created in the participant's swimlane, Kecak will pick up the same resultant user(s) to be assigned as assignee(s).
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapToUsersOrGroup.png" alt="buildingPlugins-mapToUsersOrGroup" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapToUserOrGroup.png" alt="buildingPlugins-mapToUserOrGroup" />
 
 ```
 If the user mapped is inactive at the time of assignment is made, the particular user will not be assigned.
