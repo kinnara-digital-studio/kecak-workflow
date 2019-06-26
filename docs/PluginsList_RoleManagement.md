@@ -133,10 +133,7 @@ in Object Type Field must input Object Name (not mandatory)
 
 
 The data has been stored, then the data display is as follows (red marked):
-
-list auth object role management
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4.png" alt="roleManagement4" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_authObjectList.png" alt="rm_authObjectList" />
 
 
 - **Role**
