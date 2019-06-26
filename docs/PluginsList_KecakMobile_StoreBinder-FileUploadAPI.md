@@ -32,15 +32,15 @@ HTTP POST
 
 The example below shows you that how to use File Upload API plugin. First of all, fill the authorization with your currently token or make it empty if your currently token is empty.
 
-![Authorization](/uploads/6d6716597f1a01859502509369af0b7e/Authorization.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakMobile-StoreBinderFileUploadAPI-Authorization.PNG" alt="kecakMobile-StoreBinderFileUploadAPI-Authorization" />
 
 And also, you have to fill the header section by **Referer** and **Content-Type**. For this example, **Referer** is `https://kecak.kinnarastudio.com` and **Content-Type** is **application/json**
 
-![Headers](/uploads/1477ce8be1a27162228559cb4d32ed28/Headers.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-StoreBinderFileUploadAPI-Headers.PNG" alt="KecakMobile-StoreBinderFileUploadAPI-Headers" />
 
 After that, you have to choose the file in request body in binary format.
 
-![Request_Body](/uploads/e99fdf3084b3e35f706a5bd067ce51c5/Request_Body.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-StoreBinderFileUploadAPI-Request_Body.PNG" alt="KecakMobile-StoreBinderFileUploadAPI-Request_Body" />
 
 Request parameters are needed to set your Application ID, File Name, Field ID, Form ID, and Primary Key Value. For this example request parameters is as follow :
 
@@ -50,7 +50,7 @@ Request parameters are needed to set your Application ID, File Name, Field ID, F
 *formId*       : testDuaForm1 <br/>
 *primaryKey*   : 1404_trainingREST_testdua <br/>
 
-![Request_Parameters](/uploads/8ec7b0a84109f275cdab0b4c534241a8/Request_Parameters.PNG)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-StoreBinderFileUploadAPI-Request_Parameters.PNG" alt="KecakMobile-StoreBinderFileUploadAPI-Request_Parameters" />
 
 If you have done all steps above, the server will responses by giving you JSONBody in **Response Body** which contains its path file and status.
 
