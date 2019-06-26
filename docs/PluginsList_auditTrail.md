@@ -1,4 +1,5 @@
-## Description
+## Kecak Audit Trail Plugin
+
 Plugins From Grid functions to display Grid data which usually can be more than 1 data.
 This Form Grid requires an additional form as a place to store data.
 
@@ -7,17 +8,16 @@ The following is data that must be filled when using Form Grid:
 
 An example of using Form Grid is in the PT Timah Application for SHP Submission
 
-# Kecak Audit Trail Plugin
 
 Kecak Audit Trail Plugin bundle contains a set of plugins to support field-level audit trail history.
 
-# Plugins Components
+### Plugins Components
 
 * AuditTrailFormBinder
 * AuditTrailElementBinder
 * AuditTrailMultirowFormBinder
 
-# Usage
+### Usage
 
 There are 3 main steps to need to be configured when implementing the plugins
 
@@ -38,13 +38,13 @@ There are 3 main steps to need to be configured when implementing the plugins
 Easiest way to implement Kecak Audit Trail Plugins are bindings using store binder section of ** Main Form * * which contains fields needed to be audited ** Audit Form ** by using ** Kecak Audit Trail Form Binder **. Set the
 Audit Form properties to ** Audit Form **.
 
-# Development
+### Development
 
 To start developing:
 
-`` `
+```html
 $ git clone https: //kinnarastudio@bitbucket.org/kinnarastudio/kecak-plugins-audit-trail.git/wiki
-`` `
+```
 
 Have fun!
 
