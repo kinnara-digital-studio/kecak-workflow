@@ -1,11 +1,11 @@
-# Userview # 
+## Userview # 
 
-### Create New Userview ###
+### Create New Userview 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-createNewUserview.png" alt="userview-createNewUserview" />
+<img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-createNewUserview.png" alt="userview-createNewUserview" />
 
 
-###### ID ######
+#### ID 
 
 Unique ID to repersent this entity 
 
@@ -27,7 +27,7 @@ The ID declared here would be part of the eventuak URL seen by the ebd users. Tr
 
 ```
 
-###### Name ######
+#### Name 
 
 Repersent this entity 
 
@@ -43,12 +43,12 @@ Important Note
 The name declared here would be the userview name seen by the end users. Try to choose something short and meaningful.
 ```
 
-###### Description ######
+#### Description 
 
 Entity Description
 
 
-## Userview Menu ##
+#### Userview Menu 
 
 |  |  |
 |---|---|
@@ -69,7 +69,7 @@ Entity Description
 | Kecak Plugins | ToDo List |
 | Process Admin | Reassingment Userview Menu |
 
-## Userview Theme ##
+#### Userview Theme 
 
 Userview Theme defines the look and feel the app.
 
@@ -87,18 +87,7 @@ List of userview Themes
 - My Green Toscca
 - V3 Default Theme
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-enchancedTheme.png" alt="userview-enchancedTheme" />
 
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-BCAItheme.png" alt="userview-BCAItheme" />
-
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-LTEtheme.png" alt="userview-LTEtheme" />
-
-#### Mobile Vies Disable ####
-
-#### Description ####
-
-## Userview Permission ##
+#### Userview Permission
 
 Permission can control can be applied a the userview itself or at userview category level in the userview using the Permission control 
