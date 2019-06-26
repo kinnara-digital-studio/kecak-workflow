@@ -1,12 +1,12 @@
-# how to install kecak manual using windows
+# How to Install Kecak Manual Using Windows
 
 
-## Follow This Link Kecak Workflow Installer :
+Follow This Link Kecak Workflow Installer :
 This is Link for Kecak installer in gdrive
 
 https://drive.google.com/drive/folders/1FwhuJbvb9Rr1KHFv5_nQzDSwp96zVRSF?usp=sharing
 
-# Step For Installing :
+### Step For Installing :
 
 1. Kecak Installer .rar Extract File
 After the file is extracted, it will appear as follows:
