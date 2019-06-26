@@ -27,13 +27,13 @@ docker-compose up
 
 Which will look like this:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-2.png.png" alt="docker windows" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-2png" alt="docker windows" />
 
 
 If there is an access confirmation as shown below, then select "allowed access
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-3.png.png" alt="docker windows" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-3.png" alt="docker windows" />
 
 
 After that, the server can be used as shown below:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-4.png.png" alt="docker windows" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-4.png" alt="docker windows" />
 
