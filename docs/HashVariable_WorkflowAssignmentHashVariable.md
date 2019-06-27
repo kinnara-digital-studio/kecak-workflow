@@ -24,14 +24,18 @@
  10.  `#assignment.activityDefId#` 
  11.  `#assignment.assigneeId#` 
 
+
  **Scope Of Use** 
  
+ 
  - Element Within and part of a process
+ 
  
  1. Activitity Name 
  2. Form Mapped as part process  
  3. activity mapping 
  4. Email tool configuration as part of process tool mapping 
+ 
  
  **Sample Attributes** 
  
