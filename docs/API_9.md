@@ -4,7 +4,7 @@
 
 ### Value  
 
-/json/data/assignments
+`/json/data/assignments`
 
 ### Method
 
@@ -35,4 +35,4 @@ RequestMethod.GET
 ```
 
 ---
-- [JSON API](ResAPI.md)
+
