@@ -1,4 +1,4 @@
-###User Hash Variable###
+### User Hash Variable
 
 ---
 ***prefix***

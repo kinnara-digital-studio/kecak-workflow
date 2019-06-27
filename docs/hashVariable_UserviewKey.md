@@ -1,4 +1,4 @@
-###Userview Key Hash Variable###
+### Userview Key Hash Variable
 
 ----
 
