@@ -1,4 +1,4 @@
-### WOrkflow Variable Hash Variable
+### Workflow Variable Hash Variable
 
 ---
 
