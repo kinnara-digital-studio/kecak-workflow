@@ -23,7 +23,7 @@ Using environment variable to execute bean shell script. Passing parameter using
 
 ***Scope of Use***
 
--All components within the App.
+- All components within the App.
 
 ***Sample Attributes***
 
