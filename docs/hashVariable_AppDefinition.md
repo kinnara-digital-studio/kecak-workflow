@@ -9,7 +9,7 @@ appDef
 ***Description***
 
 ```
-To retrieve App Definition informastion
+To retrieve App Definition information
 ```
 
 ***Atrribute***
