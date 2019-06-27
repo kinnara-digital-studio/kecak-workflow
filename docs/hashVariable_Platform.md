@@ -1,4 +1,4 @@
-###Platform Hash Variable###
+### Platform Hash Variable
 
 ---
 
