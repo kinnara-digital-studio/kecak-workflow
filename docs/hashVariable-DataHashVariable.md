@@ -9,9 +9,9 @@ Form
 ```
 
 ***Description***
-```
+
 To get `field value` from ` form table`
-```
+
 ***Attribute***
 
 ``` 
@@ -29,14 +29,13 @@ To get `field value` from ` form table`
 
 
 `#form.registration.registeredDate#` 
-```
+
 will use the current record ID
-```
+
 `#form.registration.registeredDate[ 0001 ]#` 
-```
+
 0001 is the record ID to seek for
-```
+
 `#form.registration.registeredDate[{variable.recordId}]#` 
-```
+
 using nested Hash Variable with curly bracket.
-``
