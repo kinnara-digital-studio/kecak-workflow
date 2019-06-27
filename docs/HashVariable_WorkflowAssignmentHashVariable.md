@@ -31,6 +31,7 @@
  2. Form Mapped as part process  
  3. activity mapping 
  4. Email tool configuration as part of process tool mapping 
+ 
  **Sample Attributes** 
  
 To display assingnee's name 
