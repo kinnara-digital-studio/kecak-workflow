@@ -14,6 +14,10 @@ variable
 to get the value of a workflow variable in a process flow
 ```
 
+***Attribute***
+
+1. `#variable. variableName #`
+
 ***Scope of Use***
 
 - Element within and part of a process
