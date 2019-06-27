@@ -1,6 +1,6 @@
 # Plugins List
-- [Kecak Mobile Inbox Page API](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/PluginsList_KecakMobile_CheckTokenAPI)
-- [Kecak Mobile Check Token API](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/PluginsList_KecakMobile_CheckTokenAPI)
+- [Kecak Mobile Inbox Page API](https://github.com/kinnara-digital-studio/kecak-workflow/master/docs/PluginsList_KecakMobile_CheckTokenAPI)
+- [Kecak Mobile Check Token API](https://github.com/kinnara-digital-studio/kecak-workflow/master/docs/PluginsList_KecakMobile_CheckTokenAPI)
 - [Kecak Mobile Datalist Action API](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/PluginsList_KecakMobile_DataListActionAPI)
 - [Kecak Mobile Datalist UI API](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/PluginsList_KecakMobile_datalistUiAPI)
 - [Kecak Mobile Form UI API](https://github.com/kinnara-digital-studio/kecak-workflow/blob/master/docs/PluginsList_KecakMobile_FormUiAPI)
