@@ -134,7 +134,9 @@ RequestMethod.GET
 	
 }
 
+```
 ---
+
 ### Get List Count 
 
 #### Description
