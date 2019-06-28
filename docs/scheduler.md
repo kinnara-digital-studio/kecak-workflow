@@ -15,9 +15,16 @@ Integration could be difficult sometimes, and usually people build scheduler app
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_manageScheduler.png" alt = "manage scheduler" />
 
-	Add job
-	Delete: menghapus scheduler yang ada
-	Fire now : trigger scheduler saat itu juga.
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_manageScheduleDetails.png" alt = "manage scheduler detail" />
+
+**DESCRIPTION**
+
+	**1. Add job** : Create a new scheduler
+
+	**2. Delete:** Deleted scheduler
+
+	**3. Fire now:** Scheduler trigger at that time.
+
 Create job 
 
 # Adding Scheduler
