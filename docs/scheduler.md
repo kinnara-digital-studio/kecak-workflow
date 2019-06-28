@@ -24,16 +24,20 @@ Create job
 
 How To Adding Sheduler :
 1. Click Settings
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_settings.png" alt = "scheduler_settings" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_settings.png" alt = "scheduler settings" />
 
 and will be show like this picture
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_manageScheduler.png" alt = "manage scheduler" />
 
-2. Fil the form 
+2. Click indicated by arrow no 1
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_manageScheduleDetails.png" alt = "manage scheduler detail" />
+
+3. Fil the form 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_add.png" alt = "scheduler add" />
 
-### Description :
+*Description :
 
 Job name : Specifies the job name of the job schedule entries with which you want to work.
 Group Job Name : 
@@ -43,8 +47,8 @@ Job class name : nama dari class yang ada di sana
 CRON : waktu yang harus kita set , setiap berapa lama scheduler ini di running (jam, menit)
 
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_fillAdd.png" alt = "scheduler_fill_add" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_fillAdd.png" alt = "scheduler fill add" />
 
-3. save
+4. save
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_list.png" alt = "scheduler_list" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_list.png" alt = "scheduler list" />
