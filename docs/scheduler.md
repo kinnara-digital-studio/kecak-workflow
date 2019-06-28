@@ -7,7 +7,7 @@ Using scheduler, you can schedule and trigger integration between Kecak and othe
 
 For example, if you want to update master data every hours, or 2 hours, or import data from another systems to Kecak.
 
-We over this schedule to simplify to other project.
+We offers this build in schedule to simplify project integration to other project.
 
 Integration could be difficult sometimes, and usually people build scheduler apps separately.
 
