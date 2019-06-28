@@ -26,7 +26,7 @@ Calculation This field is a plugins to calculate existing data with a calculatio
 
 # How to Use Calculation Field
 
-The following ### is the field that must be filled in the calculation field: ###
+### The following is the field that must be filled in the calculation field: ###
 
 *picture 1*
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/calculation0.png" alt = "calculation0" />
