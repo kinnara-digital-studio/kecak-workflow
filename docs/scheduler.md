@@ -23,10 +23,13 @@ Create job
 # Adding Scheduler
 
 How To Adding Sheduler :
+
 1. Click Settings
+
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_settings.png" alt = "scheduler settings" />
 
 and will be show like this picture
+
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_manageScheduler.png" alt = "manage scheduler" />
 
 2. Click indicated by arrow no 1
@@ -37,14 +40,14 @@ and will be show like this picture
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_add.png" alt = "scheduler add" />
 
-*Description :
+Description :
 
-Job name : Specifies the job name of the job schedule entries with which you want to work.
-Group Job Name : 
-Trigger name : a component that defines the schedule upon which a given Job will be executed.
-Group Trigger Name :
-Job class name : nama dari class yang ada di sana
-CRON : waktu yang harus kita set , setiap berapa lama scheduler ini di running (jam, menit)
+**Job name** : Specifies the job name of the job schedule entries with which you want to work.
+**Group Job Name** : Group name for the data set that contains many job names
+**Trigger name** : A component that defines the schedule upon which a given Job will be executed.
+**Group Trigger Name** : Trigger name for the data set that contains many trigger names
+**Job class name** : The name of the class in the program
+CRON : the time we have to set, every time this scheduler is running
 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_fillAdd.png" alt = "scheduler fill add" />
