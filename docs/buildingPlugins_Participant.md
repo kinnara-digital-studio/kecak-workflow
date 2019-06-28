@@ -4,7 +4,7 @@ Participants in Kecak Workflow is the actor who will used this application.
 
 ### Map Participant to Users ##
 
-Each participant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
+Each participant declared in Process Design would have its mapping configure here. There are various options to define participants.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapParticipantToUsers.png" alt="buildingPlugins-mapParticipantToUsers" />
 
