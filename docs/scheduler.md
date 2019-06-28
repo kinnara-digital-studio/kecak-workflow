@@ -46,7 +46,6 @@ and will be show like this picture
 3. Fill the form 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_add.png" alt = "scheduler add" />
-
 |            FIELD              |                                  DESCRIPTION                                  |
 |-------------------------------|-------------------------------------------------------------------------------|
 |**Job name**                   |Specifies the job name of the job schedule entries with which you want to work |
