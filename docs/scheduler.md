@@ -53,5 +53,6 @@ For the example filling the form, you can see this picture :
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_FillAdd.png" alt = "scheduler fill add" />
 
-4. save
+4. Save
+
 After you create the Scheduler, don't forget to click button "save" for saving the scheduler.
