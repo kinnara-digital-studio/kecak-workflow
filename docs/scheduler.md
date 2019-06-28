@@ -19,7 +19,7 @@ Integration could be difficult sometimes, and usually people build scheduler app
 
 **DESCRIPTION**
 
-	**1. Add job** : Create a new scheduler
+	**1. Add Process Scheduler** : Create a new scheduler
 
 	**2. Delete:** Deleted scheduler
 
