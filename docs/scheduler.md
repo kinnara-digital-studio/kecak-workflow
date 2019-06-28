@@ -2,8 +2,8 @@
 
 Scheduler is a software product that allows an enterprise to schedule and track computer batch tasks. These units of work include running a security program or updating software.
 
-Scheduler is a series of job schedule generally used in system managemen (maintenance) , actions and to provide timely services with in the applications.
-Using scheduler, you can schedule and trigger integration between Kecak and other systems, or with in kecak system it self. 
+Scheduler is a series of job scheduling generally used in system management (maintenance), actions and to provide timely services with in the applications.
+Using scheduler, you can schedule and trigger integration between Kecak and other systems, or with in kecak system. 
 
 For example, if you want to update master data every hours, or 2 hours, or import data from another systems to Kecak.
 
@@ -21,9 +21,9 @@ Integration could be difficult sometimes, and usually people build scheduler app
 
 	**1. Add Process Scheduler** : Create a new scheduler
 
-	**2. Delete:** Deleted scheduler
+	**2. Delete:** Delete selected scheduler
 
-	**3. Fire now:** Scheduler trigger at that time.
+	**3. Fire now:** Trigger selected scheduler at current time
 
 
 
@@ -43,7 +43,7 @@ and will be show like this picture
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_manageScheduleDetails.png" alt = "manage scheduler detail" />
 
-3. Fil the form 
+3. Fill the form 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_add.png" alt = "scheduler add" />
 
@@ -59,7 +59,8 @@ and will be show like this picture
 **Group Trigger Name** : Trigger name for the data set that contains many trigger names
 
 **Job class name** : The name of the class in the program
-CRON : the time we have to set, every time this scheduler is running
+
+**CRON** : the time we have to set, every time this scheduler is running
 
 For the example filling the form, you can see this picture :
 
@@ -67,4 +68,4 @@ For the example filling the form, you can see this picture :
 
 4. Save
 
-After you create the Scheduler, don't forget to click button "save" for saving the scheduler.
+After you create the scheduler, don't forget to click button "save" for saving the scheduler.
