@@ -47,20 +47,14 @@ and will be show like this picture
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_add.png" alt = "scheduler add" />
 
+|            FIELD              |                                  DESCRIPTION                                  |
+|-------------------------------|-------------------------------------------------------------------------------|
+|**Job name**                   |Specifies the job name of the job schedule entries with which you want to work |
+|**Group Job Name**             |Group name for the data set that contains many job names                       |
+|**Trigger name**               |A component that defines the schedule upon which a given Job will be executed  |
+|**Group Trigger Name**         |Trigger name for the data set that contains many trigger names                 |
+|**CRON**                       | the time we have to set, every time this scheduler is running                 |
 
-**DESCRIPTION :
-
-**Job name** : Specifies the job name of the job schedule entries with which you want to work.
-
-**Group Job Name** : Group name for the data set that contains many job names
-
-**Trigger name** : A component that defines the schedule upon which a given Job will be executed.
-
-**Group Trigger Name** : Trigger name for the data set that contains many trigger names
-
-**Job class name** : The name of the class in the program
-
-**CRON** : the time we have to set, every time this scheduler is running
 
 For the example filling the form, you can see this picture :
 
