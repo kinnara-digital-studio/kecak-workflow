@@ -49,9 +49,9 @@ Description :
 **Job class name** : The name of the class in the program
 CRON : the time we have to set, every time this scheduler is running
 
+For the example filling the form, you can see this picture :
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_fillAdd.png" alt = "scheduler fill add" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_FillAdd.png" alt = "scheduler fill add" />
 
 4. save
-
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/scheduler_list.png" alt = "scheduler list" />
+After you create the Scheduler, don't forget to click button "save" for saving the scheduler.
