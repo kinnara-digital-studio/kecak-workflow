@@ -65,6 +65,6 @@ example data from LDAP in Groups when Field Role Group:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_group_groups.png" alt="group_groups" />
 
 
-### Version History ###
+ Version History
 *  **1.0.0**
    * Initial creation : Isti Fatimah
