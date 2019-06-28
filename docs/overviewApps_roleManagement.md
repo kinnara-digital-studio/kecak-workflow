@@ -1,3 +1,7 @@
+# Role Management
+
+Role enables administrators to manage management role groups; role assignment policies and management roles; and role entries, assignments, and scopes in an organization.
+
 - **Authorization Object**
 : attached to each field, user view or datalist, or element.
 
