@@ -1,0 +1,35 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/process/schemas">
+
+    <xs:element name = "consoleMessageListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "filter" type = "xs:string"/>
+                <xs:element name = "locale" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "consoleMessageListResponse" />
+
+    <xs:element name = "hashOptionsRequest" />
+    <xs:element name = "hashOptionsResponse" />
+
+    <xs:element name = "workflowTestConnectionRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "datasource" type = "xs:string"/>
+                <xs:element name = "driver" type = "xs:string"/>
+                <xs:element name = "url" type = "xs:string"/>
+                <xs:element name = "user" type = "xs:string"/>
+                <xs:element name = "password" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "workflowTestConnectionResponse" />
+</xs:schema>

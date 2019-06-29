@@ -1,0 +1,92 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/process/schemas">
+
+    <xs:element name = "PluginListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "className" type = "xs:string"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "PluginListResponse" />
+
+    <xs:element name = "PluginListOsgiRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "className" type = "xs:string"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "PluginListOsgiResponse" />
+
+    <xs:element name = "PluginElementsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "className" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "PluginElementsResponse" />
+
+    <xs:element name = "PluginPropertyOptionsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "value" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "PluginPropertyOptionsResponse" />
+
+    <xs:element name = "PluginDefaultPropertiesRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "value" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "PluginDefaultPropertiesResponse" />
+
+    <xs:element name = "PluginPropertyOptionsWithAppDefRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "value" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "PluginPropertyOptionsWithAppDefResponse" />
+
+    <xs:element name="map">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="xps:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="item">
+            <xs:selector xpath="item"/>
+            <xs:field xpath="key"/>
+        </xs:unique>
+    </xs:element>
+
+    <xs:complexType name="MapType">
+        <xs:sequence>
+            <xs:element ref="xps:map"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MapItemType">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

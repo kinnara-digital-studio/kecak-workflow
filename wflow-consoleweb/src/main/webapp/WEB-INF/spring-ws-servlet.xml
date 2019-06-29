@@ -63,4 +63,25 @@
 					  targetNamespace = "http://kecak.org/soap/form/definitions">
 		<sws:xsd location = "/WEB-INF/assignment.xsd"/>
 	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "directory"
+					  portTypeName = "Directory"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/directory.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "plugin"
+					  portTypeName = "Plugin"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/plugin.xsd"/>
+	</sws:dynamic-wsdl>
+
+	<sws:dynamic-wsdl id = "system"
+					  portTypeName = "System"
+					  locationUri = "/ws/soap/"
+					  targetNamespace = "http://kecak.org/soap/form/definitions">
+		<sws:xsd location = "/WEB-INF/system.xsd"/>
+	</sws:dynamic-wsdl>
 </beans>
