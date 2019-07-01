@@ -58,6 +58,8 @@ You can add a tool or a plugin for something needed, in this case we need nitifi
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/Tools.png" alt="Tools" />
 
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-buildingApplication-deadlineTools.png" alt="buildingApplication-deadlineTools" />
+
 ### Deadline and SLA limits 
  
 If supervisor do not make an agreement in one day, a tool send a notification. If Finance do not  make an agreement in one day, appoval will move to manager 
