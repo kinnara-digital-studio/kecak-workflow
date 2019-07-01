@@ -39,6 +39,12 @@ Interim Participant Via Workflow Variable is Interim Participant used data in wo
 Dopdown data in Workflow Variable field is from the process flow of apps.
 For can be more understanding, you can follow this to see the Workflow Variable come from :
 
-1. Access the Flow of apps :
+1. Access the Design Flow of apps :
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_chooseWV1.png" alt="interim_wv_chooseWV1" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_setWV1.png" alt="interim_wv_setWV1" />
+
+2. Edit The Process
+
+From this step, you can set the workflow variable settings like you see in field Choose Workflow Variable from step 8.
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_setWV2.png" alt="interim_wv_setWV2" />
