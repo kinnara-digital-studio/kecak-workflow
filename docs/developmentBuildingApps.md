@@ -13,6 +13,7 @@ This article will explain how to create great application using Kecak Workflow. 
 in the App design ,click on the Process menu on the left , and then the Design Process button along the top 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-createNewDesign.png" alt="buildingApplication-createNewDesign" />
+
 2. Input Name and ID Application
  
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-NameId.png" alt="buildingApplication-NameId" />
@@ -56,17 +57,15 @@ in the App design ,click on the Process menu on the left , and then the Design P
 
 You can add a tool or a plugin for something needed, in this case we need nitification tool 
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/Tools.png" alt="Tools" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineTools.png" alt="buildingApplication-deadlineTools" />
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-buildingApplication-deadlineTools.png" alt="buildingApplication-deadlineTools" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-buildingApplication-deadlineTools1.png" alt="buildingApplication-deadlineTools1" />
 
 ### Deadline and SLA limits 
  
 If supervisor do not make an agreement in one day, a tool send a notification. If Finance do not  make an agreement in one day, appoval will move to manager 
 
 We have to set a time limit for supervisor and Finance activity.
-
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/SLA Limits" alt="SLA Limits" />
 
 More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadline.md)
 
