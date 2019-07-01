@@ -4,8 +4,8 @@ Transfer of responsibility from someone (eg A) to the person appointed (eg B) as
 
 **How to Access Interim Participant :**
 
-- [Via Master Data](overviewApps_interimParticipant_MD.md)
+- [Via Master Data](https://kinnara-digital-studio.github.io/kecak-workflow/#/overviewApps_interimParticipant_MD)
 
-- [Via Workflow Variable]()
+- [Via Workflow Variable](https://kinnara-digital-studio.github.io/kecak-workflow/#/overviewApps_interimParticipant_wf)
 
-- [Via Scheduler]()
+- [Via Scheduler](https://kinnara-digital-studio.github.io/kecak-workflow/#/overviewApps_interimParticipant_sch)
