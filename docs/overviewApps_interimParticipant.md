@@ -4,6 +4,8 @@ Transfer of responsibility from someone (eg A) to the person appointed (eg B) as
 
 **How to Access Interim Participant :**
 
-> [Via Master Data]()
-> [Via Workflow Variable]()
-> [Via Scheduler]()
+- [Via Master Data]()
+
+- [Via Workflow Variable]()
+
+- [Via Scheduler]()
