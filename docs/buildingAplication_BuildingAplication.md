@@ -57,7 +57,7 @@ You can add a tool or a plugin for something needed, in this case we need nitifi
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/Tools.png" alt="Tools" />
 
-### SLA Limits, Exception and Deadline
+### Deadline and SLA limits 
  
 If supervisor do not make an agreement in one day, a tool send a notification. If Finance do not  make an agreement in one day, appoval will move to manager 
 
@@ -65,4 +65,4 @@ We have to set a time limit for supervisor and Finance activity.
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/SLA Limits" alt="SLA Limits" />
 
-More detailed explaination. [SLA Limits and Deadline]()
+More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadline.md)
