@@ -59,7 +59,7 @@ You can add a tool or a plugin for something needed, in this case we need nitifi
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineTools.png" alt="buildingApplication-deadlineTools" />
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-buildingApplication-deadlineTools1.png" alt="buildingApplication-deadlineTools1" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineTools1.png" alt="buildingApplication-deadlineTools1" />
 
 ### Deadline and SLA limits 
  
