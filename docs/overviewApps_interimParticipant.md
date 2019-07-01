@@ -7,5 +7,3 @@ Transfer of responsibility from someone (eg A) to the person appointed (eg B) as
 - [Via Master Data](https://kinnara-digital-studio.github.io/kecak-workflow/#/overviewApps_interimParticipant_MD)
 
 - [Via Workflow Variable](https://kinnara-digital-studio.github.io/kecak-workflow/#/overviewApps_interimParticipant_wv)
-
-- [Via Scheduler](https://kinnara-digital-studio.github.io/kecak-workflow/#/overviewApps_interimParticipant_sch)
