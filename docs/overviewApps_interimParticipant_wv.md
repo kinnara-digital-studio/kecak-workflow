@@ -45,7 +45,7 @@ For can be more understanding, you can follow this to see the Workflow Variable 
 
 2. Edit The Process
 
-From this step, you can set the workflow variable settings like you see in field Choose Workflow Variable from step 8.
+From this, you can set the workflow variable settings like you see in field Choose Workflow Variable from step 8.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_setWV2.png" alt="interim_wv_setWV2" />
 
