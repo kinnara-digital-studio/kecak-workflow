@@ -15,7 +15,8 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/emailProcessor_field.png" alt="emailProcessor_field.png" />
 
-description :
+**Description :
+
 |            FIELD              |                       DESCRIPTION                         |
 |-------------------------------|-----------------------------------------------------------|
 |**Activities**                 |Name of Activities from the apps                           |
