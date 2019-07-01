@@ -39,7 +39,7 @@ Interim Participant Via Workflow Variable is Interim Participant used data in wo
 Dropdown data in Workflow Variable field is from the process flow of apps.
 For can be more understanding, you can follow this to see the Workflow Variable come from :
 
-1. Access the Design Flow of apps :
+1. Access the Design Process of apps :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_setWV1.png" alt="interim_wv_setWV1" />
 
