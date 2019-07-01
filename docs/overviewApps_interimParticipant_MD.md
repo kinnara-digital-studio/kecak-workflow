@@ -46,11 +46,11 @@ Interim Participant Via Master Data is Interim Participant used master data has 
 
 4. Choose Map To Plugin
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_mapToPlugin.png" alt="interim_mapToPlugin.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_mapToPlugin.png" alt="interim_mapToPlugin." />
 
 5. Choose Interim Master Data Participant
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_participant.png" alt="interim_md_participant.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_md_participant.png" alt="interim_md_participant" />
 
 6. Fill Participant Plugin
 
@@ -58,7 +58,7 @@ Interim Participant Via Master Data is Interim Participant used master data has 
 
 7. Choose Map to User and Submit
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_md_chooseParticipant2.png" alt="interim_wv_chooseParticipant2.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_md_chooseParticipant2.png" alt="interim_md_chooseParticipant2" />
 
 
 ## How To Setup Plugins in Default Properties
