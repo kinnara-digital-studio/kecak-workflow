@@ -2,7 +2,8 @@
 
 Interim Participant Via Master Data is Interim Participant used master data has been added in internal master data.
 
-## How to Access Interim Participant Via Master Data
+
+<h4> How to Access Interim Participant Via Master Data </h4>
 
 1. Open Apps
 
