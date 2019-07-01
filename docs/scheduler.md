@@ -53,6 +53,7 @@ and will be show like this picture
 |**Group Job Name**             |Group name for the data set that contains many job names                       |
 |**Trigger name**               |A component that defines the schedule upon which a given Job will be executed  |
 |**Group Trigger Name**         |Trigger name for the data set that contains many trigger names                 |
+|**Job-Class Name**             |Name of Class Scheduler in the program apps                                    |
 |**CRON**                       | the time we have to set, every time this scheduler is running                 |
 
 
