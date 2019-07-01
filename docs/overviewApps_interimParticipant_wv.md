@@ -26,7 +26,7 @@ Interim Participant Via Workflow Variable is Interim Participant used data in wo
 
 6. Fill Participant Plugin
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_chooseParticipant.png" alt="interim_wv_chooseParticipant.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_workflowVariable_chooseParticipant.png" alt="interim_wv_chooseParticipant.png" />
 
 7. Choose Map to User and Submit
 
