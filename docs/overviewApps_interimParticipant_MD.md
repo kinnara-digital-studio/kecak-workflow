@@ -3,7 +3,7 @@
 Interim Participant Via Master Data is Interim Participant used master data has been added in internal master data.
 
 
-<h3> How to Access Interim Participant Via Master Data </h3>
+## How to Access Interim Participant Via Master Data
 
 1. Open Apps
 
@@ -29,3 +29,49 @@ Interim Participant Via Master Data is Interim Participant used master data has 
 5. List Interim Participant
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interimParticipantList.png" alt="interimParticipantList" />
+
+## How To Setup Plugins in Participant Mapping
+
+1. You should have been accessed the application who has already and click "design app"
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_designApp.png" alt="interim_designApp.png" />
+
+2. Choose Process
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_process.png" alt="interim_process.png" />
+
+3. Choose one from list participants and click button add/edit mapping
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_editMapping.png" alt="interim_editMapping.png" />
+
+4. Choose Map To Plugin
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_mapToPlugin.png" alt="interim_mapToPlugin." />
+
+5. Choose Interim Master Data Participant
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_md_participant.png" alt="interim_md_participant" />
+
+6. Fill Participant Plugin
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_workflowVariable_chooseParticipant.png" alt="interim_masterData_ChooseParticipant.png" />
+
+7. Choose Map to User and Submit
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_md_chooseParticipant2.png" alt="interim_md_chooseParticipant2" />
+
+
+## How To Setup Plugins in Default Properties
+
+1. Click in Properties & Export
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interimScheduler1.png" alt="interimScheduler1.png" />
+
+2. Choose Set Plugins Default Properties
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interimScheduler2.png" alt="interimScheduler2.png" />
+
+3. Choose Interim Scheduler Participant
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interimScheduler3.png" alt="interimScheduler3.png" />
+
