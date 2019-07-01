@@ -31,3 +31,14 @@ Interim Participant Via Workflow Variable is Interim Participant used data in wo
 7. Choose Map to User and Submit
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_chooseParticipant2.png" alt="interim_wv_chooseParticipant2.png" />
+
+8. Choose Workflow Variable
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_chooseWV2.png" alt="interim_wv_chooseWV2" />
+
+Dopdown data in Workflow Variable field is from the process flow of apps.
+For can be more understanding, you can follow this to see the Workflow Variable come from :
+
+1. Access the Flow of apps :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interim_wv_chooseWV1.png" alt="interim_wv_chooseWV1" />
