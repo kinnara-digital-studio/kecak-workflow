@@ -1,17 +1,17 @@
-# Build Front End Application
+## Build Front End Application
 
-## Userview  
+### Userview  
 
-### Create New Userview 
+#### Create New Userview 
 
 <img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-createnewUserview.png" alt="userview-createNewUserview" />
 
 
-### ID 
+#### ID 
 
 Unique ID to repersent this entity 
 
-```
+
 Naming convention
 
 A standard naming convention is highly recommended to be used across the development of your App to maintain consistency and ease maintenance works.
@@ -20,32 +20,25 @@ Camel case naming convention is recommended for this field.
 
 Example: leavePortal
 
-```
-
-```
 Important Note 
 
-The ID declared here would be part of the eventuak URL seen by the ebd users. Try to choose something short and meaningful.
+- The ID declared here would be part of the eventuak URL seen by the ebd users. Try to choose something short and meaningful.
 
-```
-
-### Name 
+#### Name 
 
 Repersent this entity 
 
-```
+
 Example :
 
 Leave Portal 
-```
 
-```
 Important Note
 
 The name declared here would be the userview name seen by the end users. Try to choose something short and meaningful.
-```
 
-### Description 
+
+#### Description 
 
 Entity Description
 
@@ -90,6 +83,6 @@ List of userview Themes
 - V3 Default Theme
 
 
-### Userview Permission
+#### Userview Permission
 
 Permission can control can be applied a the userview itself or at userview category level in the userview using the Permission control 
