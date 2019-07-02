@@ -1,143 +1,203 @@
-# Datalist Action #
+# Datalist 
 
-Datalist Action allows one to associate a list record(s) to a predefined action/script/executable.  It can be used for columns by configuring the column's properties.
+## Datalist Actions Plugins
 
-List Datalist Action 
+---
 
-- Hyperlink
-- Download PDF
-- Delete
-- Run Process
-- Process Admin 
+### Descriptions 
 
-## Delete Action ##
-Drag delete action plugin into row action 
+To extend methods of executing an action on list item e.g delete a record 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deletedDrag.png" alt="datalist-deletedDrag" />
+### Abstract Classes
 
-Delete Action on Side 
+extend
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteTop.png" alt="datalist-deleteTop" />
+`org.joget.apps.datalist.model.DataListActionDefault`
 
-Delete Action on Buttom
+```
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteButton.png" alt="datalist-deleteButton" />
+public String getLinkLabel() {
+        return null;
+    }
 
-#### Delete Properties ####
+    @Override
+    public String getHref() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteProperties.png" alt="datalist-deleteProperties" />
+    @Override
+    public String getTarget() {
+        return null;
+    }
 
-| Name | Description |
-|---|---|
-| Label | Link / Button Label |
-| Form | Form to lookup to for record deletion |
-| Confirmation Message | Confirmation message before performing action |
-| Delete Associated Grid Data | If Checked, grid elements found in the target form will have its data deleted as well |
-| Delete Associated Child Form Data | If checked, child elements found in the target for will have its data deleted as well |
-| Abort Related Running Process | if checked, active process associated with the record ID will be aborted |
+    @Override
+    public String getHrefParam() {
+        return null;
+    }
 
-#### Delete Properties - Visibilty Control ####
+    @Override
+    public String getHrefColumn() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-deleteVisibilityControl.png" alt="datalist-deleteVisibilityControl" />
+    @Override
+    public String getConfirmation() {
+        return null;
+    }
 
-| Name | Description |
-|---|---|
-| Rules | Controls on when the action should appear |
+    @Override
+    public DataListActionResult executeAction(DataList dataList, String[] strings) {
+        return null;
+    }
 
+    @Override
+    public String getName() {
+        return null;
+    }
 
-## Datalist Action - Download PDF ##
+    @Override
+    public String getVersion() {
+        return null;
+    }
 
+    @Override
+    public String getDescription() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDF.png" alt="datalist-downloadPDF" />
+    @Override
+    public String getLabel() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDFButton.png" alt="datalist-downloadPDFButton" />
+    @Override
+    public String getClassName() {
+        return null;
+    }
 
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
+```
 
-#### Download PDF - Properties ####
+## Datalist Binder Plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDFproperties.png" alt="datalist-downloadPDFproperties" />
+---
 
-| Name | Description |
-|---|---|
-| Label | Link/Button label |
-| Form |  |
-| Record ID Coloumn | Use the id of the datalist row or a column value to load the record |
+### Descriptions
 
+To extend methods of loading data for a list
 
-#### Download PDF - Properties - Advanced ####
+### Abstract Classes
 
+extend 
 
-|  |  |
-|---|---|
-| Formatting Options | Options to format and customise the PDF output |
+`org.joget.apps.datalist.model.DataListBinderDefault`
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDFadvanced.png" alt="datalist-downloadPDFadvanced" />
+```
+@Override
+    public DataListColumn[] getColumns() {
+        return new DataListColumn[0];
+    }
 
-#### Download PDF - Properties - Visibility Control ####
+    @Override
+    public String getPrimaryKeyColumnName() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-downloadPDFvisibilyControl.png" alt="datalist-downloadPDFvisibilyControl" />
+    @Override
+    public DataListCollection getData(DataList dataList, Map map, DataListFilterQueryObject[] dataListFilterQueryObjects, String s, Boolean aBoolean, Integer integer, Integer integer1) {
+        return null;
+    }
 
-## Datalist Action - Hyperlink ##
+    @Override
+    public int getDataTotalRowCount(DataList dataList, Map map, DataListFilterQueryObject[] dataListFilterQueryObjects) {
+        return 0;
+    }
 
+    @Override
+    public String getName() {
+        return null;
+    }
 
-Hyperlink Action allows you add a hyperlink to your record 
+    @Override
+    public String getVersion() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlink.png" alt="datalist-hyperlink" />
+    @Override
+    public String getDescription() {
+        return null;
+    }
 
+    @Override
+    public String getLabel() {
+        return null;
+    }
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlinkButton.png" alt="datalist-hyperlinkButton" />
+    @Override
+    public String getClassName() {
+        return null;
+    }
 
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
+```
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlinkTop.png" alt="datalist-hyperlinkTop" />
+## Datalist Column Formatter Plugins
 
-#### Hyperlink Properties ####
+---
 
+### Descriptions
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlinkButton.png" alt="datalist-hyperlinkButton" />
+To extend ways od formatting column data 
 
-| Name | Description |
-|---|---|
-| Hyperlink | Url To Link |
-| Label | Link / Button label |
-| Visible when no record or checkbox? | If Checked link wiill be visible when no record or checkbox appear in the list. Only appalicable in bulk action place horder|
-| hyperlink Target | - Current Window
-|  | - New Window |
-|  | - Popup Dialog |
-| Confirmation Message | Confirmation Message berfore performing action |
+### Abstract Classes
 
-#### Hyperlink Parameters #####
+extends 
 
-Add parameter value to the hyperlink define above
+`org.joget.apps.datalist.model.DataListColumnFormatDefault`
 
-| Name | Description |
-|---|---|
-| Parameter Name | Parameter Name to be set as part of the URL |
-| Column Name | Column Name to retrieve value Form |
+```
+@Override
+    public String format(DataList dataList, DataListColumn dataListColumn, Object o, Object o1) {
+        return null;
+    }
 
+    @Override
+    public String getName() {
+        return null;
+    }
 
-#### Hyperlink properties - Visibilty Control ####
+    @Override
+    public String getVersion() {
+        return null;
+    }
 
-<img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalist-hyperlinkVisibilityControl.png" alt="datalist-hyperlinkVisibilityContro" />
+    @Override
+    public String getDescription() {
+        return null;
+    }
 
-| Name | Description |
-|---|---|
-| Rules | Controls on when eh action should appear |
+    @Override
+    public String getLabel() {
+        return null;
+    }
 
+    @Override
+    public String getClassName() {
+        return null;
+    }
 
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
+```
 
-
-- JSON Datalist Binder 
-
-- SOAP Datalist Binder :
-	- Plugins bundel content several SOAP components 
-	- Plugins bundel consist of :
-		- SOAP options binder : data provider fo element options (Select box / radio button/ check box/ submit button)
-		- SOAP tool : send SOAP request 
-		- multirow SOAP tool : send SOAP request and use form table record as SOAP body request
-		- SOAP datalist binder : data binder for data list table 
-		- SOAP binder
-		
-
-
-- JDBC Datalist Binder
-- Currency Format

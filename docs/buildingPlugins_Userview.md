@@ -1,93 +1,187 @@
-## Userview # 
+# Userview 
 
-### Create New Userview 
+## Userview Menu Plugins 
 
-<img src= "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-createnewUserview.png" alt="userview-createNewUserview" />
+---
 
+### Descriptions
 
-#### ID 
+To extends types of pages available in userview builder
 
-Unique ID to repersent this entity 
+### Abstract Classes 
 
-```
-Naming convention
+extend
 
-A standard naming convention is highly recommended to be used across the development of your App to maintain consistency and ease maintenance works.
-
-Camel case naming convention is recommended for this field.
-
-Example: leavePortal
+`org.joget.apps.userview.model.UserviewPermission`
 
 ```
 
+ @Override
+    public boolean isAuthorize() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
 ```
-Important Note 
 
-The ID declared here would be part of the eventuak URL seen by the ebd users. Try to choose something short and meaningful.
+## Userview Permission Plugins 
+
+---
+
+### Descriptions
+
+To handle permission and access right in a useview
+
+### Abstract Classes
+
+extends
+
+`org.joget.apps.userview.model.UserviewPermission`
 
 ```
 
-#### Name 
+@Override
+    public boolean isAuthorize() {
+        return false;
+    }
 
-Repersent this entity 
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
+```
+
+## Userview Theme Plugins
+
+---
+
+### Descriptions
+
+To Change the ui design of Userview
+
+### Abstract Classes
+
+extends `org.joget.apps.userview.model.UserviewTheme`
 
 ```
-Example :
+@Override
+    public String getCss() {
+        return null;
+    }
 
-Leave Portal 
+    @Override
+    public String getJavascript() {
+        return null;
+    }
+
+    @Override
+    public String getHeader() {
+        return null;
+    }
+
+    @Override
+    public String getFooter() {
+        return null;
+    }
+
+    @Override
+    public String getPageTop() {
+        return null;
+    }
+
+    @Override
+    public String getPageBottom() {
+        return null;
+    }
+
+    @Override
+    public String getBeforeContent() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
 ```
-
-```
-Important Note
-
-The name declared here would be the userview name seen by the end users. Try to choose something short and meaningful.
-```
-
-#### Description 
-
-Entity Description
-
-
-#### Userview Menu 
-
-|  |  |
-|---|---|
-| Basic | Form |
-|  | Html Page |
-|  | Inbox |
-|  | Link |
-|  | List |
-|  | Run Process |
-| Kecak | Datalist Inbox |
-|  | Datalist Jasper Reports |
-|  | heatmap Report |
-|  | Infinite Scroll List Menu |
-|  | Jasper Report |
-| Kecak Interprise | Kecak - Process Monitoring |
-|  | Kecak CRUD |
-|  | Kecak Dasboard |
-| Kecak Plugins | ToDo List |
-| Process Admin | Reassingment Userview Menu |
-
-#### Userview Theme 
-
-Userview Theme defines the look and feel the app.
-
-one may also create its own Userview Theme as it is one of plugable plugin 
-
-List of userview Themes 
-
-- Admin LTE For Kecak 
-- Admin LTE Theme
-- BCAI - Corporate Blue Theme 
-- Corporati Theme
-- Enchanced Theme
-- Mofiz Admin Theme
-- Mofiz Theme
-- My Green Toscca
-- V3 Default Theme
-
-
-#### Userview Permission
-
-Permission can control can be applied a the userview itself or at userview category level in the userview using the Permission control 

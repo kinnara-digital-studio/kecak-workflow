@@ -1,104 +1,227 @@
-# Form #
+# Form
 
-## Form Properties ##
+## Form Element Plugins
 
 ---
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-formProperties.png" alt="buildingPlugins-formProperties" />
+### Description 
 
-| Name | Description |
-|---|---|
-| ID | Form ID |
-| Name | Form Name |
-| Table Name | Table Name |
-| Description | Description of what the form intends to do. This is meant for developer/admin consumption only to describe the purpose of this element | 
+Process Tools Plugins are used for integrating with eksternal system
 
+### Abtract Classes 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-formPropertiesAdvanced.png" alt="buildingPlugins-formPropertiesAdvanced" />
+extends 
 
-***Load Binder*** : The Load Binder is reponsible to popoulate the form data by default, workflow Form Binder 
-is the default binder used to return data form sbumitted forms 
+`org.joget.apps.form.model.Element`
 
-***Store Binder*** : The Store Binder is Responsible to store the from the data. By default, [Workflow Form Binder]
-is the default used to store data from submitted forms.
+implements
 
-***Load Binder*** : The Load Binder is reponsible to popoulate the form data by default, workflow Form Binder is the default binder used to return data form sbumitted forms.
+`org.joget.apps.form.model.FormBuilderPaletteElement`
 
-***Store Binder*** : The Store Binder is Responsible to store the from the data. By default, [Workflow Form Binder] is the default used to store data from submitted forms.
 ```
-Under Normal circumtances, the load and Store binder should be the same to maintain the same 
-source for the data to be written to/read form.
-```
+ public String getFormBuilderCategory() {
+        return null;
+    }
 
-***Permission*** : Manage the permission on who to see this section. 
+    @Override
+    public int getFormBuilderPosition() {
+        return 0;
+    }
 
-***Autorize Message*** : Manage to be shown when permission is defined.
+    @Override
+    public String getFormBuilderIcon() {
+        return null;
+    }
 
-***Post Processing Tool*** : Tool to run based on event below
-***Run Tool on*** : 
+    @Override
+    public String getDefaultPropertyValues() {
+        return null;
+    }
 
-- Data creation
-- Data update
-- Both date creation and update
+    @Override
+    public String getFormBuilderTemplate() {
+        return null;
+    }
+}
 
-
-## Form Element ## 
-
-
-- Form Element is a type of plugin that is extensible via Kecak's plugin architecture. 
-- Form Element is responsible for providing the end users form input elements to interact with.
-
-- There are many different form fields (i.e., TextField, SelectBox, Hidden Field, etc.) to choose from when your are designing your forms.  
-
-You can drag-and-drop them on your form canvas and then edit their properties. 
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-textField.png" alt="buildingPlugins-textField" />
-
-Each form element has its own set of attributes, ID and label attributes are common to most of then.
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-editTextField.png" alt="buildingPlugins-editTextField" />
-
-***ID***
-
-
-The 'ID' in the property editor is a unique identifier. 
-
-
-Reserved IDs
-
-Do not use the following reserved IDs. "appId, appVersion, version, userviewId, menuId, key, embed" on the form element's ID attribute.
 ```
 
-***Label***
+## Form Load Binder Plugins 
+
+---
+
+### Description
+
+To extends methods of loading data in a form form any data source
+
+### Abtract Classes
+
+extends 
+
+`org.joget.apps.form.model.FormBinder`
+
+implements 	
+
+`org.joget.apps.form.model.FormLoadBinder`
+
+`org.joget.apps.form.model.FormLoadElementBinder`
+
+## Form Options Binder Plugins
+
+---
+
+### Description
+
+To extends method to loading data for a form field options form any data source
+
+### Abtract Classes
+
+extends 
+
+`org.joget.apps.form.model.FormBinder`
+
+implements
+
+`org.joget.apps.form.model.FormLoadOptionsBinder`
 
 
-Label is the human-readable identifier for the form field.
+```
+	public FormRowSet load(Element element, String s, FormData formData) {
+        return null;
+    }
 
+    @Override
+    public String getName() {
+        return null;
+    }
 
-List of Form Elements
+    @Override
+    public String getVersion() {
+        return null;
+    }
 
-- Hidden Field
-- Text Field 
-- Password Field 
-- Text Area 
-- Select Box
-- Check Box
-- Radio 
-- Date Picker
-- File Upload
-- Subform
-- Tooltip 
-- Text Editor 
-- Grid
-- Custom HTML
-- Section Wizard
-- ID Generator Field
-- Camera
-- Spreadsheets
-- Audit Progress List
-- Crud SelectBox
-- Form Attachment
-- Form Grid 
-- Captcha
-- Audit trail Form
+    @Override
+    public String getDescription() {
+        return null;
+    }
 
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+	
+```
+
+## Form Store Binder
+
+---
+
+### Description
+
+To extends  methods of storing data in a form to any data source
+
+### Abtract Classes
+
+extends 
+
+`org.joget.apps.form.model.FormBinder`
+
+implements 
+
+`org.joget.apps.form.model.FormStoreBinder`
+`org.joget.apps.form.model.FormStoreElementBinder`
+
+```
+@Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+
+```
+
+## Form Validator Plugins
+
+---
+
+### Description
+
+To extends ways to validate form data
+
+### Abtract Classes
+
+extends
+
+`org.joget.apps.form.model.FormValidator`
+
+```
+ public boolean validate(Element element, FormData formData, String[] strings) {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
+}
+
+```

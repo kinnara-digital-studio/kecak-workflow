@@ -1,48 +1,157 @@
-## Process ##
+# Process 
 
-Step by step from start until finish the program 
+## Deadline Plugins 
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProcess.png" alt="buildingPlugins-participantProcess" />
+---
+### Descriptions
 
-### Design Process ###
- Design Process will open up the Process builder. Process bulider is one of the highlight of Kecak Workflow where it allow one to design process ont the browser it self wthout the need of installing any additional components 
+Provide the ability to recalculate deadline limit and SLA limit based on programming logic
 
- 
-### Process Builder ###
+### Abstract Classes
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-pluginsProcessBuilder.png" alt="buildingPlugins-pluginsProcessBuilder" />
+extends
 
-The Process builder allows one to design process(es) for the joget Workflow App in an easy drag and drop manner
+`org.joget.workflow.model.DefaultDeadlinePlugin`
 
-- Participant 
-	The participant node is used to declare a new participant swimlane to present a role/person/entty (e.g Claimnt). 
+```
+@Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public WorkflowDeadline evaluateDeadline(Map map) {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
 	
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProcess.png" alt="buildingPlugins-participantProcess" />
+```
+
+## Process Participant Plugins 
+
+---
+
+### Descriptions
+
+Are used to provide custom selection of users to workflow participants
+
+### Abstract Classes
+
+extends
+
+`org.joget.workflow.model.DefaultParticipantPlugin`
+
+```
+
+ @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getActivityAssignments(Map map) {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
 	
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantProperties.png" alt="buildingPlugins-participantProperties" />
+```
 
+## Process Tool Plugins
 
+---
+
+### Descriptions
+
+To Integrate with external systems.
+
+### Abstract Classes
+
+extends
+
+`org.joget.plugin.base.DefaultApplicationPlugin`
+
+```
+@Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getVersion() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public Object execute(Map map) {
+        return null;
+    }
+
+    @Override
+    public String getLabel() {
+        return null;
+    }
+
+    @Override
+    public String getClassName() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyOptions() {
+        return null;
+    }
 	
-| Name | Description |
-|---|---|
-| ID | Participant |
-| Name | Participant Name |	
-
-
-- Activity
-
-	Activity node is used to be mapped to Form, to used to interact with human participant, as part of process flow.
-	
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-participantActivity.png" alt="buildingPlugins-participantActivity" />
-
-| Name | Description |
-|---|---|
-| ID | Activity |
-| Name | Activity Name | 
-	
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-processDeadline.png" alt="buildingPlugins-processDeadline" />
-
-| Name | Description |
-|---|---|
-| Deadline | Multiple deadline can be set for each activity |
-	
+```
