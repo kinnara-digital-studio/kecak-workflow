@@ -72,10 +72,9 @@ More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadli
 
 ----
 
-- System Administration 
+- [System Administration](buidingApplication_MonitorApps.md)
 - [SLA Limit, Deadline, Exception](buildingApplication_deadline.md)
 - [Advanced Insignt into Form Builder](buildingApplication_FormBuilder.md) 
 - Advanced Application Plugins
 - [Building Front End App](buildingAplication_BuildingForntEnd.md)
-- Insight into Joget Workflow
 - [Hash Variable](buildingAplication_HashVariabel.md)
