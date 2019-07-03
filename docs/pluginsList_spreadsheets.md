@@ -1,6 +1,6 @@
 # Kecak Plugins Spreadsheets
 
-Kecak plugins spreadsheets is a plugins for kecak to input data like in excel/google spreadsheets
+Kecak plugins spreadsheets is a plugins for kecak to input data like in excel/google spreadsheets.
 
 Image examples for kecak plugins spreadsheets:
 
