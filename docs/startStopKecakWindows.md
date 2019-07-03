@@ -4,7 +4,7 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak.png" alt="startKecak" />
 
-2. choose Kecak Start
+2. choose and click Kecak Start
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-start.png" alt="kecak-start" />
 
@@ -17,7 +17,7 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak.png" alt="startKecak" />
 
-2. choose Kecak Start
+2. choose and click Kecak Stop
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-stop.png" alt="kecak-stop" />
 
