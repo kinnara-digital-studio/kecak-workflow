@@ -16,7 +16,7 @@ To create Workflow variable :
 
 3. Crate a new workflow variable called "status"
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable2.png" alt="buildingPlugins-workflowVariable2" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable2.png" alt="buildingPlugins-workfloVariable2" />
 
 4. Look at Workflow Variable in condition
 
