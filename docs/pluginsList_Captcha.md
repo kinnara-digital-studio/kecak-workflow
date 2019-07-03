@@ -16,12 +16,12 @@ generate site key:
 Drag and drop icon captcha
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha3.png" alt="Captcha" />
 
-edit captcha
+Edit captcha
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha4.png" alt="Captcha" />
 
 Choosing captcha version
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha5.png" alt="Captcha" />
-fill site key field
+Fill site key field
 
 Save
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha6.png" alt="Captcha" />
