@@ -4,7 +4,7 @@
 
 ### What is workflow 
 
-Workflow is defined as task, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organizatio. Workflow may be a formal process or a very informal ine so that no one really regonizes it as an actual wokrflow.
+Workflow is defined as task, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization. Workflow may be a formal process or a very informal in so that no one really organize it as an actual wokrflow.
 
 - Automation of a bussines process 
 - consist of :

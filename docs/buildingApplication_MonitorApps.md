@@ -4,14 +4,14 @@ Monitor Apps is a vital component of the workflow engine. As its name suggests, 
 
 ## Running Processes 
 
-is where all running processes (of all application ) in the system listed. A process is running when it has been selected to be carried out or execute.
+Is where all running processes (of all application ) in the system listed. A process is running when it has been selected to be carried out or execute.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-monitorApps.png" alt="buildingApplication-monitorApps" />
 
 
 ## Complete Processes 
 
-list all finished processes and lets one check the historical data of each of the process instances as well
+List all finished processes and lets one check the historical data of each of the process instances as well
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-monitorApps1.png" alt="buildingApplication-monitorApps1" />
 

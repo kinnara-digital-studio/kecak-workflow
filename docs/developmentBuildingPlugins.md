@@ -6,15 +6,15 @@
 
 1. Open windows system properties dialog
 2. Selecting the `Advanced` tab, and the `Environment Variables` button.
-3. Add new System Variable named `JAVA_HOME`, and set its value to JDK installation directory. E.g. `C:\Program Files\Java\jdk1.6.0_27`
-4. Add new System Variable named `M2_HOME`, and set its value to Apache Maven 2 installation directory. E.g. `C:\Program Files\apache-maven-2.2.1`.
-5. Append `;%JAVA_HOME%\bin;%M2_HOME%\bin` to System Variable named `Path`.
-6. Open Command Prompt and run `mvn –version` to verify.
+3. Add new system variable named `JAVA_HOME`, and set its value to JDK installation directory e.g. `C:\Program Files\Java\jdk1.6.0_27`
+4. Add new system variable named `M2_HOME`, and set its value to Apache Maven 2 installation directory e.g. `C:\Program Files\apache-maven-2.2.1`.
+5. Append `;%JAVA_HOME%\bin;%M2_HOME%\bin` to system variable named `Path`.
+6. Open command prompt and run `mvn –version` to verify.
 
 #### For Linux
 
-1. Open Command Terminal
-2. Set Environment Variable `JAVA_HOME` to the location of JDK. E.G `export JAVA_HOME=/usr/java/jdk1.6.0_27`.
+1. Open command terminal
+2. Set environment variable `JAVA_HOME` to the location of JDK. E.G `export JAVA_HOME=/usr/java/jdk1.6.0_27`.
 3. Set environment variable `M2_HOME` to the location of your Apache Maven 2. E.g. `export M2_HOME=/usr/apache-maven-2.2.1`.
 4. Run `export PATH=$PATH:$JAVA_HOME/bin: $M2_HOME/bin` to add both into environment variable named `PATH`.
 5. Run `mvn –version` to verify.
@@ -25,14 +25,14 @@ This is one time setup only
 
 #### For Windows
 
-1. Open Command Prompt
-2. Go to the location of your Developer Training Materials, go into Maven Dependency folder.
+1. Open command prompt
+2. Go to the location of your developer training materials, go into Maven dependency folder.
 3. Run `setup-dependency-window.bat`.
 
 #### For Linux 
 
-1. Open Command Terminal.
-2. Go to the location of your Developer Training Materials, go into Maven Dependency folder.
+1. Open command terminal.
+2. Go to the location of your developer training materials, go into Maven dependency folder.
 3. Run `setup-dependency-linux.sh`.
 
 ### Getting and Building Joget WOrkflow Source Code 
@@ -49,9 +49,9 @@ This is one time setup only
 
 #### for windows 
 
-1. Create a directory to contain your plugins. E.g. “C:\kecak”
+1. Create a directory to contain your plugins e.g. “C:\kecak”
 
-2. In Command Prompt, go to the created directory.
+2. In command prompt, go to the created directory.
 
 3. Run `%HOMEPATH%\Desktop\Developer Training Materials\Joget Workflow source code\wflow-plugin-archetype\create-plugin.bat" org.joget.sample sample-plugin-pack`
 
@@ -61,7 +61,7 @@ This is one time setup only
 
 1. Create a directory at home directory to contain your plugins. E.g. `~\kecak`
 
-2. In Command Terminal, go to the created directory.
+2. In command terminal, go to the created directory.
 
 3. Run `~\Developer Training Materials\Joget Workflow source code\wflow-plugin-archetype\create-plugin.bat" org.joget.sample sample-plugin-pack
 
@@ -70,7 +70,7 @@ This is one time setup only
 ##### What is inside the maven project 
 
 - pom.xml
-	- POM stands for "Project Object Model“, an XML representation of a Maven project
+	- pom.xml stands for "Project Object Model“, an XML representation of a Maven project
 
 	- Used to manage your plugin dependencies jar
 
@@ -85,11 +85,11 @@ This is one time setup only
 
 - [Participant](buildingPlugins_Participant.md)
 - [Activities](buildingPlugins_Activities.md)
-- [Process](buidingPlugins_Process.md)
+- [Process](buildingPlugins_Process.md)
 - [Workflow Variable](buildingPlugins_WorkflowVariable.md)
 - [Routes](buildingPlugins_Routes.md)
-- [Publishing Process](buidingPlugins_PublishingProcess.md)
+- [Publishing Process](buildingPlugins_PublishingProcess.md)
 - [Form](buildingPlugins_form.md)
-- [Datalist](datalist_DatalistAction.md)
+- [Datalist](datalist.md)
 - [Userview](buildingPlugins_Userview.md)
-- [Publising Apps](buidingPlugins_PublishingApps.md)
+- [Publising Apps](buildingPlugins_PublishingApps)

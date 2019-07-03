@@ -10,9 +10,7 @@ To extends types of pages available in userview builder
 
 ### Abstract Classes 
 
-extend
-
-`org.joget.apps.userview.model.UserviewPermission`
+extends`org.joget.apps.userview.model.UserviewPermission`
 
 ```
 
@@ -63,9 +61,7 @@ To handle permission and access right in a useview
 
 ### Abstract Classes
 
-extends
-
-`org.joget.apps.userview.model.UserviewPermission`
+extends`org.joget.apps.userview.model.UserviewPermission`
 
 ```
 

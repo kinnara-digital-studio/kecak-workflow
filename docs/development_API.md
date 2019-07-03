@@ -1,6 +1,6 @@
 # Kecak API 
 
-## [JSON API](ResAPI.md)
+## [Kecak API](ResAPI.md)
 
 ### Post Form Submit 
 
@@ -310,7 +310,7 @@ RequestMethod.GET
 
 ---
 
-### Get Assignmets
+### Get Assignments
 
 #### Description
 

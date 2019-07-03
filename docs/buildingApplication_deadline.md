@@ -2,38 +2,50 @@
 
 ### About Deadline
 
-Deadlines act as a timer which triggers an exception transition to another activity when a specified duration has elapsed. Deadlines can be set for each activity.
+Deadlines acts as a timer that sets the time limit for each activity executed.
 
-We set time limits on each activity, which will trigger an exception (in this case, a specific string variable). When a matching transition that has the condition set to 'exception' matches this string value, the transition will be invoked.
 
 ### Type of Deadline 
 
 - Deadline execution can be synchronous or asynchronous.
-- For synchronous execution, the current activity will no longer be active when the deadline is triggered.  This is used in cases such as an approval escalation.
-- For asynchronous execution, the next activity will be executed while the current activity is still waiting.  This is used in cases such as sending reminders.
+- For synchronous execution, Current activity will not be active whe the deadline is trigered.
+- For asynchronous execution, the next activity will continue even though the current activity is still waiting.
 - Multiple deadlines are supported for each activity.
 
 
-### Setting Deadlines in Activities 
+#### Setting Deadlines in Activities 
 
-- Edit the activity properties you wish to set a deadline for, then click on the Deadlines tab. Add a new row and enter appropriate values for 'Execution', 'Duration Unit' and 'Deadline Limit'.
+- Edit the activity properties, choose Deadlines menu.
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineProperties2.png" alt="buildingApplication-deadlineProperties2" />
-
-- Type the exception name in the Exception name field (e.g., Remind). Exception names are case sensitive. Make sure this matches the exception name given to the transition.
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineProperties.png" alt="buildingApplication-deadlineProperties" />
 
 
-- Click on 'OK' to save your deadline configuration. You can as many deadlines as you require.
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-settingDeadline.png" alt="buildingApplication-settingDeadline" />
 
-### Setting Transition as Exception Flow 
-
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineProperties3.png" alt="buildingApplication-deadlineProperties3" />
+#### Setting Transition as Exception Flow
 
 - When a deadline is triggered, and where the exception name matches the one set for a transition, the flow will execute along that transition to the next element along the workflow.
-- Add an Exception-type transition from the activity to the next (i.e., Remind).
+- Add an Exception-type transition from the activity to the next (i.e., Send Reminder).
 - Set the type of condition to 'Exception'.
-- Enter an Exception name (e.g., Remind) in the Expression text area.
+- Enter an Exception name (e.g., TIMEOUT) in the Expression text area.
 - Confirm and close the properties window for the transition.
 
+---
+
+## SLA (Service Level Agreement)
+
+### About SLA 
+
+Service Level Agreement (SLA) can be incorporated in the process design as a means for the process owner to define and maintain quality of services.
+
+In Kecak, SLA may be implemented at the process level and, typically, at the activity level.
+
+Before such report can be generated, one must first enable the Process Data Collector at each intended Kecak App.
+
+### Why Set Limits 
+
+- By setting limits to workflow activities, you are able to define appropriate service levels for your processes.
+- Participants in the workflow can be made aware of adherence to these service levels.
+- You can generate reports to determine the efficiency of your processes (e.g., identifying bottlenecks) 
+
+### Setting SLA Limits

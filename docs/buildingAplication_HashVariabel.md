@@ -1,14 +1,14 @@
 ## Hash Variable
 ### What is Hash Variable ?
 Hash Variable gives	users greater flexibility and freedom in accesing useful information or relevant run-time values from the system 
-A Hash varible is a special hash-escape keyword that can be used in :
+A Hash variable is a special hash-escape keyword that can be used in :
 - Form Builder 
 - Datalist Builder
-- Userview Bulider
+- Userview Builder
 - Supported plugin configuration properties
 - External Form URL when mapping an activity to an external form
 
-to return the value of some useful runtime varibale from kecak components.
+to return the value of some useful runtime variable from kecak components.
 
 ### Nested Hash Variable 
 A Hash Variable can be used another Hash Variable to form a Nested Hash Variable

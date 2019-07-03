@@ -36,3 +36,9 @@ One may also map to a participant in relation to the reporting organization char
 For example, we are trying to determine the participant that will be approving a claim. The person to approve a claim will be the HOD of the person that submitted the claim. Therefore, the setting would be "Performer's HOD where the performer executed Submit Claim"
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-mapToOrgChart.png" alt="buildingPlugins-mapToOrgChart" />
+
+#### Variable List
+
+In this tab, the list of Workflow Variable(s) will be displayed for the ease of inspection.
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-variableList.png" alt="buildingPlugins-variableList" />

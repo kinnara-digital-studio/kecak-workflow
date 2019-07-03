@@ -21,7 +21,7 @@
 - Development
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
-	- [API](develpoment_API.md) 
+	- [API](development_API.md) 
 	- [Plugin Suite](development_PluginSuite.md)
 	- [Building Plugins](developmentBuildingPlugins.md)
 	- [Buiding Application](developmentBuildingApps.md)
