@@ -2,7 +2,7 @@
 
 Kecak plugins spreadsheets is a plugins for kecak to input data like in excel/google spreadsheets.
 
-Image examples for kecak plugins spreadsheets:
+Below is image of Kecak Plugin Spreadsheets:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-spreadsheets1.png" alt="spreadsheets1" />
 
