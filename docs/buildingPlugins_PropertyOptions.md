@@ -193,7 +193,9 @@ required : ‘true’, //optional, boolean value, default is false
 
 }
 
-Extra element select field
+````
+
+####  Extra element select field
 
 ```json
 
@@ -211,12 +213,12 @@ Extra element select field
 	plugin properties
 
 }
-
+```
 #### Property validator types 
 
 - Currently only one validator type supported - Ajax
 
-```json
+```html
 
 {
 	type : ‘ajax’,
