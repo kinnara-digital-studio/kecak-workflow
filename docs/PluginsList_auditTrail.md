@@ -6,7 +6,9 @@ This Form Grid requires an additional form as a place to store data.
 
 The following is data that must be filled when using Form Grid:
 
-An example of using Form Grid is in the PT Timah Application for SHP Submission
+An example of using Grid is in the PT Timah Application for SHP Submission :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/auditTrailExample.jpg" alt="auditTrailExample" />
 
 
 Kecak Audit Trail Plugin bundle contains a set of plugins to support field-level audit trail history.
