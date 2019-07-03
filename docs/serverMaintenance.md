@@ -1,10 +1,10 @@
 # Start Kecak
 
-1. open file Kinnara-Studio
+1. Open file Kinnara-Studio
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak.png" alt="startKecak" />
 
-2. choose and click Kecak Start
+2. Choose and click Kecak Start
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-start.png" alt="kecak-start" />
 
@@ -13,11 +13,11 @@
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/information-kecak-start.png" alt="startKecakInfo" />
 
 # Stop Kecak
-1. open file Kinnara-Studio
+1. Open file Kinnara-Studio
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak.png" alt="startKecak" />
 
-2. choose and click Kecak Stop
+2. Choose and click Kecak Stop
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-stop.png" alt="kecak-stop" />
 
