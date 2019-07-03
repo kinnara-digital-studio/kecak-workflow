@@ -11,7 +11,9 @@ Here is an overview of how the captha plugins work on kecak workflow.
 5. The validator checks the results of returning data from Google server whether the token is a robot or not and returns to the browser a valid / invalid token
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha2.png" alt="Captcha" />
-Generate site key:
+
+
+**Generate site key:**
 
 Drag and drop icon captcha
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha3.png" alt="Captcha" />
@@ -21,6 +23,7 @@ Edit captcha
 
 Choosing captcha version
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha5.png" alt="Captcha" />
+
 Fill site key field
 
 Save
