@@ -10,7 +10,7 @@
 
 3. You will see this info if Kecak has been started
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecakInfo.png" alt="startKecakInfo" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/information-kecak-start.png" alt="startKecakInfo" />
 
 # Stop Kecak
 1. open file Kinnara-Studio
