@@ -84,6 +84,7 @@
          </xs:all>
       </xs:complexType>
    </xs:element>
+    <xs:element name = "ProcessStartResponse" />
 
    <xs:element name = "OtherRequest">
       <xs:complexType>

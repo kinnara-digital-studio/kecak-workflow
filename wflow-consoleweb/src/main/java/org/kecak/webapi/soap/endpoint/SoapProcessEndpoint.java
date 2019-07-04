@@ -132,7 +132,7 @@ public class SoapProcessEndpoint {
 	}
 	
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "ProcessStartRequest")
-	public void handleProcessStartAsync(@RequestPayload Element processStartAsyncElement) {
+	public @ResponsePayload Element handleProcessStartAsync(@RequestPayload Element processStartAsyncElement) {
         LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + processStartAsyncElement.getName() + "]");
 
 		final String processId = processIdExpression.evaluate(processStartAsyncElement).get(0).getValue();
@@ -158,6 +158,14 @@ public class SoapProcessEndpoint {
 
         String processDefId = appService.getWorkflowProcessForApp(appId, String.valueOf(appVersion), processId).getId();
         WorkflowProcessResult result = workflowManager.processStart(processDefId, variables);
+		Element response = new Element("ProcessStartResponse",namespace);
+		response.addContent(new Element("processId",namespace).setText(result.getProcess().getInstanceId()));
+		if(result.getActivities().iterator().hasNext()) {
+			response.addContent(new Element("activityId", namespace).setText(result.getActivities().iterator().next().getId()));
+		} else {
+			response.addContent(new Element("activityId", namespace).setText(""));
+		}
+		return response;
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "OtherRequest")
