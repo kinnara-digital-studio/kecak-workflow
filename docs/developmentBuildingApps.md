@@ -71,13 +71,25 @@ More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadli
 
 ### Publishing Process
 
-## Participant Mapping 
+Publish your process, so you can build every application needed easily. more publishing process explanation [Publishing Process](buildingPlugins_Process)
+
+## Participant Mapping
+
+Participants in Kecak Workflow is the actor who will used this application. more explaination about [Participant Mapping](buildingPlugins_Participant.md)
 
 ## Datalist Builder
 
+Datalist Builder offers an intuitive way of constructing a list of cumulative field values from all workflow process instances associated with the selected form. more explaination about [Datalist Builder]() 
+
 ## Form Builder 
 
+makes it easy for you to design your forms. One can easily build a form by using the simplistic and guided interface. [Form Builder](buildingApplication_FormBuilder.md)
+
 ## Front End Builder
+
+Build your front and application, you can choose any themes from kecak or build your own theme. [Building Front End App](buildingAplication_BuildingForntEnd.md)
+
+
 
 ----
 
