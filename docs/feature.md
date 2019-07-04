@@ -43,13 +43,12 @@ Edit in Configure Currency Formatter
 
 Select
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyConverterSelect.png" alt="Currency Converter" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyConverterSelectFrom.png" alt="Currency Converter" />
 
 Advanced
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyConverterAdvanced.png" alt="Currency Converter" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyConverter.png" alt="Currency Converter" />
 
 **Amount** (Blue Box)
 
