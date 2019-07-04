@@ -202,7 +202,7 @@ public class DataListDecorator extends CheckboxTableDecorator {
             index++;
         }
 
-        if (!column.getName().equals(columnName) && ((skipHidden && column.isHidden()) || (!column.isHidden() && "true".equals(column.getPropertyString("exclude_export"))))) {
+        if (!column.getName().equals(columnName) && (!column.isPermitted() && (skipHidden && column.isHidden()) || (!column.isHidden() && "true".equals(column.getPropertyString("exclude_export"))))) {
             column = findColumn(columnName);
         }
         
