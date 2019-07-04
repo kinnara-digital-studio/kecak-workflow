@@ -52,4 +52,18 @@ Advanced
 
 **Amount** (Blue Box)
 
+Edit Numeric Field
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmount2Edit.png" alt="Currency Amount2" />
+
+Equation
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmount2EquationOptions.png" alt="Currency Amount2" />
+
+Advanced
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmount2AdvancedOption.png" alt="Currency Amount2" />
+
+Configure
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmount2Configure.png" alt="Currency Amount2" />
