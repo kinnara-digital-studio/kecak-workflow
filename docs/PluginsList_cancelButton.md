@@ -2,7 +2,7 @@
 
 
 ## Brief Description
-    element to add a cancel button beside the complite button, when the cancel button is clicked, the process will be stopped (abort).
+    Element to add a cancel button beside the complite button, when the cancel button is clicked, the process will be stopped (abort).
 
 
 # How to use
