@@ -35,7 +35,7 @@ Edit in Advanced Option
 
 Edit in Configure Currency Formatter
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmountConfigureEdit.png" alt="Currency Amount" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmountConfigure.png" alt="Currency Amount" />
 
 **Converter** (Green Box)
 
