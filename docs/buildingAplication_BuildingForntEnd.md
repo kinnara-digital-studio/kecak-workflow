@@ -30,8 +30,8 @@
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-FrontEndBuilder4.png" alt="buildingApplication-FrontEndBuilder4" />
 
-8. anytime you can preview the userview by clicking on the large preview button at the top
+8. Anytime you can preview the userview by clicking on the large preview button at the top
 
-9. once you have finished designing the userview, click the large save button at the top and you will confirmation that the userview is saved. you may continue to design the userview.
+9. Once you have finished designing the userview, click the large save button at the top and you will confirmation that the userview is saved. you may continue to design the userview.
 
 
