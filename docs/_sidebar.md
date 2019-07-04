@@ -4,7 +4,7 @@
 		- [Email Processor](emailProcessor.md)
 		- [Mobile App](mobileApp.md)
 		- [Apps](overviewApps.md)
-		- [Features](features.md)
+		- [Features](feature.md)
 		
 	- [Requirement](requirement.md)
 	
