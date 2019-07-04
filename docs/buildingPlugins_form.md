@@ -6,7 +6,7 @@
 
 ### Description 
 
-Process Tools Plugins are used for integrating with eksternal system
+Process Tools Plugins are used for integrating with external system
 
 ### Abtract Classes 
 

@@ -1,7 +1,7 @@
 
 # Building Application 
 
-This article will explain how to create great application using Kecak Workflow. No we will create a application about reuimbursement called `Reuimbursement Approval`.
+This article will explain how to create great application using Kecak Workflow. No we will create a application about reimbursement called `Reimbursement Approval`.
 
 - if requestor want make a submission lest than Rp.500.000,00, requestor should have approval from supervisior 
 - if requestor want make a submisson Rp.500.000,00 or more, requestor should have approval form manager
@@ -18,7 +18,7 @@ in the App design ,click on the Process menu on the left , and then the Design P
  
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-NameId.png" alt="buildingApplication-NameId" />
 
-3. Sample `Reuimbursement Approval` process 
+3. Sample `Reimbursement Approval` process 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-designProcess.png" alt="buildingApplication-designProcess" />
 
@@ -74,7 +74,7 @@ More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadli
 
 - [System Administration](buidingApplication_MonitorApps.md)
 - [SLA Limit, Deadline, Exception](buildingApplication_deadline.md)
-- [Advanced Insignt into Form Builder](buildingApplication_FormBuilder.md) 
+- [Advanced Insight into Form Builder](buildingApplication_FormBuilder.md) 
 - Advanced Application Plugins
 - [Building Front End App](buildingAplication_BuildingForntEnd.md)
 - [Hash Variable](buildingAplication_HashVariabel.md)

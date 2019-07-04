@@ -35,13 +35,11 @@ This is one time setup only
 2. Go to the location of your developer training materials, go into Maven dependency folder.
 3. Run `setup-dependency-linux.sh`.
 
-### Getting and Building Joget WOrkflow Source Code 
+### Getting Kecak Workflow Source Code
 
-- Checkout the source from public mirror at GitHub at or main SVN repository at `http://svn.github.com/jogetworkflow/jw-community.git http://dev.joget.org/svn/jw-community/trunk` (requires login) or get it in your Developer Training Materials
+- Checkout the source from public mirror at GitHub `https://github.com/kinnara-digital-studio/kecak-workflow`
 
-- Assuming you are using the CollabNet client, in the directory you created for Joget source, run `svn co http://svn.github.com/jogetworkflow/jw-community.git` to check out code from GitHub.
-
-- Run “mvn clean install” in wflow-app project directory to build it.
+- clone Kecak Workflow `https://github.com/kinnara-digital-studio/kecak-workflow.git` to your repository 
 
 ### Creating a maven project for your plugins
 
@@ -53,9 +51,15 @@ This is one time setup only
 
 2. In command prompt, go to the created directory.
 
-3. Run `%HOMEPATH%\Desktop\Developer Training Materials\Joget Workflow source code\wflow-plugin-archetype\create-plugin.bat" org.joget.sample sample-plugin-pack`
+3. Run `C:\Kinnara\kecak-workflow\wflow-plugin-archetype\create-plugin.bat com.kinnara.kecakplugins.`PluginsName` kecak-plugins-`PluginsName` 5.0-SNAPSHOT`
 
-4. Key in `3.0-SNAPSHOT` for version and `y` to confirm all the information
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-buildingPlugins1.png" alt="buildingPlugins-buildingPlugins1" />
+
+4. Input your plugins version 
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-buildingPlugins2.png" alt="buildingPlugins-buildingPlugins2" />
+
+5. Key in `5.0-SNAPSHOT` for version and `y` to confirm all the information
 
 #### for Linux 
 
@@ -63,9 +67,11 @@ This is one time setup only
 
 2. In command terminal, go to the created directory.
 
-3. Run `~\Developer Training Materials\Joget Workflow source code\wflow-plugin-archetype\create-plugin.bat" org.joget.sample sample-plugin-pack
+3. Run `~\Kinnara\kecak-workflow\wflow-plugin-archetype\create-plugin.bat com.kinnara.kecakplugins.`PluginsName` kecak-plugins-`PluginsName` 5.0-SNAPSHOT
 
-4. Key in `3.0-BETA` for version and `y` to confirm all the information
+4. Input your plugins version
+ 
+5. Key in `5.0-SNAPSHOT` for version and `y` to confirm all the information
 
 ##### What is inside the maven project 
 
@@ -91,5 +97,6 @@ This is one time setup only
 - [Publishing Process](buildingPlugins_PublishingProcess.md)
 - [Form](buildingPlugins_form.md)
 - [Datalist](datalist.md)
+- [Property Options](buildingPlugins_PropertyOptions.md)
 - [Userview](buildingPlugins_Userview.md)
 - [Publising Apps](buildingPlugins_PublishingApps)
