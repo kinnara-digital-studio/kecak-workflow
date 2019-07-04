@@ -54,7 +54,7 @@ Advanced
 
 Edit Numeric Field
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmount2Edit.png" alt="Currency Amount2" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyAmount2EditField.png" alt="Currency Amount2" />
 
 Equation
 
