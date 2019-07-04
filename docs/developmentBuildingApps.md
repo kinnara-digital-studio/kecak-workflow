@@ -1,5 +1,5 @@
 
-# Building Application 
+## Building Application 
 
 This article will explain how to create great application using Kecak Workflow. No we will create a application about reimbursement called `Reimbursement Approval`.
 
@@ -7,7 +7,7 @@ This article will explain how to create great application using Kecak Workflow. 
 - if requestor want make a submisson Rp.500.000,00 or more, requestor should have approval form manager
 - manager and supervisior can do reject to requestor submission.
 
-## Designing a Process
+### Designing a Process
 1. Create new design process 
 
 in the App design ,click on the Process menu on the left , and then the Design Process button along the top 
@@ -22,7 +22,7 @@ in the App design ,click on the Process menu on the left , and then the Design P
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-designProcess.png" alt="buildingApplication-designProcess" />
 
-### Participant
+#### Participant
 
 | ID | Name |
 |---|---
@@ -30,7 +30,7 @@ in the App design ,click on the Process menu on the left , and then the Design P
 | supervisior | Supervisior |
 | manager |	Manager |
 
-### Activities
+#### Activities
 
 | ID | Name |
 |---|---
@@ -39,7 +39,7 @@ in the App design ,click on the Process menu on the left , and then the Design P
 | approvedFinance|	Approved Finance |
 | reject | Reject |
 
-### Routes
+#### Routes
 
 |  |  |
 |---|---|
@@ -53,7 +53,7 @@ in the App design ,click on the Process menu on the left , and then the Design P
 |  | Value : 500000 |
 
 
-### Tools 
+#### Tools 
 
 You can add a tool or a plugin for something needed, in this case we need nitification tool 
 
@@ -61,7 +61,7 @@ You can add a tool or a plugin for something needed, in this case we need nitifi
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-deadlineTools1.png" alt="buildingApplication-deadlineTools1" />
 
-### Deadline and SLA limits 
+#### Deadline and SLA limits 
  
 If supervisor do not make an agreement in one day, a tool send a notification. If Finance do not  make an agreement in one day, appoval will move to manager 
 
@@ -69,23 +69,23 @@ We have to set a time limit for supervisor and Finance activity.
 
 More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadline.md)
 
-### Publishing Process
+#### Publishing Process
 
 Publish your process, so you can build every application needed easily. more publishing process explanation [Publishing Process](buildingPlugins_Process)
 
-## Participant Mapping
+### Participant Mapping
 
 Participants in Kecak Workflow is the actor who will used this application. more explaination about [Participant Mapping](buildingPlugins_Participant.md)
 
-## Datalist Builder
+### Datalist Builder
 
 Datalist Builder offers an intuitive way of constructing a list of cumulative field values from all workflow process instances associated with the selected form. more explaination about [Datalist Builder]() 
 
-## Form Builder 
+### Form Builder 
 
 makes it easy for you to design your forms. One can easily build a form by using the simplistic and guided interface. [Form Builder](buildingApplication_FormBuilder.md)
 
-## Front End Builder
+### Front End Builder
 
 Build your front and application, you can choose any themes from kecak or build your own theme. [Building Front End App](buildingAplication_BuildingForntEnd.md)
 
