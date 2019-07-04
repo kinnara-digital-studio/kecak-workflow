@@ -51,7 +51,7 @@ This is one time setup only
 
 2. In command prompt, go to the created directory.
 
-3. Run `C:\Kinnara\kecak-workflow\wflow-plugin-archetype\create-plugin.bat com.kinnara.kecakplugins.`PluginsName` kecak-plugins-`PluginsName` 5.0-SNAPSHOT`
+3. Run `C:\Kinnara\kecak-workflow\wflow-plugin-archetype\create-plugin.bat com.kinnara.kecakplugins."PluginsName" kecak-plugins-"PluginsName" 5.0-SNAPSHOT`
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-buildingPlugins1.png" alt="buildingPlugins-buildingPlugins1" />
 
@@ -61,13 +61,15 @@ This is one time setup only
 
 5. Key in `5.0-SNAPSHOT` for version and `y` to confirm all the information
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-buildingPlugins3.png" alt="buildingPlugins-buildingPlugins3" />
+
 #### for Linux 
 
 1. Create a directory at home directory to contain your plugins. E.g. `~\kecak`
 
 2. In command terminal, go to the created directory.
 
-3. Run `~\Kinnara\kecak-workflow\wflow-plugin-archetype\create-plugin.bat com.kinnara.kecakplugins.`PluginsName` kecak-plugins-`PluginsName` 5.0-SNAPSHOT
+3. Run `~\Kinnara\kecak-workflow\wflow-plugin-archetype\create-plugin.bat com.kinnara.kecakplugins."PluginsName" kecak-plugins-"PluginsName" 5.0-SNAPSHOT`
 
 4. Input your plugins version
  

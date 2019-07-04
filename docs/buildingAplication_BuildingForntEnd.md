@@ -11,3 +11,6 @@
 | Name | A descriptive name |
 | Description | Optional Description |
 
+3. Click on `save` the userview and launch the userview builder in a new window. if your browser block the popup, click on the form name lauch it.
+4. The First step in the userview builder is the the design userview page.
+
