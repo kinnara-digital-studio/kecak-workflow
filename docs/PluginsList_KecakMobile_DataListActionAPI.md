@@ -1,6 +1,6 @@
 ### DataList Action API ###
 
-Datalist action API in Kecak Mobile is for adding datalist based on mobile
+Datalist action API in Kecak Mobile is for adding datalist action based on mobile.
 
 ##### Url #####
 ```json

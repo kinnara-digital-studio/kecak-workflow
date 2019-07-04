@@ -69,6 +69,15 @@ We have to set a time limit for supervisor and Finance activity.
 
 More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadline.md)
 
+### Publishing Process
+
+## Participant Mapping 
+
+## Datalist Builder
+
+## Form Builder 
+
+## Front End Builder
 
 ----
 
