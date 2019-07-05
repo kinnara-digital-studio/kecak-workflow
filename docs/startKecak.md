@@ -40,3 +40,18 @@ After that, the server can be used as shown below:
 
 **Via Docker Linux**
 
+1. Start docker service
+
+```html
+systemctl start docker
+```
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux2.png" alt="docker linux" />
+
+2. Run docker-kecak-workflow
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux3.png" alt="docker linux" />
+
+3. Wait until kecak workflow running.
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux4.png" alt="docker linux" />
+
+4. Server is ready to access if message “Server startup in xxxxx ms” shown
