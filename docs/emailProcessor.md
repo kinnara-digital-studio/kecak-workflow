@@ -5,11 +5,11 @@
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interimScheduler1.png" alt="interimScheduler1" />
 
 
-2. design properties
+2. Design properties
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/interimScheduler2.png" alt="interimScheduler2" />
 
-3. add email approval
+3. Add email approval
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/emailProcessor.png" alt="emailProcessor.png" />
 
