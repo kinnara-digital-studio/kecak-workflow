@@ -1,31 +1,33 @@
-# Kecak Mobile - Form UI - API #
+# Kecak Mobile - Form UI - API
 
-### Overview ###
+**Overview**
 
 Form UI - API is plugin to get JSON from certain Form and also its *children*, like *subform* etc, for authorized user. Server will responses by giving response body in JSON format which contains *appId*, *appVersion*, digested JSON Form, JSON Form itself, and status.
 
-##### Url #####
+**Url**
 
-```web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service```
+```html
+web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service
+```
 
-##### Method #####
+**Method**
 HTTP GET
 
-##### Header #####
+**Header**
 * Authorization : *your access token*
 * Referer : *your server host*
 * Content-Type : *application/json*
 
-##### Parameters #####
+**Parameters**
 * appId - Application ID
 * appVersion - Application Version (optional): if not included will retrieve the latest version
 * id - Form ID: Form to be displayed
 * digest - Digested JSON form
 
-##### Example #####
+**Example**
 ```https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service?appId=trainingREST&appVersion=1&id=masterREST&digest=```
 
-### Use of API Plugin ###
+**Use of API Plugin**
 
 This example is showing the JSON of Form for authorized user, with the JSON of Form on Kecak is as follows
 
