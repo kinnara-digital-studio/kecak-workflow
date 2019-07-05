@@ -1,4 +1,4 @@
-# How to Install Docker in Window
+# How to Install Docker in Windows
 
 Let's following this step for installation docker workflow in windows :
 
