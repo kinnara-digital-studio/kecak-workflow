@@ -87,7 +87,7 @@ Makes it easy for you to design your forms. One can easily build a form by using
 
 ### Front End Builder
 
-Build your front and application, you can choose any themes from kecak or build your own theme. [Building Front End App](buildingAplication_BuildingForntEnd.md)
+Build your front and application, you can choose any themes from kecak or build your own theme. [Building Front End App](buildingAplication_BuildingFrontEnd.md)
 
 
 
@@ -97,5 +97,5 @@ Build your front and application, you can choose any themes from kecak or build 
 - [SLA Limit, Deadline, Exception](buildingApplication_deadline.md)
 - [Advanced Insight into Form Builder](buildingApplication_FormBuilder.md) 
 - Advanced Application Plugins
-- [Building Front End App](buildingAplication_BuildingForntEnd.md)
+- [Building Front End App](buildingAplication_BuildingFrontEnd.md)
 - [Hash Variable](buildingAplication_HashVariabel.md)
