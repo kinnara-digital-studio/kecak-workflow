@@ -4,7 +4,7 @@ Plugins From Grid functions to display Grid data which usually can be more than 
 This Form Grid requires an additional form as a place to store data.
 
 
-The following is data that must be filled when using Form Grid:
+The following is data that must be filled when using Form Grid.
 
 Below is example of using Grid :
 
