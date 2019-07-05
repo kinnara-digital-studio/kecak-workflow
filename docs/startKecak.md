@@ -16,7 +16,17 @@
 
 **Via Linux**
 
-Make sure your kecak in linux is running, otherwise do this step :
+Make sure your kecak in linux is running.
+
+Anggaplah kecak-workflow telah tersedia pada directory PC atau laptop anda :
+
+Then type this in your command prompt
+```
+ls -l
+```
+and you can see the result like in this picture:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak_linux.png" alt="startKecak_linux" />
 
 Type this in your command prompt
 
