@@ -36,5 +36,4 @@ Launch
 Result after launch
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha8.png" alt="Captcha" />
 
-
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captchaResult.png" alt="Captcha" />
