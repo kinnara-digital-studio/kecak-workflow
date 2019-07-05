@@ -18,17 +18,17 @@
 
 Make sure your kecak in linux is running.
 
-Anggaplah kecak-workflow telah tersedia pada directory PC atau laptop anda :
+Suppose that kecak-workflow is available in your PC or laptop directory:
 
 Then type this in your command prompt
 ```
 ls -l
 ```
-and you can see the result like in this picture:
+And you can see the result like in this picture:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak_linux1.png" alt="startKecak_linux" />
 
-Type this in your command prompt
+After that, type this in your command prompt for start kecak via linux:
 
 ```
 sh tomcat8.sh start
