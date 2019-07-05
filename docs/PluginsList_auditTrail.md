@@ -6,7 +6,7 @@ This Form Grid requires an additional form as a place to store data.
 
 The following is data that must be filled when using Form Grid:
 
-An example of using Grid is in the PT Timah Application:
+An example of using Grid is in the Training Test Application:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/auditTrailExample.png" alt="auditTrailExample" />
 
