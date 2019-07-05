@@ -25,6 +25,7 @@ Choosing captcha version
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captcha5.png" alt="Captcha" />
 
 Fill site key field
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/captchaSiteKey.png" alt="Captcha" />
 
 Save
