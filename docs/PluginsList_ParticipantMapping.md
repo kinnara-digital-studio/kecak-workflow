@@ -6,7 +6,7 @@ Various Participant Mapping in Kecak Workflow.
 
 - [Map Partipant to Users](https://kinnara-digital-studio.github.io/kecak-workflow/#/ParticipantMapping_MapParticipanttoUsers) 
 ```
-Each particaipant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
+Each participant declared in Process Design would have its mapping configure here. There are various options to define particaipants.
 ```
 
 ###### Process start White list ######
