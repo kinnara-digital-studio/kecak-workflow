@@ -16,8 +16,13 @@
 
 **Via Linux**
 
+1. Type this in your command prompt
 
-**Via Docker Windows**
+```
+sh tomcat8.sh start
+```
+
+**Via Docker**
 
 Started Docker using docker-compose. With adding directory address in command prompt
  Using this in your Command Prompt
