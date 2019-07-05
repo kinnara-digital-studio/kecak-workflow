@@ -6,7 +6,7 @@ How To Used Currency Exchange
 
 1. Build Apps
 
-In this case, example is Currency Exchange Application
+In this case, the example is Currency Exchange Application :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currency.png" alt="Currency" />
 
