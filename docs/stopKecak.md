@@ -10,6 +10,13 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-stop.png" alt="kecak-stop" />
 
-**Via Docker Windows**
+**Via Docker**
 
-**Via Docker Linux**
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/linux-KecakStop.png" alt="kecak-stop" />
+
+1. Type this in your command line 
+
+```html
+sh tomcat8.sh stop
+```
+
