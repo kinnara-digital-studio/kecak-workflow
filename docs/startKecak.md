@@ -17,6 +17,7 @@
 **Via Linux**
 
 Make sure your kecak in linux is running, otherwise do this step :
+
 Type this in your command prompt
 
 ```
