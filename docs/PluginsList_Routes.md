@@ -12,9 +12,17 @@ Decisions are used when you want to insert a point in your process where the flo
 
 Now, what the supervisor decides to do will result in a decision: either choose to accept or reject the application. If the supervisor rejects it, a mail will be sent to the requestor. If the supervisor accepts it, the application will be forwarded to the HOD. If application must be revise. a mail will be sent to the requestor , the application need to be revised
 
+**How to access Design Process**
+
+1. Choose process in the apps
+2. Choose Design Process
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/routesStep.png" alt="routesstep" />
+
 Given the above, our process will look like the figure below:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable4.png" alt="buildingPlugins-workflowVariable4" />
+
 
 There is, however, a very important caveat to insert here. Based on the rules above, if the approval value is "accept", the application will route to the HOD. If the approval value is "reject", then an email will be sent. However, if a mistake is made in the form or during user input and the value of approval is neither accept or reject, the process will get stuck because there is no valid rule to follow. It is due to this that the best practices of decision routing recommends using the Otherwise operator in this given scenario. If we make a slight change to the setting above and put the transition to system as Otherwise, we'll end up with:
 
