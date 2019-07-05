@@ -17,13 +17,7 @@
 **Via Linux**
 
 Make sure your kecak in linux is running, otherwise do this step :
-
-```
-
-```
--show the screenshot from starting kecak in linux-
-
-1. Type this in your command prompt
+Type this in your command prompt
 
 ```
 sh tomcat8.sh start
