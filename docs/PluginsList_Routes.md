@@ -1,6 +1,6 @@
 # Plugins Routes
 
-Before you access Routes, please make sure you have choose which Design Process from the apps, and choose which workflow that you will editing the routes.
+Before you access the Route, make sure you have chosen which Design Process from the application, and choose which workflow you will edit the route.
 
 ### Routes ###
 
