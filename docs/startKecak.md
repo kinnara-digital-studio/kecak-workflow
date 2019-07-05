@@ -24,6 +24,8 @@ sh tomcat8.sh start
 
 **Via Docker**
 
+Make sure your Kecak docker service is running, otherwise do this step:
+
 1. Start docker service
 
 ```html
