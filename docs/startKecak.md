@@ -26,7 +26,7 @@ ls -l
 ```
 and you can see the result like in this picture:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak_linux.png" alt="startKecak_linux" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak_linux1.png" alt="startKecak_linux" />
 
 Type this in your command prompt
 
