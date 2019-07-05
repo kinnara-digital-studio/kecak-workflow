@@ -16,6 +16,27 @@
 
 **Via Linux**
 
+
 **Via Docker Windows**
 
+Started Docker using docker-compose. With adding directory address in command prompt
+ Using this in your Command Prompt
+```html
+docker-compose up
+```
+
+Which will look like this:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-2.png" alt="docker windows" />
+
+
+If there is an access confirmation as shown below, then select "allowed access
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-3.png" alt="docker windows" />
+
+
+After that, the server can be used as shown below:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows-4.png" alt="docker windows" />
+
 **Via Docker Linux**
+
