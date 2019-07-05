@@ -5,7 +5,6 @@
 Form UI - API is plugin to get JSON from certain Form and also its *children*, like *subform* etc, for authorized user. Server will responses by giving response body in JSON format which contains *appId*, *appVersion*, digested JSON Form, JSON Form itself, and status.
 
 **Url**
-
 ```html
 web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service
 ```
@@ -25,7 +24,9 @@ HTTP GET
 * digest - Digested JSON form
 
 **Example**
-```https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service?appId=trainingREST&appVersion=1&id=masterREST&digest=```
+```html
+https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service?appId=trainingREST&appVersion=1&id=masterREST&digest=
+```
 
 **Use of API Plugin**
 
