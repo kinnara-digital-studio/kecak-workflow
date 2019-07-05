@@ -3,14 +3,14 @@
 
 This article will explain how to create great application using Kecak Workflow. No we will create a application about reimbursement called `Reimbursement Approval`.
 
-- if requestor want make a submission lest than Rp.500.000,00, requestor should have approval from supervisior 
-- if requestor want make a submisson Rp.500.000,00 or more, requestor should have approval form manager
-- manager and supervisior can do reject to requestor submission.
+- If requestor want make a submission lest than Rp.500.000,00, requestor should have approval from supervisior 
+- If requestor want make a submisson Rp.500.000,00 or more, requestor should have approval form manager
+- Manager and supervisior can do reject to requestor submission.
 
 ### Designing a Process
 1. Create new design process 
 
-in the App design ,click on the Process menu on the left , and then the Design Process button along the top 
+In the App design ,click on the Process menu on the left , and then the Design Process button along the top 
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingApplication-createNewDesign.png" alt="buildingApplication-createNewDesign" />
 
@@ -63,9 +63,9 @@ You can add a tool or a plugin for something needed, in this case we need nitifi
 
 #### Deadline and SLA limits 
  
-If supervisor do not make an agreement in one day, a tool send a notification. If Finance do not  make an agreement in one day, appoval will move to manager 
+If supervisor do not make an agreement in one day, a tool send a notification. If finance do not  make an agreement in one day, appoval will move to manager 
 
-We have to set a time limit for supervisor and Finance activity.
+We have to set a time limit for supervisor and finance activity.
 
 More detailed explaination. [SLA Limits and Deadline](buildingApplication_deadline.md)
 
@@ -75,15 +75,15 @@ Publish your process, so you can build every application needed easily. more pub
 
 ### Participant Mapping
 
-Participants in Kecak Workflow is the actor who will used this application. more explaination about [Participant Mapping](buildingPlugins_Participant.md)
+Participants in Kecak Workflow is the actor who will used this application. More explaination about [Participant Mapping](buildingPlugins_Participant.md)
 
 ### Datalist Builder
 
-Datalist Builder offers an intuitive way of constructing a list of cumulative field values from all workflow process instances associated with the selected form. more explaination about [Datalist Builder]() 
+Datalist Builder offers an intuitive way of constructing a list of cumulative field values from all workflow process instances associated with the selected form. More explaination about [Datalist Builder]() 
 
 ### Form Builder 
 
-makes it easy for you to design your forms. One can easily build a form by using the simplistic and guided interface. [Form Builder](buildingApplication_FormBuilder.md)
+Makes it easy for you to design your forms. One can easily build a form by using the simplistic and guided interface. [Form Builder](buildingApplication_FormBuilder.md)
 
 ### Front End Builder
 
