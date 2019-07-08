@@ -22,5 +22,9 @@ sh tomcat8.sh stop
 
 **Via Docker**
 
+For stop Kecak via docker, you can push botton CTRL+C in your PC/Laptop keyboard
+
+And you can see the result like in this picture:
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/linux-KecakStopLinux.png" alt="kecak-stopLinux" />
 
