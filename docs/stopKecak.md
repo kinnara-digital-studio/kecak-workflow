@@ -26,5 +26,5 @@ For stop Kecak via docker, you can push botton CTRL+C in your PC/Laptop keyboard
 
 And you can see the result like in this picture:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/linux-KecakStopDocker.jpeg" alt="kecak-stopDocker" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/linux-KecakStopDocker.jpg" alt="kecak-stopDocker" />
 
