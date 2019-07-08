@@ -13,6 +13,4 @@ For setup java memory, open File With The Name “tomcat8-start.bat” Using Not
 
 **Via Linux**
 
-**Via Docker Windows**
-
-**Via Docker Linux**
+**Via Docker**
