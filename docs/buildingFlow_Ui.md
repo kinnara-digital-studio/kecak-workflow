@@ -48,7 +48,7 @@ Listing of records/ generating reports,Retrieving records from Form Data Table,E
 
 ## UI Builder : Userview Builder
 
-Application Front-end interface builder;Serves as the wrapper for forms, processes, data lists;Extensible functionalities through Joget’s plugin architecture
+Application Front-end interface builder;Serves as the wrapper for forms, processes, data lists;Extensible functionalities through Kecak’s plugin architecture
 		
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/userview-1.PNG" alt="userview1" />
 		

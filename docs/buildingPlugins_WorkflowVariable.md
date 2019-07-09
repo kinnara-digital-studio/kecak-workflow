@@ -14,11 +14,11 @@ To create Workflow variable :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable1.png" alt="buildingPlugins-workflowVariable1" />
 
-3. Create a new workflow variable called "status"
+3. Create a new workflow variable called "supervisorApproval"
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable3.png" alt="buildingPlugins-workflowVariable3" />
 
 4. Look at Workflow Variable in condition
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workfloVariable3.png" alt="buildingPlugins-workfloVariable3" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable5.png" alt="buildingPlugins-workflowVariable5" />
 
