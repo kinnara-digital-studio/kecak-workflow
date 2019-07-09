@@ -14,6 +14,7 @@ Human To Machine
 Machine To Machine
 Machine To Human
 
+
 **Why Workflow**
 
 EFFICIENCY
@@ -22,7 +23,9 @@ BETTER CONTROL PROSES
 FLEXIBILITY
 BUSNESS PROCESS IMPROVEMENT
 
+
 **What is Kecak Workflow**
+
 Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application
 Products& Services
 Managing business processes can be sumbersome and time consuming.
