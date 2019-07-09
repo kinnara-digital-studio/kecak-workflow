@@ -7,7 +7,7 @@ Start of the Process
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-1.PNG" alt="flow-1" />
 End of the Process
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow-1" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow-2" />
 
 ## Indentify Process Participant
 
