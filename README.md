@@ -21,14 +21,20 @@ Human To Machine
 Machine To Machine
 Machine To Human
 
-### Why Workflow
 
-EFFICIENCY
+**Value Proposition
 
-Automation Of Business Processes Results In The Elimination Of Many Unnecessary Or Manual Steps
+- **Enterprises:**
+  - Efficiency and productivity
+  - Process control
+  - Process improvement
+  - Reduced costs
+  
+- **IT/Developers:**
+  - Web based
+  - Drag-and-drop, wizard-style
+  - Build apps, not just process
+  - Extendable through plugins
+  - Integration
 
-BETTER CONTROL PROSES
 
-FLEXIBILITY
-
-BUSNESS PROCESS IMPROVEMENT
