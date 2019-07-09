@@ -14,8 +14,6 @@ Human To Machine
 Machine To Machine
 Machine To Human
 
-
-
 **Why Workflow**
 
 EFFICIENCY
@@ -27,8 +25,6 @@ BETTER CONTROL PROSES
 FLEXIBILITY
 
 BUSNESS PROCESS IMPROVEMENT
-
-
 
 **What is Kecak Workflow**
 
