@@ -91,14 +91,8 @@ This is one time setup only
 
 
 
-- [Participant](buildingPlugins_Participant.md)
-- [Activities](buildingPlugins_Activities.md)
 - [Process](buildingPlugins_Process.md)
-- [Workflow Variable](buildingPlugins_WorkflowVariable.md)
-- [Routes](buildingPlugins_Routes.md)
-- [Publishing Process](buildingPlugins_PublishingProcess.md)
 - [Form](buildingPlugins_form.md)
 - [Datalist](datalist.md)
 - [Property Options](buildingPlugins_PropertyOptions.md)
 - [Userview](buildingPlugins_Userview.md)
-- [Publising Apps](buildingPlugins_PublishingApps)

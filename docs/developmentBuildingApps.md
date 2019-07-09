@@ -92,8 +92,13 @@ Build your front and application, you can choose any themes from kecak or build 
 
 
 ----
-
-- [System Administration](buidingApplication_MonitorApps.md)
+- [Activity](buildingPlugins_Activities.md)
+- [Routes](buildingPlugins_Routes.md)
+- [Publishing Process](buildingPlugins_PublishingProcess.md)
+- [Publishing Application](buildingPlugins_PublishingApps.md)
+- [Participant](buildingPlugins_Participant.md)
+- [Workflow Variable](buildingPlugins_WorkflowVariable.md)
+- [System Administration](buildingApplication_MonitorApps.md)
 - [SLA Limit, Deadline, Exception](buildingApplication_deadline.md)
 - [Advanced Insight into Form Builder](buildingApplication_FormBuilder.md) 
 - Advanced Application Plugins
