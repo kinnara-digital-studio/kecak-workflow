@@ -15,13 +15,19 @@ Machine To Machine
 Machine To Human
 
 
+
 **Why Workflow**
 
 EFFICIENCY
+
 Automation Of Business Processes Results In The Elimination Of Many Unnecessary Or Manual Steps
+
 BETTER CONTROL PROSES
+
 FLEXIBILITY
+
 BUSNESS PROCESS IMPROVEMENT
+
 
 
 **What is Kecak Workflow**
