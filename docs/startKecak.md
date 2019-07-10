@@ -6,7 +6,7 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak.png" alt="startKecak" />
 
-2. Choose and click Kecak Start
+2. Choose and click kecak-start
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecak-start.png" alt="kecak-start" />
 
@@ -16,7 +16,7 @@
 
 **Via Linux**
 
-Make sure your kecak in linux is running.
+Make sure your Kecak in linux is running.
 
 Suppose that kecak-workflow is available in your PC or laptop directory:
 
@@ -28,7 +28,7 @@ And you can see the result like in this picture:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak_linux1.png" alt="startKecak_linux" />
 
-After that, type this in your command prompt for start kecak via linux:
+After that, type this in your command prompt for start Kecak via linux:
 
 ```
 sh tomcat8.sh start
@@ -49,7 +49,7 @@ systemctl start docker
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux3.png" alt="docker linux" />
 
-3. Wait until kecak workflow running.
+3. Wait until Kecak workflow running.
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux4.png" alt="docker linux" />
 
 4. Server is ready to access if message “Server startup in xxxxx ms” shown
