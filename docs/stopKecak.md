@@ -12,9 +12,7 @@
 
 **Via Linux**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/linux-KecakStopLinux.png" alt="kecak-stopLinux" />
-
-1. Type this in your command line 
+Type this in your command line 
 
 ```
 sh tomcat8.sh stop
