@@ -259,6 +259,7 @@ public class AppServiceImpl implements AppService {
         if(Objects.nonNull(customCompleteButton)
                 && Objects.nonNull(customCompleteButton.get("className"))
                 && Objects.nonNull(customCompleteButton.get("properties"))
+                && !AssignmentCompleteButton.class.getName().equals(customCompleteButton.get("className"))
                 && Objects.nonNull(completeButton = (Element) pluginManager.getPlugin(String.valueOf(customCompleteButton.get("className"))))
         ) {
             // custom complete button
