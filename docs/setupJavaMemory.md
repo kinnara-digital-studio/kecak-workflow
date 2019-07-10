@@ -2,14 +2,14 @@
 
 **Via Windows**
 
-For setup java memory, open File With The Name “tomcat8-start.bat” Using Notepad Or Notepad++, Then You Will See Like This:
+For setup java memory, open file with the name “tomcat8-start.bat” Using Notepad Or Notepad++, then you will see like this:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/java.png" alt="java" />
 
 
 **Via Linux**
 
-Setup java memory kecak in linux
+Setup java memory Kecak in linux
 
 Export:
 ```
@@ -22,11 +22,11 @@ apache-tomcat-8.5.20/bin/catalina.sh $*
 
 **Via Docker**
 
-Setup java memory kecak in docker
+Setup java memory Kecak in docker
 
-FROM tomcat:8.5
+From tomcat:8.5
 
-Copy keca.war
+Copy kecak.war
 ```
 /usr/local/tomcat/webapps
 ```
@@ -74,7 +74,7 @@ expose 8000
 
 ```CMD ["/usr/local/tomcat/tomcat8.sh", "run"]```
 
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava3.jpg" alt="java" />
 
 **Information :**
 - The Memory Server For Example Is 12gigabytes
