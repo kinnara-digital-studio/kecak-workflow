@@ -1,4 +1,3 @@
-# Building Application #
 
 ## Workflow Variable ##
 
