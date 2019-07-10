@@ -46,7 +46,7 @@ And also, you have to fill the header section by **Referer** and **Content-Type*
 
 Request parameters are needed to filter the form by its *appId*, *appVersion*, *id*, and *digest*. For this example request parameters is as follow :
 
-*appId*      : triningREST <br/>
+*appId*      : trainingREST <br/>
 *appVersion* : 1 <br/>
 *id*         : testDuaForm1 <br/>
 *digest*     : <br/>
