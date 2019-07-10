@@ -67,17 +67,12 @@ expose 8080
 
 expose 8000
 
-ENV JAVA_MEMORY=${JAVA_MEMORY}
+```ENV JAVA_MEMORY=${JAVA_MEMORY}```
 
-ENV TOMCAT_DEBUG=${TOMCAT_DEBUG}
+```ENV TOMCAT_DEBUG=${TOMCAT_DEBUG}```
 
-CMD ["/usr/local/tomcat/tomcat8.sh", "run"]
+```CMD ["/usr/local/tomcat/tomcat8.sh", "run"]```
 
-Using Notepad Or Notepad++, Then You Will See Like This:
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava2.jpg" alt="java" />
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava3.jpg" alt="java" />
 
 
 **Information :**
