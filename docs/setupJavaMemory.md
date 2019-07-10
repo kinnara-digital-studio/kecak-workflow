@@ -20,11 +20,11 @@ For setup java memory, open file with the name "tomcat8-start.sh"
 
 Using Notepad Or Notepad++, Then You Will See Like This:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/java1.jpg" alt="java" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava1.jpg" alt="java" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/java2.jpg" alt="java" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava2.jpg" alt="java" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/java3.jpg" alt="java" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava3.jpg" alt="java" />
 
 
 **Information :**
