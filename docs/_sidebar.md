@@ -1,5 +1,5 @@
 - [Getting Started](README.md)
-	- [Overview](kecakVsJoget.md)
+	- [Overview](gettingStarted_Overview.md)
 		- [Scheduler](scheduler.md)
 		- [Email Processor](emailProcessor.md)
 		- [Mobile App](mobileApp.md)
