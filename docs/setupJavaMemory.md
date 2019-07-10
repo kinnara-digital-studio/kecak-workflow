@@ -21,6 +21,7 @@ apache-tomcat-8.5.20/bin/catalina.sh $*
 ```
 
 **Via Docker**
+
 Setup java memory kecak in docker
 
 FROM tomcat:8.5
