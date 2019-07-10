@@ -9,9 +9,9 @@ Kecak Workflow Platform helps you focusing in your core business, instead of adm
 
 ### What is Workflow
 
-Workflow is defined as tasks, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization, workflows may be a formal process or a very informal one so that no one really recognizes it as an actual workflow.
+Workflow is defined as tasks, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization, workflows may be a formal process or a very informal one so that no one recognizes it as an actual workflow.
 
-Automation of a business process consist of : Sequence of connected steps.
+Automation of a business process consists of a sequence of connected steps.
 
 Each step is declared as work of a person, group of persons, an organization, or one or more mechanisms
 4 types of possible interactions or transitions:
@@ -39,5 +39,4 @@ Each step is declared as work of a person, group of persons, an organization, or
   - Build apps, not just process
   - Extendable through plugins
   - Integration
-
 
