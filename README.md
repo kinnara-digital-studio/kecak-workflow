@@ -18,12 +18,15 @@ Each step is declared as work of a person, group of persons, an organization, or
 4 types of possible interactions or transitions:
 
 Human To Human
+
 Human To Machine
+
 Machine To Machine
+
 Machine To Human
 
 
-**Value Proposition
+**Value Proposition**
 
 - **Enterprises:**
   - Efficiency and productivity
