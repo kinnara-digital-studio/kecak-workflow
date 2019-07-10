@@ -19,9 +19,9 @@ To create Workflow variable :
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable7.png" alt="buildingPlugins-workflowVariable7" />  
 
-4. Create a new workflow variable called "supervisor"
+4. Create a new workflow variable called "supervisorApproval"
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable9.png" alt="buildingPlugins-workflowVariable9" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable10.png" alt="buildingPlugins-workflowVariable10" />
 
 5. Click `OK` to save your workflow variable 
 
