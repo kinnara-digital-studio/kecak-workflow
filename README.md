@@ -3,26 +3,29 @@
 ### What is Kecak Workflow
 
 Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application
-Products& Services
+Products & Services
 Managing business processes can be sumbersome and time consuming.
-Kecak Workflow Platform helps you focusing in your core business, instead of administrative problems
+Kecak Workflow Platform helps you focusing in your core business, instead of administrative problems.
 
 ### What is Workflow
 
-Workflow Is Defined As Tasks, Required Steps, And Information Moved (In And/Or Out) Of Any Business Process. Depending On The Size And Complexity Of The Organization, Workflows May Be A Formal Process Or A Very Informal One So That No One Really Recognizes It As An Actual Workflow.
+Workflow is defined as tasks, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization, workflows may be a formal process or a very informal one so that no one really recognizes it as an actual workflow.
 
-Automation Of A Business Process
-Consist Of :
-Sequence Of Connected Steps
-Each Step Is Declared As Work Of A Person, Group Of Persons, An Organization, Or One Or More Mechanisms
-4 TYPES OF POSSIBLE INTERACTIONS OR TRANSITIONS:
-Human To Human
-Human To Machine
-Machine To Machine
-Machine To Human
+Automation of a business process consist of : Sequence of connected steps.
+
+Each step is declared as work of a person, group of persons, an organization, or one or more mechanisms
+4 types of possible interactions or transitions:
+
+- Human To Human
+
+- Human To Machine
+
+- Machine To Machine
+
+- Machine To Human
 
 
-**Value Proposition
+**Value Proposition**
 
 - **Enterprises:**
   - Efficiency and productivity

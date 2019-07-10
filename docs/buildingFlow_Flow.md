@@ -4,18 +4,18 @@
  
 Start of the Process
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-1.PNG" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-1.PNG" alt="flow-1" />
 End of the Process
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow-2" />
 
 ## Identify Process Participant
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow1.png" alt="buildingFlow_flow1 />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow1.png" alt="buildingFlow_flow1" />
 
 ## Identify As is Process activities 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow2.png" alt="buildingFlow_flow2 />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow2.png" alt="buildingFlow_flow2" />
 
 ## Identify Bussines Rule
 

@@ -23,17 +23,12 @@ HTTP GET
 * id - Form ID: Form to be displayed
 * digest - Digested JSON form
 
-**Example**
-```html
-https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonFormApi/service?appId=trainingREST&appVersion=1&id=masterREST&digest=
-```
 
 **Use of API Plugin**
 
 This example is showing the JSON of Form for authorized user, with the JSON of Form on Kecak is as follows
 
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-FormPageAPI-Form.PNG" alt="KecakMobile-FormPageAPI-Form" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakmobile-formUI.png" alt="KecakMobile-Userview" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
@@ -51,7 +46,7 @@ And also, you have to fill the header section by **Referer** and **Content-Type*
 
 Request parameters are needed to filter the form by its *appId*, *appVersion*, *id*, and *digest*. For this example request parameters is as follow :
 
-*appId*      : triningREST <br/>
+*appId*      : trainingREST <br/>
 *appVersion* : 1 <br/>
 *id*         : testDuaForm1 <br/>
 *digest*     : <br/>
