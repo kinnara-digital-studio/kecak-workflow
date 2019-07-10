@@ -1,4 +1,4 @@
-# Building Plugins #
+# Building Application #
 
 ## Workflow Variable ##
 
