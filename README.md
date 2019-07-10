@@ -13,7 +13,7 @@ Workflow is defined as tasks, required steps, and information moved (in and/or o
 
 Automation of a business process consists of a sequence of connected steps.
 
-Each step is declared as work of a person, group of persons, an organization, or one or more mechanisms
+Each step is declared as the work of a person, group, organization, or one mechanism or more
 4 types of possible interactions or transitions:
 
 - Human To Human
