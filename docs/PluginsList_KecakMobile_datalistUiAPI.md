@@ -24,15 +24,12 @@ HTTP GET
 * digest - Digest
 * id - Datalist ID : Datalist to be displayed
 
-##### Example #####
-`https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonDatalistApi/service?appId=eApproval_jo&appVersion=1&id=MasterCategoryList`
-
 ### Use of API Plugin ###
 
 This example is showing the JSON of Datalist for authorized user, with the JSON of Datalist on Kecak is as follows
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-DatalistAPI.PNG" alt="KecakMobile-DatalistAPI" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakmobile-datalistUI.png" alt="KecakMobile-DatalistAPI" />
 
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
