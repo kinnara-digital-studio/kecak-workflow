@@ -2,7 +2,7 @@
 
 **Via Windows**
 
-1. Open file Kinnara Studio
+1. Open folder Kinnara Studio
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/startKecak.png" alt="startKecak" />
 
