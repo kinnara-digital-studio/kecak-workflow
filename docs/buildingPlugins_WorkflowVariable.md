@@ -9,16 +9,20 @@ On the other hand, when supervisor decides to accept/reject a leaave application
 
 To create Workflow variable :
 
-1. Point your cursor to ID of activity 	
-2. Click 
+1. Point your cursor to ID of Process 	
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable1.png" alt="buildingPlugins-workflowVariable1" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable6.png" alt="buildingPlugins-workflowVariable6" />
 
-3. Create a new workflow variable called "supervisor"
+2. Click icon <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable8.png" alt="buildingPlugins-workflowVariable8" /> to go to process Properties
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable3.png" alt="buildingPlugins-workflowVariable3" />
+3. On process properties, workflow variable field click icon `+` to create new workflow variable
 
-4. Look at Workflow Variable in condition
+https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable7.png" alt="buildingPlugins-workflowVariable7" />  
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable5.png" alt="buildingPlugins-workflowVariable5" />
+4. Create a new workflow variable called "supervisor"
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable9.png" alt="buildingPlugins-workflowVariable9" />
+
+5. Click `OK` to save your workflow variable 
+
 

@@ -1,6 +1,6 @@
 ## Indentify a Process
 
-## Indentify start and and proses
+## Identify start and and proses
  
 Start of the Process
 
@@ -9,11 +9,11 @@ End of the Process
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow" />
 
-## Indentify Process Participant
+## Identify Process Participant
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow1.png" alt="buildingFlow_flow1 />
 
-## Indentify As is Process activities 
+## Identify As is Process activities 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow2.png" alt="buildingFlow_flow2 />
 

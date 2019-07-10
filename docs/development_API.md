@@ -1,6 +1,5 @@
 # Kecak API 
 
-## [Kecak API](ResAPI.md)
 
 ### Post Form Submit 
 
