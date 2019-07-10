@@ -74,7 +74,6 @@ expose 8000
 
 ```CMD ["/usr/local/tomcat/tomcat8.sh", "run"]```
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/setupJava3.jpg" alt="java" />
 
 **Information :**
 - The Memory Server For Example Is 12gigabytes
