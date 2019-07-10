@@ -2,7 +2,7 @@
 
 **Via Windows**
 
-For setup java memory, open file with the name “tomcat8-start.bat” Using Notepad Or Notepad++, then you will see like this:
+For setup java memory, open file with the name “tomcat8-start.bat” using Notepad Or Notepad++, then you will see like this:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/java.png" alt="java" />
 
