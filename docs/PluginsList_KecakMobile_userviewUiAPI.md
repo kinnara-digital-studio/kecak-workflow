@@ -32,7 +32,7 @@ HTTP GET
 
 This example is showing the JSON of Userview for authorized user, with the JSON of Userview on Kecak is as follows
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakmobile-formUI.png" alt="KecakMobile-Userview" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakmobile-userviewUI.png" alt="KecakMobile-Userview" />
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
