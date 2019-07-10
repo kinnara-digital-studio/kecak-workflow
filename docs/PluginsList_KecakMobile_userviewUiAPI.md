@@ -27,16 +27,12 @@ HTTP GET
 * id - Userview ID: Userview to be displayed
 * digest - Digested JSON Userview
 
-**Example**
-```html
-https://kecak.kinnarastudio.com/web/json/plugin/com.kinnara.kecakplugins.mobileapi.GetJsonUserviewApi/service?appId=trainingREST&appVersion=1&id=training_REST`
-```
 
 **Use of API Plugin**
 
 This example is showing the JSON of Userview for authorized user, with the JSON of Userview on Kecak is as follows
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/KecakMobile-Userview1.PNG" alt="KecakMobile-Userview" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/kecakmobile-formUI.png" alt="KecakMobile-Userview" />
 
 Then, you have to fill the authorization with your access token to authorize you as authorized user.
 
