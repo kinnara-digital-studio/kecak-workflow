@@ -17,7 +17,7 @@ To create Workflow variable :
 
 3. On process properties, workflow variable field click icon `+` to create new workflow variable
 
-https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable7.png" alt="buildingPlugins-workflowVariable7" />  
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingPlugins-workflowVariable7.png" alt="buildingPlugins-workflowVariable7" />  
 
 4. Create a new workflow variable called "supervisor"
 
