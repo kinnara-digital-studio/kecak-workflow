@@ -16,7 +16,7 @@ Java is object-oriented, meaning that among other characteristics, an object cou
 
 MySQL is the world's most popular open source database. With its proven performance, reliability and ease-of-use, MySQL has become the leading database choice for web-based applications, used by high profile web properties including Facebook, Twitter, YouTube, Yahoo! and many more.
 
-**Tomcat 8.2**
+**Tomcat 8.5****
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/tomcatlogo.png" alt="tomcat" />
 
@@ -32,8 +32,16 @@ Docker is a tool designed to make it easier to create, deploy, and run applicati
 
 ## Hardware
 
-- OS : Windows, Linux, MacOS
-
+- OS :
+  - min Windows
+  - Linux 
+  - MacOS
+  
+- Browser :
+  - Firefox
+  - Safari
+  - Chrome
+  
 - System Memory : 1 GB
 
 - Disk : 1 GB
