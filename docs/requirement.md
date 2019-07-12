@@ -4,7 +4,7 @@
 
 **Java**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/javalogo.png" alt="java" height="50"/>
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/javalogo.png" alt="java" height="80"/>
  
  version : 8
 
