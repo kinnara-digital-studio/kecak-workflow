@@ -11,7 +11,7 @@ Kecak Workflow Platform helps you focusing in your core business, instead of adm
 
 Workflow is defined as tasks, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization, workflows may be a formal process or a very informal one so that no one recognizes it as an actual workflow.
 
-Automation of a business process consists of a sequence of connected steps.
+Automation business process consists of a sequence connected steps.
 
 Each step is declared as the work of a person, group, organization, or one mechanism or more
 4 types of possible interactions or transitions:
