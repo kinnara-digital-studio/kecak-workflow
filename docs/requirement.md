@@ -42,7 +42,7 @@ version : 3.8
 
 - Disk : 1 GB
 
-|                          |                             |
+|                Hardware Specification                  |
 |--------------------------|-----------------------------|
 | Browser                  | Windows, Linux, MacOS       |
 | Operating System         | Firefox, Safari, Chrome     |
