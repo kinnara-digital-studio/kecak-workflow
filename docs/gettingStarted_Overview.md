@@ -4,11 +4,11 @@ Workflow is defined as tasks, required steps, and information moved (in and/o
 
 Managing business processes can be cumbersome and time consuming. Our Kecak Workflow platform helps focusing in the core business, instead of administrative problems.
 
-# KECAK WORKFLOW
+# Kecak Workflow
 
 Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application.
 
-### Products& Services
+### Products & Services
 
 - Managing business processes can be sumbersome and time consuming.
 
