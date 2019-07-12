@@ -10,20 +10,20 @@ Java is object-oriented, meaning that among other characteristics, an object cou
  
  
 
-**MySQL**
+**MySQL 5.7**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/mysqllogo.png" alt="mysql" />
 
 MySQL is the world's most popular open source database. With its proven performance, reliability and ease-of-use, MySQL has become the leading database choice for web-based applications, used by high profile web properties including Facebook, Twitter, YouTube, Yahoo! and many more.
 
-**Tomcat**
+**Tomcat 8.2**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/tomcatlogo.png" alt="tomcat" />
 
 Apache Tomcat includes two applications, the "manager" application and the "host-manager" application, that simplify management and deployment of Web applications and provide detailed information on server status.
 
 
-**Docker**
+**Docker 3.8**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dockerlogo.png" alt="docker" />
 
@@ -34,6 +34,12 @@ Docker is a tool designed to make it easier to create, deploy, and run applicati
 
 - OS : Windows, Linux, MacOS
 
-- System Memory : 1 GB
+- System Memory :
+
+ - Windows : min , max 
+ 
+ - Linux : min , max
+ 
+ - MacOS : min , max
 
 - Disk : 1 GB
