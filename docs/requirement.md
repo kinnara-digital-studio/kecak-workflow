@@ -16,7 +16,7 @@ version : 5.7
 
 **Tomcat**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/tomcatlogo.png" alt="tomcat" height="150" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/tomcatlogo.png" alt="tomcat" height="120" />
 
 version : 3.5**
 
