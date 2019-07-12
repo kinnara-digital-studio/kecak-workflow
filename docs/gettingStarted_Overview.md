@@ -1,5 +1,7 @@
 # Overview
 
+Workflow is defined as tasks, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization, workflows may be A formal process or A very informal one so that no one really recognizes it as an actual workflow.
+
 Managing business processes can be cumbersome and time consuming. Our Kecak Workflow platform helps focusing in the core business, instead of administrative problems.
 
 # KECAK WORKFLOW
