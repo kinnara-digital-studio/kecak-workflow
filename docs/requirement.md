@@ -2,33 +2,29 @@
 
 ## Software
 
-**Java 8**
+**Java**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/javalogo.png" alt="java" />
-
-Java is object-oriented, meaning that among other characteristics, an object could take advantage of being a part of inheriting code and class of objects that are common to the class. Objects are considered ‘nouns’ that a user could relate to instead of the traditional procedural ‘verbs’. A method could be considered as one of the behaviors or capabilities of an object.
  
- 
+ version : 8
 
-**MySQL 5.7**
+**MySQL**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/mysqllogo.png" alt="mysql" />
 
-MySQL is the world's most popular open source database. With its proven performance, reliability and ease-of-use, MySQL has become the leading database choice for web-based applications, used by high profile web properties including Facebook, Twitter, YouTube, Yahoo! and many more.
+version : 5.7
 
-**Tomcat 8.5****
+**Tomcat**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/tomcatlogo.png" alt="tomcat" />
 
-Apache Tomcat includes two applications, the "manager" application and the "host-manager" application, that simplify management and deployment of Web applications and provide detailed information on server status.
+version : 3.5**
 
-
-**Docker 3.8**
+**Docker**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dockerlogo.png" alt="docker" />
 
-Docker is a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package. By doing so, thanks to the container, the developer can rest assured that the application will run on any other Linux machine regardless of any customized settings that machine might have that could differ from the machine used for writing and testing the code.
-
+version : 3.8
 
 ## Hardware
 
