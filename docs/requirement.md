@@ -34,9 +34,6 @@ Docker is a tool designed to make it easier to create, deploy, and run applicati
 
 - OS : Windows, Linux, MacOS
 
-- System Memory :
-  - Windows : min , max
-  - Linux : min , max
-  - MacOS : min , max
+- System Memory : 1 GB
 
 - Disk : 1 GB
