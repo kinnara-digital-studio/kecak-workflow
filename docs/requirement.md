@@ -42,7 +42,7 @@ version : 3.8
 
 - Disk : 1 GB
 
-
+|-------------------|-----------------------------|
 | Browser           |                             |
 | Operating System  |                             |
 | System Memory     |                             |
