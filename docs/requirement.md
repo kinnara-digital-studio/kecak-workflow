@@ -41,7 +41,7 @@ version : 3.8
 - Disk : 1 GB
 
 - Free System Memory :
- - Local : 1 GB
- - Server
+  - Local : 1 GB
+  - Server
 
 For production deployment on a server, the Java Virtual Machine (JVM), application server, database and operating systems should be tuned for performance. Actual real world performance depends on many factors. These include the deployment architecture, server and network specifications, complexity of the processes/apps, actual usage patterns by different users, etc.
