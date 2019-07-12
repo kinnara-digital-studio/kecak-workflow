@@ -32,6 +32,8 @@ Docker is a tool designed to make it easier to create, deploy, and run applicati
 
 ## Hardware
 
-OS : Windows, Linux, MacOS
-System Memory : 1 GB
-Disk : 1 GB
+- OS : Windows, Linux, MacOS
+
+- System Memory : 1 GB
+
+- Disk : 1 GB
