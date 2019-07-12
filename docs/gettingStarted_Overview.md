@@ -1,6 +1,6 @@
 # Overview
 
-Managing business processes can be cumbersome and time consuming. Our Kecak Workflow platform helps you focusing in your core business, instead of administrative problems.
+Managing business processes can be cumbersome and time consuming. Our Kecak Workflow platform helps focusing in the core business, instead of administrative problems.
 
 # KECAK WORKFLOW
 
