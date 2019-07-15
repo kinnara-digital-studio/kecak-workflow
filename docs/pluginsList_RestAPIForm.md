@@ -104,18 +104,18 @@ Fill field in Rest Store Binder Page like this picture :
 
 **Description :**
 
-|   FIELD              |               DESCRIPTION                 |
-|----------------------|-------------------------------------------|
-|**Api URL**           |                URL from API               |
-|**Parameters**        |               URL parameters              |
-|**Headers**           |                Http headers               |
-|**Content Type**      |                                           |
-|**Body**              |The json data structure that will be taken |
+|   FIELD              |                                                DESCRIPTION                                              |
+|----------------------|---------------------------------------------------------------------------------------------------------|
+|**Api URL**           |                                                URL from API                                             |
+|**Parameters**        |                                              URL parameters                                             |
+|**Headers**           |                                               Http headers                                              |
+|**Content Type**      |                                                                                                         |
+|**Body**              |to replace the data with other values entered in the form (ex: used hash variable / string interpolation |
 
 
 7. Click button "OK" to save all configuration settings in that form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ok.png" alt="ok.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ok2.png" alt="ok.png" />
 
 
 8. Click Save
