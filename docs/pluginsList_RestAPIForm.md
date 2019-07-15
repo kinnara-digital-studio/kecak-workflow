@@ -109,7 +109,11 @@ Fill field in Rest Store Binder Page like this picture :
 |**Api URL**           |                                                URL from API                                             |
 |**Parameters**        |                                              URL parameters                                             |
 |**Headers**           |                                               Http headers                                              |
-|**Body**              |To replace the data with other values entered in the form (ex: used hash variable / string interpolation |
+|**Body**              |To replace the data with other values entered in the form (ex: used hash variable / string interpolation)|
+
+**Body Example**
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStoreBinder.png" alt="securitySettingsStore.png" />
 
 
 7. Click button "OK" to save all configuration settings in that form
