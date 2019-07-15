@@ -95,10 +95,11 @@ Fill field in Rest Store Binder Page like this picture :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8EditStoreBinder.png" alt="EditStoreBinder.png" />
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/body.png" alt="body.png" />
 
 6. Security Settings
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStore.png" alt="securitySettingsStore.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStoreBinder.png" alt="securitySettingsStore.png" />
 
 
 **Description :**
@@ -108,7 +109,8 @@ Fill field in Rest Store Binder Page like this picture :
 |**Api URL**           |                URL from API               |
 |**Parameters**        |               URL parameters              |
 |**Headers**           |                Http headers               |
-|**Record Path**       |The json data structure that will be taken |
+|**Content Type**      |                                           |
+|**Body**              |The json data structure that will be taken |
 
 
 7. Click button "OK" to save all configuration settings in that form
