@@ -1,5 +1,7 @@
 # REST API Form
 
+## REST API Form Settings in Kecak Apps
+
 1. Open form
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/1selectForm.png" alt="selectForm.png" />
@@ -56,8 +58,17 @@ Fill field in Rest Load Binder Page like this picture :
 |**Headers**           |                Http headers               |
 |**Record Path**       |struktur data dari json yang akan di ambil |
 
+9. Click button "OK" to save all configuration settings in that form
 
-How to know for fill **Record Path**
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ok.png" alt="ok.png" />
+
+
+10. Click Save
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11save.png" alt="11save.png" />
+
+
+## How to know for fill **Record Path**
 
 You need **Postman** to get information for fill **Record Path** field.
 
@@ -74,11 +85,3 @@ Then follow this step :
 
 The word "data" in field **Record Path** at settings Rest Load Binder page is from the black marked in this picture.
 
-9. Click button "OK" to save all configuration settings in that form
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ok.png" alt="ok.png" />
-
-
-10. Click Save
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11save.png" alt="11save.png" />
