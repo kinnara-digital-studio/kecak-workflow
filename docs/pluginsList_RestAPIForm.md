@@ -94,4 +94,4 @@ Then follow this step :
  
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/postmanBody.png" alt="postmanBody.png" />
 
-The word **"data"** in the **Record Path** field is derived from json data marked by the black box in the image above.
+Word **"data"** in the **Record Path** field is derived from json data marked by the black box in the image above.
