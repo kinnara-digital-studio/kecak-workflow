@@ -74,7 +74,7 @@ Please check list for security settings like this picture:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/3selectAdvanced.png" alt="selectAdvanced.png" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/4editLoadAndStoreBinder.png" alt="editLoadAndStoreBinder.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/storeBinder1.png" alt="storeBinder.png" />
 
 
 4. Fill Load Binder field with **REST Store Binder**
