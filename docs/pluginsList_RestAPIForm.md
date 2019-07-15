@@ -31,7 +31,7 @@ The following is an example of how to use load binders and store binders.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/5RestLoadBiner.png" alt="RestLoadBiner.png" />
 
-5. Open Load Binder page
+5. Open Load Binder page 
 
 Fill field in Rest Load Binder Page like this picture :
 
