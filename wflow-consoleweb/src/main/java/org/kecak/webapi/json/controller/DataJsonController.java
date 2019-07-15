@@ -12,6 +12,7 @@ import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.*;
+import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
@@ -55,6 +56,8 @@ public class DataJsonController {
     @Autowired
     private DatalistDefinitionDao datalistDefinitionDao;
     @Autowired
+    private FormService formService;
+    @Autowired
     AuthTokenService authTokenService;
 
     /**
@@ -68,9 +71,9 @@ public class DataJsonController {
      */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/submit", method = RequestMethod.POST)
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
-                           @RequestParam("appId") final String appId,
-                           @RequestParam("appVersion") final String appVersion,
-                           @RequestParam("formDefId") final String formDefId)
+                               @RequestParam("appId") final String appId,
+                               @RequestParam("appVersion") final String appVersion,
+                               @RequestParam("formDefId") final String formDefId)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -110,7 +113,7 @@ public class DataJsonController {
             } else {
                 // set current data as response
                 FormRowSet rowSet = appService.loadFormData(form, result.getPrimaryKeyValue());
-                if(rowSet == null || rowSet.isEmpty()) {
+                if (rowSet == null || rowSet.isEmpty()) {
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
@@ -142,10 +145,10 @@ public class DataJsonController {
      */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
     public void putFormData(final HttpServletRequest request, final HttpServletResponse response,
-                           @RequestParam("appId") final String appId,
-                           @RequestParam("appVersion") final String appVersion,
-                           @RequestParam("formDefId") final String formDefId,
-                           @RequestParam("primaryKey") final String primaryKey)
+                            @RequestParam("appId") final String appId,
+                            @RequestParam("appVersion") final String appVersion,
+                            @RequestParam("formDefId") final String formDefId,
+                            @RequestParam("primaryKey") final String primaryKey)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -181,14 +184,15 @@ public class DataJsonController {
                 result.getFormErrors().forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
-                    } catch (JSONException ignored) { }
+                    } catch (JSONException ignored) {
+                    }
                 });
                 jsonResponse.put("message", MESSAGE_VALIDATION_ERROR);
                 jsonResponse.put("error", jsonError);
             } else {
                 // set current data as response
                 FormRowSet rowSet = appService.loadFormData(form, result.getPrimaryKeyValue());
-                if(rowSet == null || rowSet.isEmpty()) {
+                if (rowSet == null || rowSet.isEmpty()) {
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
@@ -207,13 +211,26 @@ public class DataJsonController {
         }
     }
 
+    /**
+     * Get Form Data
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @param primaryKey
+     * @param digest
+     * @throws IOException
+     * @throws JSONException
+     */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
     public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
-                         @RequestParam("appId") final String appId,
-                         @RequestParam("appVersion") final String appVersion,
-                         @RequestParam("formDefId") final String formDefId,
-                         @RequestParam("primaryKey") final String primaryKey,
-                         @RequestParam(value = "digest", required = false) final String digest)
+                            @RequestParam("appId") final String appId,
+                            @RequestParam("appVersion") final String appVersion,
+                            @RequestParam("formDefId") final String formDefId,
+                            @RequestParam("primaryKey") final String primaryKey,
+                            @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -234,7 +251,7 @@ public class DataJsonController {
 
             Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
             FormRowSet rowSet = appService.loadFormData(form, primaryKey);
-            if(rowSet == null || rowSet.isEmpty()) {
+            if (rowSet == null || rowSet.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -245,7 +262,7 @@ public class DataJsonController {
 
                 JSONObject jsonResponse = new JSONObject();
 
-                if(!Objects.equals(currentDigest, digest)) {
+                if (!Objects.equals(currentDigest, digest)) {
                     jsonResponse.put("data", jsonData);
                 }
 
@@ -262,9 +279,9 @@ public class DataJsonController {
 
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)/count", method = RequestMethod.GET)
     public void getListCount(final HttpServletRequest request, final HttpServletResponse response,
-                        @RequestParam("appId") final String appId,
-                        @RequestParam("appVersion") final String appVersion,
-                        @RequestParam("dataListId") final String dataListId)
+                             @RequestParam("appId") final String appId,
+                             @RequestParam("appVersion") final String appVersion,
+                             @RequestParam("dataListId") final String dataListId)
             throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -291,7 +308,7 @@ public class DataJsonController {
 
             // get dataList
             DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
-            if(dataList == null) {
+            if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }
 
@@ -311,19 +328,20 @@ public class DataJsonController {
         }
     }
 
-        /**
-         * API to retrieve dataList data
-         * @param request HTTP Request
-         * @param response HTTP Response
-         * @param appId Application ID
-         * @param appVersion Application version
-         * @param dataListId DataList ID
-         * @param page paging every 10 rows, page = 0 will show all data without paging
-         * @param sort order list by specified field name
-         * @param desc optional true/false
-         * @param digest hash calculation of data json
-         * @throws IOException
-         */
+    /**
+     * API to retrieve dataList data
+     *
+     * @param request    HTTP Request
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param dataListId DataList ID
+     * @param page       paging every 10 rows, page = 0 will show all data without paging
+     * @param sort       order list by specified field name
+     * @param desc       optional true/false
+     * @param digest     hash calculation of data json
+     * @throws IOException
+     */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)", method = RequestMethod.GET)
     public void getList(final HttpServletRequest request, final HttpServletResponse response,
                         @RequestParam("appId") final String appId,
@@ -359,12 +377,12 @@ public class DataJsonController {
 
             // get dataList
             DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
-            if(dataList == null) {
+            if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }
 
             // configure sorting
-            if(sort != null) {
+            if (sort != null) {
                 dataList.setDefaultSortColumn(sort);
 
                 // order ASC / DESC
@@ -402,7 +420,7 @@ public class DataJsonController {
 
                 String currentDigest = getDigest(jsonData);
                 jsonResponse.put("total", jsonData.length());
-                if(!Objects.equals(digest, currentDigest))
+                if (!Objects.equals(digest, currentDigest))
                     jsonResponse.put("data", jsonData);
                 jsonResponse.put("digest", currentDigest);
 
@@ -433,9 +451,9 @@ public class DataJsonController {
      */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/process/(*:processId)", method = RequestMethod.POST)
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
-                             @RequestParam("appId") String appId,
-                             @RequestParam("appVersion") String appVersion,
-                             @RequestParam("processId") String processId)
+                                 @RequestParam("appId") String appId,
+                                 @RequestParam("appVersion") String appVersion,
+                                 @RequestParam("processId") String processId)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -488,13 +506,14 @@ public class DataJsonController {
                 formData.getFormErrors().forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
-                    } catch (JSONException ignored) { }
+                    } catch (JSONException ignored) {
+                    }
                 });
 
                 jsonResponse.put("error", jsonError);
             } else {
                 FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
-                if(rowSet == null || rowSet.isEmpty()) {
+                if (rowSet == null || rowSet.isEmpty()) {
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
@@ -503,11 +522,11 @@ public class DataJsonController {
                     FormRow row = rowSet.get(0);
                     JSONObject jsonData = new JSONObject(row);
 
-                    if(processResult != null) {
+                    if (processResult != null) {
                         JSONObject jsonProcess = new JSONObject();
                         if (processResult.getProcess() != null) {
                             WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
-                            if(nextAssignment != null) {
+                            if (nextAssignment != null) {
                                 jsonProcess.put("processId", nextAssignment.getProcessId());
                                 jsonProcess.put("activityId", nextAssignment.getActivityId());
                                 jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
@@ -550,7 +569,7 @@ public class DataJsonController {
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.POST)
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
-                                   @RequestParam("assignmentId") String assignmentId)
+                                       @RequestParam("assignmentId") String assignmentId)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -592,14 +611,15 @@ public class DataJsonController {
                 resultFormData.getFormErrors().forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
-                    } catch (JSONException ignored) { }
+                    } catch (JSONException ignored) {
+                    }
                 });
 
                 jsonResponse.put("error", jsonError);
 
             } else {
                 WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(resultFormData.getProcessId());
-                if(nextAssignment != null) {
+                if (nextAssignment != null) {
                     JSONObject jsonProcess = new JSONObject();
                     jsonProcess.put("processId", nextAssignment.getProcessId());
                     jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -611,7 +631,7 @@ public class DataJsonController {
                 }
 
                 FormRowSet rowSet = appService.loadFormData(form, resultFormData.getPrimaryKeyValue());
-                if(rowSet == null || rowSet.isEmpty()) {
+                if (rowSet == null || rowSet.isEmpty()) {
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
@@ -640,10 +660,19 @@ public class DataJsonController {
         }
     }
 
+    /**
+     * Get assignment
+     *
+     * @param request
+     * @param response
+     * @param assignmentId
+     * @param digest
+     * @throws IOException
+     */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.GET)
     public void getAssignment(final HttpServletRequest request, final HttpServletResponse response,
-                               @RequestParam("assignmentId") final String assignmentId,
-                               @RequestParam(value = "digest", required = false) String digest)
+                              @RequestParam("assignmentId") final String assignmentId,
+                              @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -664,14 +693,14 @@ public class DataJsonController {
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            LogUtil.info(getClass().getName(), "appDefinition id ["+appDefinition.getAppId()+"] ["+appDefinition.getVersion()+"]");
-
             // retrieve data
-            FormData formData = new FormData();
+            Map<String, String> parameterMap = new HashMap<>();
+            parameterMap.put("activityId", assignmentId);
+            FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
             FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());
 
-            if(rowSet == null || rowSet.isEmpty()) {
+            if (rowSet == null || rowSet.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -701,11 +730,21 @@ public class DataJsonController {
         }
     }
 
+    /**
+     * Get Assignment Count
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param version
+     * @param processId
+     * @throws IOException
+     */
     @RequestMapping(value = "/json/data/assignments/count", method = RequestMethod.GET)
     public void getAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
-                                @RequestParam(value = "appId", required = false) final String appId,
-                                @RequestParam(value = "version", required = false) final Long version,
-                                @RequestParam(value = "processId", required = false) final String processId) throws IOException {
+                                    @RequestParam(value = "appId", required = false) final String appId,
+                                    @RequestParam(value = "version", required = false) final Long version,
+                                    @RequestParam(value = "processId", required = false) final String processId) throws IOException {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -726,6 +765,7 @@ public class DataJsonController {
     }
 
     /**
+     * Get Assignment List
      *
      * @param request
      * @param response
@@ -771,11 +811,11 @@ public class DataJsonController {
                         final FormData formData = new FormData();
                         final PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
                         Form form = packageActivityForm.getForm();
-                        if("assignmentForm".equals(form.getPropertyString("id"))) {
+                        if ("assignmentForm".equals(form.getPropertyString("id"))) {
                             // form not found, get workflow variable as form set
                             LogUtil.info(getClass().getName(), "No form is attached to assignment [" + assignment.getActivityId() + "]");
                             FormRow row = workflowManager.getActivityVariableList(assignment.getActivityId()).stream()
-                                    .peek(workflowVariable -> LogUtil.info(getClass().getName(), "workflow variables ["+workflowVariable.getId()+"] ["+workflowVariable.getVal()+"]"))
+                                    .peek(workflowVariable -> LogUtil.info(getClass().getName(), "workflow variables [" + workflowVariable.getId() + "] [" + workflowVariable.getVal() + "]"))
                                     .filter(workflowVariable -> workflowVariable.getVal() != null)
                                     .collect(FormRow::new, (formRow, workflowVariable) -> {
                                         formRow.setProperty(workflowVariable.getId(), workflowVariable.getVal().toString());
@@ -789,7 +829,7 @@ public class DataJsonController {
                             return row;
                         } else {
                             FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
-                            if(rowSet == null || rowSet.isEmpty())
+                            if (rowSet == null || rowSet.isEmpty())
                                 return null;
 
                             FormRow row = rowSet.get(0);
@@ -824,7 +864,7 @@ public class DataJsonController {
                     jsonResponse.put("data", jsonData);
                 jsonResponse.put("digest", currentDigest);
 
-                if(jsonData.length() > 0) {
+                if (jsonData.length() > 0) {
                     response.setStatus(HttpServletResponse.SC_OK);
                 } else {
                     response.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -883,6 +923,7 @@ public class DataJsonController {
 
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
+     *
      * @param json JSON array object
      * @return digest value
      */
@@ -892,6 +933,7 @@ public class DataJsonController {
 
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
+     *
      * @param json JSON object
      * @return digest value
      */
@@ -900,37 +942,45 @@ public class DataJsonController {
     }
 
     /**
-     *
      * @param requestParameters Request parameter
-     * @param dataList Input/Output parameter
+     * @param dataList          Input/Output parameter
      */
     private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
         Arrays.stream(dataList.getFilters())
                 .peek(f -> {
-                    if(!(f.getType() instanceof DataListFilterTypeDefault))
-                        LogUtil.warn(getClass().getName(), "DataList filter ["+f.getName()+"] is not instance of ["+DataListFilterTypeDefault.class.getName()+"], filter will be ignored");
+                    if (!(f.getType() instanceof DataListFilterTypeDefault))
+                        LogUtil.warn(getClass().getName(), "DataList filter [" + f.getName() + "] is not instance of [" + DataListFilterTypeDefault.class.getName() + "], filter will be ignored");
                 })
                 .filter(f -> Objects.nonNull(requestParameters.get(f.getName())) && f.getType() instanceof DataListFilterTypeDefault)
                 .forEach(f -> f.getType().setProperty("defaultValue", String.join(";", requestParameters.get(f.getName()))));
     }
 
-    private @Nonnull String format(DataList dataList, Map<String, Object> row, String field) {
-        if(dataList.getColumns() == null) {
+    /**
+     * Format
+     *
+     * @param dataList DataList
+     * @param row      Row
+     * @param field    Field
+     * @return
+     */
+    private @Nonnull
+    String format(DataList dataList, Map<String, Object> row, String field) {
+        if (dataList.getColumns() == null) {
             return String.valueOf(row.get(field));
         }
 
-        for(DataListColumn column : dataList.getColumns()) {
-            if(!field.equals(column.getName())) {
+        for (DataListColumn column : dataList.getColumns()) {
+            if (!field.equals(column.getName())) {
                 continue;
             }
 
             String value = String.valueOf(row.get(field));
-            if(column.getFormats() == null) {
+            if (column.getFormats() == null) {
                 return value;
             }
 
-            for(DataListColumnFormat format : column.getFormats()) {
-                if(format != null) {
+            for (DataListColumnFormat format : column.getFormats()) {
+                if (format != null) {
                     return format.format(dataList, column, row, value).replaceAll("<[^>]*>", "");
                 }
             }
@@ -939,8 +989,17 @@ public class DataJsonController {
         return String.valueOf(row.get(field));
     }
 
+    /**
+     * Validate and Determine Process ID
+     *
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param processId  Process ID
+     * @return
+     * @throws ApiException
+     */
     private String validateAndDetermineProcessDefId(String appId, Long appVersion, String processId) throws ApiException {
-        if(processId == null) {
+        if (processId == null) {
             return null;
         }
 
@@ -949,32 +1008,39 @@ public class DataJsonController {
         }
 
         AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, appVersion == null || appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion);
-        if(appDefinition == null) {
+        if (appDefinition == null) {
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application ID [" + appId + "] is not available");
         }
 
         WorkflowProcess workflowProcess = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId);
-        if(workflowProcess == null) {
+        if (workflowProcess == null) {
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] for Application ID [" + appId + "] is not available");
         }
 
         WorkflowProcess process = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId);
-        if(process == null) {
-            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process ["+processId+"] for application ["+appId+"] version ["+appVersion+"]");
+        if (process == null) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + processId + "] for application [" + appId + "] version [" + appVersion + "]");
         }
 
         return process.getId();
     }
 
+    /**
+     * Generate Workflow Variable
+     *
+     * @param form     Form
+     * @param formData Form Data
+     * @return
+     */
     private Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
         return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
             Element element = FormUtil.findElement(e.getKey(), form, formData, true);
-            if(Objects.isNull(element))
+            if (Objects.isNull(element))
                 return;
 
             String workflowVariable = element.getPropertyString("workflowVariable");
 
-            if(Objects.isNull(workflowVariable) || workflowVariable.isEmpty())
+            if (Objects.isNull(workflowVariable) || workflowVariable.isEmpty())
                 return;
 
             m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
