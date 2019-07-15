@@ -2,11 +2,11 @@
 
 ## Form
 
-REST API Plugins bisa dibuat pada form, REST API yang dapat digunakan pada form ini adalah **Load Binder** dan **Store Binder**.
+REST API Plugins can be made on forms, the REST API that can be used on this form is **Load Binder** and **Store Binder**.
 
-Pada form sendiri, bisa hanya menggunakan load binder saja, store binder saja, atau bisa menggunakan keduanya (load & store binder).
+On the form itself, it can only use load binders, store binders, or can use both (load & store binders).
 
-Berikut ini adalah contoh cara penggunaan load binder dan store binder.
+The following is an example of how to use load binders and store binders.
 
 ### Load Binder
 
