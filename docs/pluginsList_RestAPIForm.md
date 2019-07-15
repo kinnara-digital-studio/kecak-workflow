@@ -31,6 +31,13 @@ Berikut ini adalah contoh cara penggunaan load binder dan store binder.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/5RestLoadBiner.png" alt="RestLoadBiner.png" />
 
+5. Open Load Binder page
+
+Fill field in Rest Load Binder Page like this picture :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/10EditLoadBinder.png" alt="EditLoadBinder.png" />
+
+
 5. Security Settings
 
 Please check list for security settings like this picture:
@@ -77,27 +84,22 @@ Please check list for security settings like this picture:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/storeBinder1.png" alt="storeBinder.png" />
 
 
-4. Fill Load Binder field with **REST Store Binder**
+4. Fill Store Binder field with **REST Store Binder**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/6RestStoreBiner.png" alt="RestStoreBiner.png" />
 
 
-5. Security Settings
+5. Open Store Binder (REST Store Binder) page
+
+Fill field in Rest Store Binder Page like this picture :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8EditStoreBinder.png" alt="EditStoreBinder.png" />
+
+
+6. Security Settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStore.png" alt="securitySettingsStore.png" />
 
-6. Open Rest Load Binder page
-
-Fill field in Rest Load Binder Page like this picture :
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/10EditLoadBinder.png" alt="EditLoadBinder.png" />
-
-
-9. Open Store Binder (REST Store Binder) page
-
-Fill field in Rest Load Binder Page like this picture :
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8EditStoreBinder.png" alt="EditStoreBinder.png" />
 
 **Description :**
 
@@ -109,12 +111,12 @@ Fill field in Rest Load Binder Page like this picture :
 |**Record Path**       |The json data structure that will be taken |
 
 
-10. Click button "OK" to save all configuration settings in that form
+7. Click button "OK" to save all configuration settings in that form
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ok.png" alt="ok.png" />
 
 
-11. Click Save
+8. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11save.png" alt="11save.png" />
 
