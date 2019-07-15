@@ -113,7 +113,7 @@ Fill field in Rest Store Binder Page like this picture :
 
 **Body Example**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStoreBinder.png" alt="securitySettingsStore.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/body.png" alt="bodyExample.png" />
 
 
 7. Click button "OK" to save all configuration settings in that form
