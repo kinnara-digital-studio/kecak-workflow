@@ -109,8 +109,7 @@ Fill field in Rest Store Binder Page like this picture :
 |**Api URL**           |                                                URL from API                                             |
 |**Parameters**        |                                              URL parameters                                             |
 |**Headers**           |                                               Http headers                                              |
-|**Content Type**      |                                                                                                         |
-|**Body**              |to replace the data with other values entered in the form (ex: used hash variable / string interpolation |
+|**Body**              |To replace the data with other values entered in the form (ex: used hash variable / string interpolation |
 
 
 7. Click button "OK" to save all configuration settings in that form
