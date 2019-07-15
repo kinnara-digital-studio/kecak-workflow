@@ -41,6 +41,13 @@ Fill field in Rest Load Binder Page like this picture :
 
 
 **Description :**
+ 
+|   FIELD              |                                  DESCRIPTION                                  |
+|----------------------|-------------------------------------------------------------------------------|
+|**Api URL**           |Specifies the job name of the job schedule entries with which you want to work |
+|**Parameters**        |Trigger name for the data set that contains many trigger names                 |
+|**Headers**           |Group name for the data set that contains many job names                       |
+|**Record Path**       |A component that defines the schedule upon which a given Job will be executed  |
 
 
 8. Open Store Binder (REST Store Binder) page
@@ -51,6 +58,30 @@ Fill field in Rest Load Binder Page like this picture :
 
 
 **Description :**
+
+|   FIELD              |               DESCRIPTION                 |
+|----------------------|-------------------------------------------|
+|**Api URL**           |                URL from API               |
+|**Parameters**        |               URL parameters              |
+|**Headers**           |                Http headers               |
+|**Record Path**       |struktur data dari json yang akan di ambil |
+
+how to know for fill **Record Path**
+
+you need **Postman** to get information for fill **Record Path** field.
+
+Then follow this step :
+ > Open **Postman**
+ 
+ > Copy API URL from **Rest Load Binder** settings and paste to the place like this picture :
+ 
+ > fill all configuration in **Postman** like this picture :
+ 
+ > Click **Send** and will be shown :
+ 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ok.png" alt="ok.png" />
+
+The word "data" in field **Record Path** at settings Rest Load Binder page is from the black marked in this picture.
 
 9. Click button "OK" to save all configuration settings in that form
 
