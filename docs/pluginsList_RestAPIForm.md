@@ -40,16 +40,6 @@ Fill field in Rest Load Binder Page like this picture :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/10EditLoadBinder.png" alt="EditLoadBinder.png" />
 
 
-**Description :**
- 
-|   FIELD              |                                  DESCRIPTION                                  |
-|----------------------|-------------------------------------------------------------------------------|
-|**Api URL**           |Specifies the job name of the job schedule entries with which you want to work |
-|**Parameters**        |Trigger name for the data set that contains many trigger names                 |
-|**Headers**           |Group name for the data set that contains many job names                       |
-|**Record Path**       |A component that defines the schedule upon which a given Job will be executed  |
-
-
 8. Open Store Binder (REST Store Binder) page
 
 Fill field in Rest Load Binder Page like this picture :
@@ -66,9 +56,10 @@ Fill field in Rest Load Binder Page like this picture :
 |**Headers**           |                Http headers               |
 |**Record Path**       |struktur data dari json yang akan di ambil |
 
-how to know for fill **Record Path**
 
-you need **Postman** to get information for fill **Record Path** field.
+How to know for fill **Record Path**
+
+You need **Postman** to get information for fill **Record Path** field.
 
 Then follow this step :
  > Open **Postman**
