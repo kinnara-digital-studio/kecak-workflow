@@ -53,6 +53,7 @@ Please check list for security settings like this picture:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettings.png" alt="securitySettings.png" />
 
+**Ignore Certificate Error** is to ignore anything certificate error
 
 6. Click button "OK" to save all configuration settings in that form
 
@@ -109,6 +110,8 @@ Fill field in Rest Store Binder Page like this picture :
 6. Security Settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStoreBinder.png" alt="securitySettingsStore.png" />
+
+**Ignore Certificate Error** is to ignore anything certificate error
 
 
 **Body Example**
