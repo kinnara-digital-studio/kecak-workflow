@@ -54,11 +54,11 @@ Then follow this step :
  
  > Copy API URL from **Rest Load Binder** settings and paste to the place (red box), then fill all configuration in **Postman** (black box) like this picture :
  
- <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+ <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/postmanOptionBinder.png" alt="" />
  
  
  > Click **Send** and will be shown :
  
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/postmanResult.png" alt="" />
 
 Word **"data"** in the **Record Path** field is derived from json data marked by the black box in the image above.
