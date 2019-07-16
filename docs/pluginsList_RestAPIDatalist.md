@@ -31,14 +31,6 @@ Fill field in Rest Load Binder Page like this picture :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="EditLoadBinder.png" />
 
-
-5. Security Settings
-
-Please check list for security settings like this picture:
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="securitySettings.png" />
-
-
 **Description :**
 
 |   FIELD              |               DESCRIPTION                 |
@@ -49,6 +41,13 @@ Please check list for security settings like this picture:
 |**Record Path**       |The json data structure that will be taken |
 
 
+5. Security Settings
+
+Please check list for security settings like this picture:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="securitySettings.png" />
+
+
 6. Click button "OK" to save all configuration settings in that form
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="ok.png" />
@@ -57,3 +56,4 @@ Please check list for security settings like this picture:
 7. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="11save.png" />
+
