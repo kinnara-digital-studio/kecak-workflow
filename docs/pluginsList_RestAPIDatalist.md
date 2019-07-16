@@ -4,32 +4,24 @@
 
 ### Load Binder
 
-1. Open form
+1. Open datalist and go to source
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt=".png" />
-
-
-2. Go to properties
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="selectProperties.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistSource.png" alt="" />
 
 
-3. Open advanced page
+2. Open select binder and select source of data
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="selectAdvanced.png" />
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="LoadBinder1.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistSelectSourceData.png" alt="" />
 
 
-4. Fill Load Binder field with **REST Load Binder**
+3. Fill field with **REST Datalist Binder**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="RestLoadBiner.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistSelectSourceDataResult.png" alt="" />
 
-5. Open Load Binder page 
 
-Fill field in Rest Load Binder Page like this picture :
+4. Open rest datalist binder and fill field in Rest datalist binder like this picture :
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="EditLoadBinder.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistFillField.png" alt="" />
 
 **Description :**
 
@@ -45,15 +37,15 @@ Fill field in Rest Load Binder Page like this picture :
 
 Please check list for security settings like this picture:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="securitySettings.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistSecuritySettings.png" alt="" />
 
 
 6. Click button "OK" to save all configuration settings in that form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="ok.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistOk.png" alt="ok" />
 
 
 7. Click Save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="11save.png" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistSave.png" alt="save" />
 
