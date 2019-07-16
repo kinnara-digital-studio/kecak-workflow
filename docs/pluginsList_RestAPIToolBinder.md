@@ -1,6 +1,6 @@
 # REST API Plugins
 
-## Tool Binder
+## Tools Binder
 
 1. Open apps
 
