@@ -39,6 +39,7 @@ Please check list for security settings like this picture:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistSecuritySettings.png" alt="" />
 
+**Ignore Certificate Error** is to ignore anything certificate error
 
 6. Click button "OK" to save all configuration settings in that form
 
