@@ -28,6 +28,8 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/toolSecuritySettings.png" alt="toolSecuritySettings" />
 
+**Ignore Certificate Error** is to ignore anything certificate error
+
 
 6. Sumbit
 
