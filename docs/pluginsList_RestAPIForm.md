@@ -37,14 +37,6 @@ Fill field in Rest Load Binder Page like this picture :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/10EditLoadBinder.png" alt="EditLoadBinder.png" />
 
-
-5. Security Settings
-
-Please check list for security settings like this picture:
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettings.png" alt="securitySettings.png" />
-
-
 **Description :**
 
 |   FIELD              |               DESCRIPTION                 |
@@ -53,6 +45,13 @@ Please check list for security settings like this picture:
 |**Parameters**        |               URL parameters              |
 |**Headers**           |                Http headers               |
 |**Record Path**       |The json data structure that will be taken |
+
+
+5. Security Settings
+
+Please check list for security settings like this picture:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettings.png" alt="securitySettings.png" />
 
 
 6. Click button "OK" to save all configuration settings in that form
@@ -97,11 +96,6 @@ Fill field in Rest Store Binder Page like this picture :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/body.png" alt="body.png" />
 
-6. Security Settings
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStoreBinder.png" alt="securitySettingsStore.png" />
-
-
 **Description :**
 
 |   FIELD              |                                                DESCRIPTION                                              |
@@ -110,6 +104,12 @@ Fill field in Rest Store Binder Page like this picture :
 |**Parameters**        |                                              URL parameters                                             |
 |**Headers**           |                                               Http headers                                              |
 |**Body**              |To replace the data with other values entered in the form (ex: used hash variable / string interpolation)|
+
+
+6. Security Settings
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/securitySettingsStoreBinder.png" alt="securitySettingsStore.png" />
+
 
 **Body Example**
 
