@@ -698,9 +698,6 @@ public class DataJsonController {
             parameterMap.put("activityId", assignmentId);
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
-
-            LogUtil.info(getClass().getName(), c"primaryKey ["+formData.getPrimaryKeyValue()+"]");
-            LogUtil.info(getClass().getName(), "form id ["+packageActivityForm.getForm().getPropertyString("id")+"]");
             FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());
 
             if (rowSet == null || rowSet.isEmpty()) {
