@@ -35,3 +35,7 @@
 - [Plugins Spreadsheets](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_spreadsheets)
 - [Plugins Time Picker](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_timePicker)
 - [Plugins Workflow Variable](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_WorkflowVariable)
+- [Plugins REST Form Load & Store Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIForm)
+- [Plugins REST Tools Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIToolBinder)
+- [Plugins REST Datalist Load Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIDatalist)
+- [Plugins REST Option Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIOptionBinder)
