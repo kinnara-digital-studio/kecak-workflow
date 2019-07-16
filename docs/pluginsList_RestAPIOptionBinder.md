@@ -52,7 +52,7 @@ You need **Postman** to get information for fill **Record Path** field.
 Then follow this step :
  > Open **Postman**
  
- > Copy API URL from **Rest Load Binder** settings and paste to the place (red box), then fill all configuration in **Postman** (black box) like this picture :
+ > Copy API URL from **Rest Option Binder** settings and paste to the place (red box), then fill all configuration in **Postman** (black box) like this picture :
  
  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/postmanOptionBinder.png" alt="" />
  
