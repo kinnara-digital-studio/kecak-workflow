@@ -16,10 +16,8 @@ import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
-import org.joget.workflow.model.WorkflowActivity;
-import org.joget.workflow.model.WorkflowAssignment;
-import org.joget.workflow.model.WorkflowProcess;
-import org.joget.workflow.model.WorkflowProcessResult;
+import org.joget.workflow.model.*;
+import org.joget.workflow.model.dao.WorkflowProcessLinkDao;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
@@ -57,6 +55,8 @@ public class DataJsonController {
     private DatalistDefinitionDao datalistDefinitionDao;
     @Autowired
     private FormService formService;
+    @Autowired
+    private WorkflowProcessLinkDao workflowProcessLinkDao;
     @Autowired
     AuthTokenService authTokenService;
 
@@ -698,6 +698,9 @@ public class DataJsonController {
             parameterMap.put("activityId", assignmentId);
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
+
+            LogUtil.info(getClass().getName(), c"primaryKey ["+formData.getPrimaryKeyValue()+"]");
+            LogUtil.info(getClass().getName(), "form id ["+packageActivityForm.getForm().getPropertyString("id")+"]");
             FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());
 
             if (rowSet == null || rowSet.isEmpty()) {

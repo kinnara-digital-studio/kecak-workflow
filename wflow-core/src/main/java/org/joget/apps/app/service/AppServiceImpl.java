@@ -255,7 +255,7 @@ public class AppServiceImpl implements AppService {
         }
 
         Element completeButton;
-        Map<String, Object> customCompleteButton = (Map<String, Object>) form.getProperty("customAssignmentCompleteButton");
+        Map<String, Object> customCompleteButton = (Map<String, Object>) form.getProperty("assignmentCompleteButton");
         if(Objects.nonNull(customCompleteButton)
                 && Objects.nonNull(customCompleteButton.get("className"))
                 && Objects.nonNull(customCompleteButton.get("properties"))
