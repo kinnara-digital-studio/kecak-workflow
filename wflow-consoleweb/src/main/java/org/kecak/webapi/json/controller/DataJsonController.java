@@ -16,7 +16,10 @@ import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
-import org.joget.workflow.model.*;
+import org.joget.workflow.model.WorkflowActivity;
+import org.joget.workflow.model.WorkflowAssignment;
+import org.joget.workflow.model.WorkflowProcess;
+import org.joget.workflow.model.WorkflowProcessResult;
 import org.joget.workflow.model.dao.WorkflowProcessLinkDao;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
@@ -63,11 +66,11 @@ public class DataJsonController {
     /**
      * Submit form into table, can be used to save master data
      *
-     * @param request    HTTP Request, request body contains form field values
-     * @param response   HTTP response
-     * @param appId      Application ID
-     * @param appVersion put 0 for current published app
-     * @param formDefId  Form ID
+     * @param request       HTTP Request, request body contains form field values
+     * @param response      HTTP response
+     * @param appId         Application ID
+     * @param appVersion    put 0 for current published app
+     * @param formDefId     Form ID
      */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/submit", method = RequestMethod.POST)
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
@@ -134,12 +137,12 @@ public class DataJsonController {
     /**
      * Update data in Form
      *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
-     * @param primaryKey
+     * @param request       HTTP Request
+     * @param response      HTTP Response
+     * @param appId         Application ID
+     * @param appVersion    Application version
+     * @param formDefId     Form Definition ID
+     * @param primaryKey    Primary Key
      * @throws IOException
      * @throws JSONException
      */
@@ -214,13 +217,13 @@ public class DataJsonController {
     /**
      * Get Form Data
      *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
-     * @param primaryKey
-     * @param digest
+     * @param request       HTTP Request
+     * @param response      HTTP Response
+     * @param appId         Application ID
+     * @param appVersion    Application version
+     * @param formDefId     Form Definition ID
+     * @param primaryKey    Primary Key
+     * @param digest        Digest
      * @throws IOException
      * @throws JSONException
      */
@@ -277,6 +280,16 @@ public class DataJsonController {
         }
     }
 
+    /**
+     * Get List Count
+     *
+     * @param request       HTTP Request
+     * @param response      HTTP Response
+     * @param appId         Application ID
+     * @param appVersion    Application version
+     * @param dataListId    DataList ID
+     * @throws IOException
+     */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)/count", method = RequestMethod.GET)
     public void getListCount(final HttpServletRequest request, final HttpServletResponse response,
                              @RequestParam("appId") final String appId,
@@ -329,17 +342,18 @@ public class DataJsonController {
     }
 
     /**
-     * API to retrieve dataList data
+     * Retrieve dataList data
      *
-     * @param request    HTTP Request
-     * @param response   HTTP Response
-     * @param appId      Application ID
-     * @param appVersion Application version
-     * @param dataListId DataList ID
-     * @param page       paging every 10 rows, page = 0 will show all data without paging
-     * @param sort       order list by specified field name
-     * @param desc       optional true/false
-     * @param digest     hash calculation of data json
+     * @param request     HTTP Request
+     * @param response    HTTP Response
+     * @param appId       Application ID
+     * @param appVersion  Application version
+     * @param dataListId  DataList ID
+     * @param page        paging every 10 rows, page = 0 will show all data without paging
+     * @param sort        order list by specified field name
+     * @param desc        optional true/false
+     * @param digest      hash calculation of data json
+     * @param ignoreTotal Won't calculate total, query will run faster
      * @throws IOException
      */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)", method = RequestMethod.GET)
@@ -348,9 +362,12 @@ public class DataJsonController {
                         @RequestParam("appVersion") final String appVersion,
                         @RequestParam("dataListId") final String dataListId,
                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                        @RequestParam(value = "start", required = false, defaultValue = "0") final Integer start,
+                        @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
                         @RequestParam(value = "sort", required = false) final String sort,
                         @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
-                        @RequestParam(value = "digest", required = false) final String digest)
+                        @RequestParam(value = "digest", required = false) final String digest,
+                        @RequestParam(value = "ignoreTotal", required = false, defaultValue = "false") final Boolean ignoreTotal)
             throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -390,36 +407,55 @@ public class DataJsonController {
             }
 
             // paging
-            int pageSize = page == 0 ? DataList.MAXIMUM_PAGE_SIZE : DataList.DEFAULT_PAGE_SIZE;
-            int rowStart = page == 0 ? 0 : ((page - 1) * pageSize);
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
+            int rowStart = start != null && start > 0 ? start : page != null && page > 0 ? ((page - 1) * pageSize + 1) : 1;
 
             getCollectFilters(request.getParameterMap(), dataList);
-            DataListCollection<Map<String, Object>> collections = dataList.getRows(pageSize, rowStart);
-
-            // apply formatting
-            for (Map<String, Object> row : collections) {
-                row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey())));
-            }
-
-            JSONArray jsonData = new JSONArray();
-
-            for (Map<String, Object> row : collections) {
-                try {
-                    JSONObject jsonRow = new JSONObject();
-                    for (String field : row.keySet()) {
-                        jsonRow.put(field, format(dataList, row, field));
-                    }
-                    jsonData.put(jsonRow);
-                } catch (JSONException e) {
-                    jsonData.put(new JSONObject(row));
-                }
-            }
+//            DataListCollection<Map<String, Object>> collections = dataList.getRows(pageSize, rowStart);
+//
+//            // apply formatting
+//            for (Map<String, Object> row : collections) {
+//                row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey())));
+//            }
+//
+//            JSONArray jsonData = new JSONArray();
+//
+//            for (Map<String, Object> row : collections) {
+//                try {
+//                    JSONObject jsonRow = new JSONObject();
+//                    for (String field : row.keySet()) {
+//                        jsonRow.put(field, format(dataList, row, field));
+//                    }
+//                    jsonData.put(jsonRow);
+//                } catch (JSONException e) {
+//                    jsonData.put(new JSONObject(row));
+//                }
+//            }
 
             try {
-                JSONObject jsonResponse = new JSONObject();
+                DataListCollection<Map<String, Object>> collections;
+                JSONArray jsonData;
+                if (ignoreTotal) {
+                    collections = dataList.getRows(pageSize, rowStart);
+                    jsonData = new JSONArray(collections.stream()
+                            .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
+                            .collect(Collectors.toList()));
+                } else {
+                    collections = dataList.getRows();
+                    jsonData = new JSONArray(collections.stream()
+                            .skip(rowStart - 1)
+                            .limit(pageSize)
+
+                            // apply formatting
+                            .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
+                            .collect(Collectors.toList()));
+                }
 
                 String currentDigest = getDigest(jsonData);
-                jsonResponse.put("total", jsonData.length());
+
+                JSONObject jsonResponse = new JSONObject();
+                if (!ignoreTotal)
+                    jsonResponse.put("total", collections.size());
                 if (!Objects.equals(digest, currentDigest))
                     jsonResponse.put("data", jsonData);
                 jsonResponse.put("digest", currentDigest);
@@ -561,11 +597,13 @@ public class DataJsonController {
     }
 
     /**
+     * Post Assignment Complete
+     *
      * Complete assignment form
      *
-     * @param request      HTTP Request, request body contains form field values
-     * @param response     HTTP Response
-     * @param assignmentId Assignment ID
+     * @param request           HTTP Request, request body contains form field values
+     * @param response          HTTP Response
+     * @param assignmentId      Assignment ID
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.POST)
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
@@ -661,12 +699,14 @@ public class DataJsonController {
     }
 
     /**
-     * Get assignment
+     * Get Assignment
+
+     * Get assignment data
      *
-     * @param request
-     * @param response
-     * @param assignmentId
-     * @param digest
+     * @param request           HTTP Request
+     * @param response          HTTP Response
+     * @param assignmentId      Assingment ID
+     * @param digest            Digest
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.GET)
@@ -733,11 +773,11 @@ public class DataJsonController {
     /**
      * Get Assignment Count
      *
-     * @param request
-     * @param response
-     * @param appId
-     * @param version
-     * @param processId
+     * @param request       HTTP Request
+     * @param response      HTTP Response
+     * @param appId         Application ID
+     * @param version       Application version
+     * @param processId     Process Definition ID
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/assignments/count", method = RequestMethod.GET)
@@ -749,11 +789,11 @@ public class DataJsonController {
 
         try {
             String processDefId = validateAndDetermineProcessDefId(appId, version, processId);
-            int size = workflowManager.getAssignmentSize(appId, processDefId, null);
+            int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
             try {
                 JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("total", size);
+                jsonResponse.put("total", total);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -767,12 +807,17 @@ public class DataJsonController {
     /**
      * Get Assignment List
      *
-     * @param request
-     * @param response
-     * @param page
-     * @param sort
-     * @param desc
-     * @param digest
+     * @param request       HTTP Request
+     * @param response      HTTP Response
+     * @param appId         Application ID
+     * @param version       Application version
+     * @param processId     Process Def ID
+     * @param page          Page
+     * @param start         Start
+     * @param rows          Page size
+     * @param sort          Sort by field
+     * @param desc          Descending
+     * @param digest        Digest
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/assignments", method = RequestMethod.GET)
@@ -781,6 +826,8 @@ public class DataJsonController {
                                @RequestParam(value = "version", required = false) final Long version,
                                @RequestParam(value = "processId", required = false) final String processId,
                                @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                               @RequestParam(value = "start", required = false, defaultValue = "0") final Integer start,
+                               @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
                                @RequestParam(value = "sort", required = false) final String sort,
                                @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
                                @RequestParam(value = "digest", required = false) final String digest)
@@ -789,12 +836,15 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            int pageSize = page == 0 ? DataList.MAXIMUM_PAGE_SIZE : DataList.DEFAULT_PAGE_SIZE;
-            int rowStart = page == 0 ? 0 : ((page - 1) * pageSize);
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
+            int rowStart = start != null && start > 0 ? start : page != null && page > 0 ? ((page - 1) * pageSize + 1) : 1;
 
             String processDefId = validateAndDetermineProcessDefId(appId, version, processId);
 
-            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(appId, processDefId, null, sort, desc, rowStart, pageSize).stream()
+            // get total data
+            int total = workflowManager.getAssignmentSize(appId, processDefId, null);
+
+            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(appId, processDefId, null, sort, desc, rowStart - 1, pageSize).stream()
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
                     .map(assignment -> {
@@ -859,7 +909,8 @@ public class DataJsonController {
             try {
                 JSONObject jsonResponse = new JSONObject();
                 String currentDigest = getDigest(jsonData);
-                jsonResponse.put("total", jsonData.length());
+//                jsonResponse.put("total", jsonData.length());
+                jsonResponse.put("total", total);
                 if (!Objects.equals(currentDigest, digest))
                     jsonResponse.put("data", jsonData);
                 jsonResponse.put("digest", currentDigest);
@@ -924,8 +975,8 @@ public class DataJsonController {
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
      *
-     * @param json JSON array object
-     * @return digest value
+     * @param json  JSON array object
+     * @return      digest value
      */
     private String getDigest(JSONArray json) {
         return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
@@ -958,9 +1009,9 @@ public class DataJsonController {
     /**
      * Format
      *
-     * @param dataList DataList
-     * @param row      Row
-     * @param field    Field
+     * @param dataList  DataList
+     * @param row       Row
+     * @param field     Field
      * @return
      */
     private @Nonnull
@@ -992,9 +1043,9 @@ public class DataJsonController {
     /**
      * Validate and Determine Process ID
      *
-     * @param appId      Application ID
-     * @param appVersion Application version
-     * @param processId  Process ID
+     * @param appId         Application ID
+     * @param appVersion    Application version
+     * @param processId     Process ID
      * @return
      * @throws ApiException
      */
@@ -1028,8 +1079,8 @@ public class DataJsonController {
     /**
      * Generate Workflow Variable
      *
-     * @param form     Form
-     * @param formData Form Data
+     * @param form          Form
+     * @param formData      Form Data
      * @return
      */
     private Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
