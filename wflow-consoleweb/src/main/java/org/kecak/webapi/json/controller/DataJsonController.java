@@ -6,6 +6,7 @@ import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.DatalistDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
+import org.joget.apps.app.model.PackageDefinition;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,9 +41,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class DataJsonController {
+    private final static String FIELD_MESSAGE = "message";
+    private final static String FIELD_DATA = "data";
+    private final static String FIELD_VALIDATION_ERROR = "validation_error";
+    private final static String FIELD_DIGEST = "digest";
 
     private final static String MESSAGE_VALIDATION_ERROR = "Validation Error";
     private final static String MESSAGE_SUCCESS = "Success";
@@ -106,13 +113,17 @@ public class DataJsonController {
             // construct response
             final JSONObject jsonResponse = new JSONObject();
             if (result.getFormErrors() != null && !result.getFormErrors().isEmpty()) {
+                final JSONObject jsonError = new JSONObject();
+
                 // show error message
                 result.getFormErrors().forEach((key, value) -> {
                     try {
-                        jsonResponse.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
+                        jsonError.put(key, value);
+                    } catch (JSONException ignored) { }
                 });
+
+                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
                 // set current data as response
                 FormRowSet rowSet = appService.loadFormData(form, result.getPrimaryKeyValue());
@@ -121,9 +132,9 @@ public class DataJsonController {
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
                     JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    jsonResponse.put("data", jsonData);
-                    jsonResponse.put("message", MESSAGE_SUCCESS);
-                    jsonResponse.put("digest", getDigest(jsonData));
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                    jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
                 }
             }
 
@@ -187,11 +198,10 @@ public class DataJsonController {
                 result.getFormErrors().forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
+                    } catch (JSONException ignored) { }
                 });
-                jsonResponse.put("message", MESSAGE_VALIDATION_ERROR);
-                jsonResponse.put("error", jsonError);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
             } else {
                 // set current data as response
                 FormRowSet rowSet = appService.loadFormData(form, result.getPrimaryKeyValue());
@@ -200,9 +210,9 @@ public class DataJsonController {
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
                     JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    jsonResponse.put("data", jsonData);
-                    jsonResponse.put("message", MESSAGE_SUCCESS);
-                    jsonResponse.put("digest", getDigest(jsonData));
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                    jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
                 }
             }
 
@@ -266,11 +276,11 @@ public class DataJsonController {
                 JSONObject jsonResponse = new JSONObject();
 
                 if (!Objects.equals(currentDigest, digest)) {
-                    jsonResponse.put("data", jsonData);
+                    jsonResponse.put(FIELD_DATA, jsonData);
                 }
 
-                jsonResponse.put("message", MESSAGE_SUCCESS);
-                jsonResponse.put("digest", currentDigest);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
 
                 response.getWriter().write(jsonResponse.toString());
             }
@@ -350,6 +360,7 @@ public class DataJsonController {
      * @param appVersion  Application version
      * @param dataListId  DataList ID
      * @param page        paging every 10 rows, page = 0 will show all data without paging
+     * @param start       from row index (index starts from 0)
      * @param sort        order list by specified field name
      * @param desc        optional true/false
      * @param digest      hash calculation of data json
@@ -362,7 +373,7 @@ public class DataJsonController {
                         @RequestParam("appVersion") final String appVersion,
                         @RequestParam("dataListId") final String dataListId,
                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                        @RequestParam(value = "start", required = false, defaultValue = "0") final Integer start,
+                        @RequestParam(value = "start", required = false) final Integer start,
                         @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
                         @RequestParam(value = "sort", required = false) final String sort,
                         @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
@@ -408,47 +419,43 @@ public class DataJsonController {
 
             // paging
             int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
-            int rowStart = start != null && start > 0 ? start : page != null && page > 0 ? ((page - 1) * pageSize + 1) : 1;
+            int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
 
             getCollectFilters(request.getParameterMap(), dataList);
-//            DataListCollection<Map<String, Object>> collections = dataList.getRows(pageSize, rowStart);
-//
-//            // apply formatting
-//            for (Map<String, Object> row : collections) {
-//                row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey())));
-//            }
-//
-//            JSONArray jsonData = new JSONArray();
-//
-//            for (Map<String, Object> row : collections) {
-//                try {
-//                    JSONObject jsonRow = new JSONObject();
-//                    for (String field : row.keySet()) {
-//                        jsonRow.put(field, format(dataList, row, field));
-//                    }
-//                    jsonData.put(jsonRow);
-//                } catch (JSONException e) {
-//                    jsonData.put(new JSONObject(row));
-//                }
-//            }
 
             try {
-                DataListCollection<Map<String, Object>> collections;
                 JSONArray jsonData;
+                DataListCollection<Map<String, Object>> collections;
                 if (ignoreTotal) {
-                    collections = dataList.getRows(pageSize, rowStart);
-                    jsonData = new JSONArray(collections.stream()
+                    collections = Optional.ofNullable(dataList.getRows(pageSize, rowStart)).orElse(new DataListCollection<Map<String, Object>>());
+                    jsonData = collections.stream()
                             .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
-                            .collect(Collectors.toList()));
+                            .map(JSONObject::new)
+                            .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
+                                for(int i = 0, size = a2.length(); i < size; i++) {
+                                    try {
+                                        a1.put(a2.get(i));
+                                    } catch (JSONException ignored) { }
+                                }
+                            });
                 } else {
-                    collections = dataList.getRows();
-                    jsonData = new JSONArray(collections.stream()
-                            .skip(rowStart - 1)
-                            .limit(pageSize)
+                    collections = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows())
+                            .orElse(new DataListCollection<>())
+                            .stream()
+                            .collect(Collectors.toCollection(DataListCollection<Map<String, Object>>::new));
 
-                            // apply formatting
+                    jsonData = collections.stream()
+                            .skip(rowStart)
+                            .limit(pageSize)
                             .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
-                            .collect(Collectors.toList()));
+                            .map(JSONObject::new)
+                            .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
+                                for(int i = 0, size = a2.length(); i < size; i++) {
+                                    try {
+                                        a1.put(a2.get(i));
+                                    } catch (JSONException ignored) { }
+                                }
+                            });
                 }
 
                 String currentDigest = getDigest(jsonData);
@@ -457,8 +464,8 @@ public class DataJsonController {
                 if (!ignoreTotal)
                     jsonResponse.put("total", collections.size());
                 if (!Objects.equals(digest, currentDigest))
-                    jsonResponse.put("data", jsonData);
-                jsonResponse.put("digest", currentDigest);
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
 
                 if (jsonData.length() > 0) {
                     response.setStatus(HttpServletResponse.SC_OK);
@@ -535,18 +542,16 @@ public class DataJsonController {
             WorkflowProcessResult processResult = appService.submitFormToStartProcess(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, formData, workflowVariables, null, null);
 
             if (formData.getFormErrors() != null && !formData.getFormErrors().isEmpty()) {
-                jsonResponse.put("message", MESSAGE_VALIDATION_ERROR);
-
                 JSONObject jsonError = new JSONObject();
                 // show error message
                 formData.getFormErrors().forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
+                    } catch (JSONException ignored) { }
                 });
 
-                jsonResponse.put("error", jsonError);
+                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
                 FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
                 if (rowSet == null || rowSet.isEmpty()) {
@@ -582,9 +587,9 @@ public class DataJsonController {
                     }
 
                     String digest = getDigest(jsonData);
-                    jsonResponse.put("data", jsonData);
-                    jsonResponse.put("message", MESSAGE_SUCCESS);
-                    jsonResponse.put("digest", digest);
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                    jsonResponse.put(FIELD_DIGEST, digest);
                 }
             }
 
@@ -642,18 +647,16 @@ public class DataJsonController {
             // return processResult
             JSONObject jsonResponse = new JSONObject();
             if (resultFormData.getFormErrors() != null && !resultFormData.getFormErrors().isEmpty()) {
-                jsonResponse.put("message", MESSAGE_VALIDATION_ERROR);
-
                 JSONObject jsonError = new JSONObject();
                 // show error message
                 resultFormData.getFormErrors().forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
+                    } catch (JSONException ignored) { }
                 });
 
-                jsonResponse.put("error", jsonError);
+                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
 
             } else {
                 WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(resultFormData.getProcessId());
@@ -684,9 +687,9 @@ public class DataJsonController {
 
                     String digest = getDigest(jsonData);
 
-                    jsonResponse.put("data", jsonData);
-                    jsonResponse.put("message", MESSAGE_SUCCESS);
-                    jsonResponse.put("digest", digest);
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                    jsonResponse.put(FIELD_DIGEST, digest);
                 }
             }
 
@@ -753,11 +756,11 @@ public class DataJsonController {
                     String currentDigest = getDigest(jsonData);
 
                     JSONObject jsonResponse = new JSONObject();
-                    jsonResponse.put("digest", currentDigest);
-                    jsonResponse.put("message", MESSAGE_SUCCESS);
+                    jsonResponse.put(FIELD_DIGEST, currentDigest);
+                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
 
                     if (!Objects.equals(digest, currentDigest))
-                        jsonResponse.put("data", jsonData);
+                        jsonResponse.put(FIELD_DATA, jsonData);
 
                     response.getWriter().write(jsonResponse.toString());
                 } catch (JSONException e) {
@@ -812,11 +815,11 @@ public class DataJsonController {
      * @param appId         Application ID
      * @param version       Application version
      * @param processId     Process Def ID
-     * @param page          Page
-     * @param start         Start
-     * @param rows          Page size
+     * @param page          Page starts from 1
+     * @param start         From index (index starts from 0)
+     * @param rows          Page size (rows = 0 means load all data)
      * @param sort          Sort by field
-     * @param desc          Descending
+     * @param desc          Descending (true/false)
      * @param digest        Digest
      * @throws IOException
      */
@@ -826,7 +829,7 @@ public class DataJsonController {
                                @RequestParam(value = "version", required = false) final Long version,
                                @RequestParam(value = "processId", required = false) final String processId,
                                @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                               @RequestParam(value = "start", required = false, defaultValue = "0") final Integer start,
+                               @RequestParam(value = "start", required = false) final Integer start,
                                @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
                                @RequestParam(value = "sort", required = false) final String sort,
                                @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
@@ -837,14 +840,14 @@ public class DataJsonController {
 
         try {
             int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
-            int rowStart = start != null && start > 0 ? start : page != null && page > 0 ? ((page - 1) * pageSize + 1) : 1;
+            int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
 
             String processDefId = validateAndDetermineProcessDefId(appId, version, processId);
 
             // get total data
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
-            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(appId, processDefId, null, sort, desc, rowStart - 1, pageSize).stream()
+            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(appId, processDefId, null, sort, desc, rowStart, pageSize).stream()
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
                     .map(assignment -> {
@@ -912,8 +915,8 @@ public class DataJsonController {
 //                jsonResponse.put("total", jsonData.length());
                 jsonResponse.put("total", total);
                 if (!Objects.equals(currentDigest, digest))
-                    jsonResponse.put("data", jsonData);
-                jsonResponse.put("digest", currentDigest);
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
 
                 if (jsonData.length() > 0) {
                     response.setStatus(HttpServletResponse.SC_OK);
@@ -971,6 +974,363 @@ public class DataJsonController {
 
         return formData;
     }
+
+
+    /**
+     * Get DataList Assignments
+     * 
+     * Same functionality as DataList Inbox plugin
+     * 
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityDefIds
+     * @param page
+     * @param start
+     * @param rows
+     * @param sort
+     * @param desc
+     * @param digest
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/assignments/list/(*:dataListId)", method = RequestMethod.GET)
+    public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
+                               @RequestParam("appId") final String appId,
+                               @RequestParam("appVersion") final String appVersion,
+                               @RequestParam("dataListId") final String dataListId,
+                               @RequestParam(value = "processId", required = false) final String[] processId,
+                               @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
+                               @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                               @RequestParam(value = "start", required = false) final Integer start,
+                               @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
+                               @RequestParam(value = "sort", required = false) final String sort,
+                               @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
+                               @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // get dataList definition
+            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
+            if (datalistDefinition == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+            }
+
+            // get dataList
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            if (dataList == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // configure sorting
+            if (sort != null) {
+                dataList.setDefaultSortColumn(sort);
+
+                // order ASC / DESC
+                dataList.setDefaultOrder(desc ? DataList.ORDER_DESCENDING_VALUE : DataList.ORDER_ASCENDING_VALUE);
+            }
+
+            // paging
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
+            int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
+
+            getCollectFilters(request.getParameterMap(), dataList);
+
+            try {
+                @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
+                @Nonnull List<String> aids = convertMultiValueParameterToList(activityDefIds);
+
+                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(dataListId, pids, aids,null, null, null, null);
+
+                // get original process ID from assignments
+                final Map<String, Collection<String>> mapPrimaryKeyToProcessId = workflowProcessLinkDao.getOriginalIds(assignmentList.stream().map(WorkflowAssignment::getProcessId).collect(Collectors.toList()));
+                @Nonnull List<String> originalPids = mapPrimaryKeyToProcessId
+                        .keySet()
+                        .stream()
+                        .distinct()
+                        .sorted()
+                        .collect(Collectors.toList());
+
+                addFilterById(dataList, originalPids);
+
+                DataListCollection<Map<String, Object>> collections = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(pageSize, rowStart))
+                        .orElse(new DataListCollection<>())
+                        .stream()
+                        .collect(Collectors.toCollection(DataListCollection<Map<String, Object>>::new));
+
+                JSONArray jsonData = collections.stream()
+
+                        // reformat content value
+                        .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
+
+                        .peek(row -> {
+                            // add process information
+                            String primaryKey = row.get(dataList.getBinder().getPrimaryKeyColumnName()).toString();
+                            mapPrimaryKeyToProcessId
+                                    .get(primaryKey)
+                                    .stream()
+                                    .map(workflowManager::getAssignmentByProcess)
+                                    .findFirst()
+                                    .ifPresent(a -> {
+                                        row.put("activityId", a.getActivityId());
+                                        row.put("processId", a.getProcessId());
+                                        row.put("assigneeId", a.getAssigneeId());
+                                    });
+
+                        })
+
+                        // collect as JSON
+//                        .map(map -> new JSONObject((Map<String, Object>)map
+//                                .entrySet()
+//                                .stream()
+//                                .filter(e -> Arrays.stream(dataList.getColumns()).map(DataListColumn::getName).anyMatch(s -> s.equalsIgnoreCase(e.getKey())))
+//                                .collect(HashMap<String, Object>::new, (m, e) -> {}, Map::putAll)))
+                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
+                            for(int i = 0, size = a2.length(); i < size; i++) {
+                                try {
+                                    a1.put(a2.get(i));
+                                } catch (JSONException ignored) { }
+                            }
+                        });
+
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("total", dataList.getSize());
+
+                if (!Objects.equals(digest, currentDigest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
+
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+                if (jsonData.length() > 0) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                }
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+    /**
+     * Convert Multi Value Parameter to List
+     *
+     * @param parameter request parameter values
+     * @return sorted list
+     */
+    private List<String> convertMultiValueParameterToList(String[] parameter) {
+        return Optional.ofNullable(parameter)
+                .map(Arrays::stream)
+                .orElse(Stream.of(""))
+                .map(s -> s.split(";"))
+                .flatMap(Arrays::stream)
+                .map(String::trim)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+
+    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/assignments/list/(*:dataListId)/count", method = RequestMethod.GET)
+    public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
+                                            @RequestParam("appId") final String appId,
+                                            @RequestParam("appVersion") final String appVersion,
+                                            @RequestParam("dataListId") final String dataListId,
+                                            @RequestParam(value = "processId", required = false) final String[] processId,
+                                            @RequestParam(value = "activityId", required = false) final String[] activityId)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // get dataList definition
+            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
+            if (datalistDefinition == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+            }
+
+            // get dataList
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            if (dataList == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            getCollectFilters(request.getParameterMap(), dataList);
+
+            try {
+                @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
+                @Nonnull List<String> aids = convertMultiValueParameterToList(activityId);
+
+                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(dataListId, pids, aids,null, null, null, null);
+
+                // get original process ID from assignments
+                @Nonnull List<String> originalPids = workflowProcessLinkDao
+                        .getOriginalIds(assignmentList.stream().map(WorkflowAssignment::getProcessId).collect(Collectors.toList()))
+                        .keySet()
+                        .stream()
+                        .distinct()
+                        .sorted()
+                        .collect(Collectors.toList());
+
+                addFilterById(dataList, originalPids);
+
+//                DataListCollection<Map<String, Object>> collections = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(DataList.MAXIMUM_PAGE_SIZE, null))
+//                        .orElse(new DataListCollection<>())
+//                        .stream()
+//
+//                        // check if current row is in the assignment list
+//                        .filter(row -> {
+//                            String primaryKeyColumn = dataList.getBinder().getPrimaryKeyColumnName();
+//                            String originalProcessId = String.valueOf(row.get(primaryKeyColumn));
+//                            return originalPids.stream().anyMatch(s -> s.equalsIgnoreCase(originalProcessId));
+//                        })
+//
+//                        .collect(Collectors.toCollection(DataListCollection<Map<String, Object>>::new));
+
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("total", dataList.getSize());
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+
+    /**
+     * Get Assignment List
+     * Get assignment of dataList
+     *
+     * @param dataListId
+     * @param processIds
+     * @param activityDefIds
+     * @param sort
+     * @param desc
+     * @param start
+     * @param size
+     * @return
+     */
+    @Nonnull
+    private Collection<WorkflowAssignment> getAssignmentList(@Nonnull String dataListId, @Nonnull final List<String> processIds, @Nonnull final List<String> activityDefIds, String sort, Boolean desc, Integer start, Integer size) {
+        @Nonnull final AppDefinition appDef = AppUtil.getCurrentAppDefinition();
+        @Nonnull final ApplicationContext ac = AppUtil.getApplicationContext();
+        @Nonnull final WorkflowManager workflowManager = (WorkflowManager)ac.getBean("workflowManager");
+        @Nonnull final AppService appService = (AppService)ac.getBean("appService");
+        @Nonnull final PackageDefinition packageDef = appDef.getPackageDefinition();
+
+        return processIds.stream()
+                .filter(Objects::nonNull)
+                .map(s -> {
+                    if(s.isEmpty()) {
+                        return "";
+                    } else {
+                        WorkflowProcess p = appService.getWorkflowProcessForApp(appDef.getId(), appDef.getVersion().toString(), s);
+                        if (p == null) {
+                            LogUtil.warn(getClass().getName(), "Process [" + s + "] is not defined for this app");
+                            return "";
+                        }
+                        return p.getId();
+                    }
+                })
+
+                // get assignments
+                .flatMap(pid -> activityDefIds.stream()
+                        .map(aid -> {
+                            if (!dataListId.isEmpty()) {
+                                return workflowManager.getAssignmentListLite(packageDef.getId(), pid, null, aid, sort, desc, start, size);
+                            } else {
+                                return workflowManager.getAssignmentList(packageDef.getId(), pid, null, aid, sort, desc, start, size);
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .flatMap(Collection::stream))
+                .collect(Collectors.toList());
+
+//        if (processId == null || processId.isEmpty()) {
+//            PackageDefinition packageDef = appDef.getPackageDefinition();
+//            if (packageDef != null) {
+//                if (!dataListId.isEmpty()) {
+//                    return workflowManager.getAssignmentListLite(packageDef.getId(), null, null, null, sort, desc, start, size);
+//                }
+//                return workflowManager.getAssignmentList(packageDef.getId(), null, null, null, sort, desc, start, size);
+//            }
+//        } else {
+//            WorkflowProcess process = appService.getWorkflowProcessForApp(appDef.getId(), appDef.getVersion().toString(), processId);
+//            if (process != null) {
+//                if (activityDefIds == null || activityDefIds.length == 0) {
+//                    // Filter by PROCESS ID
+//                    if (!dataListId.isEmpty()) {
+//                        return workflowManager.getAssignmentListLite(null, process.getId(), null, null, sort, desc, start, size);
+//                    } else {
+//                        return workflowManager.getAssignmentList(null, process.getId(), null, null, sort, desc, start, size);
+//                    }
+//                } else {
+//                    // Filter by PROCESS ID and ACTIVITY ID
+//                    return Arrays.stream(activityDefIds)
+//                            .map(a -> a.split(";"))
+//                            .flatMap(Arrays::stream)
+//                            .map(String::trim)
+//                            .filter(s -> !s.isEmpty())
+//                            .map(activityDefId -> {
+//                                if (!dataListId.isEmpty()) {
+//                                    return workflowManager.getAssignmentListLite(null, process.getId(), null, activityDefId, sort, desc, start, size);
+//                                } else {
+//                                    return workflowManager.getAssignmentList(null, process.getId(), null, activityDefId, sort, desc, start, size);
+//                                }
+//                            })
+//                            .flatMap(Collection::stream)
+//                            .collect(Collectors.toList());
+//                }
+//            }
+//        }
+//        return new ArrayList<>();
+    }
+
+    private String nullIfEmpty(String s) {
+        return s.isEmpty() ? null : s;
+    }
+
 
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
@@ -1096,5 +1456,64 @@ public class DataJsonController {
 
             m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
         }, Map::putAll);
+    }
+
+//    final private Map<String, Map<String, Collection<String>>> cachedRecordIdToProcessId = new HashMap<>();
+//    final private Map<String, Map<String, Collection<WorkflowAssignment>>> cachedAssignments = new HashMap<>();
+//
+//    private Map<String, Collection<WorkflowAssignment>> getCachedAssignments(@Nonnull String dataListId, @Nullable String processId, @Nullable String activityDefIds) {
+//        cachedAssignments.putIfAbsent(dataListId, new HashMap<>());
+//
+//        Collection<WorkflowAssignment> assignmentList = getAssignmentList(dataListId, processId, activityDefIds,null, null, null, null);
+//        if (assignmentList != null && assignmentList.size() > 0) {
+//            for (WorkflowAssignment ass : assignmentList) {
+//                Collection<WorkflowAssignment> assignments = cachedAssignments.get(dataListId).get(ass.getProcessId());
+//                if (assignments == null) {
+//                    assignments = new ArrayList<>();
+//                }
+//                assignments.add(ass);
+//                cachedAssignments.get(dataListId).put(ass.getProcessId(), assignments);
+//            }
+//        }
+//        return cachedAssignments.get(dataListId);
+//    }
+//
+//    private @Nonnull Map<String, Collection<String>> getCachedRecordIdToProcessId(@Nonnull String dataListId, @Nullable String processId, @Nullable String activityDefIds) {
+//        Set<String> processIds = getCachedAssignments(dataListId, processId, activityDefIds).keySet();
+//        if (processIds.size() > 0) {
+//            ApplicationContext ac = AppUtil.getApplicationContext();
+//            WorkflowProcessLinkDao workflowProcessLinkDao = (WorkflowProcessLinkDao)ac.getBean("workflowProcessLinkDao");
+//            cachedRecordIdToProcessId.putIfAbsent(dataListId, workflowProcessLinkDao.getOriginalIds(processIds));
+//        } else {
+//            cachedRecordIdToProcessId.putIfAbsent(dataListId, new HashMap<>());
+//        }
+//        return cachedRecordIdToProcessId.get(dataListId);
+//    }
+
+    /**
+     * Create filter by ID
+     *
+     * @param dataList
+     * @param originalPids
+     * @return
+     */
+    private DataList addFilterById(DataList dataList, List<String> originalPids) {
+        DataListFilterQueryObject filterQueryObject = new DataListFilterQueryObject();
+        filterQueryObject.setOperator("AND");
+
+        final List<String> values = new ArrayList<>();
+        String prefix = dataList.getBinder().getColumnName("id") + " in (";
+        String suffix = ")";
+        String sql = originalPids
+                .stream()
+                .map(s -> {
+                    values.add(s);
+                    return "?";
+                })
+                .collect(Collectors.joining(", " , prefix, suffix));
+        filterQueryObject.setQuery(sql.isEmpty() ? " id is null" : sql);
+        filterQueryObject.setValues(values.toArray(new String[0]));
+        dataList.addFilterQueryObject(filterQueryObject);
+        return dataList;
     }
 }
