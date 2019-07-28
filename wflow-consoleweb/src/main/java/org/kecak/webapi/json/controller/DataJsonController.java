@@ -49,6 +49,7 @@ public class DataJsonController {
     private final static String FIELD_DATA = "data";
     private final static String FIELD_VALIDATION_ERROR = "validation_error";
     private final static String FIELD_DIGEST = "digest";
+    private final static String FIELD_TOTAL = "total";
 
     private final static String MESSAGE_VALIDATION_ERROR = "Validation Error";
     private final static String MESSAGE_SUCCESS = "Success";
@@ -336,11 +337,12 @@ public class DataJsonController {
             }
 
             getCollectFilters(request.getParameterMap(), dataList);
-            DataListCollection<Map<String, Object>> collections = dataList.getRows();
+
+            int total = dataList.getSize();
 
             try {
                 JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("total", collections.size());
+                jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -364,7 +366,6 @@ public class DataJsonController {
      * @param sort        order list by specified field name
      * @param desc        optional true/false
      * @param digest      hash calculation of data json
-     * @param ignoreTotal Won't calculate total, query will run faster
      * @throws IOException
      */
     @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)", method = RequestMethod.GET)
@@ -377,8 +378,7 @@ public class DataJsonController {
                         @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
                         @RequestParam(value = "sort", required = false) final String sort,
                         @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
-                        @RequestParam(value = "digest", required = false) final String digest,
-                        @RequestParam(value = "ignoreTotal", required = false, defaultValue = "false") final Boolean ignoreTotal)
+                        @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -424,54 +424,34 @@ public class DataJsonController {
             getCollectFilters(request.getParameterMap(), dataList);
 
             try {
-                JSONArray jsonData;
-                DataListCollection<Map<String, Object>> collections;
-                if (ignoreTotal) {
-                    collections = Optional.ofNullable(dataList.getRows(pageSize, rowStart)).orElse(new DataListCollection<Map<String, Object>>());
-                    jsonData = collections.stream()
-                            .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
-                            .map(JSONObject::new)
-                            .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
-                                for(int i = 0, size = a2.length(); i < size; i++) {
-                                    try {
-                                        a1.put(a2.get(i));
-                                    } catch (JSONException ignored) { }
-                                }
-                            });
-                } else {
-                    collections = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows())
-                            .orElse(new DataListCollection<>())
-                            .stream()
-                            .collect(Collectors.toCollection(DataListCollection<Map<String, Object>>::new));
+                JSONArray jsonData = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(pageSize, rowStart))
+                        .orElse(new DataListCollection<>())
+                        .stream()
 
-                    jsonData = collections.stream()
-                            .skip(rowStart)
-                            .limit(pageSize)
-                            .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
-                            .map(JSONObject::new)
-                            .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
-                                for(int i = 0, size = a2.length(); i < size; i++) {
-                                    try {
-                                        a1.put(a2.get(i));
-                                    } catch (JSONException ignored) { }
-                                }
-                            });
-                }
+                        // reformat content value
+                        .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
+
+                        // collect as JSON
+                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
+                            for(int i = 0, size = a2.length(); i < size; i++) {
+                                try {
+                                    a1.put(a2.get(i));
+                                } catch (JSONException ignored) { }
+                            }
+                        });
 
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
-                if (!ignoreTotal)
-                    jsonResponse.put("total", collections.size());
+
+                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
+
                 if (!Objects.equals(digest, currentDigest))
                     jsonResponse.put(FIELD_DATA, jsonData);
+
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
-                if (jsonData.length() > 0) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                }
+                response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
@@ -796,7 +776,7 @@ public class DataJsonController {
 
             try {
                 JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("total", total);
+                jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -912,17 +892,15 @@ public class DataJsonController {
             try {
                 JSONObject jsonResponse = new JSONObject();
                 String currentDigest = getDigest(jsonData);
-//                jsonResponse.put("total", jsonData.length());
-                jsonResponse.put("total", total);
+
+                jsonResponse.put(FIELD_TOTAL, total);
+
                 if (!Objects.equals(currentDigest, digest))
                     jsonResponse.put(FIELD_DATA, jsonData);
+
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
-                if (jsonData.length() > 0) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                }
+                response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
@@ -1070,12 +1048,9 @@ public class DataJsonController {
 
                 addFilterById(dataList, originalPids);
 
-                DataListCollection<Map<String, Object>> collections = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(pageSize, rowStart))
+                JSONArray jsonData = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(pageSize, rowStart))
                         .orElse(new DataListCollection<>())
                         .stream()
-                        .collect(Collectors.toCollection(DataListCollection<Map<String, Object>>::new));
-
-                JSONArray jsonData = collections.stream()
 
                         // reformat content value
                         .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
@@ -1097,11 +1072,6 @@ public class DataJsonController {
                         })
 
                         // collect as JSON
-//                        .map(map -> new JSONObject((Map<String, Object>)map
-//                                .entrySet()
-//                                .stream()
-//                                .filter(e -> Arrays.stream(dataList.getColumns()).map(DataListColumn::getName).anyMatch(s -> s.equalsIgnoreCase(e.getKey())))
-//                                .collect(HashMap<String, Object>::new, (m, e) -> {}, Map::putAll)))
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
                             for(int i = 0, size = a2.length(); i < size; i++) {
                                 try {
@@ -1113,18 +1083,15 @@ public class DataJsonController {
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("total", dataList.getSize());
+
+                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
 
                 if (!Objects.equals(digest, currentDigest))
                     jsonResponse.put(FIELD_DATA, jsonData);
 
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
-                if (jsonData.length() > 0) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                }
+                response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
@@ -1211,22 +1178,12 @@ public class DataJsonController {
 
                 addFilterById(dataList, originalPids);
 
-//                DataListCollection<Map<String, Object>> collections = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(DataList.MAXIMUM_PAGE_SIZE, null))
-//                        .orElse(new DataListCollection<>())
-//                        .stream()
-//
-//                        // check if current row is in the assignment list
-//                        .filter(row -> {
-//                            String primaryKeyColumn = dataList.getBinder().getPrimaryKeyColumnName();
-//                            String originalProcessId = String.valueOf(row.get(primaryKeyColumn));
-//                            return originalPids.stream().anyMatch(s -> s.equalsIgnoreCase(originalProcessId));
-//                        })
-//
-//                        .collect(Collectors.toCollection(DataListCollection<Map<String, Object>>::new));
-
                 JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("total", dataList.getSize());
+
+                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
+
                 response.setStatus(HttpServletResponse.SC_OK);
+
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -1457,38 +1414,6 @@ public class DataJsonController {
             m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
         }, Map::putAll);
     }
-
-//    final private Map<String, Map<String, Collection<String>>> cachedRecordIdToProcessId = new HashMap<>();
-//    final private Map<String, Map<String, Collection<WorkflowAssignment>>> cachedAssignments = new HashMap<>();
-//
-//    private Map<String, Collection<WorkflowAssignment>> getCachedAssignments(@Nonnull String dataListId, @Nullable String processId, @Nullable String activityDefIds) {
-//        cachedAssignments.putIfAbsent(dataListId, new HashMap<>());
-//
-//        Collection<WorkflowAssignment> assignmentList = getAssignmentList(dataListId, processId, activityDefIds,null, null, null, null);
-//        if (assignmentList != null && assignmentList.size() > 0) {
-//            for (WorkflowAssignment ass : assignmentList) {
-//                Collection<WorkflowAssignment> assignments = cachedAssignments.get(dataListId).get(ass.getProcessId());
-//                if (assignments == null) {
-//                    assignments = new ArrayList<>();
-//                }
-//                assignments.add(ass);
-//                cachedAssignments.get(dataListId).put(ass.getProcessId(), assignments);
-//            }
-//        }
-//        return cachedAssignments.get(dataListId);
-//    }
-//
-//    private @Nonnull Map<String, Collection<String>> getCachedRecordIdToProcessId(@Nonnull String dataListId, @Nullable String processId, @Nullable String activityDefIds) {
-//        Set<String> processIds = getCachedAssignments(dataListId, processId, activityDefIds).keySet();
-//        if (processIds.size() > 0) {
-//            ApplicationContext ac = AppUtil.getApplicationContext();
-//            WorkflowProcessLinkDao workflowProcessLinkDao = (WorkflowProcessLinkDao)ac.getBean("workflowProcessLinkDao");
-//            cachedRecordIdToProcessId.putIfAbsent(dataListId, workflowProcessLinkDao.getOriginalIds(processIds));
-//        } else {
-//            cachedRecordIdToProcessId.putIfAbsent(dataListId, new HashMap<>());
-//        }
-//        return cachedRecordIdToProcessId.get(dataListId);
-//    }
 
     /**
      * Create filter by ID
