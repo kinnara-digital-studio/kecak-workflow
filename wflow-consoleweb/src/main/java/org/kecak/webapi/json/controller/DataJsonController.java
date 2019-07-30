@@ -1431,12 +1431,14 @@ public class DataJsonController {
         String suffix = ")";
         String sql = originalPids
                 .stream()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
                 .map(s -> {
                     values.add(s);
                     return "?";
                 })
-                .collect(Collectors.joining(", " , prefix, suffix));
-        filterQueryObject.setQuery(sql.isEmpty() ? " id is null" : sql);
+                .collect(Collectors.joining(", "));
+        filterQueryObject.setQuery(sql.isEmpty() ? " id is null" : (prefix + sql + suffix));
         filterQueryObject.setValues(values.toArray(new String[0]));
         dataList.addFilterQueryObject(filterQueryObject);
         return dataList;
