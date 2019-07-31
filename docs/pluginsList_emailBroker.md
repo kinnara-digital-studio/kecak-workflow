@@ -78,13 +78,22 @@ Description :
 
 
   a. From : #variable.from#
+  
   b. To (specific email address): #variable.to#
+  
   c. Cc : #variable.cc#
+  
   d. Bcc: #variable.bcc#
+  
   e. Subject : #variable.title#
+  
   f. Message : #variable.message#
+  
   Note: please Fill the form according setting workflow variable on step 9
   Then click submit
+  
+  
+  
 15. Set permission crate process to everyone, including anonymous
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/15.emailBroker.png" alt="" />
