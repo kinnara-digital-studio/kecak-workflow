@@ -39,5 +39,5 @@
 - [Plugins REST Tools Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIToolBinder)
 - [Plugins REST Datalist Load Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIDatalist)
 - [Plugins REST Option Binder](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_RestAPIOptionBinder)
-- [Plugins To Do List](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_todolist)
+- [Plugins To Do List](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginslist_todolist)
 - [Plugins Dashboard To Do List](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardTodolist)
