@@ -1,6 +1,6 @@
 ## Identify a Process
 
-## Identify start and End of the proceess
+## Identify start and end of the proceess
  
 Start of the Process
 
