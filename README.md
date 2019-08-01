@@ -2,9 +2,12 @@
 
 ### What is Kecak Workflow
 
-Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application
-Products & Services
-Managing business processes can be sumbersome and time consuming.
+Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application.
+
+Products & Services.
+
+Managing business processes can be complicated and time-consuming.
+
 Kecak Workflow Platform helps you focusing in your core business, instead of administrative problems.
 
 ### What is Workflow
