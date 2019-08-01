@@ -160,6 +160,7 @@ public interface FormDataDao {
      * @param primaryKeyValues 
      */
     public void delete(Form form, String[] primaryKeyValues);
+    public void delete(Form form, String[] primaryKeyValues, Boolean isHardDelete);
 
     /**
      * Delete form data by primary keys
@@ -167,13 +168,15 @@ public interface FormDataDao {
      * @param primaryKeyValues 
      */
     public void delete(String formDefId, String tableName, String[] primaryKeyValues);
-    
+    public void delete(String formDefId, String tableName, String[] primaryKeyValues, Boolean isHardDelete);
+
     /**
      * Delete form data by rows
      * @param form
      * @param primaryKeyValues 
      */
     public void delete(String formDefId, String tableName, FormRowSet rows);
+    public void delete(String formDefId, String tableName, FormRowSet rows, Boolean isHardDelete);
 
     /**
      * Gets the generated hibernate entity name for the form
