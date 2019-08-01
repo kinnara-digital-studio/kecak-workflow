@@ -28,7 +28,7 @@ If you already have your own application, please follow it directly to step numb
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.emailBroker.png" alt="" />
 
-Sidebar menu contains flow element
+Description for sidebar menu contains flow element
   
   <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="10" />
 		
