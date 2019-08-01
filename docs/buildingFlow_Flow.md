@@ -1,6 +1,6 @@
 ## Identify a Process
 
-## Identify start and proses
+## Identify start and End of the proceess
  
 Start of the Process
 
@@ -11,15 +11,15 @@ End of the Process
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/flow-2.PNG" alt="flow-2" />
 
-## Identify Process Participant
+## Identify process participant
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow1.png" alt="buildingFlow_flow1" />
 
-## Identify As is Process activities 
+## Identify As Is process activities 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow2.png" alt="buildingFlow_flow2" />
 
-## Identify Bussines Rule
+## Identify bussines rule
 
 - If leave balance is sufficient: Approver processes leave approval
 - Else if leave balance is insufficient: Reject leave application
@@ -28,5 +28,5 @@ End of the Process
 	
 - Else if leave application is rejected: Inform applicant on the rejected leave
 
-## Draw the Improved / To-be Process as flowchart
+## Draw the improved / To-be process as flowchart
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/buildingFlow_flow3.png" alt="Flow3" />
