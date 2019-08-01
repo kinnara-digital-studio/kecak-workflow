@@ -95,7 +95,7 @@ Drag the tool into the process development work area and you can see like in thi
   Note: please complete the form according to the workflow variable settings in step 9, then click submit
   
   
-15. Set permission crate process to everyone, including anonymous
+15. Set permission create process to everyone, including anonymous
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/15.emailBroker.png" alt="" />
 
@@ -110,7 +110,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/17.emailBroker.png" alt="" />
 
 
-18. Test application with API testing tools e.g Postman (The following is an example of an email process request):
+18. Test application with API testing tools e.g Postman (the following is an example of an email process request):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/18.emailBroker.png" alt="" />
 
