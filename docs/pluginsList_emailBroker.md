@@ -1,6 +1,7 @@
 ## How To Develop Email Broker ?
 
-
+This stage starts from creating a new application.
+If you already have your own application, please follow it directly to step number 8
 
 1. Make sure your Kecak Workflow are running well
 2. Login with administrator account
@@ -27,25 +28,26 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.emailBroker.png" alt="" />
 
-  a. Sidebar menu contains flow element 
+Sidebar menu contains flow element
   
   <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="10" />
-
 		
-	Description :
+Description :
 
-	|     PROCESS     |                           DESCRIPTION                         |
-	|-----------------|---------------------------------------------------------------|
-	|**Participant**  |Element for add user or system who do an action on flow (actor)|
-	|**Activity**     |Element for add Activity to Participant                        |
-	|**Tool**         |Element for add Tool to Participant                            |
-	|**Route**        |Decision element (for conditional flow)                       |
-	|**Subflow**      |Assign another flow to current flow                            |
-	|**Start**        |Start point                                                    |
-	|**End**          |End point                                                      |
+|     PROCESS     |                           DESCRIPTION                         |
+|-----------------|---------------------------------------------------------------|
+|**Participant**  |Element for add user or system who do an action on flow (actor)|
+|**Activity**     |Element for add Activity to Participant                        |
+|**Tool**         |Element for add Tool to Participant                            |
+|**Route**        |Decision element (for conditional flow)                        |
+|**Subflow**      |Assign another flow to current flow                            |
+|**Start**        |Start point                                                    |
+|**End**          |End point                                                      |
 
 
 8. Design process :
+
+Drag a tool to the workspace and you can see like in this picture :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.emailBroker.png" alt="" />
 
