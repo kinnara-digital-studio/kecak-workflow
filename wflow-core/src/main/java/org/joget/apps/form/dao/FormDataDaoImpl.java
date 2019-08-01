@@ -451,6 +451,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         try {
             // save the form data
             for (FormRow row : rowSet) {
+                if(row.getDeleted() == null) row.setDeleted(false);
                 session.saveOrUpdate(entityName, row);
             }
             session.flush();
