@@ -1,4 +1,4 @@
-# Welcome to Kecak Workflow Kinnara Digital Studio
+# Welcome to Kecak Workflow
 
 ### What is Kecak Workflow
 
