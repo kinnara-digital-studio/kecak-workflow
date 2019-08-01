@@ -29,20 +29,20 @@
 
   a. Sidebar menu contains flow element 
   
-  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="20" />
+  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="10" />
 
 		
-Description :
+	Description :
 
-|     PROCESS     |                           DESCRIPTION                         |
-|-----------------|---------------------------------------------------------------|
-|**Participant**  |Element for add user or system who do an action on flow (actor)|
-|**Activity**     |Element for add Activity to Participant                        |
-|**Tool**         |Element for add Tool to Participant                            |
-|**Route**        |Decision element (for conditional flow)                       |
-|**Subflow**      |Assign another flow to current flow                            |
-|**Start**        |Start point                                                    |
-|**End**          |End point                                                      |
+	|     PROCESS     |                           DESCRIPTION                         |
+	|-----------------|---------------------------------------------------------------|
+	|**Participant**  |Element for add user or system who do an action on flow (actor)|
+	|**Activity**     |Element for add Activity to Participant                        |
+	|**Tool**         |Element for add Tool to Participant                            |
+	|**Route**        |Decision element (for conditional flow)                       |
+	|**Subflow**      |Assign another flow to current flow                            |
+	|**Start**        |Start point                                                    |
+	|**End**          |End point                                                      |
 
 
 8. Design process :
