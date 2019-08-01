@@ -246,9 +246,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         try {
             String query = "SELECT e FROM " + tableName + " e ";
-            if (condition != null) {
-                query += condition;
-            }
+            query += ((condition != null && condition != "")? condition + " AND ":" WHERE ") + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null") ;
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
@@ -341,7 +339,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         // get hibernate template
         Session session = getHibernateSession(tableName, tableName, null, ACTION_TYPE_LOAD);
         try {
-            Query q = session.createQuery("SELECT COUNT(*) FROM " + tableName + " e " + condition);
+            String query = "SELECT COUNT(*) FROM " + tableName + " e ";
+            query += ((condition != null && condition != "")? condition + " AND ":" WHERE ") + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null");
+            Query q = session.createQuery(query);
 
             if (params != null) {
                 int i = 0;
@@ -495,8 +495,22 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         String entityName = getFormEntityName(form);
         String tableName = getFormTableName(form);
 
-        internalDelete(entityName, tableName, primaryKeyValues);
+        for (String pk : primaryKeyValues){
+            FormRowSet rowSet = internalFind(entityName,tableName,"WHERE id=?", new Object[] {pk},null,false,0,0);
+            if(!rowSet.isEmpty()){
+                FormRow row = rowSet.get(0);
+                row.setDeleted(true);
+                rowSet.add(row);
+                internalSaveOrUpdate(entityName,tableName,rowSet);
+            }
+        }
     }
+//    public void delete(Form form, String[] primaryKeyValues) {
+//        String entityName = getFormEntityName(form);
+//        String tableName = getFormTableName(form);
+//
+//        internalDelete(entityName, tableName, primaryKeyValues);
+//    }
     
     /**
      * Delete form data by primary keys
@@ -507,10 +521,23 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
     public void delete(String formDefId, String tableName, String[] primaryKeyValues) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
-
-        internalDelete(entityName, newTableName, primaryKeyValues);
+        for (String pk : primaryKeyValues){
+            FormRowSet rowSet = internalFind(entityName,newTableName,"WHERE id=?", new Object[] {pk},null,false,0,0);
+            if(!rowSet.isEmpty()){
+                FormRow row = rowSet.get(0);
+                row.setDeleted(true);
+                rowSet.add(row);
+                internalSaveOrUpdate(entityName,newTableName,rowSet);
+            }
+        }
     }
-    
+//    public void delete(String formDefId, String tableName, String[] primaryKeyValues) {
+//        String entityName = getFormEntityName(formDefId);
+//        String newTableName = getFormTableName(formDefId, tableName);
+//
+//        internalDelete(entityName, newTableName, primaryKeyValues);
+//    }
+
     /**
      * Delete form data by primary keys
      * @param formDefId
@@ -520,19 +547,27 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
     public void delete(String formDefId, String tableName, FormRowSet rows) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
-
-        // get hibernate template
-        Session session = getHibernateSession(entityName, newTableName, null, ACTION_TYPE_STORE);
-        try {
-            // save the form data
-            for (FormRow row : rows) {
-                session.delete(entityName, row);
-            }
-            session.flush();
-        } finally {
-            closeSession(session);
+        for (FormRow row : rows) {
+            row.setDeleted(true);
         }
+        internalSaveOrUpdate(entityName,newTableName,rows);
     }
+//    public void delete(String formDefId, String tableName, FormRowSet rows) {
+//        String entityName = getFormEntityName(formDefId);
+//        String newTableName = getFormTableName(formDefId, tableName);
+//
+//        // get hibernate template
+//        Session session = getHibernateSession(entityName, newTableName, null, ACTION_TYPE_STORE);
+//        try {
+//            // save the form data
+//            for (FormRow row : rows) {
+//                session.delete(entityName, row);
+//            }
+//            session.flush();
+//        } finally {
+//            closeSession(session);
+//        }
+//    }
     
     /**
      * Delete form data by primary keys
