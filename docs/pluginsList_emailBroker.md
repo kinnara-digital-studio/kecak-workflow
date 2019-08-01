@@ -111,7 +111,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/17.emailBroker.png" alt="" />
 
 
-18. Test application with API testing tools e.g Postman (this sample email process request):
+18. Test application with API testing tools e.g Postman (The following is an example of an email process request):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/18.emailBroker.png" alt="" />
 
