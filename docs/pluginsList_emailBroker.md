@@ -29,7 +29,7 @@
 
   a. Sidebar menu contains flow element 
   
-  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="50" />
+  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="20" />
 
 		
 Description :
