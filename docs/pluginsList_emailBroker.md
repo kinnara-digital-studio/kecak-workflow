@@ -1,11 +1,12 @@
 ## How To Develop Email Broker ?
 
+
+
 1. Make sure your Kecak Workflow are running well
 2. Login with administrator account
 3. Create new application :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/3.emailBroker.png" alt="" />
-
 
 4. Setting application name :
 
@@ -17,18 +18,18 @@
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/5.emailBroker.png" alt="" />
 
 
-6. On next page [click Design Process]:
+6. On next page [click design process]:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/6.emailBroker.png" alt="" />
 
 
-7. And Process Builder page was opened :
+7. And process builder page was opened :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.emailBroker.png" alt="" />
 
   a. Sidebar menu contains flow element 
   
-  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" />
+  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="50" />
 
 		
 Description :
@@ -44,14 +45,14 @@ Description :
 |**End**          |End point                                                      |
 
 
-8. Design Process :
+8. Design process :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.emailBroker.png" alt="" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.a.emailBroker.png" alt="" />
 
 
-9. Setting Kecak Workflow Variable : 
+9. Setting kecak workflow variable : 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/9.emailBroker.png" alt="" />
 
@@ -72,7 +73,7 @@ Description :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/13.emailBroker.png" alt="" />
 
 
-14. Set email contain with Workflow Variable:
+14. Set email contain with workflow variable:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/14.emailBroker.png" alt="" />
 
@@ -89,9 +90,8 @@ Description :
   
   f. Message : #variable.message#
   
-  Note: please Fill the form according setting workflow variable on step 9
+  Note: please fill the form according setting workflow variable on step 9
   Then click submit
-  
   
   
 15. Set permission crate process to everyone, including anonymous
@@ -109,7 +109,7 @@ Description :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/17.emailBroker.png" alt="" />
 
 
-18. Test application with API software tools e.g Postman (this sample email process request):
+18. Test application with API testing tools e.g Postman (this sample email process request):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/18.emailBroker.png" alt="" />
 
