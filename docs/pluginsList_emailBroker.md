@@ -1,7 +1,7 @@
 ## How To Develop Email Broker ?
 
 This stage starts from creating a new application.
-If you already have your own application, please follow it directly to step number 8
+If you already have your own application, please follow it directly to step number 9
 
 1. Make sure your Kecak Workflow are running well
 2. Login with administrator account
@@ -47,7 +47,7 @@ Description :
 
 8. Design process :
 
-Drag a tool to the workspace and you can see like in this picture :
+Drag the tool into the process development work area and you can see like in this picture :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.emailBroker.png" alt="" />
 
