@@ -4,11 +4,11 @@
 
 Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application.
 
-Products & Services.
+- Products & Services.
 
-Managing business processes can be complicated and time-consuming.
+  - Managing business processes can be complicated and time-consuming.
 
-Kecak Workflow Platform helps you focusing in your core business, instead of administrative problems.
+  - Kecak Workflow Platform helps you focusing in your core business, instead of administrative problems.
 
 ### What is Workflow
 
