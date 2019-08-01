@@ -1,6 +1,6 @@
 ## Identify a Process
 
-## Identify start and and proses
+## Identify start and proses
  
 Start of the Process
 
@@ -22,7 +22,6 @@ End of the Process
 - If leave balance is sufficient: Approver processes leave approval
 - Else if leave balance is insufficient: Reject leave application
 
-- If leave application is approved: Submit the approved leave application to HR Department 
 - Inform applicant on the approved leave
 	
 - Else if leave application is rejected: Inform applicant on the rejected leave
