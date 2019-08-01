@@ -1,4 +1,4 @@
-## How To Development Email Broker ?
+## How To Build Email Broker ?
 
 1. Make sure your Kecak Workflow are running well
 2. Login with administrator account
