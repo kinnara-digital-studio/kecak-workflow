@@ -1,4 +1,4 @@
-## How To Build Email Broker ?
+## How To Develop Email Broker ?
 
 1. Make sure your Kecak Workflow are running well
 2. Login with administrator account
@@ -38,8 +38,8 @@ Description :
 |**Participant**  |Element for add user or system who do an action on flow (actor)|
 |**Activity**     |Element for add Activity to Participant                        |
 |**Tool**         |Element for add Tool to Participant                            |
-|**Route**        |Dessetion element (for conditional flow)                       |
-|**Subflow**      |Element can assign another flow to current flow                |
+|**Route**        |Decision element (for conditional flow)                       |
+|**Subflow**      |Assign another flow to current flow                            |
 |**Start**        |Start point                                                    |
 |**End**          |End point                                                      |
 
@@ -57,7 +57,7 @@ Description :
 
 
 10. Click ok then click deploy button on the top right corner to deploy flow
-11. Open map Tools to Plugins to mapping email plugin then [click Add/Edit Plugin ]: 
+11. Open map tools to plugins to mapping email plugin then [click Add/Edit Plugin ]: 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11.emailBroker.png" alt="" />
 
@@ -67,7 +67,7 @@ Description :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/12.emailBroker.png" alt="" />
 
 
-13. Setting email tool plugin Fill form with SMTP configuration then click Next:
+13. Setting email tool plugin fill form with SMTP configuration then click button Next:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/13.emailBroker.png" alt="" />
 
@@ -99,17 +99,17 @@ Description :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/15.emailBroker.png" alt="" />
 
 
-16. Ok your application is ready , publish it by clicking “Not Published” 
+16. Your application is ready. Publish it by clicking “Not Published” 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/16.emailBroker.png" alt="" />
 
 
-17. Select your Version then click Publish button :
+17. Select your version then click publish button :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/17.emailBroker.png" alt="" />
 
 
-18. Test Application with API Software e.g Postman (this sample email process request):
+18. Test application with API software tools e.g Postman (this sample email process request):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/18.emailBroker.png" alt="" />
 
