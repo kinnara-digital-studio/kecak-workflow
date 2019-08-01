@@ -1,9 +1,7 @@
 # Kecak API 
 
-`Kecak Workflow have two types API's to web service communications`
+Kecak Workflow has two types of APIs for web service communication. Following is the API used by Kecak :
 
----
+- [REST API](development_RESTAPI.md)
 
-## [REST API](development_RESTAPI.md)
-
-## [SOAP API](development_SOAPAPI.md) 
+- [SOAP API](development_SOAPAPI.md) 
