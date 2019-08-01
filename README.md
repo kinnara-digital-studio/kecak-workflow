@@ -4,7 +4,7 @@
 
 Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application.
 
-- Products & Services.
+- Products & Services
 
   - Managing business processes can be complicated and time-consuming.
 
