@@ -92,8 +92,7 @@ Drag the tool into the process development work area and you can see like in thi
   
   f. Message : #variable.message#
   
-  Note: please fill the form according setting workflow variable on step 9
-  Then click submit
+  Note: please complete the form according to the workflow variable settings in step 9, then click submit
   
   
 15. Set permission crate process to everyone, including anonymous
