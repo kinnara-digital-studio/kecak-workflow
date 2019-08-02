@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joget.apps.app.dao.UserviewDefinitionDao;
+import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.AbstractSubForm;
 import org.joget.apps.form.model.Element;
@@ -19,6 +21,8 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.model.FormStoreBinder;
+import org.joget.apps.userview.model.Userview;
+import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.util.FileLimitException;
 import org.joget.commons.util.FileManager;
 import org.joget.commons.util.FileStore;
@@ -39,6 +43,12 @@ public class FormServiceImpl implements FormService {
 		
 	@Autowired
 	SetupManager setupManager;
+
+	@Autowired
+    UserviewService userviewService;
+
+    @Autowired
+    UserviewDefinitionDao userviewDefinitionDao;
 
 
     /**
@@ -198,8 +208,33 @@ public class FormServiceImpl implements FormService {
      */
     public Form loadFormFromJson(String formJson, FormData formData) {
         Form form = (Form) createElementFromJson(formJson);
+        applyUserview(form, getUserviewFromFormData(formData));
         form = loadFormData(form, formData);
         return form;
+    }
+
+    /**
+     * Recursively apply userview to children
+     * @param element
+     * @param userview
+     */
+    protected void applyUserview(Element element, final Userview userview) {
+        if(element  != null) {
+            element.setUserview(userview);
+            element.getChildren().forEach(e -> applyUserview(e, userview));
+        }
+    }
+
+    protected Userview getUserviewFromFormData(FormData formData) {
+        String userviewId = formData.getRequestParameter("userviewId");
+        if(userviewId == null)
+            return null;
+
+        UserviewDefinition userviewDefinition = userviewDefinitionDao.loadById(userviewId, AppUtil.getCurrentAppDefinition());
+        if(userviewDefinition == null)
+            return null;
+
+        return userviewService.createUserview(userviewDefinition.getJson(), null, false, "kecakmobile://", null, null, false);
     }
 
     /**

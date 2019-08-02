@@ -1,8 +1,5 @@
 package org.joget.apps.userview.lib;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.http.HttpServletRequest;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.DatalistDefinition;
@@ -12,12 +9,17 @@ import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.userview.model.Userview;
+import org.joget.apps.userview.model.UserviewBootstrapTheme;
 import org.joget.apps.userview.model.UserviewBuilderPalette;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.commons.util.StringUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class DataListMenu extends UserviewMenu {
     private DataList cacheDataList = null;
@@ -135,7 +137,7 @@ public class DataListMenu extends UserviewMenu {
             setProperty("error", message);
         }
         Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof AdminLTETheme) {
+        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme) {
             return "userview/plugin/datalist2.jsp";
         } else {
             return "userview/plugin/datalist.jsp";

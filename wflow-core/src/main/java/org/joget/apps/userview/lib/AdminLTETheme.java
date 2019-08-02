@@ -1,12 +1,11 @@
 package org.joget.apps.userview.lib;
 
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.userview.model.UserviewKecakTheme;
+import org.joget.apps.userview.model.UserviewBootstrapTheme;
+import org.joget.apps.userview.model.UserviewTheme;
 
-import java.util.Map;
-
-public class AdminLTETheme extends UserviewKecakTheme {
-    private static final String path =  "/plugin/org.joget.apps.userview.lib.AdminLTETheme/themes/adminLTE/";
+public class AdminLTETheme extends UserviewTheme implements UserviewBootstrapTheme {
+    private static final String path =  "/plugin/" + AdminLTETheme.class.getName() + "/themes/adminLTE/";
 
     @Override
     public String getCss() {
@@ -70,7 +69,7 @@ public class AdminLTETheme extends UserviewKecakTheme {
     }
 
     public String getVersion() {
-        return "5.0.0";
+        return getClass().getPackage().getImplementationVersion();
     }
 
     public String getDescription() {

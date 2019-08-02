@@ -508,6 +508,12 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         delete(form,primaryKeyValues,false);
     }
 
+    /**
+     *
+     * @param form
+     * @param primaryKeyValues
+     * @param isHardDelete true for deleting data from database, false to flag data as deleted
+     */
     public void delete(Form form, String[] primaryKeyValues, Boolean isHardDelete) {
         String entityName = getFormEntityName(form);
         String tableName = getFormTableName(form);
@@ -528,6 +534,13 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         delete(formDefId,tableName,primaryKeyValues,false);
     }
 
+    /**
+     *
+     * @param formDefId
+     * @param tableName
+     * @param primaryKeyValues
+     * @param isHardDelete true for deleting data from database, false to flag data as deleted
+     */
     public void delete(String formDefId, String tableName, String[] primaryKeyValues, Boolean isHardDelete) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);

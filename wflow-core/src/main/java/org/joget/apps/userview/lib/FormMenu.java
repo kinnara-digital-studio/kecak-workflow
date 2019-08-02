@@ -1,9 +1,5 @@
 package org.joget.apps.userview.lib;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.service.AppService;
@@ -14,6 +10,7 @@ import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.Userview;
+import org.joget.apps.userview.model.UserviewBootstrapTheme;
 import org.joget.apps.userview.model.UserviewBuilderPalette;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
@@ -24,6 +21,11 @@ import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.context.ApplicationContext;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * Represents a menu item that displays a data form and handles form submission.
@@ -118,7 +120,7 @@ public class FormMenu extends UserviewMenu {
 
         }
         Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof AdminLTETheme){
+        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme){
             return "userview/plugin/form2.jsp";
         } else {
             return "userview/plugin/form.jsp";

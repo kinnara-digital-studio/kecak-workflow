@@ -216,6 +216,7 @@ public class FormUtil implements ApplicationContextAware {
 
             if (parent != null) {
                 element.setParent(parent);
+                element.setUserview(parent.getUserview());
                 // recurse into child elements
                 Collection<Element> childElements = parent.getChildren();
                 if (childElements == null) {

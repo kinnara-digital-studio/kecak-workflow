@@ -1,19 +1,11 @@
 package org.joget.apps.userview.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.MobileUtil;
-import org.joget.apps.userview.lib.AdminLTETheme;
 import org.joget.apps.userview.lib.DefaultV5EmptyTheme;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewCategory;
-import org.joget.apps.userview.model.UserviewMenu;
-import org.joget.apps.userview.model.UserviewV5Theme;
+import org.joget.apps.userview.model.*;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
@@ -23,6 +15,12 @@ import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.directory.model.service.UserSecurity;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.joget.apps.userview.model.UserviewBootstrapTheme;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserviewThemeProcesser {
 
@@ -76,7 +74,7 @@ public class UserviewThemeProcesser {
         
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
 //            if(userview.getSetting().getPropertyString("useNewLayout").equals("true")) {
-            if(userview.getSetting().getTheme() instanceof AdminLTETheme){
+            if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme){
                 return "ubuilder/newView";
             } else {
                 return "ubuilder/view";

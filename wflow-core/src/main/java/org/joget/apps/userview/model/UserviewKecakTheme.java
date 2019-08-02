@@ -9,77 +9,7 @@ import org.joget.commons.util.StringUtil;
  * A base abstract class to develop a Userview Theme plugin for version v5.0 onward.
  *
  */
-public abstract class UserviewKecakTheme extends UserviewTheme {
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getCss() {
-        //is not using anymore
-        return null;
-    }
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getJavascript() {
-        //is not using anymore
-        return null;
-    }
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getHeader() {
-        //is not using anymore
-        return null;
-    }
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getFooter() {
-        //is not using anymore
-        return null;
-    }
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getPageTop() {
-        //is not using anymore
-        return null;
-    }
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getPageBottom() {
-        //is not using anymore
-        return null;
-    }
-
-    /**
-     * @Deprecated not use for UserviewV5Theme
-     *
-     * @return
-     */
-    public String getBeforeContent() {
-        //is not using anymore
-        return null;
-    }
+public abstract class UserviewKecakTheme extends UserviewTheme implements UserviewBootstrapTheme {
 
     /**
      * HTML template to handle error when retrieving userview content

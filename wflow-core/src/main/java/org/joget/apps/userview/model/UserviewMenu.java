@@ -93,8 +93,15 @@ public abstract class UserviewMenu extends ExtElement{
      */
     public String getMenu() {
         // sanitize output if not decorated. Otherwise need to sanitize in individial plugins
-        String decoratedMenu = getDecoratedMenu();
-        if (decoratedMenu == null || (decoratedMenu != null && decoratedMenu.trim().length() == 0)) {
+        String decoratedMenu;
+
+        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme && this instanceof UserviewMenuBootstrapTheme) {
+            decoratedMenu = ((UserviewMenuBootstrapTheme)this).getBootstrapDecoratedMenu();
+        } else {
+            decoratedMenu = getDecoratedMenu();
+        }
+
+        if (decoratedMenu == null || decoratedMenu.trim().length() == 0) {
             // sanitize label
             String label = getPropertyString("label");
             if (label != null) {
@@ -130,7 +137,12 @@ public abstract class UserviewMenu extends ExtElement{
      */
     public String getReadyJspPage() {
         if (readyJspPage == null) {
-            readyJspPage = getJspPage();
+            if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme && this instanceof UserviewMenuBootstrapTheme) {
+                readyJspPage = ((UserviewMenuBootstrapTheme)this).getBootstrapJspPage();
+            } else {
+                readyJspPage = getJspPage();
+            }
+
         }
         return readyJspPage;
     }
