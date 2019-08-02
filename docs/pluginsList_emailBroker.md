@@ -60,7 +60,7 @@ Drag the tool into the process development work area and you can see like in thi
 
 
 10. Click ok then click deploy button on the top right corner to deploy flow.
-11. Open map tools to plugins to mapping email plugin then [click Add/Edit Plugin ]: 
+11. Open map tools to plugins to mapping email plugin then [click Add/Edit Plugin ] : 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11.emailBroker.png" alt="" />
 
@@ -70,7 +70,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/12.emailBroker.png" alt="" />
 
 
-13. Setting email tool plugin fill form with SMTP configuration then click button Next:
+13. Setting email tool plugin fill form with SMTP configuration then click button Next :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/13.emailBroker.png" alt="" />
 
@@ -110,7 +110,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/17.emailBroker.png" alt="" />
 
 
-18. Test application with API testing tools e.g Postman (the following is an example of an email process request):
+18. Test application with API testing tools e.g Postman (the following is an example of an email process request) :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/18.emailBroker.png" alt="" />
 
