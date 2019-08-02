@@ -24,6 +24,8 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settings.png" alt="" />
 
+Description :
+
 |           FIELD             |                          DESCRIPTION                          |
 |-----------------------------|---------------------------------------------------------------|
 |**Custom ID**                |ID for the to do list that will be created                     |
@@ -44,28 +46,31 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsTodolist.png" alt="" />
 
-|           FIELD          |                   DESCRIPTION                       |
-|--------------------------|------------------------------------------------------------|
-|**To Do List Title**                   ||
-|**In Progress Form**                   ||
-|**Completed Form**                   ||
-|**Header**                   ||
-|**Description**                   ||
-|**URL Go Back**                   ||
+Description :
+
+|        FIELD       |                                        DESCRIPTION                                           |
+|--------------------|----------------------------------------------------------------------------------------------|
+|**To Do List Title**|Title from todo list created                                                                  |
+|**In Progress Form**|Choose a form to display the data in progress                                                 |
+|**Completed Form**  |Choosing to display the data form completed                                                   |
+|**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
+|**Description**     |Make a description of the name created to be displayed below the list data list header        |
+|                    |(format: $ {what is the name of the field for the description})                               |
+|**URL Go Back**     |Additional HTML for custom                                                                    |
 
 - My Request
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsMyrequest.png" alt="" />
 
-|           FIELD          |                   DESCRIPTION                       |
-|--------------------------|------------------------------------------------------------|
-|**To Do List Title**                   ||
-|**In Progress Form**                   ||
-|**Completed Form**                   ||
-|**Header**                   ||
-|**Description**                   ||
-|**URL Go Back**                   ||
-
+|        FIELD       |                                        DESCRIPTION                                           |
+|--------------------|----------------------------------------------------------------------------------------------|
+|**My Request Title**|Title from my request created                                                                 |
+|**In Progress Form**|Choose a form to display the data in progress                                                 |
+|**Completed Form**  |Choosing to display the data form completed                                                   |
+|**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
+|**Description**     |Make a description of the name created to be displayed below the list data list header        |
+|                    |(format: $ {what is the name of the field for the description})                               |
+|**URL Go Back**     |Additional HTML for custom                                                                    |
 
 - Ok
 
