@@ -1,10 +1,10 @@
 ## How To Develop Email Broker ?
 
 This stage starts from creating a new application.
-If you already have your own application, please follow it directly to step number 9
+If you already have your own application, please follow it directly to step number 9.
 
-1. Make sure your Kecak Workflow are running well
-2. Login with administrator account
+1. Make sure your Kecak Workflow are running well.
+2. Login with administrator account.
 3. Create new application :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/3.emailBroker.png" alt="" />
@@ -28,7 +28,7 @@ If you already have your own application, please follow it directly to step numb
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.emailBroker.png" alt="" />
 
-Description for sidebar menu contains flow element
+Description for sidebar menu contains flow element :
   
   <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/7.a.emailBroker.png" alt="" weight="10" />
 		
@@ -59,7 +59,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/9.emailBroker.png" alt="" />
 
 
-10. Click ok then click deploy button on the top right corner to deploy flow
+10. Click ok then click deploy button on the top right corner to deploy flow.
 11. Open map tools to plugins to mapping email plugin then [click Add/Edit Plugin ]: 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11.emailBroker.png" alt="" />
@@ -92,15 +92,15 @@ Drag the tool into the process development work area and you can see like in thi
   
   f. Message : #variable.message#
   
-  Note: please complete the form according to the workflow variable settings in step 9, then click submit
+  Note: please complete the form according to the workflow variable settings in step 9, then click submit.
   
   
-15. Set permission create process to everyone, including anonymous
+15. Set permission create process to everyone, including anonymous.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/15.emailBroker.png" alt="" />
 
 
-16. Your application is ready. Publish it by clicking “Not Published” 
+16. Your application is ready. Publish it by clicking “Not Published”.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/16.emailBroker.png" alt="" />
 
