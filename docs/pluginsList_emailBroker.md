@@ -51,6 +51,8 @@ Drag the tool into the process development work area and you can see like in thi
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.a.emailBroker.png" alt="" />
 
+After that, click icon edit in the tool and will see like in this picture :
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.emailBroker.png" alt="" />
 
 
