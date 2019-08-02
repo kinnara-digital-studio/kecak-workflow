@@ -24,6 +24,8 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settings.png" alt="" />
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settings2.png" alt="" />
+
 
 
 Description :
