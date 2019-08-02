@@ -46,6 +46,7 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsTodolist.png" alt="" />
 
+
 Description :
 
 |        FIELD       |                                        DESCRIPTION                                           |
@@ -56,11 +57,14 @@ Description :
 |**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
 |**Description**     |Make a description of the name created to be displayed below the list data list header        |
 |                    |(format: $ {what is the name of the field for the description})                               |
-|**URL Go Back**     |Additional HTML for custom                                                                    |
+|**URL Go Back**     |Which will be displayed when the button is clicked back                                       |
 
 - Open tab my request after to do list
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsMyrequest.png" alt="" />
+
+
+Description :
 
 |        FIELD       |                                        DESCRIPTION                                           |
 |--------------------|----------------------------------------------------------------------------------------------|
@@ -70,7 +74,7 @@ Description :
 |**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
 |**Description**     |Make a description of the name created to be displayed below the list data list header        |
 |                    |(format: $ {what is the name of the field for the description})                               |
-|**URL Go Back**     |Additional HTML for custom                                                                    |
+|**URL Go Back**     |Which will be displayed when the button is clicked back                                       |
 
 - Click Ok
 
