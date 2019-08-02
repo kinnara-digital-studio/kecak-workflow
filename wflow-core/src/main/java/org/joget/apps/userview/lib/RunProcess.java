@@ -11,10 +11,7 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewBootstrapTheme;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.LogUtil;
@@ -41,7 +38,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunProcess extends UserviewMenu implements PluginWebSupport {
+public class RunProcess extends UserviewMenu implements PluginWebSupport, UserviewMenuBootstrapTheme {
 
     public String getClassName() {
         return getClass().getName();
@@ -136,8 +133,8 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
         return null;
     }
 
+    @Override
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         boolean isAdmin = WorkflowUtil.isCurrentUserInRole(WorkflowUserManager.ROLE_ADMIN);
         if (!isAdmin) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -183,13 +180,22 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
     @Override
     public String getJspPage() {
+        return getJspPage("userview/plugin/runProcess.jsp");
+    }
+
+    @Override
+    public String getBootstrapJspPage() {
+        return getJspPage("userview/plugin/runProcess2.jsp");
+    }
+
+    protected String getJspPage(String jspFile) {
         if ("start".equals(getRequestParameterString("_action")) || "run".equals(getRequestParameterString("_action"))) {
             // only allow POST
             HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
                 return "userview/plugin/unauthorized.jsp";
             }
-            
+
             startProcess(getRequestParameterString("_action"));
         } else if ("assignmentView".equals(getRequestParameterString("_action"))) {
             assignmentView();
@@ -199,7 +205,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
                 return "userview/plugin/unauthorized.jsp";
             }
-            
+
             assignmentSubmit();
         } else {
             ApplicationContext ac = AppUtil.getApplicationContext();
@@ -223,15 +229,11 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
                 viewProcess(null);
             }
         }
-        Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme) {
-            return "userview/plugin/runProcess2.jsp";
-        } else {
-            return "userview/plugin/runProcess.jsp";
-        }
+
+        return jspFile;
     }
 
-    private void viewProcess(PackageActivityForm startFormDef) {
+    protected void viewProcess(PackageActivityForm startFormDef) {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -605,5 +607,10 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
     @Override
     public String getCategory() {
         return UserviewBuilderPalette.CATEGORY_GENERAL;
+    }
+
+    @Override
+    public String getBootstrapDecoratedMenu() {
+        return getDecoratedMenu();
     }
 }

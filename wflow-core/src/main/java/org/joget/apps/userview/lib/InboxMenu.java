@@ -13,10 +13,7 @@ import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
-import org.joget.apps.userview.model.UserviewBootstrapTheme;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.LogUtil;
@@ -42,7 +39,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InboxMenu extends UserviewMenu implements PluginWebSupport {
+public class InboxMenu extends UserviewMenu implements PluginWebSupport, UserviewMenuBootstrapTheme {
     private DataList cacheDataList = null;
 
     public static final String PREFIX_SELECTED = "selected_";
@@ -111,6 +108,15 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
 
     @Override
     public String getJspPage() {
+        return getJspPage("userview/plugin/datalist.jsp");
+    }
+
+    @Override
+    public String getBootstrapJspPage() {
+        return getJspPage("userview/plugin/datalist2.jsp");
+    }
+
+    protected String getJspPage(String jspListFile) {
         String mode = getRequestParameterString("_mode");
 
         if ("assignment".equals(mode)) {
@@ -130,18 +136,14 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
             }
             setProperty("customHeader", customHeader);
             setProperty("customFooter", getPropertyString("list-customFooter"));
-            return handleList();
+            return handleList(jspListFile);
         }
     }
 
-    protected String handleList() {
+    protected String handleList(String jspFile) {
         viewList();
-        Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme) {
-            return "userview/plugin/datalist2.jsp";
-        } else {
-            return "userview/plugin/datalist.jsp";
-        }
+
+        return jspFile;
     }
 
     protected void viewList() {
@@ -290,7 +292,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         return count;
     }
 
-    protected String handleForm() {
+    protected String handleForm(String jspFile) {
         AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         if ("submit".equals(getRequestParameterString("_action"))) {
             // only allow POST
@@ -298,7 +300,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
                 return "userview/plugin/unauthorized.jsp";
             }
-            
+
             // submit form
             submitForm();
         } else {
@@ -307,12 +309,16 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
         //reset appDef
         AppUtil.setCurrentAppDefinition(appDef);
-        Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme) {
-            return "userview/plugin/form2.jsp";
-        } else {
-            return "userview/plugin/form.jsp";
-        }
+
+        return jspFile;
+    }
+
+    protected String handleForm() {
+        return handleForm("userview/plugin/form.jsp");
+    }
+
+    protected String handleBootstrapForm() {
+        return handleForm("userview/plugin/form2.jsp");
     }
 
     protected void displayForm() {
@@ -551,5 +557,10 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
 
     protected String addParamToUrl(String url, String name, String value) {
         return StringUtil.addParamsToUrl(url, name, value);
+    }
+
+    @Override
+    public String getBootstrapDecoratedMenu() {
+        return getDecoratedMenu();
     }
 }

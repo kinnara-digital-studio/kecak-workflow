@@ -9,10 +9,7 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewBootstrapTheme;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.ResourceBundleUtil;
@@ -30,7 +27,7 @@ import java.util.Map;
 /**
  * Represents a menu item that displays a data form and handles form submission.
  */
-public class FormMenu extends UserviewMenu {
+public class FormMenu extends UserviewMenu implements UserviewMenuBootstrapTheme {
 
     @Override
     public String getIcon() {
@@ -106,25 +103,12 @@ public class FormMenu extends UserviewMenu {
 
     @Override
     public String getJspPage() {
-        if ("submit".equals(getRequestParameterString("_action"))) {
-            // only allow POST
-            HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
-            if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
-                return "userview/plugin/unauthorized.jsp";
-            }
-            
-            // submit form
-            submitForm();
-        } else {
-            displayForm();
+        return getJspPage("userview/plugin/form.jsp");
+    }
 
-        }
-        Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme){
-            return "userview/plugin/form2.jsp";
-        } else {
-            return "userview/plugin/form.jsp";
-        }
+    @Override
+    public String getBootstrapJspPage() {
+        return getJspPage("userview/plugin/form.jsp2");
     }
 
     @Override
@@ -484,5 +468,28 @@ public class FormMenu extends UserviewMenu {
         setProperty("redirectUrlAfterComplete", getPropertyString("redirectUrlAfterComplete"));
 
         return form;
+    }
+
+    @Override
+    public String getBootstrapDecoratedMenu() {
+        return getDecoratedMenu();
+    }
+
+    protected String getJspPage(String jspFile) {
+        if ("submit".equals(getRequestParameterString("_action"))) {
+            // only allow POST
+            HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
+            if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
+                return "userview/plugin/unauthorized.jsp";
+            }
+
+            // submit form
+            submitForm();
+        } else {
+            displayForm();
+
+        }
+
+        return jspFile;
     }
 }

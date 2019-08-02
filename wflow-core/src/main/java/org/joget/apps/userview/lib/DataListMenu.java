@@ -8,10 +8,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewBootstrapTheme;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.commons.util.StringUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.beans.BeansException;
@@ -21,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class DataListMenu extends UserviewMenu {
+public class DataListMenu extends UserviewMenu implements UserviewMenuBootstrapTheme {
     private DataList cacheDataList = null;
 
     public String getClassName() {
@@ -98,6 +95,15 @@ public class DataListMenu extends UserviewMenu {
 
     @Override
     public String getJspPage() {
+        return getJspPage("userview/plugin/datalist.jsp");
+    }
+
+    @Override
+    public String getBootstrapJspPage() {
+        return getJspPage("userview/plugin/datalist2.jsp");
+    }
+
+    protected String getJspPage(String jspFile) {
         try {
             // get data list
             DataList dataList = getDataList();
@@ -136,12 +142,8 @@ public class DataListMenu extends UserviewMenu {
             message += "\r\n<pre class=\"stacktrace\">" + out.getBuffer() + "</pre>";
             setProperty("error", message);
         }
-        Userview userview = this.getUserview();
-        if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme) {
-            return "userview/plugin/datalist2.jsp";
-        } else {
-            return "userview/plugin/datalist.jsp";
-        }
+
+        return jspFile;
     }
 
     protected DataList getDataList() throws BeansException {
@@ -171,5 +173,10 @@ public class DataListMenu extends UserviewMenu {
             }
         }
         return cacheDataList;
+    }
+
+    @Override
+    public String getBootstrapDecoratedMenu() {
+        return getDecoratedMenu();
     }
 }
