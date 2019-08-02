@@ -33,7 +33,7 @@ Description :
 |**Title**                    |Naming for the title to do list that was created               |
 |**Process**                  |Choose which process will be involved in the to do list created|
 |**Create New Title**         |Naming for the new data creation button                        |
-|**URL Go Back**              |which will be displayed when the button is clicked back        |
+|**URL Go Back**              |Which will be displayed when the button is clicked back        |
 |**Colour Template**          |The template color to be displayed                             |
 |**Header Label**             |Labels for data sorting headers                                |
 |**View All Todolist Label**  |Label for the button see all todo list data                    |
