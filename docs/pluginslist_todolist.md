@@ -33,7 +33,7 @@ Description :
 |**Title**                    |Naming for the title to do list that was created               |
 |**Process**                  |Choose which process will be involved in the to do list created|
 |**Create New Title**         |Naming for the new data creation button                        |
-|**URL Go Back**              |which will be displayed when the button is clicked back        |
+|**URL Go Back**              |Which will be displayed when the button is clicked back        |
 |**Colour Template**          |The template color to be displayed                             |
 |**Header Label**             |Labels for data sorting headers                                |
 |**View All Todolist Label**  |Label for the button see all todo list data                    |
@@ -42,7 +42,7 @@ Description :
 
 
 
-- To do list
+- Open tab to do list after settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsTodolist.png" alt="" />
 
@@ -58,7 +58,7 @@ Description :
 |                    |(format: $ {what is the name of the field for the description})                               |
 |**URL Go Back**     |Additional HTML for custom                                                                    |
 
-- My Request
+- Open tab my request after to do list
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsMyrequest.png" alt="" />
 
@@ -72,11 +72,11 @@ Description :
 |                    |(format: $ {what is the name of the field for the description})                               |
 |**URL Go Back**     |Additional HTML for custom                                                                    |
 
-- Ok
+- Click Ok
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsOk.png" alt="" />
 
-- Save
+- Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_save.png" alt="" />
 
