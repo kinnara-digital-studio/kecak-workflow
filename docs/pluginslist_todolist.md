@@ -68,7 +68,7 @@ Description :
 
 |        FIELD       |                                        DESCRIPTION                                           |
 |--------------------|----------------------------------------------------------------------------------------------|
-|**My Request Title**|Title from my request created                                                                 |
+|**My Request List** |Title from my request created                                                                 |
 |**In Progress Form**|Choose a form to display the data in progress                                                 |
 |**Completed Form**  |Choosing to display the data form completed                                                   |
 |**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
