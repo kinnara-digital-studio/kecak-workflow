@@ -45,6 +45,7 @@ Description :
 - Open tab to do list after settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsTodolist.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_urlGoBack.png" alt="" />
 
 
 Description :
@@ -62,19 +63,20 @@ Description :
 - Open tab my request after to do list
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsMyrequest.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_urlGoBack.png" alt="" />
 
 
 Description :
 
-|        FIELD       |                                        DESCRIPTION                                           |
-|--------------------|----------------------------------------------------------------------------------------------|
-|**My Request List** |Title from my request created                                                                 |
-|**In Progress Form**|Choose a form to display the data in progress                                                 |
-|**Completed Form**  |Choosing to display the data form completed                                                   |
-|**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
-|**Description**     |Make a description of the name created to be displayed below the list data list header        |
-|                    |(format: $ {what is the name of the field for the description})                               |
-|**URL Go Back**     |Which will be displayed when the button is clicked back                                       |
+|          FIELD           |                                        DESCRIPTION                                           |
+|--------------------------|----------------------------------------------------------------------------------------------|
+|**My Request List Title** |Title from my request created                                                                 |
+|**In Progress Form**      |Choose a form to display the data in progress                                                 |
+|**Completed Form**        |Choosing to display the data form completed                                                   |
+|**Header**                |Make the header name to display in the data lists (format: $ {what field name for the header})|
+|**Description**           |Make a description of the name created to be displayed below the list data list header        |
+|                          |(format: $ {what is the name of the field for the description})                               |
+|**URL Go Back**           |Which will be displayed when the button is clicked back                                       |
 
 - Click Ok
 
