@@ -14,12 +14,12 @@ If you already have your own application, please follow it directly to step numb
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/4.emailBroker.png" alt="" />
 
 
-5. After application was created then design new process [click side menu Process]: 
+5. After application was created then design new process [click side menu Process] : 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/5.emailBroker.png" alt="" />
 
 
-6. On next page [click design process]:
+6. On next page [click design process] :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/6.emailBroker.png" alt="" />
 
@@ -49,9 +49,9 @@ Description :
 
 Drag the tool into the process development work area and you can see like in this picture :
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.emailBroker.png" alt="" />
-
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.a.emailBroker.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/8.emailBroker.png" alt="" />
 
 
 9. Setting kecak workflow variable : 
@@ -65,7 +65,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/11.emailBroker.png" alt="" />
 
 
-12. Select email tool plugin:
+12. Select email tool plugin :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/12.emailBroker.png" alt="" />
 
@@ -75,7 +75,7 @@ Drag the tool into the process development work area and you can see like in thi
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/13.emailBroker.png" alt="" />
 
 
-14. Set email contain with workflow variable:
+14. Set email contain with workflow variable :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/14.emailBroker.png" alt="" />
 
