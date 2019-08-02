@@ -24,13 +24,46 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settings.png" alt="" />
 
+|           FIELD          |                   DESCRIPTION                       |
+|--------------------------|------------------------------------------------------------|
+|**Custom ID**                   ||
+|**Menu Label**             ||
+|**Title**                   ||
+|**Process**             ||
+|**Create New Title**                   ||
+|**URL Go Back**             ||
+|**Colour Template**                   ||
+|**Header Label**             ||
+|**View All Todolist Label**                   ||
+|**View All My Request Label**             ||
+
+
 - To do list
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsTodolist.png" alt="" />
 
+|           FIELD          |                   DESCRIPTION                       |
+|--------------------------|------------------------------------------------------------|
+|**To Do List Title**                   ||
+|**In Progress Form**                   ||
+|**Completed Form**                   ||
+|**Header**                   ||
+|**Description**                   ||
+|**URL Go Back**                   ||
+
 - My Request
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settingsMyrequest.png" alt="" />
+
+|           FIELD          |                   DESCRIPTION                       |
+|--------------------------|------------------------------------------------------------|
+|**To Do List Title**                   ||
+|**In Progress Form**                   ||
+|**Completed Form**                   ||
+|**Header**                   ||
+|**Description**                   ||
+|**URL Go Back**                   ||
+
 
 - Ok
 
