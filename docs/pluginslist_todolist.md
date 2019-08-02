@@ -29,7 +29,7 @@ Description :
 |           FIELD             |                          DESCRIPTION                          |
 |-----------------------------|---------------------------------------------------------------|
 |**Custom ID**                |ID for the to do list that will be created                     |
-|**Menu Label**               |Penamaan untuk menubar dari todolist yang dibuat               |
+|**Menu Label**               |Naming for menubar that was created                            |
 |**Title**                    |Naming for the title to do list that was created               |
 |**Process**                  |Choose which process will be involved in the to do list created|
 |**Create New Title**         |Naming for the new data creation button                        |
