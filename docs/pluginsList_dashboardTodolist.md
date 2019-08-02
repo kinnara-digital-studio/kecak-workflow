@@ -57,7 +57,7 @@ Description :
 |**Process List Parameter**|Choose Menu and the icon that will be linked to dashboard todolist |
 
 
--Click  Ok
+- Click  Ok
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dashboard_todolistOK.png" alt="" />
 
