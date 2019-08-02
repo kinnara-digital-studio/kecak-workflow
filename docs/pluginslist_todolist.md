@@ -73,8 +73,8 @@ Description :
 |**My Request List Title** |Title from my request created                                                                 |
 |**In Progress Form**      |Choose a form to display the data in progress                                                 |
 |**Completed Form**        |Choosing to display the data form completed                                                   |
-|**Header**                |Make the header name to display in the data lists (format: $ {what field name for the header})|
-|**Description**           |Make a description of the name created to be displayed below the list data list header        |
+|**Header Column**         |Make the header name to display in the data lists (format: $ {what field name for the header})|
+|**Description Column**    |Make a description of the name created to be displayed below the list data list header        |
 |                          |(format: $ {what is the name of the field for the description})                               |
 |**URL Go Back**           |Which will be displayed when the button is clicked back                                       |
 
