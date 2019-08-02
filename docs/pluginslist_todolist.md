@@ -24,18 +24,20 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/todolist_settings.png" alt="" />
 
-|           FIELD          |                   DESCRIPTION                       |
-|--------------------------|------------------------------------------------------------|
-|**Custom ID**                   ||
-|**Menu Label**             ||
-|**Title**                   ||
-|**Process**             ||
-|**Create New Title**                   ||
-|**URL Go Back**             ||
-|**Colour Template**                   ||
-|**Header Label**             ||
-|**View All Todolist Label**                   ||
-|**View All My Request Label**             ||
+|           FIELD             |                          DESCRIPTION                          |
+|-----------------------------|---------------------------------------------------------------|
+|**Custom ID**                |ID for the to do list that will be created                     |
+|**Menu Label**               |Penamaan untuk menubar dari todolist yang dibuat               |
+|**Title**                    |Naming for the title to do list that was created               |
+|**Process**                  |Choose which process will be involved in the to do list created|
+|**Create New Title**         |Naming for the new data creation button                        |
+|**URL Go Back**              |which will be displayed when the button is clicked back        |
+|**Colour Template**          |The template color to be displayed                             |
+|**Header Label**             |Labels for data sorting headers                                |
+|**View All Todolist Label**  |Label for the button see all todo list data                    |
+|**View All My Request Label**|Label for the button sees all my request data                  |
+| **Additional HTML**         |Additional HTML for custom                                     |
+
 
 
 - To do list
