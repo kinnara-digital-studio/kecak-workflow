@@ -103,4 +103,4 @@ Build your front and application, you can choose any themes from kecak or build 
 - [Advanced Insight into Form Builder](buildingApplication_FormBuilder.md) 
 - Advanced Application Plugins
 - [Building Front End App](buildingAplication_BuildingFrontEnd.md)
-- [Hash Variable](buildingAplication_HashVariabel.md)
+- [Hash Variable](buildingAplication_HashVariable.md)
