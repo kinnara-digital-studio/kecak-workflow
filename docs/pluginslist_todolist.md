@@ -37,7 +37,7 @@ Description :
 |**Title**                    |Naming for the title to do list that was created               |
 |**Process**                  |Choose which process will be involved in the to do list created|
 |**Create New Title**         |Naming for the new data creation button                        |
-|**URL Go Back**              |Which will be displayed when the button is clicked back        |
+|**URL Go Back**              |Which page will be displayed when the back button is clicked   |
 |**Colour Template**          |The template color to be displayed                             |
 |**Header Label**             |Labels for data sorting headers                                |
 |**View All Todolist Label**  |Label for the button see all todo list data                    |
@@ -63,7 +63,7 @@ Description :
 |**Header**          |Make the header name to display in the data lists (format: $ {what field name for the header})|
 |**Description**     |Make a description of the name created to be displayed below the list data list header        |
 |                    |(format: $ {what is the name of the field for the description})                               |
-|**URL Go Back**     |Which will be displayed when the button is clicked back                                       |
+|**URL Go Back**     |Which page will be displayed when the back button is clicked                                  |
 
 - Open tab my request after to do list
 
@@ -82,7 +82,7 @@ Description :
 |**Header Column**         |Make the header name to display in the data lists (format: $ {what field name for the header})|
 |**Description Column**    |Make a description of the name created to be displayed below the list data list header        |
 |                          |(format: $ {what is the name of the field for the description})                               |
-|**URL Go Back**           |Which will be displayed when the button is clicked back                                       |
+|**URL Go Back**           |Which page will be displayed when the back button is clicked                                  |
 
 - Click Ok
 
