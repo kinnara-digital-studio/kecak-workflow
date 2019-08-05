@@ -87,4 +87,9 @@ public class AdminLTETheme extends UserviewTheme implements UserviewBootstrapThe
     public String getPropertyOptions() {
         return AppUtil.readPluginResource(getClass().getName(), "/properties/userview/adminLTETheme.json", null, true, "message/userview/defaultTheme");
     }
+
+    @Override
+    public String getView() {
+        return null;
+    }
 }
