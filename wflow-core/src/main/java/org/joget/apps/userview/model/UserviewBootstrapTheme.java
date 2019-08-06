@@ -12,4 +12,10 @@ public interface UserviewBootstrapTheme extends BootstrapTheme {
      * @return
      */
     String getView();
+
+    String getDataListView();
+
+    String getFormView();
+
+    String getRunProcessView();
 }

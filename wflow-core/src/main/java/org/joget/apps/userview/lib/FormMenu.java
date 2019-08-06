@@ -108,7 +108,7 @@ public class FormMenu extends UserviewMenu implements UserviewMenuBootstrapTheme
 
     @Override
     public String getBootstrapJspPage() {
-        return getJspPage("userview/plugin/form2.jsp");
+        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getFormView());
     }
 
     @Override

@@ -185,7 +185,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, Uservi
 
     @Override
     public String getBootstrapJspPage() {
-        return getJspPage("userview/plugin/runProcess2.jsp");
+        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getRunProcessView());
     }
 
     protected String getJspPage(String jspFile) {

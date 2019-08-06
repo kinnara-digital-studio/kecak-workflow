@@ -100,7 +100,7 @@ public class DataListMenu extends UserviewMenu implements UserviewMenuBootstrapT
 
     @Override
     public String getBootstrapJspPage() {
-        return getJspPage("userview/plugin/datalist2.jsp");
+        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getDataListView());
     }
 
     protected String getJspPage(String jspFile) {

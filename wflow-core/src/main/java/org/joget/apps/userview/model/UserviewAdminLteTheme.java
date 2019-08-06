@@ -3,6 +3,6 @@ package org.joget.apps.userview.model;
 public interface UserviewAdminLteTheme extends UserviewBootstrapTheme {
     @Override
     default String getView() {
-        return "ubuilder/newView";
+        return "ubuilder/adminLteView";
     }
 }

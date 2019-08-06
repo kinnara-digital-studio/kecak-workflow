@@ -113,7 +113,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
 
     @Override
     public String getBootstrapJspPage() {
-        return getJspPage("userview/plugin/datalist2.jsp");
+        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getDataListView());
     }
 
     protected String getJspPage(String jspListFile) {
@@ -124,7 +124,12 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
             setProperty("customFooter", getPropertyString(mode + "-customFooter"));
             setProperty("messageShowAfterComplete", getPropertyString(mode + "-messageShowAfterComplete"));
             setAlertMessage(getPropertyString(mode + "-messageShowAfterComplete"));
-            return handleForm();
+
+            if(this.getUserview().getSetting().getTheme() instanceof UserviewBootstrapTheme && this instanceof UserviewMenuBootstrapTheme) {
+                return handleBootstrapForm();
+            } else {
+                return handleForm();
+            }
         } else {
             String customHeader = "<style>";
             customHeader += "span.dot_red{background-color: red;display: block;height: 15px;text-align: left;width: 15px;}";
@@ -318,7 +323,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
     }
 
     protected String handleBootstrapForm() {
-        return handleForm("userview/plugin/form2.jsp");
+        return handleForm(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getFormView());
     }
 
     protected void displayForm() {
