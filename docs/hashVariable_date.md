@@ -89,6 +89,8 @@ Example In Kecak :
 
 5. Edit advanced option in the next tab
 
+Put hash variable date format (**example: #date.EEE,d MMM yyyy h:mm:ss a#**)in the value field like in this picture :
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/hashvariable_date4.png" alt="advanced" />
 
 6. Click Ok
