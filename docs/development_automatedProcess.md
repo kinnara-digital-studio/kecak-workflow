@@ -1,30 +1,11 @@
 # Automated Process
 
-## Workflow 
+Before we make an application, the initial stage is to make the process as a reference.
 
-### What is workflow 
+Automated process is the stage where the manufacturing process is done in kecak. This automated process comes from a business process that has been designed and will be automated.
 
-Workflow is defined as task, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization. Workflow may be a formal process or a very informal in so that no one really organize it as an actual wokrflow.
+The following is an example of the stages of making a process from a simple business process.
 
-- Automation of a bussines process 
-- consist of :
-	- sequence of connected steps 
-	- each steps is declared as work of a person, group of person, an organization, or one or more mechanisms
-	
-4 type of possible interaction or transition :
+An example of this simple process is the process of filing leave where the application will be approved by the HOD and Directors.
 
-- Human to human 
-- Human to machine
-- Machine to machine
-- Machine to human 
-
-### Why Workflow 
-
-- Efficiency
-
-Automation of bussines process result in the elimination of many unnecessary or manual step 
-
-- Better control process
-- Flexibility 
-- Bussines process improvement
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="automatedProcess" />
