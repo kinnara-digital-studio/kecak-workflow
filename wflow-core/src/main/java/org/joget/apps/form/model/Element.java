@@ -392,7 +392,11 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
                 User user = directoryManager.getUserByUsername(workflowUserManager.getCurrentUsername());
                 permission.setCurrentUser(user);
 
-                permission.setFormData(formData);
+                // form specific permission
+                if(permission instanceof FormPermission) {
+                    ((FormPermission)permission).setFormData(formData);
+                    ((FormPermission)permission).setElement(this);
+                }
 
                 isAuthorize = permission.isAuthorize();
             }

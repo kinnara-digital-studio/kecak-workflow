@@ -7,12 +7,14 @@ import org.joget.apps.BootstrapTheme;
  */
 public interface UserviewMenuBootstrapTheme extends BootstrapTheme {
     /**
+     * Decorate Menu
      *
      * @return
      */
     String getBootstrapDecoratedMenu();
 
     /**
+     * JSP Page
      *
      * @return
      */

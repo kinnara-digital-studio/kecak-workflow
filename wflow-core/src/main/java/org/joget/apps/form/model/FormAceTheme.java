@@ -1,0 +1,14 @@
+package org.joget.apps.form.model;
+
+import java.util.Map;
+
+/**
+ * Form AdminLTE Theme
+ */
+public interface FormAceTheme extends FormBootstrapTheme {
+    default String  renderBootstrapTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
+        return renderAceTemplate(formData, dataModel);
+    }
+
+    String renderAceTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel);
+}
