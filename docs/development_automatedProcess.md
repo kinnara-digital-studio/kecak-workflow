@@ -8,4 +8,4 @@ The following is an example of the stages of making a process from a simple busi
 
 An example of this simple process is the process of filing leave where the application will be approved by the HOD and Directors.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="automatedProcess" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/automatedProcess.png" alt="automatedProcess" />
