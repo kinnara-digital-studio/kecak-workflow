@@ -66,3 +66,28 @@ DATE_FORMAT_TO defines the format to change to.
 #date.dd-MM-yyyy[{form.j_expense_claim.title}|yyyy-MM-dd]# // Retrieves date from j_expense_claim table, form field title, changes its origin format of yyyy-MM-dd to dd-MM-yyyy.
 
 ```
+
+Example In Kecak :
+
+1. Open form
+
+
+2. Drag and drop text field
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/hashvariable_date.png" alt="textField" />
+
+
+3. Choose edit option in form
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formGrid1.png" alt="editForm" />
+
+
+4. Edit text field
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formGrid1.png" alt="editText" />
+
+
+5. Edit advanced option in the next tab
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formGrid1.png" alt="advanced" />
+

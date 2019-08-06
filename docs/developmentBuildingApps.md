@@ -92,15 +92,15 @@ Build your front and application, you can choose any themes from kecak or build 
 
 
 ----
-- [Activity](buildingPlugins_Activities.md)
-- [Routes](buildingPlugins_Routes.md)
-- [Publishing Process](buildingPlugins_PublishingProcess.md)
-- [Publishing Application](buildingPlugins_PublishingApps.md)
-- [Participant](buildingPlugins_Participant.md)
-- [Workflow Variable](buildingPlugins_WorkflowVariable.md)
-- [System Administration](buildingApplication_MonitorApps.md)
-- [SLA Limit, Deadline, Exception](buildingApplication_deadline.md)
-- [Advanced Insight into Form Builder](buildingApplication_FormBuilder.md) 
+- [Activity](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingPlugins_Activities)
+- [Routes](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingPlugins_Routes)
+- [Publishing Process](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingPlugins_PublishingProcess)
+- [Publishing Application](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingPlugins_PublishingApps)
+- [Participant](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingPlugins_Participant)
+- [Workflow Variable](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingPlugins_WorkflowVariable)
+- [System Administration](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingApplication_MonitorApps)
+- [SLA Limit, Deadline, Exception](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingApplication_deadline)
+- [Advanced Insight into Form Builder](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingApplication_FormBuilder) 
 - Advanced Application Plugins
-- [Building Front End App](buildingAplication_BuildingFrontEnd.md)
-- [Hash Variable](buildingAplication_HashVariable.md)
+- [Building Front End App](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingAplication_BuildingFrontEnd)
+- [Hash Variable](https://kinnara-digital-studio.github.io/kecak-workflow/#/buildingAplication_HashVariable)
