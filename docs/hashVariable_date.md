@@ -79,15 +79,22 @@ Example In Kecak :
 
 3. Choose edit option in form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formGrid1.png" alt="editForm" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/hashvariable_date2.png" alt="editForm" />
 
 
 4. Edit text field
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formGrid1.png" alt="editText" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/hashvariable_date3.png" alt="editText" />
 
 
 5. Edit advanced option in the next tab
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formGrid1.png" alt="advanced" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/hashvariable_date4.png" alt="advanced" />
 
+6. Click Ok
+
+7. Save form
+
+8. Result for hash variable date
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/hashvariable_date5.png" alt="advanced" />
