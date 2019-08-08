@@ -66,4 +66,13 @@ public interface Plugin {
      * @return
      */
     Object execute(@SuppressWarnings("rawtypes") Map properties);
+
+
+    default void onInstall() {
+        // do nothing
+    }
+
+    default void onUninstall() {
+        // do nothing
+    }
 }

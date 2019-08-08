@@ -1,5 +1,6 @@
 package org.joget.plugin.base;
 
+import org.apache.commons.io.FileUtils;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SetupManager;
 import java.io.BufferedInputStream;
@@ -12,16 +13,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeMap;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,8 +40,6 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.Comparator;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.commons.util.ResourceBundleUtil;
@@ -121,7 +113,7 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Used by system to sets a list of custom scanning packages
-     * @param blackList 
+     * @param scanPackageList
      */
     public void setScanPackageList(Set<String> scanPackageList) {
         this.scanPackageList = scanPackageList;
@@ -279,8 +271,19 @@ public class PluginManager implements ApplicationContextAware {
 
     protected boolean startBundle(Bundle bundle) {
         try {
+            final BundleContext context = felix.getBundleContext();
+
             //bundle.update();
             bundle.start();
+
+            // execute event onInstall
+            Arrays.stream(bundle.getRegisteredServices())
+                    .filter(Objects::nonNull)
+                    .map(context::getService)
+                    .filter(o -> o instanceof Plugin)
+                    .map(o -> (Plugin)o)
+                    .forEach(Plugin::onInstall);
+
             LogUtil.info(PluginManager.class.getName(), "Bundle " + bundle.getSymbolicName() + " started");
         } catch (Exception be) {
             LogUtil.error(PluginManager.class.getName(), be, "Failed bundle start for " + bundle + ": " + be.toString());
@@ -521,7 +524,7 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Uninstall/remove all plugin, option to deleting the plugin file
-     * @param name
+     * @param deleteFiles
      * @return
      */
     public void uninstallAll(boolean deleteFiles) {
@@ -555,6 +558,15 @@ public class PluginManager implements ApplicationContextAware {
                 Bundle bundle = sr.getBundle();
                 bundle.stop();
                 bundle.uninstall();
+
+                // execute event onUninstall
+                Arrays.stream(bundle.getRegisteredServices())
+                        .filter(Objects::nonNull)
+                        .map(context::getService)
+                        .filter(o -> o instanceof Plugin)
+                        .map(o -> (Plugin)o)
+                        .forEach(Plugin::onUninstall);
+
                 String location = bundle.getLocation();
                 context.ungetService(sr);
 
@@ -1143,7 +1155,7 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Method used for system to set ApplicationContext
-     * @param context
+     * @param appContext
      * @throws BeansException 
      */
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
