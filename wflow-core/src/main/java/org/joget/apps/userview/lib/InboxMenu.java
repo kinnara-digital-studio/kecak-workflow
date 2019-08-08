@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InboxMenu extends UserviewMenu implements PluginWebSupport, UserviewMenuBootstrapTheme {
+public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUserviewMenu, AdminLteUserviewMenu {
     private DataList cacheDataList = null;
 
     public static final String PREFIX_SELECTED = "selected_";
@@ -111,11 +111,6 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
         return getJspPage("userview/plugin/datalist.jsp");
     }
 
-    @Override
-    public String getBootstrapJspPage() {
-        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getDataListView());
-    }
-
     protected String getJspPage(String jspListFile) {
         String mode = getRequestParameterString("_mode");
 
@@ -125,7 +120,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
             setProperty("messageShowAfterComplete", getPropertyString(mode + "-messageShowAfterComplete"));
             setAlertMessage(getPropertyString(mode + "-messageShowAfterComplete"));
 
-            if(this.getUserview().getSetting().getTheme() instanceof UserviewBootstrapTheme && this instanceof UserviewMenuBootstrapTheme) {
+            if(this.getUserview().getSetting().getTheme() instanceof UserviewBootstrapTheme && this instanceof BootstrapUserviewMenu) {
                 return handleBootstrapForm();
             } else {
                 return handleForm();
@@ -323,7 +318,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
     }
 
     protected String handleBootstrapForm() {
-        return handleForm(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getFormView());
+        return handleForm(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getFormJsp());
     }
 
     protected void displayForm() {
@@ -565,7 +560,22 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, Uservie
     }
 
     @Override
-    public String getBootstrapDecoratedMenu() {
+    public String getAceJspPage(UserviewBootstrapTheme bootstrapTheme) {
+        return bootstrapTheme.getRunProcessJsp();
+    }
+
+    @Override
+    public String getAceDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(UserviewBootstrapTheme bootstrapTheme) {
+        return bootstrapTheme.getRunProcessJsp();
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

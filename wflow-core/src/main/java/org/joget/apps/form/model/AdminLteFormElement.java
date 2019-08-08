@@ -1,6 +1,9 @@
-package org.joget.apps.userview.model;
+package org.joget.apps.form.model;
 
-import org.joget.apps.form.model.FormElementBootstrap;
+import org.joget.apps.userview.model.BootstrapAdminLteTheme;
 
-public interface AdminLteFormElement extends FormElementBootstrap<BootstrapAdminLteTheme>  {
+import java.util.Map;
+
+public interface AdminLteFormElement extends FormElementBootstrap {
+    String renderAdminLteTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel);
 }

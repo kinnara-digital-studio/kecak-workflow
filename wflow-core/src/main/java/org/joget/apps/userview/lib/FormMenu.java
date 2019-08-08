@@ -27,8 +27,7 @@ import java.util.Map;
 /**
  * Represents a menu item that displays a data form and handles form submission.
  */
-public class FormMenu extends UserviewMenu implements UserviewMenuBootstrapTheme {
-
+public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteUserviewMenu {
     @Override
     public String getIcon() {
         return "/plugin/org.joget.apps.userview.lib.FormMenu/images/subForm_icon.gif";
@@ -104,11 +103,6 @@ public class FormMenu extends UserviewMenu implements UserviewMenuBootstrapTheme
     @Override
     public String getJspPage() {
         return getJspPage("userview/plugin/form.jsp");
-    }
-
-    @Override
-    public String getBootstrapJspPage() {
-        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getFormView());
     }
 
     @Override
@@ -470,11 +464,6 @@ public class FormMenu extends UserviewMenu implements UserviewMenuBootstrapTheme
         return form;
     }
 
-    @Override
-    public String getBootstrapDecoratedMenu() {
-        return getDecoratedMenu();
-    }
-
     protected String getJspPage(String jspFile) {
         if ("submit".equals(getRequestParameterString("_action"))) {
             // only allow POST
@@ -491,5 +480,25 @@ public class FormMenu extends UserviewMenu implements UserviewMenuBootstrapTheme
         }
 
         return jspFile;
+    }
+
+    @Override
+    public String getAceJspPage(UserviewBootstrapTheme theme) {
+        return getJspPage(theme.getFormJsp());
+    }
+
+    @Override
+    public String getAceDecoratedMenu(UserviewBootstrapTheme theme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(UserviewBootstrapTheme theme) {
+        return getJspPage(theme.getFormJsp());
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme theme) {
+        return getDecoratedMenu();
     }
 }

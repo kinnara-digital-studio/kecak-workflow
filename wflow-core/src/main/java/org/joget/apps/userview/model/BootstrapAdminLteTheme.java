@@ -3,7 +3,7 @@ package org.joget.apps.userview.model;
 import org.joget.apps.BootstrapTheme;
 
 /**
- * Admin LTE
+ * Bootstrap AdminLTE
  */
-public interface AdminLteTheme extends BootstrapTheme {
+public interface BootstrapAdminLteTheme extends BootstrapTheme {
 }

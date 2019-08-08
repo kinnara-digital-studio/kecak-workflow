@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class DataListMenu extends UserviewMenu implements UserviewMenuBootstrapTheme {
+public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, AceUserviewMenu {
     private DataList cacheDataList = null;
 
     public String getClassName() {
@@ -98,11 +98,6 @@ public class DataListMenu extends UserviewMenu implements UserviewMenuBootstrapT
         return getJspPage("userview/plugin/datalist.jsp");
     }
 
-    @Override
-    public String getBootstrapJspPage() {
-        return getJspPage(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getDataListView());
-    }
-
     protected String getJspPage(String jspFile) {
         try {
             // get data list
@@ -176,7 +171,22 @@ public class DataListMenu extends UserviewMenu implements UserviewMenuBootstrapT
     }
 
     @Override
-    public String getBootstrapDecoratedMenu() {
+    public String getAceJspPage(UserviewBootstrapTheme bootstrapTheme) {
+        return bootstrapTheme.getDataListJsp();
+    }
+
+    @Override
+    public String getAceDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(UserviewBootstrapTheme bootstrapTheme) {
+        return bootstrapTheme.getDataListJsp();
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

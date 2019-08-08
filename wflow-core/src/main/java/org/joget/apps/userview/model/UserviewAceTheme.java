@@ -1,8 +1,8 @@
 package org.joget.apps.userview.model;
 
-public interface UserviewAceTheme extends UserviewBootstrapTheme {
+public interface UserviewAceTheme extends UserviewBootstrapTheme, BootstrapAceTheme {
     @Override
-    default String getView() {
+    default String getUserviewJsp() {
         return "ubuilder/newView";
     }
 }

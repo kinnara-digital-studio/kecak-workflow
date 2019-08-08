@@ -1,27 +1,11 @@
 package org.joget.plugin.base;
 
-import org.apache.commons.io.FileUtils;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.SetupManager;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.*;
-import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import freemarker.cache.URLTemplateLoader;
+import freemarker.template.*;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.StringMap;
-import org.joget.commons.util.HostManager;
+import org.joget.commons.util.*;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -32,22 +16,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
-import freemarker.cache.URLTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
-import java.io.StringWriter;
-import java.io.Writer;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.joget.commons.util.ResourceBundleUtil;
-import org.joget.commons.util.StringUtil;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.LocaleResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service methods used to manage plugins
@@ -277,12 +259,12 @@ public class PluginManager implements ApplicationContextAware {
             bundle.start();
 
             // execute event onInstall
-            Arrays.stream(bundle.getRegisteredServices())
-                    .filter(Objects::nonNull)
-                    .map(context::getService)
-                    .filter(o -> o instanceof Plugin)
-                    .map(o -> (Plugin)o)
-                    .forEach(Plugin::onInstall);
+                Arrays.stream(bundle.getRegisteredServices())
+                        .filter(Objects::nonNull)
+                        .map(context::getService)
+                        .filter(o -> o instanceof Plugin)
+                        .map(o -> (Plugin) o)
+                        .forEach(p -> p.onInstall(applicationContext));
 
             LogUtil.info(PluginManager.class.getName(), "Bundle " + bundle.getSymbolicName() + " started");
         } catch (Exception be) {
@@ -565,7 +547,7 @@ public class PluginManager implements ApplicationContextAware {
                         .map(context::getService)
                         .filter(o -> o instanceof Plugin)
                         .map(o -> (Plugin)o)
-                        .forEach(Plugin::onUninstall);
+                        .forEach(p -> p.onUninstall(applicationContext));
 
                 String location = bundle.getLocation();
                 context.ungetService(sr);
@@ -961,7 +943,6 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Retrieves a URL to a resource from a plugin. The plugin may either be from OSGI container or system classpath.
-     * @param pluginName
      * @param pluginName
      * @param resourceUrl
      * @return

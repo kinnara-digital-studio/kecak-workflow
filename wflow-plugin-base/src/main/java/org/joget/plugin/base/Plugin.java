@@ -1,5 +1,7 @@
 package org.joget.plugin.base;
 
+import org.springframework.context.ApplicationContext;
+
 import java.util.Map;
 
 /**
@@ -68,11 +70,11 @@ public interface Plugin {
     Object execute(@SuppressWarnings("rawtypes") Map properties);
 
 
-    default void onInstall() {
+    default void onInstall(ApplicationContext applicationContext) {
         // do nothing
     }
 
-    default void onUninstall() {
+    default void onUninstall(ApplicationContext applicationContext) {
         // do nothing
     }
 }

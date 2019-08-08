@@ -74,7 +74,7 @@ public class UserviewThemeProcesser {
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
 //            if(userview.getSetting().getPropertyString("useNewLayout").equals("true")) {
             if(userview.getSetting().getTheme() instanceof UserviewBootstrapTheme) {
-                return ((UserviewBootstrapTheme)userview.getSetting().getTheme()).getView();
+                return ((UserviewBootstrapTheme)userview.getSetting().getTheme()).getUserviewJsp();
             } else {
                 return "ubuilder/view";
             }

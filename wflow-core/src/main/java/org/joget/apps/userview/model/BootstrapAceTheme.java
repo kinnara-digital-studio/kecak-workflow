@@ -1,4 +1,9 @@
 package org.joget.apps.userview.model;
 
-public interface BootstrapAceTheme {
+import org.joget.apps.BootstrapTheme;
+
+/**
+ * Bootstrap Ace
+ */
+public interface BootstrapAceTheme extends BootstrapTheme {
 }

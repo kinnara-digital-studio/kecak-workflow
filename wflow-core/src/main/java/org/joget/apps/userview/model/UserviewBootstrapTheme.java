@@ -11,11 +11,11 @@ public interface UserviewBootstrapTheme extends BootstrapTheme {
      * JSP File in Plugins cannot be recognized by Kecak Core
      * @return
      */
-    String getView();
+    String getUserviewJsp();
 
-    String getDataListView();
+    String getDataListJsp();
 
-    String getFormView();
+    String getFormJsp();
 
-    String getRunProcessView();
+    String getRunProcessJsp();
 }

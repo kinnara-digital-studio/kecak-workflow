@@ -1,9 +1,9 @@
 package org.joget.apps.userview.lib;
 
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.userview.model.AbstractUserviewAdminLteTheme;
+import org.joget.apps.userview.model.AbstractAdminLteUserviewTheme;
 
-public class AdminLteTheme extends AbstractUserviewAdminLteTheme {
+public class AdminLteTheme extends AbstractAdminLteUserviewTheme {
     private final String path = "/plugin/" + getClassName() ;
 
     @Override
@@ -64,7 +64,7 @@ public class AdminLteTheme extends AbstractUserviewAdminLteTheme {
     }
 
     public String getName() {
-        return "Admin LTE Plugin Theme";
+        return "Admin LTE Theme";
     }
 
     public String getVersion() {
@@ -72,7 +72,7 @@ public class AdminLteTheme extends AbstractUserviewAdminLteTheme {
     }
 
     public String getDescription() {
-        return "";
+        return getName();
     }
 
     public String getLabel() {
