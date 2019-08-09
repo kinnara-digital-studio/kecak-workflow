@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunProcess extends UserviewMenu implements PluginWebSupport, AdminLteUserviewMenu, AceUserviewMenu {
+public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUserviewMenu, AdminLteUserviewMenu {
 
     public String getClassName() {
         return getClass().getName();
@@ -605,22 +605,22 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AdminL
     }
 
     @Override
-    public String getAceJspPage(UserviewBootstrapTheme bootstrapTheme) {
-        return bootstrapTheme.getRunProcessJsp();
+    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getRunProcessJsp());
     }
 
     @Override
-    public String getAceDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(UserviewBootstrapTheme bootstrapTheme) {
-        return bootstrapTheme.getRunProcessJsp();
+    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getRunProcessJsp());
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

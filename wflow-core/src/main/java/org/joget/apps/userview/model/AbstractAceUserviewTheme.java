@@ -1,6 +1,6 @@
 package org.joget.apps.userview.model;
 
-public abstract class AbstractAceUserviewTheme extends UserviewTheme implements UserviewBootstrapTheme, BootstrapAceTheme {
+public abstract class AbstractAceUserviewTheme extends UserviewTheme implements BootstrapUserview, BootstrapAceTheme {
     @Override
     public String getUserviewJsp() {
         return "ubuilder/adminLteView";

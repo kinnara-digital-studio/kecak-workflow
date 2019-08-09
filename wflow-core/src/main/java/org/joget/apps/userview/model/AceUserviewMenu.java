@@ -4,7 +4,7 @@ package org.joget.apps.userview.model;
  * Bootstrap Ace Theme for {@link UserviewMenu}
  */
 public interface AceUserviewMenu extends BootstrapUserviewMenu, BootstrapAceTheme {
-    String getAceJspPage(UserviewBootstrapTheme bootstrapTheme);
+    String getAceJspPage(BootstrapUserview bootstrapTheme);
 
-    String getAceDecoratedMenu(UserviewBootstrapTheme bootstrapTheme);
+    String getAceDecoratedMenu(BootstrapUserview bootstrapTheme);
 }

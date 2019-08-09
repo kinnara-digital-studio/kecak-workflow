@@ -261,7 +261,7 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
             dataModel.put("elementMetaData", elementMetaData);
         }
 
-        if(userview != null && userview.getSetting().getTheme() instanceof AbstractAceUserviewTheme && this instanceof AceFormElement) {
+        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof BootstrapAceTheme) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
         } else if(userview != null && userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteFormElement) {
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
@@ -286,10 +286,10 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
      */
     public String renderErrorTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         if(userview != null && userview.getSetting().getTheme() instanceof AbstractAceUserviewTheme && this instanceof AceFormElement) {
-            UserviewBootstrapTheme theme = (UserviewBootstrapTheme) userview.getSetting().getTheme();
+            BootstrapUserview theme = (BootstrapUserview) userview.getSetting().getTheme();
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
         } else if(userview != null && userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteFormElement) {
-            UserviewBootstrapTheme theme = (UserviewBootstrapTheme) userview.getSetting().getTheme();
+            BootstrapUserview theme = (BootstrapUserview) userview.getSetting().getTheme();
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
         }
 

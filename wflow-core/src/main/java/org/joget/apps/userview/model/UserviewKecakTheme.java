@@ -9,7 +9,7 @@ import org.joget.commons.util.StringUtil;
  * A base abstract class to develop a Userview Theme plugin for version v5.0 onward.
  *
  */
-public abstract class UserviewKecakTheme extends UserviewTheme implements UserviewBootstrapTheme {
+public abstract class UserviewKecakTheme extends UserviewTheme implements BootstrapUserview {
 
     /**
      * HTML template to handle error when retrieving userview content

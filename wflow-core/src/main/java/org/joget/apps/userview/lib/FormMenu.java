@@ -102,7 +102,7 @@ public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteU
 
     @Override
     public String getJspPage() {
-        return getJspPage("userview/plugin/form.jsp");
+        return getJspPage("userview/plugin/form.jsp", "userview/plugin/unauthorized.jsp");
     }
 
     @Override
@@ -464,12 +464,12 @@ public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteU
         return form;
     }
 
-    protected String getJspPage(String jspFile) {
+    protected String getJspPage(String jspFile, String unauthorizedJspFile) {
         if ("submit".equals(getRequestParameterString("_action"))) {
             // only allow POST
             HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
-                return "userview/plugin/unauthorized.jsp";
+                return unauthorizedJspFile;
             }
 
             // submit form
@@ -483,22 +483,22 @@ public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteU
     }
 
     @Override
-    public String getAceJspPage(UserviewBootstrapTheme theme) {
-        return getJspPage(theme.getFormJsp());
+    public String getAceJspPage(BootstrapUserview theme) {
+        return getJspPage(theme.getFormJsp(), theme.getUnauthorizedJsp());
     }
 
     @Override
-    public String getAceDecoratedMenu(UserviewBootstrapTheme theme) {
+    public String getAceDecoratedMenu(BootstrapUserview theme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(UserviewBootstrapTheme theme) {
-        return getJspPage(theme.getFormJsp());
+    public String getAdminLteJspPage(BootstrapUserview theme) {
+        return getJspPage(theme.getFormJsp(), theme.getUnauthorizedJsp());
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme theme) {
+    public String getAdminLteDecoratedMenu(BootstrapUserview theme) {
         return getDecoratedMenu();
     }
 }

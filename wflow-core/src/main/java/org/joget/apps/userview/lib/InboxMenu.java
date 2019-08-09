@@ -108,10 +108,10 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
 
     @Override
     public String getJspPage() {
-        return getJspPage("userview/plugin/datalist.jsp");
+        return getJspPage("userview/plugin/form.jsp", "userview/plugin/datalist.jsp");
     }
 
-    protected String getJspPage(String jspListFile) {
+    protected String getJspPage(String jspFormFile, String jspListFile) {
         String mode = getRequestParameterString("_mode");
 
         if ("assignment".equals(mode)) {
@@ -120,11 +120,8 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
             setProperty("messageShowAfterComplete", getPropertyString(mode + "-messageShowAfterComplete"));
             setAlertMessage(getPropertyString(mode + "-messageShowAfterComplete"));
 
-            if(this.getUserview().getSetting().getTheme() instanceof UserviewBootstrapTheme && this instanceof BootstrapUserviewMenu) {
-                return handleBootstrapForm();
-            } else {
-                return handleForm();
-            }
+//                return handleBootstrapForm();
+            return handleForm(jspFormFile);
         } else {
             String customHeader = "<style>";
             customHeader += "span.dot_red{background-color: red;display: block;height: 15px;text-align: left;width: 15px;}";
@@ -311,14 +308,6 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         AppUtil.setCurrentAppDefinition(appDef);
 
         return jspFile;
-    }
-
-    protected String handleForm() {
-        return handleForm("userview/plugin/form.jsp");
-    }
-
-    protected String handleBootstrapForm() {
-        return handleForm(((UserviewBootstrapTheme) this.getUserview().getSetting().getTheme()).getFormJsp());
     }
 
     protected void displayForm() {
@@ -560,22 +549,22 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
     }
 
     @Override
-    public String getAceJspPage(UserviewBootstrapTheme bootstrapTheme) {
-        return bootstrapTheme.getRunProcessJsp();
+    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp());
     }
 
     @Override
-    public String getAceDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(UserviewBootstrapTheme bootstrapTheme) {
-        return bootstrapTheme.getRunProcessJsp();
+    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp());
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

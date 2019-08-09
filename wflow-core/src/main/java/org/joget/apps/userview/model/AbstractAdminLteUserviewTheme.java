@@ -3,7 +3,7 @@ package org.joget.apps.userview.model;
 /**
  * Base class for
  */
-public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implements UserviewBootstrapTheme, BootstrapAdminLteTheme  {
+public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implements BootstrapUserview, BootstrapAdminLteTheme  {
     @Override
     public String getUserviewJsp() {
         return "ubuilder/adminLteView";

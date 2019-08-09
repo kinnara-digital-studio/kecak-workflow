@@ -96,9 +96,9 @@ public abstract class UserviewMenu extends ExtElement{
         String decoratedMenu;
 
         if(userview.getSetting().getTheme() instanceof AbstractAceUserviewTheme && this instanceof AceUserviewMenu) {
-            decoratedMenu = ((AceUserviewMenu)this).getAceDecoratedMenu((UserviewBootstrapTheme) userview.getSetting().getTheme());
+            decoratedMenu = ((AceUserviewMenu)this).getAceDecoratedMenu((BootstrapUserview) userview.getSetting().getTheme());
         } else if(userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteUserviewMenu) {
-            decoratedMenu = ((AdminLteUserviewMenu)this).getAdminLteDecoratedMenu((UserviewBootstrapTheme) userview.getSetting().getTheme());
+            decoratedMenu = ((AdminLteUserviewMenu)this).getAdminLteDecoratedMenu((BootstrapUserview) userview.getSetting().getTheme());
         } else {
             decoratedMenu = getDecoratedMenu();
         }
@@ -140,13 +140,12 @@ public abstract class UserviewMenu extends ExtElement{
     public String getReadyJspPage() {
         if (readyJspPage == null) {
             if(userview.getSetting().getTheme() instanceof UserviewAceTheme && this instanceof AceUserviewMenu) {
-                readyJspPage = ((AceUserviewMenu) this).getAceJspPage((UserviewBootstrapTheme) userview.getSetting().getTheme());
+                readyJspPage = ((AceUserviewMenu) this).getAceJspPage((BootstrapUserview) userview.getSetting().getTheme());
             } if(userview.getSetting().getTheme() instanceof UserviewAceTheme && this instanceof AdminLteUserviewMenu) {
-                readyJspPage = ((AdminLteUserviewMenu) this).getAdminLteJspPage((UserviewBootstrapTheme) userview.getSetting().getTheme());
+                readyJspPage = ((AdminLteUserviewMenu) this).getAdminLteJspPage((BootstrapUserview) userview.getSetting().getTheme());
             } else {
                 readyJspPage = getJspPage();
             }
-
         }
         return readyJspPage;
     }

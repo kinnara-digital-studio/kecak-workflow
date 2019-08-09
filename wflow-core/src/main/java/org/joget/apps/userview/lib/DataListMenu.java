@@ -171,22 +171,22 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
     }
 
     @Override
-    public String getAceJspPage(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
         return bootstrapTheme.getDataListJsp();
     }
 
     @Override
-    public String getAceDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
         return bootstrapTheme.getDataListJsp();
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(UserviewBootstrapTheme bootstrapTheme) {
+    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
         return getDecoratedMenu();
     }
 }
