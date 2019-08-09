@@ -261,9 +261,9 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
             dataModel.put("elementMetaData", elementMetaData);
         }
 
-        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof BootstrapAceTheme) {
+        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
-        } else if(userview != null && userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteFormElement) {
+        } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
         } else {
             return renderTemplate(formData, dataModel);
@@ -285,11 +285,9 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
      * @return
      */
     public String renderErrorTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
-        if(userview != null && userview.getSetting().getTheme() instanceof AbstractAceUserviewTheme && this instanceof AceFormElement) {
-            BootstrapUserview theme = (BootstrapUserview) userview.getSetting().getTheme();
+        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
-        } else if(userview != null && userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteFormElement) {
-            BootstrapUserview theme = (BootstrapUserview) userview.getSetting().getTheme();
+        } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
         }
 
@@ -307,9 +305,9 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         // set readonly flag
         dataModel.put(FormUtil.PROPERTY_READONLY, Boolean.TRUE);
 
-        if(userview != null && userview.getSetting().getTheme() instanceof AbstractAceUserviewTheme && this instanceof AceFormElement) {
+        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
-        } else if(userview != null && userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteFormElement) {
+        } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
         } else {
             return renderTemplate(formData, dataModel);

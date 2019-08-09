@@ -139,9 +139,9 @@ public abstract class UserviewMenu extends ExtElement{
      */
     public String getReadyJspPage() {
         if (readyJspPage == null) {
-            if(userview.getSetting().getTheme() instanceof UserviewAceTheme && this instanceof AceUserviewMenu) {
+            if(userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceUserviewMenu) {
                 readyJspPage = ((AceUserviewMenu) this).getAceJspPage((BootstrapUserview) userview.getSetting().getTheme());
-            } if(userview.getSetting().getTheme() instanceof UserviewAceTheme && this instanceof AdminLteUserviewMenu) {
+            } if(userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AdminLteUserviewMenu) {
                 readyJspPage = ((AdminLteUserviewMenu) this).getAdminLteJspPage((BootstrapUserview) userview.getSetting().getTheme());
             } else {
                 readyJspPage = getJspPage();
