@@ -172,7 +172,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
 
     @Override
     public String getAceJspPage(BootstrapUserview bootstrapTheme) {
-        return bootstrapTheme.getDataListJsp();
+        return getJspPage(bootstrapTheme.getDataListJsp());
     }
 
     @Override
@@ -182,7 +182,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
 
     @Override
     public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
-        return bootstrapTheme.getDataListJsp();
+        return getJspPage(bootstrapTheme.getDataListJsp());
     }
 
     @Override
