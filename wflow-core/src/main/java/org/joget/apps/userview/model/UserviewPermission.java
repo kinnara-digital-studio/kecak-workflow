@@ -1,6 +1,8 @@
 package org.joget.apps.userview.model;
 
+import org.joget.apps.form.model.FormData;
 import org.joget.directory.model.User;
+import org.joget.apps.form.model.Element;
 
 /**
  * A base abstract class to develop a Userview/Form Permission plugin. 
@@ -8,6 +10,8 @@ import org.joget.directory.model.User;
  */
 public abstract class UserviewPermission extends ExtElement {
     private User currentUser;
+    private Element element;
+    private FormData formData;
 
     /**
      * Gets current logged in user. 
@@ -30,4 +34,20 @@ public abstract class UserviewPermission extends ExtElement {
      * @return 
      */
     public abstract boolean isAuthorize();
+
+    public FormData getFormData() {
+        return formData;
+    }
+
+    public void setFormData(FormData formData) {
+        this.formData = formData;
+    }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public void setElement(Element element) {
+        this.element = element;
+    }
 }
