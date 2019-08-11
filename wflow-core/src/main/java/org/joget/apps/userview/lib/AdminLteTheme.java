@@ -4,7 +4,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.userview.model.AbstractAdminLteUserviewTheme;
 
 public class AdminLteTheme extends AbstractAdminLteUserviewTheme {
-    private final String path = "/plugin/" + getClassName() ;
+    private final String path = "/plugin/" + getClassName() + "/themes/adminlte" ;
 
     @Override
     public String getCss() {
@@ -84,26 +84,6 @@ public class AdminLteTheme extends AbstractAdminLteUserviewTheme {
     }
 
     public String getPropertyOptions() {
-        return AppUtil.readPluginResource(getClass().getName(), "/properties/adminLteTheme.json", null, true, "messages/adminLteTheme");
-    }
-
-    @Override
-    public String getUserviewJsp() {
-        return AppUtil.readPluginResource(getClassName(), "/templates/AdminLteView.jsp");
-    }
-
-    @Override
-    public String getDataListJsp() {
-        return AppUtil.readPluginResource(getClassName(), "/templates/AdminLteDataListView.jsp");
-    }
-
-    @Override
-    public String getFormJsp() {
-        return AppUtil.readPluginResource(getClassName(), "/templates/AdminLteForm.jsp");
-    }
-
-    @Override
-    public String getRunProcessJsp() {
-        return AppUtil.readPluginResource(getClassName(), "/templates/AdminLteRunProcess.jsp");
+        return AppUtil.readPluginResource(getClass().getName(), "/properties/userview/adminLteTheme.json", null, true, null);
     }
 }

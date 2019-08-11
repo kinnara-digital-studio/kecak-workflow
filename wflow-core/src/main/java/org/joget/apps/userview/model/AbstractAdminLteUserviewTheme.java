@@ -6,21 +6,21 @@ package org.joget.apps.userview.model;
 public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implements BootstrapUserview, BootstrapAdminLteTheme  {
     @Override
     public String getUserviewJsp() {
-        return "ubuilder/adminLteView";
+        return "ubuilder/AdminLteView";
     }
 
     @Override
     public String getDataListJsp() {
-        return null;
+        return "userview/plugin/AdminLteDataList.jsp";
     }
 
     @Override
     public String getFormJsp() {
-        return null;
+        return "userview/plugin/AdminLteForm.jsp";
     }
 
     @Override
     public String getRunProcessJsp() {
-        return null;
+        return "userview/plugin/AdminLteRunProcess.jsp";
     }
 }
