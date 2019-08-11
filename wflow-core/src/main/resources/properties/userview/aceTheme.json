@@ -1,0 +1,99 @@
+[{
+  title : '@@aceTheme.title@@',
+  properties : [
+    {
+      name : 'useDropdown',
+      label : 'Use Dropdown',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },
+    {
+      name : 'skin',
+      label : 'Skin',
+      type : 'selectbox',
+      value: 'no-skin',
+      required:'true',
+      options : [{
+        value : 'no-skin',
+        label : 'No Skin'
+      },{
+        value : 'skin-1',
+        label : 'Skin 1'
+      },{
+        value : 'skin-2',
+        label : 'Skin 2'
+      },{
+        value : 'skin-3 no-skin',
+        label : 'Skin 3'
+      },
+      ]
+    },
+    {
+      name : 'fixedNavbar',
+      label : 'Fixed Navbar',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },
+    {
+      name : 'fixedSidebar',
+      label : 'Fixed Sidebar',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },
+    {
+      name : 'fixedBreadcrumbs',
+      label : 'Fixed Breadcrumbs',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },
+    {
+      name : 'insideContainer',
+      label : 'Inside Container',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },
+    {
+      name : 'submenuOnHover',
+      label : 'Sub Menu On Hover',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },
+    {
+      name : 'altActiveItem',
+      label : 'Alt. Active Item',
+      type : 'checkbox',
+      options : [{
+        value : 'true',
+        label : ''
+      }]
+    },{
+      name : 'css',
+      label : 'CSS',
+      type : 'codeeditor',
+      mode : 'css'
+    },
+    {
+      name : 'js',
+      label : 'Javascript',
+      type : 'codeeditor',
+      mode : 'javascript'
+    }]
+}]

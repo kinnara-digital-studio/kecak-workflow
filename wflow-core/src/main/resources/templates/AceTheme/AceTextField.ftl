@@ -1,5 +1,5 @@
 <div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <label class="label col-sm-3 control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
+    <label class="col-sm-3 control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
     <div class="col-sm-9">
         <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
             <div class="form-cell-value"><span>${value!?html}</span></div>
