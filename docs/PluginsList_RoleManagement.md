@@ -173,8 +173,30 @@ example data from LDAP in Users when Field Role Group:
 example data from LDAP in Groups when Field Role Group:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_group_groups.png" alt="group_groups" />
 
+### Plugins Role Management Settings in Form/Section
 
-### Version History ###
+1. Open the apps
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="group_user" />
+
+
+2. Choose form
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="group_user" />
+
+
+3. Choose section
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="group_user" />
+ 
+
+4. Edit section
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="group_user" />
+
+
+
+**Version History**
 *  **1.0.0**
    * Initial creation : Isti Fatimah
 
