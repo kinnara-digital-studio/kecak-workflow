@@ -267,8 +267,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         <div class="navbar-header pull-left">
           <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="navbar-brand">
             <small>
-              <i class="fa fa-leaf"></i>
-              Ace Admin
+              ${userview.properties.name}
             </small>
           </a>
         </div>
@@ -384,20 +383,10 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
           </div>
 
           <div class="page-content">
-            <div class="page-header">
-              <h1>
-                ${userview.current.properties.label}
-              </h1>
-            </div><!-- /.page-header -->
-
-            <div class="row">
-              <div class="col-xs-12">
-                <!-- PAGE CONTENT BEGINS -->
-                ${bodyContent}
-                <c:if test="${!empty bodyError}"><c:out value="${bodyError}" escapeXml="true"/></c:if>
-                <!-- PAGE CONTENT ENDS -->
-              </div><!-- /.col -->
-            </div><!-- /.row -->
+            <!-- PAGE CONTENT BEGINS -->
+            ${bodyContent}
+            <c:if test="${!empty bodyError}"><c:out value="${bodyError}" escapeXml="true"/></c:if>
+            <!-- PAGE CONTENT ENDS -->
           </div><!-- /.page-content -->
         </div>
       </div><!-- /.main-content -->
@@ -405,25 +394,14 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
       <div class="footer">
         <div class="footer-inner">
           <div class="footer-content">
-            <span class="bigger-120">
-              <span class="blue bolder">Ace</span>
-              Application &copy; 2013-2014
-            </span>
-
-            &nbsp; &nbsp;
-            <span class="action-buttons">
-              <a href="#">
-                <i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
-              </a>
-
-              <a href="#">
-                <i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
-              </a>
-
-              <a href="#">
-                <i class="ace-icon fa fa-rss-square orange bigger-150"></i>
-              </a>
-            </span>
+              <c:choose>
+                  <c:when test="${!empty userview.setting.theme.footer}">
+                    <span>${userview.setting.theme.footer}</span>
+                  </c:when>
+                  <c:otherwise>
+                    <span><ui:stripTag html="${userview.properties.footerMessage}" relaxed="true"/></span>
+                  </c:otherwise>
+              </c:choose>
           </div>
         </div>
       </div>
@@ -442,6 +420,16 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     <script src="${pageContext.request.contextPath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script>
       $.fn.bootstrapBtn = $.fn.button.noConflict();
+      $(function(){
+        $('input[type=file]').ace_file_input({
+          no_file:'No File ...',
+          btn_choose:'Choose',
+          btn_change:'Change',
+          droppable:false,
+          onchange:null,
+          thumbnail:false
+        });
+      });
     </script>
     ${userview.setting.theme.javascript}
 

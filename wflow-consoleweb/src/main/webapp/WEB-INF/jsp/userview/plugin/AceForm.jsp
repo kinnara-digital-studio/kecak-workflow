@@ -7,18 +7,20 @@
     </script>
 </c:if>
 <div class="viewForm-body-content">
-    <div class="viewForm-body-header page-header">
-        <h1>
-            <c:choose>
-                <c:when test="${empty properties.customHeader && !empty properties.headerTitle}">
-                        <c:out value="${properties.headerTitle}"/>
-                </c:when>
-                <c:otherwise>
-                    ${properties.customHeader}
-                </c:otherwise>
-            </c:choose>
-        </h1>
-    </div>
+    <c:if test="${!empty properties.customHeader || !empty properties.headerTitle}">
+        <div class="viewForm-body-header page-header">
+            <h1>
+                <c:choose>
+                    <c:when test="${empty properties.customHeader && !empty properties.headerTitle}">
+                            <c:out value="${properties.headerTitle}"/>
+                    </c:when>
+                    <c:otherwise>
+                        ${properties.customHeader}
+                    </c:otherwise>
+                </c:choose>
+            </h1>
+        </div>
+    </c:if>
     <div class="row">
         <div class="col-md-12">
             <c:choose>

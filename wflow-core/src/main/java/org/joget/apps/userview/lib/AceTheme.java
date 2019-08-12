@@ -14,6 +14,7 @@ public class AceTheme extends AbstractAceUserviewTheme {
         css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/ace.min.css\" class=\"ace-main-stylesheet\" id=\"main-ace-style\"/>\n";
         css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/ace-skins.min.css\"/>\n";
         css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/ace-rtl.min.css\"/>\n";
+        css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/custom.css\"/>\n";
         return css;
     }
 

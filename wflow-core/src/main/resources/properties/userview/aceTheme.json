@@ -1,5 +1,5 @@
 [{
-  title : '@@aceTheme.title@@',
+  title : 'Configure Ace Theme',
   properties : [
     {
       name : 'useDropdown',
@@ -95,5 +95,17 @@
       label : 'Javascript',
       type : 'codeeditor',
       mode : 'javascript'
+    },
+    {
+      name : 'customHeader',
+      label : '@@userview.defaulttheme.customHeader@@',
+      type : 'codeeditor',
+      mode : 'html'
+    },
+    {
+      name : 'customFooter',
+      label : '@@userview.defaulttheme.customFooter@@',
+      type : 'codeeditor',
+      mode : 'html'
     }]
 }]

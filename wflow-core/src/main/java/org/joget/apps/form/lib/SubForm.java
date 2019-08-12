@@ -10,18 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.AbstractSubForm;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.plugin.base.PluginWebSupport;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 
-public class SubForm extends AbstractSubForm implements FormBuilderPaletteElement, PluginWebSupport {
+public class SubForm extends AbstractSubForm implements FormBuilderPaletteElement, PluginWebSupport, AceFormElement {
 
     public String getName() {
         return "Subform";
@@ -133,5 +128,32 @@ public class SubForm extends AbstractSubForm implements FormBuilderPaletteElemen
         } else {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        // set subform html
+        String elementMetaData = ((Boolean) dataModel.get("includeMetaData")) ? FormUtil.generateElementMetaData(this) : "";
+        Collection<Element> childElements = getChildren();
+        Form subForm = (childElements.size() > 0) ? (Form) getChildren().iterator().next() : null;
+        String label = getPropertyString("label");
+        String cellClass = ((Boolean) dataModel.get("includeMetaData")) ? "form-cell" : "subform-cell";
+        String noFrame = ("true".equalsIgnoreCase(getPropertyString("noframe"))) ? " no-frame" : " has-frame";
+        String readonly = ("true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY))) ? " readonly" : "";
+        String html = "<div class='" + cellClass + "' " + elementMetaData + "><div class='subform-container"+noFrame+readonly+" widget-box'>";
+        if (!label.isEmpty()) {
+            html += "<div class='subform-title widget-header'><h4 class='widget-title'>" + label + "</h4></div>";
+        }
+        if (subForm != null) {
+            String subFormHtml = subForm.render(formData, false);
+            subFormHtml = subFormHtml.replaceAll("\"form-section", "\"subform-section");
+            subFormHtml = subFormHtml.replaceAll("\"form-column", "\"subform-column");
+            subFormHtml = subFormHtml.replaceAll("\"form-cell", "\"subform-cell");
+            html += subFormHtml;
+        } else {
+            html += "SubForm could not be loaded";
+        }
+        html += "<div style='clear:both;'></div></div></div>";
+        return html;
     }
 }
