@@ -32,7 +32,7 @@ After edit fill the field, save, then preview
 
 4. This is the pict if choose preview
 
-![<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker4.png" alt="timepicker4" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker4.png" alt="timepicker4" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker5.png" alt="timepicker1" />
 
