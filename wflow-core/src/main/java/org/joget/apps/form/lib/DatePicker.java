@@ -6,20 +6,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.DateUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-public class DatePicker extends Element implements FormBuilderPaletteElement {
+public class DatePicker extends Element implements FormBuilderPaletteElement, AceFormElement {
     
     public String getName() {
         return "Date Picker";
@@ -37,21 +31,23 @@ public class DatePicker extends Element implements FormBuilderPaletteElement {
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "datePicker.ftl";
-        
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         String displayFormat = getJavaDateFormat(getPropertyString("format"));
-        
+
         // set value
         String value = FormUtil.getElementPropertyValue(this, formData);
         value = formattedValue(value, displayFormat, formData);
-        
+
         dataModel.put("displayFormat", displayFormat.toUpperCase());
-        
+
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
     }
-    
     public FormRowSet formatData(FormData formData) {
         FormRowSet rowSet = null;
 
@@ -273,5 +269,11 @@ public class DatePicker extends Element implements FormBuilderPaletteElement {
             }
         }
         return value;
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceDatePicker.ftl";
+        return renderTemplate(template, formData, dataModel);
     }
 }

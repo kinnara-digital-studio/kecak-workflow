@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormUtil;
 
-public class Section extends Element implements FormBuilderEditable, FormContainer {
+public class Section extends Element implements FormBuilderEditable, FormContainer, AceFormElement {
     private Boolean continueValidation = null;
 
     public String getName() {
@@ -25,25 +25,28 @@ public class Section extends Element implements FormBuilderEditable, FormContain
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         if (((Boolean) dataModel.get("includeMetaData") == true) || isAuthorize(formData)) {
             String template = "section.ftl";
-
-            // set visibility attributes - currently working for textfield, textarea and selectbox. TODO: ensure it works for checkbox and radio.
-            String visibilityControl = getPropertyString("visibilityControl");
-            if (visibilityControl != null && !visibilityControl.isEmpty()) {
-                Form rootForm = FormUtil.findRootForm(this);
-                Element controlElement = FormUtil.findElement(visibilityControl, rootForm, formData);
-                if (controlElement != null) {
-                    String visibilityControlParam = FormUtil.getElementParameterName(controlElement);
-                    dataModel.put("visibilityControlParam", visibilityControlParam);
-                }
-            }
-
-            dataModel.put("visible", isMatch(formData));
-
-            String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
-            return html;
+            return renderTemplate(template,formData,dataModel);
         } else {
             return "";
         }
+    }
+
+    private String renderTemplate(String template,FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+        // set visibility attributes - currently working for textfield, textarea and selectbox. TODO: ensure it works for checkbox and radio.
+        String visibilityControl = getPropertyString("visibilityControl");
+        if (visibilityControl != null && !visibilityControl.isEmpty()) {
+            Form rootForm = FormUtil.findRootForm(this);
+            Element controlElement = FormUtil.findElement(visibilityControl, rootForm, formData);
+            if (controlElement != null) {
+                String visibilityControlParam = FormUtil.getElementParameterName(controlElement);
+                dataModel.put("visibilityControlParam", visibilityControlParam);
+            }
+        }
+
+        dataModel.put("visible", isMatch(formData));
+
+        String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
+        return html;
     }
 
     @Override
@@ -123,5 +126,15 @@ public class Section extends Element implements FormBuilderEditable, FormContain
         }
         
         return true;
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        if (((Boolean) dataModel.get("includeMetaData") == true) || isAuthorize(formData)) {
+            String template = "AceTheme/AceSection.ftl";
+            return renderTemplate(template,formData,dataModel);
+        } else {
+            return "";
+        }
     }
 }

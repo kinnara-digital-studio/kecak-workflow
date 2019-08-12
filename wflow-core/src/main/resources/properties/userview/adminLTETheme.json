@@ -1,5 +1,5 @@
 [{
-  title : '@@userview.defaulttheme.configDefaultTheme@@',
+  title : 'Configure Admin Lte Theme',
   properties : [
   {
     name : 'useDropdown',
