@@ -1,5 +1,5 @@
 # Plugins Time Picker
-=
+
 **Overview**
 
 Provides autofill capabilities based on key specified by selecting a value from the select box. Everytime a selectbox value is selected, the system will execute Load Binder -specified in properties- and use the selected value as key for
