@@ -24,16 +24,6 @@ First of all you need to activate **Process Data Collector** in order to collect
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap3.png" alt="" />
 
-**Plugin Properties**
-*  Custom ID
-*  Label
-
-**Report Selection Parameters**
-
-*  Process : Process Name
-*  Report Type :
-  *  Hit Count : Measurement are calculated based on number of activity’s execution count
-  *  Lead Time : Measurement are calculated based on activity’s completions time
 
 **Version History**
 
