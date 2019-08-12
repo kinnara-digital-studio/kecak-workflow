@@ -1,6 +1,4 @@
 <div class="form-cell" ${elementMetaData!}>
-
-<#if !(request.getAttribute("org.joget.apps.form.lib.Grid")??) >
     <script type="text/javascript" src="${request.contextPath}/js/jquery/jquery.jeditable.js"></script>
     <script type="text/javascript" src="${request.contextPath}/plugin/org.joget.apps.form.lib.Grid/js/jquery.formgrid.js"></script>
     <style type="text/css">
@@ -22,18 +20,17 @@
             border: 1px solid #a1a1a1;
         }
     </style>
-</#if>
-<#if element.properties.readonly! != 'true'>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".grid_${element.properties.elementUniqueKey!}").formgrid();
-        });
-    </script>
-</#if>
+    <#if element.properties.readonly! != 'true'>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $(".grid_${element.properties.elementUniqueKey!}").formgrid();
+            });
+        </script>
+    </#if>
 
     <label class="col-sm-3 control-label">${element.properties.label!} <span class="form-cell-validator">${decoration}${customDecorator}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>
     <div class="col-sm-9 grid grid_${element.properties.elementUniqueKey!} form-element" id="${elementParamName!}" name="${elementParamName!}">
-        <table cellspacing="0" class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+        <table cellspacing="0" class="table table-bordered table-hover" data-tablesaw-mode="stack">
             <thead>
                 <tr>
                 <#list headers?keys as header>
