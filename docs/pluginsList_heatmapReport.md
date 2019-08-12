@@ -4,7 +4,7 @@
 
 Heatmap Report Menu is userview menu plugin to display Heatmap Report. Heatmap Report visualize the “crowds” of activities in particular process, using either “Hit Count” or “Lead Time”.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/plugins-datalist1.png" alt="plugins-datalist" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap.png" alt="plugins-datalist" />
 
 **Pre-Configuration**
 
@@ -14,16 +14,16 @@ First of all you need to activate **Process Data Collector** in order to collect
 
 1. Go to **Settings(1) > Properties & Export (2) > Set Plugin Default Properties (3)** 
 
-![1](/up<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/plugins-datalist1.png" alt="plugins-datalist" />
+![1](/up<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap1.png" alt="" />
 loads/cd62f1d3f435cdfcbf8983946003f5e4/1.png)
 
 2. Navigate and select item **Process Data Collector**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/plugins-datalist1.png" alt="plugins-datalist" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap2.png" alt="" />
 
 3. A new pop-up will show, click **Submit**
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/plugins-datalist1.png" alt="plugins-datalist" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap3.png" alt="" />
 
 **Plugin Properties**
 *  Custom ID
