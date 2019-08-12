@@ -14,8 +14,7 @@ First of all you need to activate **Process Data Collector** in order to collect
 
 1. Go to **Settings(1) > Properties & Export (2) > Set Plugin Default Properties (3)** 
 
-![1](/up<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap1.png" alt="" />
-loads/cd62f1d3f435cdfcbf8983946003f5e4/1.png)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap1.png" alt="" />
 
 2. Navigate and select item **Process Data Collector**
 
