@@ -37,7 +37,6 @@ After edit fill the field, save, then preview
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker5.png" alt="timepicker1" />
 
 
-
 **Version History**
 
 *  **1.1.0**
