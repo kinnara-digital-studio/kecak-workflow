@@ -48,6 +48,8 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dashboard_todolistEditProcessMenu.png" alt="" />
 
+Choose available dashboard to do list icons like in this picture :
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dashboard_todolistEditProcessIcon.png" alt="" />
 
 Description :
