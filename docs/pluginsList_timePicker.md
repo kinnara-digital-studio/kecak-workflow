@@ -1,12 +1,12 @@
-# Plugins Time Picker#
+# Plugins Time Picker
 
-### Plugin Type ###
+**Plugin Type**
 Time Picker
 
-### Overview ###
+**Overview**
 Provides autofill capabilities based on key specified by selecting a value from the select box. Everytime a selectbox value is selected, the system will execute Load Binder -specified in properties- and use the selected value as key for
 
-### Plugin Properties ###
+**Plugin Properties**
 * ID - Element ID (Mandatory)
 * Label - Element Label (Mandatory)
 * Default Size 
@@ -15,12 +15,13 @@ Provides autofill capabilities based on key specified by selecting a value from 
 * Workflow Variable
 
 
-### Example ###
+**Example**
+
 This step-by-step will help you to field the time picker
-1. drag the time picker until show like this.
+1. Drag the time picker until show like this.
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker1.png" alt="timepicker1" />
 
-2. choose edit format for settings the time picker
+2. Choose edit format for settings the time picker
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker2.png" alt="timepicker1" />
 
@@ -28,16 +29,16 @@ This step-by-step will help you to field the time picker
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker3.png" alt="timepicker1" />
 
-after edit fill the field, save, then preview
+After edit fill the field, save, then preview
 
-4. this is the pict if choose preview
+4. This is the pict if choose preview
 
 ![<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker4.png" alt="timepicker4" />
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/timepicker5.png" alt="timepicker1" />
 
 
 
-### Version History ###
+**Version History**
 
 *  **1.1.0**
    * 
