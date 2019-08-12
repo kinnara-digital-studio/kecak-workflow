@@ -1176,13 +1176,28 @@ public class PluginManager implements ApplicationContextAware {
         String className = (String) elementSelect.get("className");
         Map<String, Object> properties = (Map<String, Object>) elementSelect.get("properties");
 
+        return getPluginObject(className, properties);
+    }
+
+    /**
+     * Kecak Exclusive
+     *
+     * Generate plugin object
+     *
+     * @param className class name
+     * @param properties plugin properties
+     * @param <T> plugin class
+     * @return plugin object
+     */
+    public <T extends PropertyEditable> T getPluginObject(String className, Map<String, Object> properties) {
         T plugin = (T) getPlugin(className);
         if (plugin == null) {
             LogUtil.warn(PluginManager.class.getName(), "Error generating plugin [" + className + "]");
             return null;
         }
 
-        properties.forEach(plugin::setProperty);
+        if(properties != null)
+            properties.forEach(plugin::setProperty);
 
         return plugin;
     }

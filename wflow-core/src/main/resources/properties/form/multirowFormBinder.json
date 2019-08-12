@@ -12,5 +12,39 @@
         label : '@@form.mulitrowformbinder.foreignKey@@',
         type : 'textfield',
         required : 'True'
-    }]
+    },
+    {
+        name: 'extraCondition',
+        label: 'Extra Parameter Condition',
+        description: 'Extra Parameter to Store and Load Data using AND',
+        type: 'grid',
+        columns: [
+            {
+                key: 'key',
+                label: 'Key',
+                required: 'true'
+            },
+            {
+                key: 'value',
+                label: 'Value'
+            },
+            {
+                key: 'relation',
+                label: 'Relation',
+                value: 'AND',
+                options : [
+                    {
+                        value: 'AND',
+                        label : 'AND'
+                    },
+                    {
+                        value: 'OR',
+                        label : 'OR'
+                    }
+                ],
+                required: 'true'
+            }
+        ]
+    }
+    ]
 }]
