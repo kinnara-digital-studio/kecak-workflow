@@ -12,8 +12,8 @@
         <#else>
             <div class="checkbox">
                 <label>
-                    <input grouping="${option.grouping!?html}" id="${elementParamName!}" name="${elementParamName!}" type="checkbox" value="${option.value!?html}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'>  onclick="return false" </#if> <#if values?? && values?seq_contains(option.value!)>checked</#if> />
-                    <span class="lbl">${option.label!?html}</span>
+                    <input class="ace" grouping="${option.grouping!?html}" id="${elementParamName!}" name="${elementParamName!}" type="checkbox" value="${option.value!?html}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'>  onclick="return false" </#if> <#if values?? && values?seq_contains(option.value!)>checked</#if> />
+                    <span class="lbl"> ${option.label!?html}</span>
                 </label>
             </div>
         </#if>

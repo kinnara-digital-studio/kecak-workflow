@@ -2,6 +2,12 @@
   title : 'Configure Ace Theme',
   properties : [
     {
+      name : 'loginMessage',
+      label : 'Login Message',
+      type : 'textfield',
+      value: 'Please Enter Your Information'
+    },
+    {
       name : 'useDropdown',
       label : 'Use Dropdown',
       type : 'checkbox',
@@ -12,7 +18,7 @@
     },
     {
       name : 'skin',
-      label : 'Skin',
+      label : 'Userview Skin',
       type : 'selectbox',
       value: 'no-skin',
       required:'true',
@@ -29,6 +35,24 @@
         value : 'skin-3 no-skin',
         label : 'Skin 3'
       },
+      ]
+    },
+    {
+      name : 'loginSkin',
+      label : 'Login Skin',
+      type : 'selectbox',
+      value: 'light',
+      required:'true',
+      options : [{
+        value : 'light',
+        label : 'Light'
+      },{
+        value : 'blur',
+        label : 'Blur'
+      },{
+        value : 'dark',
+        label : 'Dark'
+      }
       ]
     },
     {

@@ -290,9 +290,18 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                 <li class="divider"></li>
 
                 <li>
-                  <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat">
-                    <i class="ace-icon fa fa-power-off"></i> ${userview.properties.logoutText}
-                  </a>
+                  <c:choose>
+                      <c:when test="${isAnonymous}">
+                          <a href="${pageContext.request.contextPath}/web/ulogin/${appId}/${userview.properties.id}/<c:out value="${key}"/>" class="btn btn-default btn-flat">
+                            <i class="ace-icon fa fa-sign-in"></i> <fmt:message key="ubuilder.login"/></span>
+                          </a>
+                      </c:when>
+                      <c:otherwise>
+                          <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat">
+                            <i class="ace-icon fa fa-power-off"></i> ${userview.properties.logoutText}
+                          </a>
+                      </c:otherwise>
+                  </c:choose>
                 </li>
               </ul>
             </li>

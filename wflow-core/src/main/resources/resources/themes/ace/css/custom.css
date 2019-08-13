@@ -2,3 +2,36 @@
 	height:auto;
 	padding:6px 12px;
 }
+.exportlinks{
+    float:right;
+}
+
+.filter-cell .btn{
+    height:34px;
+    margin-top:-1px;
+}
+.select_checkbox{
+    text-align:center;
+}
+
+.export.excel:before{
+    content:"\f1c3";
+    font-family:FontAwesome;
+    padding:5px;
+}
+.export.csv:before{
+    content:"\f0f6";
+    font-family:FontAwesome;
+    padding:5px;
+    font-size:15px;
+}
+.export.xml:before{
+    content:"\f1c9";
+    font-family:FontAwesome;
+    padding:5px;
+}
+.export.pdf:before{
+    content:"\f1c1";
+    font-family:FontAwesome;
+    padding:5px;
+}

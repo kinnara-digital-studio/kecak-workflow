@@ -55,7 +55,11 @@ public class UserviewThemeProcesser {
 
     public String getLoginView() {
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-            return "ubuilder/login";
+            if(userview.getSetting().getTheme() instanceof BootstrapUserview) {
+                return ((BootstrapUserview)userview.getSetting().getTheme()).getLoginJsp();
+            } else {
+                return "ubuilder/login";
+            }
         }
         
         String loginRedirection = loginRedirection();
