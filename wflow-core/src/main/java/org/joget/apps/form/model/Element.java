@@ -268,11 +268,11 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
             if(form == null) { // current element is form
                 UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
                 setTheme(userviewTheme);
-            } else if(form.getTheme() == null) {
-                UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
-                form.setTheme(userviewTheme);
-                setTheme(form.getTheme());
             } else {
+                if(form.getTheme() == null) { // current root form does not have theme
+                    UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
+                    form.setTheme(userviewTheme);
+                }
                 setTheme(form.getTheme());
             }
         }
