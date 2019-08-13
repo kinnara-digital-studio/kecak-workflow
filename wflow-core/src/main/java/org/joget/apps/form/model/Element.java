@@ -1,10 +1,11 @@
 package org.joget.apps.form.model;
 
+import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.*;
-import org.joget.commons.util.LogUtil;
+import org.joget.apps.userview.service.UserviewService;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.ExtDefaultPlugin;
@@ -31,7 +32,6 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
     private FormLoadBinder optionsBinder;
     private FormStoreBinder storeBinder;
     private Validator validator;
-    private Userview userview;
 
     /**
      * Get load binder
@@ -255,15 +255,19 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         @SuppressWarnings("rawtypes")
 		Map dataModel = FormUtil.generateDefaultTemplateDataModel(this, formData);
 
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        UserviewService userviewService = (UserviewService) AppUtil.getApplicationContext().getBean("userviewService");
+        UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
+
         // set metadata for form builder
         dataModel.put("includeMetaData", includeMetaData);
         if (includeMetaData) {
             String elementMetaData = FormUtil.generateElementMetaData(this);
             dataModel.put("elementMetaData", elementMetaData);
         }
-        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
+        if(userviewTheme instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
-        } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
+        } else if(userviewTheme instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
         } else {
             return renderTemplate(formData, dataModel);
@@ -285,13 +289,17 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
      * @return
      */
     public String renderErrorTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
-        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
-            return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
-        } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
-            return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
-        }
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        UserviewService userviewService = (UserviewService) AppUtil.getApplicationContext().getBean("userviewService");
+        UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
 
-        return renderTemplate(formData, dataModel);
+        if(userviewTheme instanceof BootstrapAceTheme && this instanceof AceFormElement) {
+            return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
+        } else if(userviewTheme instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
+            return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
+        } else {
+            return renderTemplate(formData, dataModel);
+        }
     }
 
     /**
@@ -305,9 +313,13 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         // set readonly flag
         dataModel.put(FormUtil.PROPERTY_READONLY, Boolean.TRUE);
 
-        if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        UserviewService userviewService = (UserviewService) AppUtil.getApplicationContext().getBean("userviewService");
+        UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
+
+        if(userviewTheme instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
-        } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
+        } else if(userviewTheme instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
             return ((AdminLteFormElement) this).renderAdminLteTemplate(formData, dataModel);
         } else {
             return renderTemplate(formData, dataModel);
@@ -410,21 +422,5 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         }
         
         return isAuthorize;
-    }
-
-    /**
-     * Get Userview
-     * @return
-     */
-    public Userview getUserview() {
-        return userview;
-    }
-
-    /**
-     *
-     * @param userview
-     */
-    public void setUserview(Userview userview) {
-        this.userview = userview;
     }
 }

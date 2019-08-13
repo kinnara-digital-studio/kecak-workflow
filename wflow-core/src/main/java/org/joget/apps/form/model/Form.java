@@ -10,7 +10,7 @@ import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.json.JSONObject;
 
-public class Form extends Element implements FormBuilderEditable, FormContainer {
+public class Form extends Element implements FormBuilderEditable, FormContainer, AceFormElement, AdminLteFormElement {
 
     private Map<String, String[]> formMetas = new HashMap<String, String[]>();
     private Collection<FormAction> actions = new ArrayList<FormAction>();
@@ -156,5 +156,15 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
             this.actions = new ArrayList<FormAction>();
         }
         this.actions.add(action);
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        return renderTemplate(formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        return renderTemplate(formData, dataModel);
     }
 }

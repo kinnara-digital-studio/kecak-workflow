@@ -91,7 +91,7 @@ public class FormServiceImpl implements FormService {
 
     /**
      * Creates an element object from a JSON definition
-     * @param formJson
+     * @param elementJson
      * @return
      */
     public Element createElementFromJson(String elementJson) {
@@ -100,7 +100,7 @@ public class FormServiceImpl implements FormService {
 
     /**
      * Creates an element object from a JSON definition
-     * @param formJson
+     * @param elementJson
      * @param processHashVariable
      * @return
      */
@@ -208,33 +208,8 @@ public class FormServiceImpl implements FormService {
      */
     public Form loadFormFromJson(String formJson, FormData formData) {
         Form form = (Form) createElementFromJson(formJson);
-        applyUserview(form, getUserviewFromFormData(formData));
         form = loadFormData(form, formData);
         return form;
-    }
-
-    /**
-     * Recursively apply userview to children
-     * @param element
-     * @param userview
-     */
-    protected void applyUserview(Element element, final Userview userview) {
-        if(element  != null) {
-            element.setUserview(userview);
-            element.getChildren().forEach(e -> applyUserview(e, userview));
-        }
-    }
-
-    protected Userview getUserviewFromFormData(FormData formData) {
-        String userviewId = formData.getRequestParameter("userviewId");
-        if(userviewId == null)
-            return null;
-
-        UserviewDefinition userviewDefinition = userviewDefinitionDao.loadById(userviewId, AppUtil.getCurrentAppDefinition());
-        if(userviewDefinition == null)
-            return null;
-
-        return userviewService.createUserview(userviewDefinition.getJson(), null, false, "kecakmobile://", null, null, false);
     }
 
     /**
