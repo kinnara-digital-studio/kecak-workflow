@@ -4,7 +4,10 @@ import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.userview.model.*;
+import org.joget.apps.userview.model.BootstrapAceTheme;
+import org.joget.apps.userview.model.BootstrapAdminLteTheme;
+import org.joget.apps.userview.model.UserviewPermission;
+import org.joget.apps.userview.model.UserviewTheme;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
@@ -32,6 +35,7 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
     private FormLoadBinder optionsBinder;
     private FormStoreBinder storeBinder;
     private Validator validator;
+    private UserviewTheme theme;
 
     /**
      * Get load binder
@@ -255,9 +259,23 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         @SuppressWarnings("rawtypes")
 		Map dataModel = FormUtil.generateDefaultTemplateDataModel(this, formData);
 
-        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-        UserviewService userviewService = (UserviewService) AppUtil.getApplicationContext().getBean("userviewService");
-        UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
+        if(getTheme() == null) {
+            AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+            UserviewService userviewService = (UserviewService) AppUtil.getApplicationContext().getBean("userviewService");
+
+            // put Theme to form to optimize object creation
+            Form form = FormUtil.findRootForm(this);
+            if(form == null) { // current element is form
+                UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
+                setTheme(userviewTheme);
+            } else if(form.getTheme() == null) {
+                UserviewTheme userviewTheme = formData == null ? null : userviewService.getUserviewTheme(appDefinition.getAppId(), formData.getRequestParameter("userviewId"));
+                form.setTheme(userviewTheme);
+                setTheme(form.getTheme());
+            } else {
+                setTheme(form.getTheme());
+            }
+        }
 
         // set metadata for form builder
         dataModel.put("includeMetaData", includeMetaData);
@@ -265,6 +283,8 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
             String elementMetaData = FormUtil.generateElementMetaData(this);
             dataModel.put("elementMetaData", elementMetaData);
         }
+
+        UserviewTheme userviewTheme = getTheme();
         if(userviewTheme instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
         } else if(userviewTheme instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
@@ -422,5 +442,13 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         }
         
         return isAuthorize;
+    }
+
+    public UserviewTheme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(UserviewTheme theme) {
+        this.theme = theme;
     }
 }
