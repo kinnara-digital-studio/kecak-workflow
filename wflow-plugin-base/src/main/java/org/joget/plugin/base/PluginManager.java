@@ -538,8 +538,6 @@ public class PluginManager implements ApplicationContextAware {
         if (sr != null) {
             try {
                 Bundle bundle = sr.getBundle();
-                bundle.stop();
-                bundle.uninstall();
 
                 // execute event onUninstall
                 Arrays.stream(bundle.getRegisteredServices())
@@ -548,6 +546,9 @@ public class PluginManager implements ApplicationContextAware {
                         .filter(o -> o instanceof Plugin)
                         .map(o -> (Plugin)o)
                         .forEach(p -> p.onUninstall(applicationContext));
+
+                bundle.stop();
+                bundle.uninstall();
 
                 String location = bundle.getLocation();
                 context.ungetService(sr);
