@@ -12,6 +12,7 @@ import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.PluginWebSupport;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
@@ -149,7 +150,7 @@ public class SubForm extends AbstractSubForm implements FormBuilderPaletteElemen
             subFormHtml = subFormHtml.replaceAll("\"form-section", "\"subform-section");
             subFormHtml = subFormHtml.replaceAll("\"form-column", "\"subform-column");
             subFormHtml = subFormHtml.replaceAll("\"form-cell", "\"subform-cell");
-            html += subFormHtml;
+            html += "<div class='widget-body'><div class='widget-main no-padding'>" + subFormHtml + "</div></div>";
         } else {
             html += "SubForm could not be loaded";
         }

@@ -4,6 +4,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.*;
+import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.ExtDefaultPlugin;
@@ -260,7 +261,6 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
             String elementMetaData = FormUtil.generateElementMetaData(this);
             dataModel.put("elementMetaData", elementMetaData);
         }
-
         if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceFormElement) {
             return ((AceFormElement) this).renderAceTemplate(formData, dataModel);
         } else if(userview != null && userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteFormElement) {
