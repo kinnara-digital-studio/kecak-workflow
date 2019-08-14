@@ -6,13 +6,22 @@ import org.joget.apps.form.service.FormUtil;
 /**
  * Abstract base class for buttons in a form.
  */
-public abstract class FormButton extends Element implements FormAction {
+public abstract class FormButton extends Element implements FormAction, AceFormElement {
 
     public static final String DEFAULT_ID = "submit";
 
     @Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "submitButton.ftl";
+
+        String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
+        return html;
+    }
+
+
+    @Override
+    public String renderAceTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
+        String template = "AceTheme/AceSubmitButton.ftl";
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
