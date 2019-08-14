@@ -20,4 +20,9 @@ public abstract class AbstractAceUserviewTheme extends UserviewTheme implements 
     public String getRunProcessJsp() {
         return "userview/plugin/AceRunProcess.jsp";
     }
+
+    @Override
+    public String getLoginJsp() {
+        return "ubuilder/AceLogin";
+    }
 }

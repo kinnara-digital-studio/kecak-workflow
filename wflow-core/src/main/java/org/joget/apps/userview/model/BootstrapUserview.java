@@ -18,6 +18,8 @@ public interface BootstrapUserview {
 
     String getRunProcessJsp();
 
+    String getLoginJsp();
+
     default String getUnauthorizedJsp() {
         return "userview/plugin/unauthorized.jsp";
     }

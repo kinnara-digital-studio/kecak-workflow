@@ -11,8 +11,8 @@
         <#else>
             <div class="radio">
                 <label>
-                    <input grouping="${option.grouping!?html}" <#if element.properties.readonly! != 'true'>id="${elementParamName!}"</#if> name="${elementParamName!}" type="radio" value="${option.value!?html}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled</#if> <#if value?? && value == option.value!>checked</#if> />
-                    <span class="lbl">${option.label!?html}</span>
+                    <input class="ace" grouping="${option.grouping!?html}" <#if element.properties.readonly! != 'true'>id="${elementParamName!}"</#if> name="${elementParamName!}" type="radio" value="${option.value!?html}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled</#if> <#if value?? && value == option.value!>checked</#if> />
+                    <span class="lbl"> ${option.label!?html}</span>
                 </label>
             </div>
         </#if>

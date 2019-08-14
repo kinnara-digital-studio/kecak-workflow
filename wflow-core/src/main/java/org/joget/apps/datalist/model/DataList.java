@@ -663,7 +663,7 @@ public class DataList {
     }
 
     private String getPageSizeSelectorTemplate() {
-        String template = "<select id='" + getDataListEncodedParamName(PARAMETER_PAGE_SIZE) + "' name='" + getDataListEncodedParamName(PARAMETER_PAGE_SIZE) + "'>";
+        String template = "<select class='form-control' id='" + getDataListEncodedParamName(PARAMETER_PAGE_SIZE) + "' name='" + getDataListEncodedParamName(PARAMETER_PAGE_SIZE) + "'>";
         String value = getPageSize().toString();
             
         String[] list = getPageSizeList().split(",");

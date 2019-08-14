@@ -150,7 +150,7 @@ public class SubForm extends AbstractSubForm implements FormBuilderPaletteElemen
             subFormHtml = subFormHtml.replaceAll("\"form-section", "\"subform-section");
             subFormHtml = subFormHtml.replaceAll("\"form-column", "\"subform-column");
             subFormHtml = subFormHtml.replaceAll("\"form-cell", "\"subform-cell");
-            html += "<div class='widget-body'><div class='widget-main no-padding'>" + subFormHtml + "</div></div>";
+            html += "<div class='widget-body'><div class='widget-main'>" + subFormHtml + "</div></div>";
         } else {
             html += "SubForm could not be loaded";
         }

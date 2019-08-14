@@ -23,4 +23,9 @@ public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implem
     public String getRunProcessJsp() {
         return "userview/plugin/AdminLteRunProcess.jsp";
     }
+
+    @Override
+    public String getLoginJsp() {
+        return "ubuilder/AdminLteLogin";
+    }
 }
