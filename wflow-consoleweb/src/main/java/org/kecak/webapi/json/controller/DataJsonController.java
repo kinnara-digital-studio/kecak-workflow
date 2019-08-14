@@ -1035,7 +1035,7 @@ public class DataJsonController {
                 @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
                 @Nonnull List<String> aids = convertMultiValueParameterToList(activityDefIds);
 
-                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(dataListId, pids, aids,null, null, null, null);
+                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(pids, aids,null, null, null, null);
 
                 // get original process ID from assignments
                 final Map<String, Collection<String>> mapPrimaryKeyToProcessId = workflowProcessLinkDao.getOriginalIds(assignmentList.stream().map(WorkflowAssignment::getProcessId).collect(Collectors.toList()));
@@ -1165,7 +1165,7 @@ public class DataJsonController {
                 @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
                 @Nonnull List<String> aids = convertMultiValueParameterToList(activityId);
 
-                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(dataListId, pids, aids,null, null, null, null);
+                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(pids, aids,null, null, null, null);
 
                 // get original process ID from assignments
                 @Nonnull List<String> originalPids = workflowProcessLinkDao
@@ -1199,7 +1199,6 @@ public class DataJsonController {
      * Get Assignment List
      * Get assignment of dataList
      *
-     * @param dataListId
      * @param processIds
      * @param activityDefIds
      * @param sort
@@ -1209,7 +1208,7 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private Collection<WorkflowAssignment> getAssignmentList(@Nonnull String dataListId, @Nonnull final List<String> processIds, @Nonnull final List<String> activityDefIds, String sort, Boolean desc, Integer start, Integer size) {
+    private Collection<WorkflowAssignment> getAssignmentList(@Nonnull final List<String> processIds, @Nonnull final List<String> activityDefIds, String sort, Boolean desc, Integer start, Integer size) {
         @Nonnull final AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         @Nonnull final ApplicationContext ac = AppUtil.getApplicationContext();
         @Nonnull final WorkflowManager workflowManager = (WorkflowManager)ac.getBean("workflowManager");
@@ -1233,61 +1232,11 @@ public class DataJsonController {
 
                 // get assignments
                 .flatMap(pid -> activityDefIds.stream()
-                        .map(aid -> {
-                            if (!dataListId.isEmpty()) {
-                                return workflowManager.getAssignmentListLite(packageDef.getId(), pid, null, aid, sort, desc, start, size);
-                            } else {
-                                return workflowManager.getAssignmentList(packageDef.getId(), pid, null, aid, sort, desc, start, size);
-                            }
-                        })
+                        .map(aid -> workflowManager.getAssignmentListLite(packageDef.getId(), pid, null, aid, sort, desc, start, size))
                         .filter(Objects::nonNull)
                         .flatMap(Collection::stream))
                 .collect(Collectors.toList());
-
-//        if (processId == null || processId.isEmpty()) {
-//            PackageDefinition packageDef = appDef.getPackageDefinition();
-//            if (packageDef != null) {
-//                if (!dataListId.isEmpty()) {
-//                    return workflowManager.getAssignmentListLite(packageDef.getId(), null, null, null, sort, desc, start, size);
-//                }
-//                return workflowManager.getAssignmentList(packageDef.getId(), null, null, null, sort, desc, start, size);
-//            }
-//        } else {
-//            WorkflowProcess process = appService.getWorkflowProcessForApp(appDef.getId(), appDef.getVersion().toString(), processId);
-//            if (process != null) {
-//                if (activityDefIds == null || activityDefIds.length == 0) {
-//                    // Filter by PROCESS ID
-//                    if (!dataListId.isEmpty()) {
-//                        return workflowManager.getAssignmentListLite(null, process.getId(), null, null, sort, desc, start, size);
-//                    } else {
-//                        return workflowManager.getAssignmentList(null, process.getId(), null, null, sort, desc, start, size);
-//                    }
-//                } else {
-//                    // Filter by PROCESS ID and ACTIVITY ID
-//                    return Arrays.stream(activityDefIds)
-//                            .map(a -> a.split(";"))
-//                            .flatMap(Arrays::stream)
-//                            .map(String::trim)
-//                            .filter(s -> !s.isEmpty())
-//                            .map(activityDefId -> {
-//                                if (!dataListId.isEmpty()) {
-//                                    return workflowManager.getAssignmentListLite(null, process.getId(), null, activityDefId, sort, desc, start, size);
-//                                } else {
-//                                    return workflowManager.getAssignmentList(null, process.getId(), null, activityDefId, sort, desc, start, size);
-//                                }
-//                            })
-//                            .flatMap(Collection::stream)
-//                            .collect(Collectors.toList());
-//                }
-//            }
-//        }
-//        return new ArrayList<>();
     }
-
-    private String nullIfEmpty(String s) {
-        return s.isEmpty() ? null : s;
-    }
-
 
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"

@@ -111,7 +111,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         return getJspPage("userview/plugin/form.jsp", "userview/plugin/datalist.jsp");
     }
 
-    protected String getJspPage(String jspFormFile, String jspListFile) {
+    private String getJspPage(String jspFormFile, String jspListFile) {
         String mode = getRequestParameterString("_mode");
 
         if ("assignment".equals(mode)) {
@@ -143,7 +143,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         return jspFile;
     }
 
-    protected void viewList() {
+    private void viewList() {
         try {
             // get data list
             DataList dataList = getDataList();
@@ -183,7 +183,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         }
     }
 
-    protected DataList getDataList() {
+    private DataList getDataList() {
         if (cacheDataList == null) {
             // get datalist
             ApplicationContext ac = AppUtil.getApplicationContext();
@@ -197,7 +197,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	protected DataListCollection getRows(DataList dataList) {
+    private DataListCollection getRows(DataList dataList) {
         try {
             DataListCollection resultList = new DataListCollection();
 
@@ -256,7 +256,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         }
     }
 
-    public int getDataTotalRowCount() {
+    private int getDataTotalRowCount() {
         WorkflowManager workflowManager = (WorkflowManager) WorkflowUtil.getApplicationContext().getBean("workflowManager");
 
         String packageId = null;
@@ -289,7 +289,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         return count;
     }
 
-    protected String handleForm(String jspFile) {
+    private String handleForm(String jspFile) {
         AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         if ("submit".equals(getRequestParameterString("_action"))) {
             // only allow POST
@@ -353,7 +353,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         }
     }
 
-    protected PackageActivityForm retrieveAssignmentForm(FormData formData, WorkflowAssignment assignment) {
+    private PackageActivityForm retrieveAssignmentForm(FormData formData, WorkflowAssignment assignment) {
         String activityId = assignment.getActivityId();
         String formUrl = addParamToUrl(getUrl(), "_action", "submit");
         formUrl = addParamToUrl(formUrl, "_mode", "assignment");
@@ -443,7 +443,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
     }
 
     @SuppressWarnings("deprecation")
-	protected Form submitAssignmentForm(FormData formData, WorkflowAssignment assignment, PackageActivityForm activityForm) {
+    private Form submitAssignmentForm(FormData formData, WorkflowAssignment assignment, PackageActivityForm activityForm) {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -544,7 +544,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         }
     }
 
-    protected String addParamToUrl(String url, String name, String value) {
+    private String addParamToUrl(String url, String name, String value) {
         return StringUtil.addParamsToUrl(url, name, value);
     }
 
