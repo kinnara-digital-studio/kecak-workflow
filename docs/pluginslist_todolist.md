@@ -42,7 +42,7 @@ Description :
 |**Header Label**             |Labels for data sorting headers                                |
 |**View All Todolist Label**  |Label for the button see all todo list data                    |
 |**View All My Request Label**|Label for the button sees all my request data                  |
-| **Additional HTML**         |Additional HTML for custom                                     |
+| **Additional HTML**         |Enter additional HTML scripts                                  |
 
 
 
