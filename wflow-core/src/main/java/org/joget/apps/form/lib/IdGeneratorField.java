@@ -7,21 +7,20 @@ import java.util.regex.Pattern;
 import org.joget.apps.app.dao.EnvironmentVariableDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
 
-public class IdGeneratorField extends Element implements FormBuilderPaletteElement {
+public class IdGeneratorField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
     @SuppressWarnings("unchecked")
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "idGeneratorField.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
 
         String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
@@ -127,5 +126,17 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
 
     public String getPropertyOptions() {
         return AppUtil.readPluginResource(getClass().getName(), "/properties/form/idGeneratorField.json", null, true, "message/form/IdGeneratorField");
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceIdGeneratorField.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteIdGeneratorField.ftl";
+        return renderTemplate(template,formData,dataModel);
     }
 }

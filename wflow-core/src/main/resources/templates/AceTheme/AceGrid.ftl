@@ -1,4 +1,4 @@
-<div class="form-cell" ${elementMetaData!}>
+<div class="form-cell form-group" ${elementMetaData!}>
     <script type="text/javascript" src="${request.contextPath}/js/jquery/jquery.jeditable.js"></script>
     <script type="text/javascript" src="${request.contextPath}/plugin/org.joget.apps.form.lib.Grid/js/jquery.formgrid.js"></script>
     <style type="text/css">

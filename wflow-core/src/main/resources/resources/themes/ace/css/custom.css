@@ -35,3 +35,8 @@
     font-family:FontAwesome;
     padding:5px;
 }
+
+span.form-control{
+    padding-left:0;
+    border:0;
+}
