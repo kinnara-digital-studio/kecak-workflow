@@ -57,7 +57,7 @@
 				<!-- DataSource -->
 				<prop key="org.quartz.jobStore.dataSource">quartzDS</prop>
 				<prop key="org.quartz.dataSource.quartzDS.URL">jdbc:mysql://localhost:3306/kecakdb?characterEncoding=UTF-8</prop>
-				<prop key="org.quartz.dataSource.quartzDS.driver">com.mysql.jdbc.Driver</prop>
+				<prop key="org.quartz.dataSource.quartzDS.driver">com.mysql.cj.jdbc.Driver</prop>
 				<prop key="org.quartz.dataSource.quartzDS.user">root</prop>
 				<prop key="org.quartz.dataSource.quartzDS.password">root</prop>
 				<prop key="org.quartz.dataSource.quartzDS.maxConnections">5</prop>

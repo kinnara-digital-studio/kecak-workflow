@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Service methods used to manage plugins
@@ -259,12 +260,12 @@ public class PluginManager implements ApplicationContextAware {
             bundle.start();
 
             // execute event onInstall
-                Arrays.stream(bundle.getRegisteredServices())
-                        .filter(Objects::nonNull)
-                        .map(context::getService)
-                        .filter(o -> o instanceof Plugin)
-                        .map(o -> (Plugin) o)
-                        .forEach(p -> p.onInstall(applicationContext));
+            Optional.ofNullable(bundle.getRegisteredServices()).map(Arrays::stream).orElse(Stream.empty())
+                    .filter(Objects::nonNull)
+                    .map(context::getService)
+                    .filter(o -> o instanceof Plugin)
+                    .map(o -> (Plugin) o)
+                    .forEach(p -> p.onInstall(applicationContext));
 
             LogUtil.info(PluginManager.class.getName(), "Bundle " + bundle.getSymbolicName() + " started");
         } catch (Exception be) {
@@ -540,7 +541,7 @@ public class PluginManager implements ApplicationContextAware {
                 Bundle bundle = sr.getBundle();
 
                 // execute event onUninstall
-                Arrays.stream(bundle.getRegisteredServices())
+                Optional.ofNullable(bundle.getRegisteredServices()).map(Arrays::stream).orElse(Stream.empty())
                         .filter(Objects::nonNull)
                         .map(context::getService)
                         .filter(o -> o instanceof Plugin)
