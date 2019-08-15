@@ -1,5 +1,7 @@
 package org.joget.apps.userview.model;
 
+import org.joget.commons.util.LogUtil;
+
 /**
  * Base class for
  */

@@ -246,31 +246,11 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
           <![endif]-->
 
           <!-- Google Font -->
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+          <link rel="stylesheet" href="${pageContext.request.contextPath}/css/fonts.css">
           <link href="${pageContext.request.contextPath}/css/userview.css?build=<fmt:message key="build.number"/>" rel="stylesheet" type="text/css" />
           <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon_uv.ico"/>
     </head>
-<!--
-BODY TAG OPTIONS:
-=================
-Apply one or more of the following classes to get the
-desired effect
-|---------------------------------------------------------|
-| SKINS         | skin-blue                               |
-|               | skin-black                              |
-|               | skin-purple                             |
-|               | skin-yellow                             |
-|               | skin-red                                |
-|               | skin-green                              |
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
--->
-<body id="${bodyId}" class="hold-transition skin-blue sidebar-mini <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
+<body id="${bodyId}" class="hold-transition ${userview.setting.theme.properties.skin}  ${userview.setting.theme.properties.layout} <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
 <div class="wrapper">
   <!-- Main Header -->
   <header class="main-header">
@@ -318,7 +298,19 @@ desired effect
               </li>
               <li class="user-footer">
                 <div class="pull-right">
-                  <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat">${userview.properties.logoutText}</a>
+
+                  <c:choose>
+                      <c:when test="${isAnonymous}">
+                          <a href="${pageContext.request.contextPath}/web/ulogin/${appId}/${userview.properties.id}/<c:out value="${key}"/>" class="btn btn-default btn-flat">
+                            <fmt:message key="ubuilder.login"/>
+                          </a>
+                      </c:when>
+                      <c:otherwise>
+                          <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat">
+                            ${userview.properties.logoutText}
+                          </a>
+                      </c:otherwise>
+                  </c:choose>
                 </div>
               </li>
             </ul>

@@ -1,5 +1,5 @@
 <div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <label class="label control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
+    <label class="control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
     <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
         <div class="form-cell-value"><span>${value!?html}</span></div>
         <input id="${elementParamName!}" name="${elementParamName!}" type="hidden" value="${value!?html}" class="form-control" />

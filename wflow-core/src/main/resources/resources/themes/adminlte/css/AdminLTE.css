@@ -3240,7 +3240,7 @@ table.text-center th {
  */
 .login-logo,
 .register-logo {
-  font-size: 35px;
+  font-size: 35px !important;
   text-align: center;
   margin-bottom: 25px;
   font-weight: 300;
@@ -4936,40 +4936,10 @@ table.text-center th {
 .chart canvas {
   width: 100% !important;
 }
-.form-section-title span{
-  font-family: 'Source Sans Pro', sans-serif;
-  font-size:18px;
-  font-weight:500;
-  line-height:18px;
-}
+
 .form-cell{
     margin-bottom:15px;
     padding:0;
-}
-.form-cell .label{
-    display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
-    font-weight: 700;
-    width: auto;
-    padding: 0;
-    color: black;
-    font-size: 13px;
-}
-
-.form-section-title{
-  border-bottom: 1px solid #f4f4f4;
-  color: #444;
-  display: block;
-  padding: 10px 0;
-  position: relative;
-}
-.form-column {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  padding: 10px 0;
 }
 
 .print-button{
@@ -5043,6 +5013,10 @@ table.text-center th {
     background-color: #337ab7;
     border-color: #337ab7;
     margin-right: 1px;
+}
+
+.subform-cell{
+    background-color:#f4f4f4;
 }
 
 /*

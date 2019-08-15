@@ -8,7 +8,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 
-public class CheckBox extends SelectBox implements FormBuilderPaletteElement, AceFormElement {
+public class CheckBox extends SelectBox implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
     @Override
     public String getName() {
@@ -117,6 +117,12 @@ public class CheckBox extends SelectBox implements FormBuilderPaletteElement, Ac
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AceCheckBox.ftl";
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteCheckBox.ftl";
         return renderTemplate(template, formData, dataModel);
     }
 }

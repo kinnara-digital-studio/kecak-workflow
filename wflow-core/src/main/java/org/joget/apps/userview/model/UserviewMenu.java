@@ -1,5 +1,6 @@
 package org.joget.apps.userview.model;
 
+import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
 
 /**
@@ -141,7 +142,7 @@ public abstract class UserviewMenu extends ExtElement{
         if (readyJspPage == null) {
             if(userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceUserviewMenu) {
                 readyJspPage = ((AceUserviewMenu) this).getAceJspPage((BootstrapUserview) userview.getSetting().getTheme());
-            } if(userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AdminLteUserviewMenu) {
+            } else if(userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteUserviewMenu) {
                 readyJspPage = ((AdminLteUserviewMenu) this).getAdminLteJspPage((BootstrapUserview) userview.getSetting().getTheme());
             } else {
                 readyJspPage = getJspPage();

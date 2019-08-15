@@ -6,7 +6,7 @@ import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
 
-public class PasswordField extends Element implements FormBuilderPaletteElement, AceFormElement {
+public class PasswordField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
     public static final String SECURE_VALUE = "****SECURE VALUE****";  
 
     public String getName() {
@@ -146,6 +146,12 @@ public class PasswordField extends Element implements FormBuilderPaletteElement,
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AcePasswordField.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLtePasswordField.ftl";
         return renderTemplate(template,formData,dataModel);
     }
 }

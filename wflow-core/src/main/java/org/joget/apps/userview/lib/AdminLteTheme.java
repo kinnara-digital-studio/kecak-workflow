@@ -12,7 +12,7 @@ public class AdminLteTheme extends AbstractAdminLteUserviewTheme {
         css = css.replaceAll("@@contextPath@@", getRequestParameterString("contextPath"));
         css = "<style type=\"text/css\">" + css + "</style>\n";
         css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/AdminLTE.css\"/>\n";
-        css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/skins/skin-blue.css\"/>\n";
+        css += "<link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"" + getRequestParameterString("contextPath") + path + "/css/skins/_all-skins.min.css\"/>\n";
         return css;
     }
 

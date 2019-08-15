@@ -20,7 +20,7 @@ import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 
-public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement {
+public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
     public String getName() {
         return "File Upload";
@@ -306,6 +306,12 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AceFileUpload.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteFileUpload.ftl";
         return renderTemplate(template,formData,dataModel);
     }
 }

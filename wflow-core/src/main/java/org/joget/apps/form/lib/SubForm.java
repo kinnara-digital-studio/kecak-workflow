@@ -17,7 +17,7 @@ import org.joget.plugin.base.PluginWebSupport;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 
-public class SubForm extends AbstractSubForm implements FormBuilderPaletteElement, PluginWebSupport, AceFormElement {
+public class SubForm extends AbstractSubForm implements FormBuilderPaletteElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
 
     public String getName() {
         return "Subform";
@@ -151,6 +151,34 @@ public class SubForm extends AbstractSubForm implements FormBuilderPaletteElemen
             subFormHtml = subFormHtml.replaceAll("\"form-column", "\"subform-column");
             subFormHtml = subFormHtml.replaceAll("\"form-cell", "\"subform-cell");
             html += "<div class='widget-body'><div class='widget-main'>" + subFormHtml + "</div></div>";
+        } else {
+            html += "SubForm could not be loaded";
+        }
+        html += "<div style='clear:both;'></div></div></div>";
+        return html;
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+
+        // set subform html
+        String elementMetaData = ((Boolean) dataModel.get("includeMetaData")) ? FormUtil.generateElementMetaData(this) : "";
+        Collection<Element> childElements = getChildren();
+        Form subForm = (childElements.size() > 0) ? (Form) getChildren().iterator().next() : null;
+        String label = getPropertyString("label");
+        String cellClass = ((Boolean) dataModel.get("includeMetaData")) ? "form-cell" : "subform-cell box";
+        String noFrame = ("true".equalsIgnoreCase(getPropertyString("noframe"))) ? " no-frame" : " has-frame";
+        String readonly = ("true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY))) ? " readonly" : "";
+        String html = "<div class='" + cellClass + "' " + elementMetaData + "><div class='subform-container"+noFrame+readonly+"'>";
+        if (!label.isEmpty()) {
+            html += "<div class='box-header'><h3 class='box-title'>" + label + "</h3></div>";
+        }
+        if (subForm != null) {
+            String subFormHtml = subForm.render(formData, false);
+            subFormHtml = subFormHtml.replaceAll("\"form-section", "\"subform-section");
+            subFormHtml = subFormHtml.replaceAll("\"form-column", "\"subform-column");
+            subFormHtml = subFormHtml.replaceAll("\"form-cell", "\"subform-cell");
+            html += "<div class='box-body'>" + subFormHtml + "</div>";
         } else {
             html += "SubForm could not be loaded";
         }

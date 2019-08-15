@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Grid extends Element implements FormBuilderPaletteElement, FormContainer, AceFormElement {
+public class Grid extends Element implements FormBuilderPaletteElement, FormContainer, AceFormElement, AdminLteFormElement {
     protected Map<FormData, FormRowSet> cachedRowSet = new HashMap<FormData, FormRowSet>();
 
     public String getName() {
@@ -295,6 +295,12 @@ public class Grid extends Element implements FormBuilderPaletteElement, FormCont
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AceGrid.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteGrid.ftl";
         return renderTemplate(template,formData,dataModel);
     }
 }

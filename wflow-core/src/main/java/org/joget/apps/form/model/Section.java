@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormUtil;
 
-public class Section extends Element implements FormBuilderEditable, FormContainer, AceFormElement {
+public class Section extends Element implements FormBuilderEditable, FormContainer, AceFormElement, AdminLteFormElement {
     private Boolean continueValidation = null;
 
     public String getName() {
@@ -132,6 +132,16 @@ public class Section extends Element implements FormBuilderEditable, FormContain
     public String renderAceTemplate(FormData formData, Map dataModel) {
         if (((Boolean) dataModel.get("includeMetaData") == true) || isAuthorize(formData)) {
             String template = "AceTheme/AceSection.ftl";
+            return renderTemplate(template,formData,dataModel);
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        if (((Boolean) dataModel.get("includeMetaData") == true) || isAuthorize(formData)) {
+            String template = "AdminLteTheme/AdminLteSection.ftl";
             return renderTemplate(template,formData,dataModel);
         } else {
             return "";

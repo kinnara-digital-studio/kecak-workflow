@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement {
+public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
     private final WeakHashMap<String, Form> formCache = new WeakHashMap<>();
 
     private Element controlElement;
@@ -336,6 +336,12 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AceSelectBox.ftl";
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteSelectBox.ftl";
         return renderTemplate(template, formData, dataModel);
     }
 }

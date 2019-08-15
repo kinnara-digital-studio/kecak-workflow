@@ -13,7 +13,7 @@ import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-public class DatePicker extends Element implements FormBuilderPaletteElement, AceFormElement {
+public class DatePicker extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
     
     public String getName() {
         return "Date Picker";
@@ -274,6 +274,12 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AceDatePicker.ftl";
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteDatePicker.ftl";
         return renderTemplate(template, formData, dataModel);
     }
 }

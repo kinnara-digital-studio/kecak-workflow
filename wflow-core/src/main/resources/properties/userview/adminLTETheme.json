@@ -2,6 +2,12 @@
   title : 'Configure Admin Lte Theme',
   properties : [
   {
+    name : 'loginMessage',
+    label : 'Login Message',
+    type : 'textfield',
+    value: 'Please Enter Your Information'
+  },
+  {
     name : 'useDropdown',
     label : 'Use Dropdown',
     type : 'checkbox',
@@ -9,7 +15,73 @@
       value : 'true',
       label : ''
     }]
-  },{
+  },
+    {
+      name : 'skin',
+      label : 'Userview Skin',
+      type : 'selectbox',
+      value: 'skin-blue',
+      required:'true',
+      options : [{
+        value : 'skin-black',
+        label : 'Black'
+      },{
+        value : 'skin-black-light',
+        label : 'Black Light'
+      },{
+        value : 'skin-blue',
+        label : 'Blue'
+      },{
+        value : 'skin-blue-light',
+        label : 'Blue Light'
+      },{
+        value : 'skin-green',
+        label : 'Green'
+      },{
+        value : 'skin-green-light',
+        label : 'Green Light'
+      },{
+        value : 'skin-purple',
+        label : 'Purple'
+      },{
+        value : 'skin-purple-light',
+        label : 'Purple Light'
+      },{
+        value : 'skin-red',
+        label : 'Red'
+      },{
+        value : 'skin-red-light',
+        label : 'Red Light'
+      },{
+        value : 'skin-yellow',
+        label : 'Yellow'
+      },{
+        value : 'skin-yellow-light',
+        label : 'Yellow Light'
+      }
+      ]
+    },
+    {
+      name : 'layout',
+      label : 'Layout Options',
+      type : 'selectbox',
+      value: 'sidebar-mini',
+      required:'true',
+      options : [{
+        value : 'layout-boxed',
+        label : 'Layout Boxed'
+      },{
+        value : 'layout-top-nav',
+        label : 'Layout Top Nav'
+      },{
+        value : 'sidebar-collapse',
+        label : 'Sidebar Collapse'
+      },{
+        value : 'sidebar-mini',
+        label : 'Sidebar Mini'
+      }
+      ]
+    }, {
     name : 'css',
     label : '@@userview.defaulttheme.css@@',
     type : 'codeeditor',
