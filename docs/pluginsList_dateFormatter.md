@@ -23,6 +23,14 @@ Datalist
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_edit.png" alt="" />
 
+|           FIELD           |         DESCRIPTION                             |
+|---------------------------|-------------------------------------------------|
+|**Name**                   | Naming of date formatter|
+|**URL Request Parameter**  | URL                     |
+|**Label**                  |  |
+|**Type**                   |  |
+
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneral.png" alt="" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralChooseType.png" alt="" />
