@@ -10,7 +10,7 @@ Displays the role management settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/authorizationObject.png" alt="authorizationObject" />
 
-** Object ID
+**Object ID**
 
 - **ID**    
     `id`  
@@ -20,7 +20,7 @@ Displays the role management settings
     Yes
 
 --------
-** Object Type
+**Object Type**
 
 - **ID**    
     `-`  
@@ -35,7 +35,7 @@ Displays the role management settings
 
 --------
 
-**Object Name
+**Object Name*(
 
 - **ID**    
     `-`  
@@ -72,7 +72,7 @@ The data has been stored, then the data display is as follows (red marked):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement5.png" alt="roleManagement5" />
 
-**Role ID
+**Role ID**
 
 - **ID**    
     `-`  
@@ -82,7 +82,7 @@ The data has been stored, then the data display is as follows (red marked):
     Yes
     
 --------
-**Authorization Object
+**Authorization Object**
 
 - **ID**    
     `-`  
@@ -92,7 +92,7 @@ The data has been stored, then the data display is as follows (red marked):
     No
     
 --------
-**Permission
+**Permission**
 
 - **ID**    
     `-`  
@@ -117,7 +117,7 @@ The data has been stored, then the data display is as follows (red marked):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement8.png" alt="roleManagement8" />
 
-**Group ID
+**Group ID**
 
 - **ID**    
     `-`  
@@ -127,7 +127,7 @@ The data has been stored, then the data display is as follows (red marked):
     Yes
 
 --------
-**Roles
+**Roles**
 
 - **ID**    
     `-`  
@@ -137,7 +137,7 @@ The data has been stored, then the data display is as follows (red marked):
     No
 
 --------
-**Users
+**Users**
 
 - **ID**    
     `-`  
@@ -147,7 +147,7 @@ The data has been stored, then the data display is as follows (red marked):
     No
 
 --------
-**Groups
+**Groups**
 
 - **ID**    
     `-`  
