@@ -27,18 +27,23 @@ Plugins currency text field is a plugins for set data currency format.
 
 Description :
 
-|                   FIELD                 |                        DESCRIPTION                        |
-|-----------------------------------------|-----------------------------------------------------------|
-|**ID**                                   ||
-|**Label**                                |               |
-|**Value**                                |  |
+|                   FIELD                 |                                       DESCRIPTION                                    |
+|-----------------------------------------|--------------------------------------------------------------------------------------|
+|**ID**                                   | The form ID to be created from the currency field                                    |
+|**Label**                                | Naming for the form of currency to be used                                           |
+|**Value**                                | The value of the form to be entered. can display the default value or leave it blank |
 |**Max Length**                           |               |
 |**Size**                                 |                           |
-|**Currency Format**                      |              |
-|**Decimal Digits**                       |                                   |
-|**Show Currency Symbol**                 |                                   |
-|**Readonly**                             |                                   |
-|**Display field as label when readonly** |                                   |
+|**Currency Format**                      | Currency format to be used                                                           |
+|**Decimal Digits**                       | determines how many decimal places to display after the com                          |
+|**Show Currency Symbol**                 | Option to display selected currency symbols                                          |
+|**Readonly**                             | Options for reading only                                                             |
+|**Display field as label when readonly** | Option to display fields as Label when only read                                     |
+
+
+
+The maximum length of the field to be displayed
+
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyTextField_fillForm.png" alt = "" />
 
