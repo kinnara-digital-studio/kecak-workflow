@@ -35,7 +35,7 @@ Displays the role management settings
 
 --------
 
-**Object Name*(
+**Object Name**
 
 - **ID**    
     `-`  
