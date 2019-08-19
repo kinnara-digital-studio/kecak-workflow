@@ -1,6 +1,7 @@
 # Date Formatter
 
-Date formatter is a datalist format based on date.
+Date formatter is a plugin that functions as sorting data based on the desired date.
+
 ## How To Use
 
 1. Open apps
