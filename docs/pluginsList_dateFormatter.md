@@ -6,7 +6,7 @@ Datalist
 
 1. Open apps
 
-2. Choose datalist
+2. Choose and open datalist
 
 3. Drag and drop
 
