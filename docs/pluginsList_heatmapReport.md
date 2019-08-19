@@ -4,6 +4,8 @@
 
 Heatmap Report Menu is userview menu plugin to display Heatmap Report. Heatmap Report visualize the “crowds” of activities in particular process, using either “Hit Count” or “Lead Time”.
 
+# How To Settings Heatmap Report in Uservew Menu
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap.png" alt="" />
 
 **Pre-Configuration**
