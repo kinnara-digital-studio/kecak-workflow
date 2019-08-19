@@ -10,41 +10,19 @@ Displays the role management settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/authorizationObject.png" alt="authorizationObject" />
 
-**Object ID**
+Description :
 
-- **ID**    
-    `id`  
-- **Description**  
-    ID from authorization object 
-- **Mandatory**  
-    Yes
+|      FIELD      |         DESCRIPTION           |
+|-----------------|-------------------------------|
+|**Object ID**    |ID from authorization object   |
+|**Object Type**  |Type from authorization object |
+|**Object Name**  |Object Name for display        |
 
---------
 **Object Type**
 
-- **ID**    
-    `-`  
-- **Description**  
-    ID from
-- **Mandatory**  
-    Yes
-
-   * Field : paired on the permission
-   * Menu/Section : paired on the load binder
-   * Action : Trigger process/ execute button in datalist action button (For Write)
-
---------
-
-**Object Name**
-
-- **ID**    
-    `-`  
-- **Description**  
-    Object Name for display
-- **Mandatory**  
-    No
-
---------
+* Field : paired on the permission
+* Menu/Section : paired on the load binder
+* Action : Trigger process/ execute button in datalist action button (For Write)
 
 The image above is the image of the fill field for the authorization object, which is fill Object ID, Object Type (Field or Menu/Section), and Object Name.
 
