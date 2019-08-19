@@ -3,8 +3,14 @@
 ### Overview ###
 Displays the role management settings
 
-### Plugin Properties ###
-#### Object ID
+
+### How To Use ###
+- **Authorization Object**
+: attached to each field, user view or datalist, or element.
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/authorizationObject.png" alt="authorizationObject" />
+
+**Object ID
 
 - **ID**    
     `id`  
@@ -14,7 +20,7 @@ Displays the role management settings
     Yes
 
 --------
-#### Object Type
+**Object Type
 
 - **ID**    
     `-`  
@@ -28,7 +34,8 @@ Displays the role management settings
    * Action : Trigger process/ execute button in datalist action button (For Write)
 
 --------
-#### Object Name
+
+**Object Name
 
 - **ID**    
     `-`  
@@ -38,83 +45,7 @@ Displays the role management settings
     No
 
 --------
-#### Role ID
 
-- **ID**    
-    `-`  
-- **Description**  
-    ID of the role to be created
-- **Mandatory**  
-    Yes
-
---------
-#### Authorization Object
-
-- **ID**    
-    `-`  
-- **Description**  
-    authorization object which will be included in the role that is created
-- **Mandatory**  
-    No
-
---------
-#### Permission
-
-- **ID**    
-    `-`  
-- **Description**  
-    the permissions to be used in the role that will be created
-- **Mandatory**  
-    No
-
---------
-#### Group ID
-
-- **ID**    
-    `-`  
-- **Description**  
-    ID of the role group to be created
-- **Mandatory**  
-    Yes
-
---------
-#### Roles
-
-- **ID**    
-    `-`  
-- **Description**  
-    roles that will fit into the group to be created
-- **Mandatory**  
-    No
-
---------
-#### Users
-
-- **ID**    
-    `-`  
-- **Description**  
-    determines which users are logged into the created group
-- **Mandatory**  
-    No
-
---------
-#### Groups
-
-- **ID**    
-    `-`  
-- **Description**  
-    groups in LDAP into the created group
-- **Mandatory**  
-    No
-
---------
-
-
-### How To Use ###
-- **Authorization Object**
-: attached to each field, user view or datalist, or element.
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/authorizationObject.png" alt="authorizationObject" />
 The image above is the image of the fill field for the authorization object, which is fill Object ID, Object Type (Field or Menu/Section), and Object Name.
 
 The difference between Object Type Field and Menu / Section is, in Object Type Field must input Object Name, while in Object Type Menu / Section does not have to input Object Name.
@@ -141,6 +72,37 @@ The data has been stored, then the data display is as follows (red marked):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement5.png" alt="roleManagement5" />
 
+**Role ID
+
+- **ID**    
+    `-`  
+- **Description**  
+    ID of the role to be created
+- **Mandatory**  
+    Yes
+    
+--------
+**Authorization Object
+
+- **ID**    
+    `-`  
+- **Description**  
+    authorization object which will be included in the role that is created
+- **Mandatory**  
+    No
+    
+--------
+**Permission
+
+- **ID**    
+    `-`  
+- **Description**  
+    authorization object which will be included in the role that is created
+- **Mandatory**  
+    No
+    
+--------
+
 The image above is the image of the fill field for the Role, which is fill Role ID and which Authorization Object into the Role.
 
 The following is an example of data filling:
@@ -154,6 +116,47 @@ The data has been stored, then the data display is as follows (red marked):
 : attached to the person (user) user / group access
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement8.png" alt="roleManagement8" />
+
+**Group ID
+
+- **ID**    
+    `-`  
+- **Description**  
+    ID of the role group to be created
+- **Mandatory**  
+    Yes
+
+--------
+**Roles
+
+- **ID**    
+    `-`  
+- **Description**  
+    roles that will fit into the group to be created
+- **Mandatory**  
+    No
+
+--------
+**Users
+
+- **ID**    
+    `-`  
+- **Description**  
+    determines which users are logged into the created group
+- **Mandatory**  
+    No
+
+--------
+**Groups
+
+- **ID**    
+    `-`  
+- **Description**  
+    groups in LDAP into the created group
+- **Mandatory**  
+    No
+
+--------
 
 The image above is the image of the fill field for the Role Group, which is fill Group ID, Roles, Users and Groups.
 
