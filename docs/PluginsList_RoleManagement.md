@@ -10,7 +10,7 @@ Displays the role management settings
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/authorizationObject.png" alt="authorizationObject" />
 
-**Object ID
+** Object ID
 
 - **ID**    
     `id`  
@@ -20,7 +20,7 @@ Displays the role management settings
     Yes
 
 --------
-**Object Type
+** Object Type
 
 - **ID**    
     `-`  
