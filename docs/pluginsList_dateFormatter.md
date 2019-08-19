@@ -1,7 +1,6 @@
 # Date Formatter
 
-Date formatter is for format datalist based on date. 
-
+Date formatter is a datalist format based on date.
 ## How To Use
 
 1. Open apps
@@ -23,6 +22,9 @@ Date formatter is for format datalist based on date.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_edit.png" alt="" />
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneral.png" alt="" />
+
+Description :
 |           FIELD           |         DESCRIPTION                             |
 |---------------------------|-------------------------------------------------|
 |**Name**                   | Naming of date formatter|
@@ -31,7 +33,6 @@ Date formatter is for format datalist based on date.
 |**Type**                   |  |
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneral.png" alt="" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralChooseType.png" alt="" />
 
