@@ -35,7 +35,7 @@ Description :
 |**Max Length**                           |               |
 |**Size**                                 |                           |
 |**Currency Format**                      | Currency format to be used                                                           |
-|**Decimal Digits**                       | determines how many decimal places to display after the com                          |
+|**Decimal Digits**                       | Determines how many decimal places to display after the com                          |
 |**Show Currency Symbol**                 | Option to display selected currency symbols                                          |
 |**Readonly**                             | Options for reading only                                                             |
 |**Display field as label when readonly** | Option to display fields as Label when only read                                     |
