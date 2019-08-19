@@ -1,6 +1,6 @@
 # Date Formatter
 
-Datalist 
+Date formatter is for format datalist based on date. 
 
 ## How To Use
 
