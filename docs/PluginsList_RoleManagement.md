@@ -131,10 +131,11 @@ example data from LDAP in Groups when Field Role Group:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_permission.png" alt="" />
 
 
-6. 
+6. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_ok.png" alt="" />
 
+7. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_save.png" alt="" />
 
