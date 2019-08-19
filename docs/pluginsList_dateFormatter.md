@@ -27,12 +27,12 @@ Date formatter is a plugin that functions as sorting data based on the desired d
 
 Description :
 
-|           FIELD           |         DESCRIPTION                             |
-|---------------------------|-------------------------------------------------|
-|**Name**                   | Naming of date formatter|
-|**URL Request Parameter**  | URL                     |
-|**Label**                  |  |
-|**Type**                   |  |
+|           FIELD           |              DESCRIPTION                 |
+|---------------------------|------------------------------------------|
+|**Name**                   | Naming of date formatter                 |
+|**URL Request Parameter**  | Address to get the parameter request     |
+|**Label**                  | Naming the fields that will be displayed |
+|**Type**                   | Data type of date to be displayed        |
 
 
 
