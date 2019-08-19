@@ -25,6 +25,7 @@ Date formatter is a datalist format based on date.
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneral.png" alt="" />
 
 Description :
+
 |           FIELD           |         DESCRIPTION                             |
 |---------------------------|-------------------------------------------------|
 |**Name**                   | Naming of date formatter|
