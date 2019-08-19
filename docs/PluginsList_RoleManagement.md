@@ -131,7 +131,7 @@ example data from LDAP in Groups when Field Role Group:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_permission.png" alt="" />
 
 
-5. 
+6. 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_ok.png" alt="" />
 
