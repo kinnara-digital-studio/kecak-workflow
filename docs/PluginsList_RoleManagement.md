@@ -30,15 +30,15 @@ The difference between Object Type Field and Menu / Section is, in Object Type F
 
 The following is an example of data filling with Object Type in the form of Menu / Section:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement1.png" alt="roleManagement1" />
-in Object Type Menu / Section does not have to input Object Name.
+In Object Type Menu / Section does not have to input Object Name.
 
 The following is an example of data filling with Object Type in the form of Field:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2.png" alt="roleManagement2" />
-in Object Type Field must input Object Name (not mandatory)
+In Object Type Field must input Object Name (not mandatory)
 
 The following is an example of data filling with Object Type in the form of Action:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement3.png" alt="roleManagement3" />
-in Object Type Field must input Object Name (not mandatory)
+In Object Type Field must input Object Name (not mandatory)
 
 
 The data has been stored, then the data display is as follows (red marked):
@@ -50,36 +50,14 @@ The data has been stored, then the data display is as follows (red marked):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement5.png" alt="roleManagement5" />
 
-**Role ID**
+Description :
 
-- **ID**    
-    `-`  
-- **Description**  
-    ID of the role to be created
-- **Mandatory**  
-    Yes
-    
---------
-**Authorization Object**
+|           FIELD          |                               DESCRIPTION                              |
+|--------------------------|------------------------------------------------------------------------|
+|**Role ID**               |ID of the role to be created                                            |
+|**Authorization Object**  |Authorization object which will be included in the role that is created |
+|**Permission**            |Authorization object which will be included in the role that is created |
 
-- **ID**    
-    `-`  
-- **Description**  
-    authorization object which will be included in the role that is created
-- **Mandatory**  
-    No
-    
---------
-**Permission**
-
-- **ID**    
-    `-`  
-- **Description**  
-    authorization object which will be included in the role that is created
-- **Mandatory**  
-    No
-    
---------
 
 The image above is the image of the fill field for the Role, which is fill Role ID and which Authorization Object into the Role.
 
@@ -95,46 +73,15 @@ The data has been stored, then the data display is as follows (red marked):
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement8.png" alt="roleManagement8" />
 
-**Group ID**
+Description :
 
-- **ID**    
-    `-`  
-- **Description**  
-    ID of the role group to be created
-- **Mandatory**  
-    Yes
+|    FIELD    |                       DESCRIPTION                       |
+|-------------|---------------------------------------------------------|
+|**Group ID** |ID of the role group to be created                       |
+|**Roles**    |Roles that will fit into the group to be created         |
+|**Users**    |Determines which users are logged into the created group |
+|**Groups**   |Groups in LDAP into the created group                    |
 
---------
-**Roles**
-
-- **ID**    
-    `-`  
-- **Description**  
-    roles that will fit into the group to be created
-- **Mandatory**  
-    No
-
---------
-**Users**
-
-- **ID**    
-    `-`  
-- **Description**  
-    determines which users are logged into the created group
-- **Mandatory**  
-    No
-
---------
-**Groups**
-
-- **ID**    
-    `-`  
-- **Description**  
-    groups in LDAP into the created group
-- **Mandatory**  
-    No
-
---------
 
 The image above is the image of the fill field for the Role Group, which is fill Group ID, Roles, Users and Groups.
 
