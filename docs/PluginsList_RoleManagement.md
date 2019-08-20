@@ -20,11 +20,11 @@ Description :
 
 **Object Type**
 
-* Field : paired on the permission
-* Menu/Section : paired on the load binder
-* Action : Trigger process/ execute button in datalist action button (For Write)
+* Field: paired on the permission
+* Menu/Section: paired on the load binder
+* Action: Trigger process/ execute button in data list action button (For Write)
 
-The image above is the image of the fill field for the authorization object, which is fill Object ID, Object Type (Field or Menu/Section), and Object Name.
+The image above is the image of the fill field for the authorization object, which is filled Object ID, Object Type (Field or Menu/Section), and Object Name.
 
 The difference between Object Type Field and Menu / Section is, in Object Type Field must input Object Name, while in Object Type Menu / Section does not have to input Object Name.
 
@@ -59,7 +59,7 @@ Description :
 |**Permission**            | Who can access the section                                             |
 
 
-The image above is the image of the fill field for the Role, which is fill Role ID and which Authorization Object into the Role.
+The image above is the image of the fill field for the Role, which is filled Role ID and which Authorization Object into the Role.
 
 The following is an example of data filling:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement6.png" alt="roleManagement6" />
@@ -69,7 +69,7 @@ The data has been stored, then the data display is as follows (red marked):
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_roleList.png" alt="roleList" />
 
 - **Role Group**
-: attached to the person (user) user / group access
+: attached to the person (user) user/group access
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement8.png" alt="roleManagement8" />
 
@@ -83,7 +83,7 @@ Description :
 |**Groups**   |Groups in LDAP into the created group                    |
 
 
-The image above is the image of the fill field for the Role Group, which is fill Group ID, Roles, Users and Groups.
+The image above is the image of the fill field for the Role Group, which is filled Group ID, Roles, Users, and Groups.
 
 The following is an example of data filling:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_roleGroup.png" alt="roleManagement_roleGroup" />
@@ -144,4 +144,3 @@ example data from LDAP in Groups when Field Role Group:
 **Version History**
 *  **1.0.0**
    * Initial creation : Isti Fatimah
-
