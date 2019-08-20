@@ -33,7 +33,7 @@
 - [Plugins Form Attachment](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 - [Plugins Currency Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyTextField)
 - [Plugins CRUD Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudSelectbox)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins Formatter Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_textField)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 
