@@ -1,4 +1,4 @@
-# Plugins Text Field
+# Plugins Formatter Text Field
 
 Plugins text fields are plugins that function to accommodate various input data according to the format set. Among them can be alphabet, alphanumeric, numeric, email or custom using regular expressions.
 
@@ -83,7 +83,3 @@ Description :
 - Fill out if mandatory data is not filled out
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_savetextField_result2.png" alt="" />
-
-
-
-
