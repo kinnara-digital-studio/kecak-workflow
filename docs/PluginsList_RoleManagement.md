@@ -56,7 +56,7 @@ Description :
 |--------------------------|------------------------------------------------------------------------|
 |**Role ID**               |ID of the role to be created                                            |
 |**Authorization Object**  |Authorization object which will be included in the role that is created |
-|**Permission**            |                                                                        |
+|**Permission**            | Who can access the section                                             |
 
 
 The image above is the image of the fill field for the Role, which is fill Role ID and which Authorization Object into the Role.
