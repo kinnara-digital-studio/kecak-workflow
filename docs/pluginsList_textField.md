@@ -6,11 +6,11 @@ Plugins text fields are plugins that function to accommodate various input data 
 
 1. Open Apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_openApps.png" alt="" />
 
 2. Choose form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_chooseForm.png" alt="" />
 
 3. Drag and drop plugins
 
@@ -24,7 +24,7 @@ Plugins text fields are plugins that function to accommodate various input data 
 
 4. Fill available field
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_fill.png" alt="" />
 
 Description :
 
@@ -56,6 +56,8 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_validator.png" alt="" />
 
+textField_fillValidator
+
 Description :
 
 | FIELD | DESCRIPTION |
@@ -66,7 +68,7 @@ Description :
 |**Custom Error Message to show when Validation Fail**|Error message when user enters incorrect data|
 7. Click ok
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_ok.png" alt="" />
 
 
 8. Click save
@@ -75,8 +77,14 @@ Description :
 
 
 9. Result
+- For normal Input data normally
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_savetextField_result.png" alt="" />
+
+- Fill out if mandatory data is not filled out
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_savetextField_result2.png" alt="" />
+
 
 
 
