@@ -32,8 +32,8 @@ Description :
 |**ID**                                   | The form ID to be created from the currency field                                    |
 |**Label**                                | Naming for the form of currency to be used                                           |
 |**Value**                                | The value of the form to be entered. can display the default value or leave it blank |
-|**Max Length**                           |               |
-|**Size**                                 |                           |
+|**Max Length**                           | Limitation on how many characters must be entered in the field                       |
+|**Size**                                 | The length of the field box displayed                                                |
 |**Currency Format**                      | Currency format to be used                                                           |
 |**Decimal Digits**                       | Determines how many decimal places to display after the com                          |
 |**Show Currency Symbol**                 | Option to display selected currency symbols                                          |
