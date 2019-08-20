@@ -76,7 +76,7 @@ Description :
 
 
 9. Result
-- For normal Input data normally
+- Input data normally
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_savetextField_result.png" alt="" />
 
