@@ -29,11 +29,11 @@ This attachment form is a plugins that functions to display data from datalist i
 
 | Field | Description |
 |-------|-------------|
-|ID||
-|Label||
-|Form||
-|Datalist||
-|Columns||
+|ID| The form ID to be created from the currency field |
+|Label| Naming for the form of currency to be used |
+|Form| Which form is displayed on the datalist |
+|Datalist| Datalist will be displayed on the attachment form |
+|Columns| Which data will be displayed on the attachment form of the selected datalist |
 
 6. Fill available field
 
@@ -53,7 +53,6 @@ This attachment form is a plugins that functions to display data from datalist i
 9. Result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
 
 - When form attachment is not filled
 
