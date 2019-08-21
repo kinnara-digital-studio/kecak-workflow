@@ -88,5 +88,3 @@ This menu chart is a plugin whose function is to inform various data in the form
 7. Click save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
-
