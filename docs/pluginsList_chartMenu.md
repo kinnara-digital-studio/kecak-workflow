@@ -94,9 +94,9 @@ This menu chart is a plugin whose function is to inform various data in the form
 
 - Bar
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_resultBar.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_reslutBar.png" alt="" />
 
 - Pie
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_resultPie.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_reslutPie.png" alt="" />
 
