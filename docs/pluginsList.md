@@ -30,10 +30,10 @@
 - [Plugins Email Broker](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_emailBroker)
 - [Plugins Heatmap Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_heatmapReport)
 - [Plugins Date Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dateFormatter)
-- [Plugins Form Attachment](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins Form Attachment](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_formAttachment)
 - [Plugins Currency Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyTextField)
 - [Plugins CRUD Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudSelectbox)
 - [Plugins Formatter Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_textField)
 - [Plugins Signature Pad](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_signaturePad)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_chartMenu)
 
