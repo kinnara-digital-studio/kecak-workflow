@@ -1,6 +1,6 @@
 # CRUD Menu
 
-C.R.U.D menu is a plugin in the form of a datalist and has the ability to create, read, update and delete data in the datalist.
+CRUD menu is a plugin in the form of a datalist and has the ability to create, read, update and delete data in the datalist.
 
 ## How to use
 
