@@ -28,6 +28,13 @@ C.R.U.D menu is a plugin in the form of a datalist and has the ability to create
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crudMenu_editCrud.png" alt="" />
 
+|FIELD | DESCRIPTION |
+|--|--|
+|ID|The form ID to be created from the currency field|
+|LABEL|Naming for the form of currency to be used|
+|LIST|Which datalist will be displayed|
+|FORM (ADD)|Which form can later edit the data|
+|FORM (EDIT)|Which form can later be added to the data|
 
 6. Click ok
 
