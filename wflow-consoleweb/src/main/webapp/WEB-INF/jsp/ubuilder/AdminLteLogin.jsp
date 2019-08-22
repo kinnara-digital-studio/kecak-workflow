@@ -61,8 +61,9 @@
             UI.base = "${pageContext.request.contextPath}";
             UI.userview_app_id = '${appId}';
             UI.userview_id = '${userview.properties.id}';
+
+            ${userview.setting.theme.javascript}
         </script>
-        ${userview.setting.theme.javascript}
 
         <!-- Tell the browser to be responsive to screen width -->
           <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -71,7 +72,9 @@
           <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/Ionicons/css/ionicons.min.css">
           <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/bower_components//font-awesome/css/font-awesome.min.css">
           <link rel="stylesheet" href="${pageContext.request.contextPath}/css/fonts.css">
-        ${userview.setting.theme.css}
+          <style type="text/css">
+            ${userview.setting.theme.css}
+          </style>
     </head>
 
     <body id="login" class="hold-transition login-page <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">

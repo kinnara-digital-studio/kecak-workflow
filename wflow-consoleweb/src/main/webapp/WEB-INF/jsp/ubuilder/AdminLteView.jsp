@@ -538,7 +538,6 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-
 <style type="text/css">
     ${userview.setting.theme.css}
 </style>
