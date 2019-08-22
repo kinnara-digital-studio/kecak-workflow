@@ -1,14 +1,19 @@
 package org.joget.apps.userview.model;
 
-import org.joget.commons.util.LogUtil;
-
 /**
- * Base class for
+ * @author aristo
+ *
+ * Abstract class to handle AdminLTE Theme
  */
 public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implements BootstrapUserview, BootstrapAdminLteTheme  {
     @Override
     public String getUserviewJsp() {
         return "ubuilder/AdminLteView";
+    }
+
+    @Override
+    public String getPreviewJsp() {
+        return getUserviewJsp();
     }
 
     @Override

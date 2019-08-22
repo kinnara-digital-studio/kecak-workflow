@@ -421,7 +421,9 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     </div><!-- /.main-container -->
 
     <!-- basic scripts -->
-    ${userview.setting.theme.css}
+    <style type="text/css">
+        ${userview.setting.theme.css}
+    </style>
 
     <!-- REQUIRED JS SCRIPTS -->
 
@@ -440,7 +442,10 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         });
       });
     </script>
-    ${userview.setting.theme.javascript}
+
+    <script type="text/javascript">
+        ${userview.setting.theme.javascript}
+    </script>
 
     <script type="text/javascript">
             HelpGuide.base = "${pageContext.request.contextPath}"

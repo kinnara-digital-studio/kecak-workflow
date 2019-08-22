@@ -538,7 +538,10 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-${userview.setting.theme.css}
+
+<style type="text/css">
+    ${userview.setting.theme.css}
+</style>
 
 <!-- REQUIRED JS SCRIPTS -->
 
@@ -547,7 +550,11 @@ ${userview.setting.theme.css}
 <script>
   $.fn.bootstrapBtn = $.fn.button.noConflict();
 </script>
-${userview.setting.theme.javascript}
+
+<script>
+    ${userview.setting.theme.javascript}
+</script>
+
 <script>
   $(document).ready(function () {
     $('.sidebar-menu').tree()

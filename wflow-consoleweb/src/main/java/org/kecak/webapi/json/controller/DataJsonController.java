@@ -718,7 +718,68 @@ public class DataJsonController {
 
             // retrieve data
             Map<String, String> parameterMap = new HashMap<>();
-            parameterMap.put("activityId", assignmentId);
+            parameterMap.put("activityId", assignment.getActivityId());
+            FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
+            PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
+            FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());
+
+            if (rowSet == null || rowSet.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                try {
+                    JSONObject jsonData = new JSONObject(rowSet.get(0));
+                    jsonData.put("activityId", assignment.getActivityId());
+                    jsonData.put("processId", assignment.getProcessId());
+
+                    String currentDigest = getDigest(jsonData);
+
+                    JSONObject jsonResponse = new JSONObject();
+                    jsonResponse.put(FIELD_DIGEST, currentDigest);
+                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+
+                    if (!Objects.equals(digest, currentDigest))
+                        jsonResponse.put(FIELD_DATA, jsonData);
+
+                    response.getWriter().write(jsonResponse.toString());
+                } catch (JSONException e) {
+                    throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                }
+            }
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.GET)
+    public void getAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
+                              @RequestParam("processId") final String processId,
+                              @RequestParam(value = "digest", required = false) String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            WorkflowAssignment assignment = workflowManager.getAssignmentByProcess(processId);
+            if (assignment == null) {
+                // check if assignment available
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid assignment process [" + processId + "]");
+            }
+
+            AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // retrieve data
+            Map<String, String> parameterMap = new HashMap<>();
+            parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
             FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());

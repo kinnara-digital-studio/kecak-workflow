@@ -1,6 +1,8 @@
 package org.joget.apps.userview.model;
 
 /**
+ * @author aristo
+ *
  * Bootstrap Ace Theme for {@link UserviewMenu}
  */
 public interface AceUserviewMenu extends BootstrapUserviewMenu, BootstrapAceTheme {

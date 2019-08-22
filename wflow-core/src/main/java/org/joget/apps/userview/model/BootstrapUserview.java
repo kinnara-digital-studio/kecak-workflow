@@ -1,6 +1,8 @@
 package org.joget.apps.userview.model;
 
 /**
+ * @author aristo
+ *
  * Bootstrap Web UI Framework for Userview Theme
  */
 public interface BootstrapUserview {
@@ -11,6 +13,8 @@ public interface BootstrapUserview {
      */
 
     String getUserviewJsp();
+
+    String getPreviewJsp();
 
     String getDataListJsp();
 

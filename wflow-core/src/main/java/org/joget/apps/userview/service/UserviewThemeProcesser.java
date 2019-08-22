@@ -45,7 +45,11 @@ public class UserviewThemeProcesser {
 
     public String getPreviewView() {
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-            return "ubuilder/preview";
+            if(userview.getSetting().getTheme() instanceof BootstrapUserview) {
+                return ((BootstrapUserview)userview.getSetting().getTheme()).getPreviewJsp();
+            } else {
+                return "ubuilder/preview";
+            }
         }
 
         init();
