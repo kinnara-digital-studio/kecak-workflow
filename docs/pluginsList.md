@@ -36,4 +36,6 @@
 - [Plugins Formatter Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_textField)
 - [Plugins Signature Pad](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_signaturePad)
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_chartMenu)
+- [Plugins CRUD Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudMenu)
+
 
