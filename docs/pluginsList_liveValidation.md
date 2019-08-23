@@ -29,8 +29,8 @@
 
 |FIELD|DESCRIPTION|
 |--|--|
-|ID||
-|Label||
+|ID|ID for the text field to be created|
+|Label|The name of the text field to be created|
 
 6. Edit advance options
 
