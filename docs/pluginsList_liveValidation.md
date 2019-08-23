@@ -6,7 +6,7 @@
 
 1. Open apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_openAppsliveValidation_openApps.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_openApps.png" alt="" />
 
 
 2. Choose form
