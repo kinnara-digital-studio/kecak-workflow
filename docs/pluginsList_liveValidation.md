@@ -6,26 +6,28 @@
 
 1. Open apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_openAppsliveValidation_openApps.png" alt="" />
 
 
 2. Choose form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/currencyTextField_chooseForm.png" alt="" />
 
 
 3. Drag and drop plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_dragDrop.png" alt="" />
 
 4. Edit 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_edit.png" alt="" />
 
 
 5. Edit live validation
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_editTextArea.png" alt="" />
+
+Description :
 
 |FIELD|DESCRIPTION|
 |--|--|
@@ -34,7 +36,9 @@
 
 6. Edit advance options
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_editAdvanced.png" alt="" />
+
+Description :
 
 |FIELD|DESCRIPTION|
 |--|--|
@@ -43,7 +47,9 @@
 
 7. Edit validator
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_editConfigureValidation.png" alt="" />
+
+Description :
 
 |FIELD|DESCRIPTION|
 |--|--|
@@ -54,24 +60,21 @@
 
 8. Click ok
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_ok.png" alt="" />
 
 
 9. Click save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_save.png" alt="" />
 
 
 10. Result
 
 - When input correct data
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_result2.png" alt="" />
 
 
 - When input incorrect data
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
-
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_result.png" alt="" />
