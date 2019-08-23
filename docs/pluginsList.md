@@ -37,5 +37,7 @@
 - [Plugins Signature Pad](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_signaturePad)
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_chartMenu)
 - [Plugins CRUD Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudMenu)
+- [Plugins Run Proces Datalist](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_runProcessDatalist)
+- [Plugins Live Validation](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_liveValidation)
 
 
