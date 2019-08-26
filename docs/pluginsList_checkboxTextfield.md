@@ -28,8 +28,8 @@ Description :
 |--|--|
 |ID|ID for the text field to be created|
 |Label|The name of the text field to be created|
-|Option (Hardcored)||
-|Choose Option Binder||
+|Option (Hardcored)|The choise fot the check box is done manually|
+|Choose Option Binder|Option to check box by retrieving data fro binder options|
 
 6. Click ok
 
