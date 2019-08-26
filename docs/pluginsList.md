@@ -39,5 +39,4 @@
 - [Plugins CRUD Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudMenu)
 - [Plugins Run Proces Datalist](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_runProcessDatalist)
 - [Plugins Live Validation](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_liveValidation)
-
-
+- [Plugins Selectbox Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_selectBoxTextField)
