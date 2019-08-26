@@ -14,7 +14,7 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/widget_dragDrop.png" alt="" />
 
-4. Click edit
+4. Click edit properties
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/widget_properties.png" alt="" />
 
