@@ -1,4 +1,4 @@
-# Checkbox Textfield
+# Dashboard Widget
 
 ## How to use
 
