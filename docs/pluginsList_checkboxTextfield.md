@@ -1,7 +1,6 @@
 # Checkbox Textfield
 
-The Textfield check box is a plugin that serves as a checklist of the desired data. After the desired data is in the checklist, the text field to the right of the data that has been checked can be filled.
-
+The checkbox textfield is a plugin that serves as a checklist of the desired data. After the desired data is in the checklist, the text field to the right of the data that has been checked can be filled.
 ## How to use
 
 1. Open Apps
