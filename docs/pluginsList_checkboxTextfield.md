@@ -25,7 +25,7 @@ The checkbox textfield is a plugin that serves as a checklist of the desired dat
 
 Description :
 
-|FIELD|DESCRIPTION|
+|Field|Description|
 |--|--|
 |ID|ID for the text field to be created|
 |Label|The name of the text field to be created|
