@@ -28,13 +28,13 @@ CRUD menu is a plugin in the form of a datalist and has the ability to create, r
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crudMenu_editCrud.png" alt="" />
 
-|FIELD | DESCRIPTION |
+|Field | Description |
 |--|--|
 |ID|The form ID to be created from the currency field|
-|LABEL|Naming for the form of currency to be used|
-|LIST|Which datalist will be displayed|
-|FORM (ADD)|Which form can later edit the data|
-|FORM (EDIT)|Which form can later be added to the data|
+|Label|Naming for the form of currency to be used|
+|List|Which datalist will be displayed|
+|Form (Add)|Which form can later edit the data|
+|Form (Edit)|Which form can later be added to the data|
 
 6. Click ok
 
