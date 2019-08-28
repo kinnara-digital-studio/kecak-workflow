@@ -1,5 +1,7 @@
 # Checkbox Textfield
 
+
+
 ## How to use
 
 1. Open Apps
@@ -28,8 +30,8 @@ Description :
 |--|--|
 |ID|ID for the text field to be created|
 |Label|The name of the text field to be created|
-|Option (Hardcored)|The choice for the checkbox is done manually|
-|Choose Option Binder|Option to checkbox by retrieving data from binder options|
+|Option (Hardcoded)|The choice for the checkbox is done manually|
+|Choose Option Binder||
 
 6. Click ok
 
