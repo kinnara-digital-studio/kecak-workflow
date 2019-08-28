@@ -23,7 +23,7 @@ This attachment form is a plugins that functions to display data from datalist i
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_edit.png" alt="" />
 
 
-5. List edit Field
+5. List that must be edited
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_editPlugins.png" alt="" />
 
@@ -35,7 +35,7 @@ This attachment form is a plugins that functions to display data from datalist i
 |Datalist| Datalist will be displayed on the attachment form |
 |Columns| Which data will be displayed on the attachment form of the selected datalist |
 
-6. Fill available field
+6. Fill in the fields as shown in the image below
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_fillField.png" alt="" />
 
