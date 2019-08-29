@@ -19,27 +19,42 @@ Date formatter is a plugin that functions as sorting data based on the desired d
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_dragDrop.png" alt="" />
 
 
-4. Edit date formatter
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_edit.png" alt="" />
+4. Edit properties
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneral.png" alt="" />
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralChooseFormatter.png" alt="" />
+
+
 Description :
 
-|           FIELD           |              DESCRIPTION                 |
+|           Field           |              Description                 |
 |---------------------------|------------------------------------------|
 |**Name**                   | Naming of date formatter                 |
-|**URL Request Parameter**  | Address to get the parameter request     |
 |**Label**                  | Naming the fields that will be displayed |
-|**Type**                   | Data type of date to be displayed        |
+|**Sortable**                   | Data type of date to be displayed    |
+|**Render value as HTML**||
+|**Hidden**||
+|**Permission**||
+|**Exclude in export**||
+|**Width**||
+|**Inline style**||
 
 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralChooseType.png" alt="" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralType.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralChooseFormatter.png" alt="" />
 
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editDateFormatter.png" alt="" />
+
+Description :
+
+|           Field           |              Description                 |
+|---------------------------|------------------------------------------|
+|**Formatter**                   |Which formatter that will be used               |
+|**From Format**                  | Date format that have been used before date formatter|
+|**To Format**                   | Date format that will be showed after used date formatter        |
 
 5. click ok
 
@@ -52,6 +67,6 @@ Description :
 
 7. result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_resultFormat.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_resultBefore.png" alt="" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_resultFinish.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_resultAfter.png" alt="" />
