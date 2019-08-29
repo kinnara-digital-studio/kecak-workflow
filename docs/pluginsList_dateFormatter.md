@@ -34,8 +34,8 @@ Description :
 |**Hidden**|Option to hide data|
 |**Permission**|Permission for anyone who can access the fied|
 |**Exclude in export**||
-|**Width**||
-|**Inline style**||
+|**Width**|The width of the field to be displayed|
+|**Inline style**|Display settings to specify inline style|
 
 5. Choose formatter
 
