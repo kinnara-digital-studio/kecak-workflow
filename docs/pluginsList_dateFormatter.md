@@ -42,15 +42,17 @@ Description :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editGeneralChooseFormatter.png" alt="" />
 
 6. Edit formatter
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_editDateFormatter.png" alt="" />
+
 
 Description :
 
 |           Field           |              Description                 |
 |---------------------------|------------------------------------------|
 |**Formatter**                   |Which formatter that will be used               |
-|**From Format**                  | Date format that has been used before date formatter|
-|**To Format**                   | Date format that will be showed after used date formatter        |
+|**From Format**                  | Date format that has been used before date formatter (no 1)|
+|**To Format**                   | Date format that will be showed after used date formatter (no 2)       |
 
 7. Click ok
 
