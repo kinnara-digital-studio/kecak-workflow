@@ -1,6 +1,6 @@
 # Run Process Datalist
 
-
+Run process datalist action are plugins that function as run processes available on the datalist.
 
 ## How to use
 
