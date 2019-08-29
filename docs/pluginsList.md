@@ -38,3 +38,4 @@
 - [Plugins Run Proces Datalist](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_runProcessDatalist)
 - [Plugins Live Validation](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_liveValidation)
 - [Plugins Checkbox Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_checkboxTextfield)
+- [Plugins Popup Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popupSelectbox)
