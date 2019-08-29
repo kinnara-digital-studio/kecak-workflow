@@ -49,7 +49,7 @@ Description :
 |           Field           |              Description                 |
 |---------------------------|------------------------------------------|
 |**Formatter**                   |Which formatter that will be used               |
-|**From Format**                  | Date format that have been used before date formatter|
+|**From Format**                  | Date format that has been used before date formatter|
 |**To Format**                   | Date format that will be showed after used date formatter        |
 
 7. Click ok
@@ -62,7 +62,8 @@ Description :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_save.png" alt="" />
 
 9. Result
-
+- Before the date formatter is set
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_resultBefore.png" alt="" />
 
+- After the date formatter is set
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/df_resultAfter.png" alt="" />
