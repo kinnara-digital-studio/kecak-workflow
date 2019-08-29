@@ -1,5 +1,7 @@
 # Dashboard Widget
 
+Dashboard widget is a display for the dashboard menu that is connected to the menus in the user view.
+
 ## How to use
 
 1. Open Apps
