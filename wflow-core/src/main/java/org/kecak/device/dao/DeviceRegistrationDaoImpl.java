@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.joget.apps.device.dao;
+package org.kecak.device.dao;
 
-import org.joget.apps.device.model.DeviceRegistration;
+import org.kecak.device.model.DeviceRegistration;
 import org.joget.commons.spring.model.AbstractSpringDao;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
@@ -14,7 +15,6 @@ import java.util.Collection;
  *
  * @author Yonathan
  */
-
 public class DeviceRegistrationDaoImpl extends AbstractSpringDao<DeviceRegistration> implements DeviceRegistrationDao {
     public static final String ENTITY_NAME = "DeviceRegistration";
 

@@ -1,4 +1,4 @@
-package org.joget.apps;
+package org.kecak.apps;
 
 /**
  * Bootstrap as UI Theme

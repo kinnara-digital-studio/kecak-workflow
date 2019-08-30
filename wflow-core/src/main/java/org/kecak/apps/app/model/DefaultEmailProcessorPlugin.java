@@ -1,4 +1,4 @@
-package org.joget.apps.app.model;
+package org.kecak.apps.app.model;
 
 import org.joget.plugin.base.ExtDefaultPlugin;
 

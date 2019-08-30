@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class entity-name="DeviceRegistration" lazy="false" name="org.joget.apps.device.model.DeviceRegistration" table="device_registration">
+	<class entity-name="DeviceRegistration" lazy="false" name="org.kecak.device.model.DeviceRegistration" table="device_registration">
 		<id name="id" type="string">
 			<generator class="uuid" />
 		</id>

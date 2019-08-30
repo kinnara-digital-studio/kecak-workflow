@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.joget.apps.device.dao;
+package org.kecak.device.dao;
 
-import org.joget.apps.device.model.DeviceRegistration;
+import org.kecak.device.model.DeviceRegistration;
 
 import java.util.Collection;
 

@@ -15,6 +15,7 @@ import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.directory.model.service.UserSecurity;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.userview.model.BootstrapUserview;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

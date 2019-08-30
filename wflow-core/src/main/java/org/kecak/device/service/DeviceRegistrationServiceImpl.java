@@ -1,7 +1,7 @@
-package org.joget.apps.device.service;
+package org.kecak.device.service;
 
-import org.joget.apps.device.dao.DeviceRegistrationDao;
-import org.joget.apps.device.model.DeviceRegistration;
+import org.kecak.device.dao.DeviceRegistrationDao;
+import org.kecak.device.model.DeviceRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-@Service("deviceRegistrationService")
-public class DeviceRegistrationService {
-    @Autowired
-    DeviceRegistrationDao deviceRegistrationDao;
+public class DeviceRegistrationServiceImpl implements DeviceRegistrationService {
+    public DeviceRegistrationDao getDeviceRegistrationDao() {
+        return deviceRegistrationDao;
+    }
+
+    private DeviceRegistrationDao deviceRegistrationDao;
 
     /**
      * Get device list for particular user
@@ -72,5 +74,9 @@ public class DeviceRegistrationService {
         return Optional.ofNullable(deviceRegistrationDao.load(deviceId))
                 .map(DeviceRegistration::getBlocked)
                 .orElse(false);
+    }
+
+    public void setDeviceRegistrationDao(DeviceRegistrationDao deviceRegistrationDao) {
+        this.deviceRegistrationDao = deviceRegistrationDao;
     }
 }

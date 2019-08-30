@@ -2,8 +2,8 @@ package org.joget.apps.app.controller;
 
 import java.io.IOException;
 
-import org.joget.apps.app.model.EmailProcessorPlugin;
-import org.joget.apps.app.model.SchedulerPlugin;
+import org.kecak.apps.app.model.EmailProcessorPlugin;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
 import java.io.Writer;

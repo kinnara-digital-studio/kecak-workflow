@@ -283,7 +283,7 @@
         <property name="dataSource" ref="setupDataSource"/>
         <property name="mappingResources">
             <list>
-                <value>/org/joget/apps/device/model/DeviceRegistration.hbm.xml</value>
+                <value>/org/kecak/device/model/DeviceRegistration.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -297,8 +297,12 @@
         </property>
     </bean>
 
-    <bean id="deviceRegistrationDao" class="org.joget.apps.device.dao.DeviceRegistrationDaoImpl" >
+    <bean id="deviceRegistrationDao" class="org.kecak.device.dao.DeviceRegistrationDaoImpl" >
         <property name="sessionFactory" ref="deviceRegistrationFactory"/>
+    </bean>
+
+    <bean id="deviceRegistrationService" class="org.kecak.device.service.DeviceRegistrationServiceImpl">
+        <property name="deviceRegistrationDao" ref="deviceRegistrationDao" />
     </bean>
     <!-- END OF Mobiles and Devices -->
 
