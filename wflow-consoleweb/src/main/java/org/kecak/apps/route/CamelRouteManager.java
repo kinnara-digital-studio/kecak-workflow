@@ -19,7 +19,17 @@ public class CamelRouteManager implements CamelContextAware {
 	public boolean stopContext() {
 		boolean result = false;
 		try {
-			getCamelContext().stop();
+			getCamelContext().getRoutes().forEach(r -> {
+				try {
+					// remove all existing routes
+					getCamelContext().removeEndpoint(r.getEndpoint());
+					getCamelContext().stopRoute(r.getId());
+					getCamelContext().removeRoute(r.getId());
+				} catch (Exception e) {
+					LogUtil.error(getClass().getName(), e, e.getMessage());
+				}
+			});
+
 			result = true;
 			LogUtil.info(getClass().getName(), getCamelContext().getName()+" is stopped");
 		} catch (Exception e) {
@@ -32,6 +42,8 @@ public class CamelRouteManager implements CamelContextAware {
 	public boolean startContext() {
 		boolean result = false;
 		try {
+			// add again deleted routes
+			getCamelContext().addRoutes(new EmailProcessorRouteBuilder());
 			getCamelContext().start();
 			result = true;
 			LogUtil.info(getClass().getName(), getCamelContext().getName()+" is started");

@@ -214,7 +214,7 @@
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailAccount"/></label>
+                        <label for="emailAccount"><fmt:message key="console.setting.general.label.emailAccount"/></label>
                         <span class="form-input">
                             <input id="emailAccount" type="text" name="emailAccount" value="<c:out value="${settingMap['emailAccount']}"/>"/>
                         </span>
@@ -224,7 +224,7 @@
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailPassword"/></label>
+                        <label for="emailPassword"><fmt:message key="console.setting.general.label.emailPassword"/></label>
                         <span class="form-input">
                             <input id="emailPassword" type="password" name="emailPassword" value="<c:out value="${settingMap['emailPassword']}"/>"/>
                         </span>
@@ -234,9 +234,13 @@
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailProtocol"/></label>
+                        <label for="emailProtocol"><fmt:message key="console.setting.general.label.emailProtocol"/></label>
                         <span class="form-input">
-                            <input id="emailProtocol" type="text" name="emailProtocol" value="<c:out value="${settingMap['emailProtocol']}"/>"/>
+                            <%-- <input id="emailProtocol" type="text" name="emailProtocol" value="<c:out value="${settingMap['emailProtocol']}"/>"/> --%>
+                            <select id="systemTimeZone" name="systemTimeZone">
+                                <option value="imap" selected="true">IMAP</option>
+                                <option value="imaps" selected="true">IMAPS</option>
+                            </select>
                         </span>
                     </div>
                 </span>
@@ -244,7 +248,7 @@
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailHost"/></label>
+                        <label for="emailHost"><fmt:message key="console.setting.general.label.emailHost"/></label>
                         <span class="form-input">
                             <input id="emailHost" type="text" name="emailHost" value="<c:out value="${settingMap['emailHost']}"/>"/>
                         </span>
@@ -254,7 +258,7 @@
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailPort"/></label>
+                        <label for="emailPort"><fmt:message key="console.setting.general.label.emailPort"/></label>
                         <span class="form-input">
                             <input id="emailPort" type="text" name="emailPort" value="<c:out value="${settingMap['emailPort']}"/>"/>
                         </span>
@@ -264,7 +268,7 @@
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailFolder"/></label>
+                        <label for="emailFolder"><fmt:message key="console.setting.general.label.emailFolder"/></label>
                         <span class="form-input">
                             <input id="emailFolder" type="text" name="emailFolder" value="<c:out value="${settingMap['emailFolder']}"/>"/>
                         </span>

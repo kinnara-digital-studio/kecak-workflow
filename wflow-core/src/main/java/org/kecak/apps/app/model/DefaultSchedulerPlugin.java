@@ -1,5 +1,6 @@
 package org.kecak.apps.app.model;
 
+import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.ExtDefaultPlugin;
 import org.quartz.JobExecutionContext;
 
@@ -74,8 +75,8 @@ public abstract class DefaultSchedulerPlugin extends ExtDefaultPlugin implements
     }
 
     @Override
-    public void onJobError(@Nonnull JobExecutionContext context, @Nonnull Map<String, Object> properties, @Nonnull Exception exception) {
-        // do nothing
+    public void onJobError(@Nonnull JobExecutionContext context, @Nonnull Map<String, Object> properties, @Nonnull Exception e) {
+        LogUtil.error(getClassName(), e, e.getMessage());
     }
 
     /**
