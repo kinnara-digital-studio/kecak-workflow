@@ -22,6 +22,7 @@
         <ul id="main-action-buttons">
             <li><button onclick="reload()"><fmt:message key="console.setting.plugin.common.label.reloadPlugin"/></button></li>
             <li><button onclick="upload()"><fmt:message key="console.setting.plugin.upload.label"/></button></li>
+            <li><button onclick="pull()"><fmt:message key="console.setting.plugin.sync.label"/></button></li>
         </ul>
     </div>
     <div id="main-body">
@@ -90,6 +91,15 @@
             }
         }
         var request = ConnectionManager.post('${pageContext.request.contextPath}/web/console/setting/plugin/refresh', callback, "");
+    }
+
+    function pull(dummy){
+        var callback = {
+            success : function() {
+                document.location = '${pageContext.request.contextPath}/web/console/setting/plugin';
+            }
+        }
+        var request = ConnectionManager.post('${pageContext.request.contextPath}/web/console/setting/plugin/pull', callback, "");
     }
 
     function uninstall(selectedList){

@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.comparator.NameFileComparator;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.model.*;
 import org.joget.apps.app.service.AppService;
@@ -77,6 +78,9 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
@@ -90,6 +94,10 @@ public class ConsoleWebController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleWebController.class);
 
     public static final String APP_ZIP_PREFIX = "APP_";
+    public String REPO_KEY = "repoKey";
+    public String DIR_SSH_KEY= "app_ssh_key";
+    public String SSH_KEY_NAME="id_rsa";
+
     @Autowired
     UserDao userDao;
     @Autowired
@@ -3562,7 +3570,7 @@ public class ConsoleWebController {
 
         return "console/setting/general";
     }
-
+    
     @RequestMapping("/console/setting/general/loginHash")
     public void loginHash(Writer writer, @RequestParam(value = "callback", required = false) String callback, @RequestParam("username") String username, @RequestParam("password") String password) throws JSONException, IOException {
         if (SetupManager.SECURE_VALUE.equals(password)) {
@@ -3913,6 +3921,42 @@ public class ConsoleWebController {
         pluginManager.refresh();
     }
 
+    @RequestMapping("/console/setting/plugin/pull")
+    public void consoleSettingPluginPull(Writer writer) throws GitAPIException {
+        Setting setting = setupManager.getSettingByProperty("repoURL");
+        String baseDir = pluginManager.getBaseDirectory();
+        File appPluginDir = new File(baseDir);
+        if(!appPluginDir.exists()){
+            appPluginDir.mkdirs();
+        }else{
+            File wflow = appPluginDir.getParentFile();
+            File tmpDir = new File(wflow.getPath()+"/tmp_app_plugins");
+            try {
+                Path movePath = Files.move(appPluginDir.toPath(), tmpDir.toPath());
+                if(movePath != null)
+                {
+                    System.out.println("File renamed and moved successfully");
+                }
+                else
+                {
+                    System.out.println("Failed to move the file");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        File keyFile = new File(appPluginDir.getParentFile().getPath()+"/"+DIR_SSH_KEY, SSH_KEY_NAME);
+        SshTransportConfigCallback transportConfig = new SshTransportConfigCallback(keyFile.getPath());
+        LogUtil.info(this.getClass().getName(), "PRIVATE KEY PATH: "+keyFile.getPath());
+//        Git git = Git.cloneRepository()
+//                .setURI( setting.getValue())
+//                .setDirectory(appPluginDir)
+//                .setTransportConfigCallback(transportConfig)
+//                .call();
+
+        pluginManager.refresh();
+    }
+
     @RequestMapping("/console/setting/plugin/upload")
     public String consoleSettingPluginUpload() {
         return "console/setting/pluginUpload";
@@ -4260,6 +4304,41 @@ public class ConsoleWebController {
             return "console/dialogClose";
         }
     }
+    
+    @RequestMapping("/console/setting/eaSettings")
+    public String consoleSettingEmailApprovalSettings(ModelMap map) {
+        Collection<Setting> settingList = setupManager.getSettingList("email", null, null, null, null);
+        Map<String, String> settingMap = new HashMap<String, String>();
+        for (Setting setting : settingList) {
+            settingMap.put(setting.getProperty(), setting.getValue());
+        }
+        map.addAttribute("settingMap", settingMap);
+        return "console/setting/eaSetting";
+    }
+
+    @RequestMapping(value = "/console/setting/eaSettings/submit", method = RequestMethod.POST)
+    public String consoleSettingEmailApprovalSettingsSubmit(HttpServletRequest request, ModelMap map) throws Exception {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        Enumeration e = request.getParameterNames();
+        while (e.hasMoreElements()) {
+            String paramName = (String) e.nextElement();
+            String paramValue = request.getParameter(paramName);
+
+            Setting setting = SetupManager.getSettingByProperty(paramName);
+            if (setting == null) {
+                setting = new Setting();
+                setting.setProperty(paramName);
+                setting.setValue(paramValue);
+            } else {
+                setting.setValue(paramValue);
+            }
+
+            setting.setDateModified(new Date());
+            setting.setModifiedBy(currentUsername);
+            setupManager.saveSetting(setting);
+        }
+        return "redirect:/web/console/setting/eaSettings";
+    }
 
     @RequestMapping("/console/setting/scheduler")
     public String consoleSettingSchedulerContent(ModelMap map) {
@@ -4429,6 +4508,93 @@ public class ConsoleWebController {
         SchedulerDetails schedulerDetails = schedulerDetailsDao.getSchedulerDetailsById(id);
         map.addAttribute("schedulerDetails", schedulerDetails);
         return "console/setting/schedulerEdit";
+    }
+    
+    @RequestMapping("/console/setting/eaSetting")
+    public String consoleEmailApprovalSetting(ModelMap map) {
+        return "console/setting/eaSetting";
+    }
+
+    @RequestMapping("/console/setting/repo")
+    public String consoleSettingRepo(ModelMap map) {
+        Collection<Setting> settingList = setupManager.getSettingList("repo", null, null, null, null);
+
+        Map<String, String> settingMap = new HashMap<String, String>();
+        for (Setting setting : settingList) {
+            if(setting.getProperty().equals("repoURL"))
+                settingMap.put(setting.getProperty(), setting.getValue());
+        }
+
+        String baseDir = pluginManager.getBaseDirectory();
+        File appPluginDir = new File(baseDir);
+        File keyFile = new File(appPluginDir.getParentFile().getPath()+"/"+DIR_SSH_KEY, SSH_KEY_NAME);
+
+        try (BufferedReader in = new BufferedReader(new FileReader(keyFile))){
+            StringBuilder keyValue = new StringBuilder();
+            String line;
+            while((line = in.readLine()) != null)
+            {
+                keyValue.append(line);
+            }
+            settingMap.put("repoKey", keyValue.toString());
+        } catch (FileNotFoundException e) {
+            LogUtil.error(this.getClass().getName(), e, e.getMessage());
+        } catch (IOException e) {
+            LogUtil.error(this.getClass().getName(), e, e.getMessage());
+        }
+
+        map.addAttribute("settingMap", settingMap);
+        return "console/setting/repoSetting";
+    }
+
+    @RequestMapping(value="/console/setting/repo/submit", method=RequestMethod.POST)
+    public String consoleSettingRepoSubmit(HttpServletRequest request,ModelMap map) throws IOException {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+
+        Enumeration e = request.getParameterNames();
+        while (e.hasMoreElements()) {
+            String paramName = (String) e.nextElement();
+            String paramValue = request.getParameter(paramName);
+
+            Setting setting = SetupManager.getSettingByProperty(paramName);
+            if (setting == null) {
+                setting = new Setting();
+                setting.setProperty(paramName);
+                setting.setValue(paramValue);
+            } else {
+                setting.setValue(paramValue);
+            }
+            // Generate Private Key File in wflow
+            if(paramName.equals(REPO_KEY)){
+                String baseDir = pluginManager.getBaseDirectory();
+                File appPluginDir = new File(baseDir);
+                File wflow = appPluginDir.getParentFile();
+                File dirKey = new File(wflow.getPath()+"/"+DIR_SSH_KEY);
+                if(!dirKey.exists()){
+                    dirKey.mkdirs();
+                    LogUtil.info(this.getClass().getName(), "[CREATING NEW PRIVATE KEY]");
+                    // create new file
+                    File keyFile = new File(dirKey.getPath(), SSH_KEY_NAME);
+                    byte[] keyBytes = paramValue.getBytes();
+                    Files.write(keyFile.toPath(),keyBytes);
+                }else{ // update existing private key file
+                    LogUtil.info(this.getClass().getName(), "[UPDATING PRIVATE KEY]");
+                    File sshKey = new File(dirKey.getPath()+"/"+SSH_KEY_NAME);
+                    if(sshKey.delete()){
+                        Path keyPath = Paths.get(dirKey.getPath()+"/"+SSH_KEY_NAME);
+                        byte[] keyBytes = paramValue.getBytes();
+                        Files.write(keyPath,keyBytes);
+                    }else{
+                        LogUtil.info(this.getClass().getName(), "[FAILED TO DELETE EXISTING PRIVATE KEY]");
+                    }
+                }
+            }
+
+            setting.setDateModified(new Date());
+            setting.setModifiedBy(currentUsername);
+            setupManager.saveSetting(setting);
+        }
+        return "redirect:/web/console/setting/repo";
     }
 
     @RequestMapping("/console/setting/property")
