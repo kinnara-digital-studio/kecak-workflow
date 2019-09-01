@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.kecak.apps.mobile.model;
+package org.kecak.device.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author Yonathan
  */
-public class Mobile implements Serializable {
+public class DeviceRegistration implements Serializable {
 
     private static long serialVersionUID = 8116768031764084925L;
 
@@ -39,6 +39,7 @@ public class Mobile implements Serializable {
     private String username;
     private String deviceId;
     private String deviceToken;
+    private Boolean blocked;
 
     /**
      * @return the id
@@ -164,5 +165,23 @@ public class Mobile implements Serializable {
      */
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    /**
+     * Is Blocked ?
+     *
+     * @return is this device is blocked
+     */
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    /**
+     * Blocked
+     *
+     * @param blocked
+     */
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
     }
 }

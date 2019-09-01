@@ -250,7 +250,8 @@ public class SetupServlet extends HttpServlet {
                     SchedulerDetails schedulerDetails = new SchedulerDetails();
                     schedulerDetails.setJobName("SchedulerJob");
                     schedulerDetails.setJobClassName(SchedulerPluginJob.class.getName());
-                    schedulerDetails.setCronExpression("0 * 0 ? * * *");
+//                    schedulerDetails.setCronExpression("0 0/1 * 1/1 * ? *"); // run every 1 minute
+                    schedulerDetails.setCronExpression("0 0/5 * 1/1 * ? *"); // run every 5 minutes
                     schedulerDetails.setGroupJobName("SchedulerJob");
                     schedulerDetails.setGroupTriggerName("SchedulerJob");
                     Date now = new Date();

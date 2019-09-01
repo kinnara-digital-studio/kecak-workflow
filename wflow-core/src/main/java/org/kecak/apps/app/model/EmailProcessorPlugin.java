@@ -1,4 +1,4 @@
-package org.joget.apps.app.model;
+package org.kecak.apps.app.model;
 
 import org.joget.plugin.property.model.PropertyEditable;
 
@@ -28,4 +28,11 @@ public interface EmailProcessorPlugin extends PropertyEditable {
      * @param properties
      */
     void parse(Map<String, Object> properties);
+
+    /**
+     * When error occurs
+     *
+     * @param properties
+     */
+    void onError(Map<String, Object> properties, Exception e);
 }

@@ -1,4 +1,4 @@
-package org.joget.apps.userview.model;
+package org.kecak.apps.userview.model;
 
 /**
  * @author aristo

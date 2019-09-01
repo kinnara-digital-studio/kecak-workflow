@@ -1,6 +1,6 @@
-package org.joget.apps.userview.model;
+package org.kecak.apps.userview.model;
 
-import org.joget.apps.BootstrapTheme;
+import org.kecak.apps.BootstrapTheme;
 
 /**
  * @author aristo

@@ -17,7 +17,10 @@
 	<bean id="camelRouteManager" class="org.kecak.apps.route.CamelRouteManager"/>
 	
     <camelContext id="camelRoute" xmlns="http://camel.apache.org/schema/spring">
-    	<package>org.kecak.apps.route</package>
+<!--    	<package>org.kecak.apps.route</package>-->
+		<routeBuilder ref="emailProcessorRouteBuilder"/>
 	</camelContext>
+
+	<bean id="emailProcessorRouteBuilder" class="org.kecak.apps.route.EmailProcessorRouteBuilder"/>
     
 </beans>

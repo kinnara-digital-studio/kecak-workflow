@@ -1,9 +1,12 @@
-package org.joget.apps.userview.model;
+package org.kecak.apps.userview.model;
 
-import java.util.Map;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.joget.apps.userview.model.UserviewCategory;
+import org.joget.apps.userview.model.UserviewTheme;
 import org.joget.apps.userview.service.UserviewUtil;
 import org.joget.commons.util.StringUtil;
+
+import java.util.Map;
 
 /**
  * A base abstract class to develop a Userview Theme plugin for version v5.0 onward.

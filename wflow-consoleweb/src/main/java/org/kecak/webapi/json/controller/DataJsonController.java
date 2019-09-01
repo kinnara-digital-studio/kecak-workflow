@@ -753,6 +753,15 @@ public class DataJsonController {
         }
     }
 
+    /**
+     * Get Assignment by Process ID
+     *
+     * @param request
+     * @param response
+     * @param processId Process ID
+     * @param digest
+     * @throws IOException
+     */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.GET)
     public void getAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
                               @RequestParam("processId") final String processId,

@@ -278,12 +278,12 @@
     </bean>
     <!-- END OF SCHEDULER -->
     
-    <!-- Mobile -->
-    <bean id="mobileFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <!-- START OF Mobiles and Devices -->
+    <bean id="deviceRegistrationFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="setupDataSource"/>
         <property name="mappingResources">
             <list>
-                <value>/org/kecak/apps/mobile/model/MobileDeviceRegistration.hbm.xml</value>
+                <value>/org/kecak/device/model/DeviceRegistration.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -297,10 +297,14 @@
         </property>
     </bean>
 
-    <bean id="mobileDao" class="org.kecak.apps.mobile.dao.MobileDaoImpl" >
-        <property name="sessionFactory" ref="mobileFactory"/>
+    <bean id="deviceRegistrationDao" class="org.kecak.device.dao.DeviceRegistrationDaoImpl" >
+        <property name="sessionFactory" ref="deviceRegistrationFactory"/>
     </bean>
-    <!--End of Mobile -->
+
+    <bean id="deviceRegistrationService" class="org.kecak.device.service.DeviceRegistrationServiceImpl">
+        <property name="deviceRegistrationDao" ref="deviceRegistrationDao" />
+    </bean>
+    <!-- END OF Mobiles and Devices -->
 
     <!-- XPDL Archive -->
     <bean id="archiveFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class entity-name="Mobile" lazy="false" name="org.kecak.apps.mobile.model.Mobile" table="mobile_device_registration">
+	<class entity-name="DeviceRegistration" lazy="false" name="org.kecak.device.model.DeviceRegistration" table="device_registration">
 		<id name="id" type="string">
 			<generator class="uuid" />
 		</id>
@@ -14,5 +14,6 @@
 		<property name="username" type="string" column="username" />
 		<property name="deviceId" type="string" column="device_id" />
 		<property name="deviceToken" type="string" column="device_token" />
+		<property name="blocked" type="boolean" column="blocked" />
 	</class>
 </hibernate-mapping>

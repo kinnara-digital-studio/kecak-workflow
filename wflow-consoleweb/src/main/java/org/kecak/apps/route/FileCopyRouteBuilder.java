@@ -7,7 +7,8 @@ public class FileCopyRouteBuilder extends RouteBuilder {
 	
 	private String fromUri = "file:data/inbox?noop=true";
 	private String toUri = "file:data/outbox";
-	
+
+	@Override
 	public void configure() {
 		String from = fromUri;
 		String to = toUri;

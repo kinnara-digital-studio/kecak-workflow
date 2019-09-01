@@ -1,7 +1,7 @@
 package org.kecak.apps.scheduler;
 
 import org.joget.apps.app.dao.AppDefinitionDao;
-import org.joget.apps.app.model.SchedulerPlugin;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.ExtDefaultPlugin;
@@ -57,13 +57,16 @@ public class SchedulerPluginJob implements Job {
 
                                 Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
                                 parameterProperties.put(SchedulerPlugin.PROPERTY_APP_DEFINITION, appDefinition);
-                                parameterProperties.put(SchedulerPlugin.PROPERTY_TIMESTAMP, context.getFireTime());
+                                parameterProperties.put(SchedulerPlugin.PROPERTY_PLUGIN_MANAGER, pluginManager);
 
-                                if(((SchedulerPlugin)plugin).filter(parameterProperties)) {
-                                    LogUtil.info(getClass().getName(), "Running Scheduler Job Plugin ["+plugin.getName()+"] for application ["+appDefinition.getAppId()+"]");
-                                    ((SchedulerPlugin)plugin).jobRun(parameterProperties);
-                                } else {
-                                    LogUtil.debug(getClass().getName(), "Skipping Scheduler Job Plugin [" + plugin.getName() + "] : Not meeting filter condition");
+                                try {
+                                    if (((SchedulerPlugin) plugin).filter(context, parameterProperties)) {
+                                        ((SchedulerPlugin) plugin).jobRun(context, parameterProperties);
+                                    } else {
+                                        LogUtil.debug(getClass().getName(), "Skipping Scheduler Job Plugin [" + plugin.getName() + "] : Not meeting filter condition");
+                                    }
+                                } catch (Exception e) {
+                                    ((SchedulerPlugin) plugin).onJobError(context, parameterProperties, e);
                                 }
                             })));
     }

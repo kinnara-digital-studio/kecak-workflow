@@ -1,4 +1,7 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/json/formUtil.js?build=<fmt:message key="build.number"/>"></script>
+
 <c:if test="${requestParameters.isPreview eq 'true'}">
     <script>
         $(document).ready(function() {

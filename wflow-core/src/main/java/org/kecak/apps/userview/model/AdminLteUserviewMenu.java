@@ -1,4 +1,6 @@
-package org.joget.apps.userview.model;
+package org.kecak.apps.userview.model;
+
+import org.joget.apps.userview.model.UserviewMenu;
 
 /**
  * @author aristo

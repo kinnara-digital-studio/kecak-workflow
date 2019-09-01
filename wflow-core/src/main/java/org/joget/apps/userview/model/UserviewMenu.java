@@ -1,7 +1,7 @@
 package org.joget.apps.userview.model;
 
-import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
+import org.kecak.apps.userview.model.*;
 
 /**
  * A base abstract class to develop a Userview Menu plugin. 

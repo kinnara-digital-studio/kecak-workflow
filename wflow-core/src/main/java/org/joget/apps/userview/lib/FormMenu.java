@@ -17,6 +17,9 @@ import org.joget.commons.util.StringUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.userview.model.AceUserviewMenu;
+import org.kecak.apps.userview.model.AdminLteUserviewMenu;
+import org.kecak.apps.userview.model.BootstrapUserview;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;

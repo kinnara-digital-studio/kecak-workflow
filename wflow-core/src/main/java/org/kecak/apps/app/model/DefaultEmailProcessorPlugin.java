@@ -1,5 +1,6 @@
-package org.joget.apps.app.model;
+package org.kecak.apps.app.model;
 
+import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.ExtDefaultPlugin;
 
 import javax.annotation.Nonnull;
@@ -37,6 +38,11 @@ public abstract class DefaultEmailProcessorPlugin extends ExtDefaultPlugin imple
     @Override
     public void parse(Map<String, Object> properties) {
         parse(properties.get(PROPERTY_FROM).toString(), properties.get(PROPERTY_SUBJECT).toString(), properties.get(PROPERTY_BODY).toString(), properties);
+    }
+
+    @Override
+    public void onError(Map<String, Object> properties, Exception e) {
+        LogUtil.error(getClassName(), e, e.getMessage());
     }
 
     public abstract void parse(String from, String subject, String body, Map<String, Object> properties);

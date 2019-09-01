@@ -3,10 +3,9 @@ package org.kecak.apps.email;
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.joget.apps.app.dao.AppDefinitionDao;
-import org.joget.apps.app.model.EmailProcessorPlugin;
+import org.kecak.apps.app.model.EmailProcessorPlugin;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.commons.spring.model.EmailApprovalContentDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
@@ -81,11 +80,15 @@ public class EmailProcessor {
                                     parameterProperties.put(EmailProcessorPlugin.PROPERTY_BODY, body);
                                     parameterProperties.put(EmailProcessorPlugin.PROPERTY_EXCHANGE, exchange);
 
-                                    if(((EmailProcessorPlugin) p).filter(parameterProperties)) {
-                                        LogUtil.info(getClass().getName(), "Processing Email Plugin [" + p.getName() + "] for application [" + appDefinition.getAppId() + "]");
-                                        ((EmailProcessorPlugin) p).parse(parameterProperties);
-                                    } else {
-                                        LogUtil.debug(getClass().getName(), "Skipping Email Plugin [" + p.getName() + "] : Not meeting filter condition");
+                                    try {
+                                        if (((EmailProcessorPlugin) p).filter(parameterProperties)) {
+                                            LogUtil.info(getClass().getName(), "Processing Email Plugin [" + p.getName() + "] for application [" + appDefinition.getAppId() + "]");
+                                            ((EmailProcessorPlugin) p).parse(parameterProperties);
+                                        } else {
+                                            LogUtil.debug(getClass().getName(), "Skipping Email Plugin [" + p.getName() + "] : Not meeting filter condition");
+                                        }
+                                    } catch (Exception e) {
+                                        ((EmailProcessorPlugin) p).onError(parameterProperties, e);
                                     }
                                 })));
     }
@@ -112,22 +115,21 @@ public class EmailProcessor {
         String email = ia.getAddress();
 //            directoryManager = (DirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
 
-        User user = directoryManager.getUserList(email, null, null, 0, 1)
+        String username = directoryManager.getUserList(email, null, null, 0, 1)
                 .stream()
                 .findFirst()
+                .map(User::getUsername)
                 // get data based on email without domain address
                 .orElseGet(() -> directoryManager.getUserList(email.replaceAll("@.+", ""), null, null, null, null)
                         .stream()
                         .filter(u -> email.equalsIgnoreCase(u.getEmail()))
                         .findFirst()
-                        .orElse(null));
+                        .map(User::getUsername)
+                        .orElse(DirectoryUtil.ROLE_ANONYMOUS));
 
-        if (user == null) {
-            LogUtil.info(getClass().getName(), "No directory user for email [" + email + "]");
-            return DirectoryUtil.ROLE_ANONYMOUS;
-        }
+        LogUtil.info(getClass().getName(), "Processing email from [" + email + "] recognized as [" + username + "]");
 
-        return user.getUsername();
+        return username;
     }
 
 //    public EmailApprovalContentDao getEmailApprovalContentDao() {

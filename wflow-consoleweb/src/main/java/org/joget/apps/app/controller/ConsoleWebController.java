@@ -20,7 +20,8 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
-import org.joget.apps.app.model.SchedulerPlugin;
+import org.kecak.apps.app.model.EmailProcessorPlugin;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.kecak.apps.scheduler.SchedulerManager;
 import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
 import org.kecak.apps.scheduler.dao.SchedulerLogDao;
@@ -4393,7 +4394,7 @@ public class ConsoleWebController {
                 details.setDateModified(now);
                 details.setModifiedBy(currUsername);
 
-                LogUtil.info(getClass().getName(), "getCronExpression ["+schedulerDetails.getCronExpression()+"] getJobClassName ["+schedulerDetails.getJobClassName()+"]");
+                LogUtil.info(getClass().getName(), "getCronExpression [" + details.getCronExpression() + "] getJobClassName [" + details.getJobClassName() + "]");
 
                 try {
                     schedulerManager.updateJobDetails(details);
