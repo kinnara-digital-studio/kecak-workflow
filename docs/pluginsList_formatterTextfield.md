@@ -1,6 +1,6 @@
 # Plugins Formatter Text Field
 
-Plugins text fields are plugins that function to accommodate various input data according to the format set. Among them can be alphabet, alphanumeric, numeric, email or custom using regular expressions.
+Plugins formatter textfield are plugins that function to format the data that will be entered into the field in various formats, for example in the form of currency, date, etc.
 
 ## How to use a plugins text field
 
