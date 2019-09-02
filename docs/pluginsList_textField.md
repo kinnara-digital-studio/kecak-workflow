@@ -74,10 +74,16 @@ Description :
 
 
 10. Result
-- Input data normally
+- Field before filled
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_result.png" alt="" />
 
-- Fill out if mandatory data is not filled out
+- Input data in currency
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_result2.png" alt="" />
+
+
+- Result after field have been filled
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_result3.png" alt="" />
+
