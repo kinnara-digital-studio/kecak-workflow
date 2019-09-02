@@ -14,11 +14,11 @@ Plugins text fields are plugins that function to accommodate various input data 
 
 3. Drag and drop plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_dragDrop.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_dragDrop.png" alt="" />
 
 4. Edit form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_edit.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_edit.png" alt="" />
 
 
 5. Fill available field in tab of edit formatter text field
@@ -35,7 +35,7 @@ Description :
 
 6. Next tab to formatter
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_formatter.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_formatter.png" alt="" />
 
 Description :
 
@@ -47,7 +47,7 @@ Description :
 
 7. Next to tab configure currency formatter
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_chooseFormatter.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_chooseFormatter.png" alt="" />
 
 Description :
 
@@ -65,18 +65,18 @@ Description :
 
 8. Click ok
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_ok.png" alt="" />
 
 
 9. Click save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_save.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_save.png" alt="" />
 
 
 10. Result
 - Input data normally
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_result.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_result.png" alt="" />
 
 - Fill out if mandatory data is not filled out
 
