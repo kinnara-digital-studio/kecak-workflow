@@ -208,6 +208,9 @@
                     </div>
                 </span>
             </div>
+<<<<<<< HEAD
+
+=======
             <div class="main-body-content-subheader">
                 <span><fmt:message key="console.setting.general.header.eaSettings"/></span>
             </div>
@@ -276,6 +279,7 @@
                 </span>
             </div>
             
+>>>>>>> 95d7fbce53603383d3ab6843ad70353d8da5b01c
             <div class="main-body-content-subheader">
                 <span><fmt:message key="console.setting.general.header.saSettings"/></span>
             </div>
