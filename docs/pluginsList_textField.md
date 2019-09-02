@@ -40,6 +40,7 @@ Description :
 Description :
 
 |Field|Description|
+|-----|-----------|
 |**Formatter**|Jenis format text yang akan dipilih|
 |**Allignment**|Pengaturan poisi dari tulisannya|
                      
@@ -51,6 +52,7 @@ Description :
 Description :
 
 |Field|Description|
+|-----|-----------|
 |**Source Format**|Format penulisan currencynya|
 |**Other Formatting**|Format tampilan tulisannya|
 |**Locale**|Format dari mata uang|
