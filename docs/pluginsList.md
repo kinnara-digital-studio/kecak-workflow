@@ -31,7 +31,7 @@
 - [Plugins Date Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dateFormatter)
 - [Plugins Form Attachment](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_formAttachment)
 - [Plugins CRUD Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudSelectbox)
-- [Plugins Formatter Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_textField)
+- [Plugins Formatter Text Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_formatterTextfield)
 - [Plugins Signature Pad](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_signaturePad)
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_chartMenu)
 - [Plugins CRUD Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudMenu)
