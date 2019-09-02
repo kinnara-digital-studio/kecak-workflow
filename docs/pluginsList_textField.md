@@ -23,7 +23,7 @@ Plugins text fields are plugins that function to accommodate various input data 
 
 5. Fill available field in tab of edit formatter text field
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_editFormatter.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_editFormatter.png" alt="" />
 
 Description :
 
