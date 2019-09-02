@@ -30,10 +30,10 @@ Description :
 |**Name**                   | Naming of date formatter                 |
 |**Label**                  | Naming the fields that will be displayed |
 |**Sortable**               | Option for sorting data|
-|**Render value as HTML**||
+|**Render value as HTML**|Change date value to HTML script|
 |**Hidden**|Option to hide data|
 |**Permission**|Permission for anyone who can access the fied|
-|**Exclude in export**||
+|**Exclude in export**|The field of date will be dissapear when form will be exported|
 |**Width**|The width of the field to be displayed|
 |**Inline style**|Display settings to specify inline style|
 
