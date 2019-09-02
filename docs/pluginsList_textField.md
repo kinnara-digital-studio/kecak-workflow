@@ -14,72 +14,68 @@ Plugins text fields are plugins that function to accommodate various input data 
 
 3. Drag and drop plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_dragDrop.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_dragDrop.png" alt="" />
 
 4. Edit form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_edit.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_edit.png" alt="" />
 
 
-5. Fill available field
+5. Fill available field in tab of edit formatter text field
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_fill.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_editFormatter.png" alt="" />
 
 Description :
 
-| FIELD   |              DESCRIPTION                 |
+| Field   |              Description                 |
 |---------|------------------------------------------|
 |**ID**   | ID for the text field to be created      |
 |**Label**| The name of the text field to be created |
 
 
-6. Next tab to advanced options
+6. Next tab to formatter
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_advanced.png" alt="" />
-
-Description :
-
-|    FIELD                               |                                     DESCRIPTION                                     |
-|----------------------------------------|-------------------------------------------------------------------------------------|
-|**Value**                               |The value of the form to be entered. can display the default value or leave it blank |
-|**Max Length**                          |Limitation on how many characters must be entered in the field                       |
-|**Validator**                           |Further settings for the text field to be made, can be seen in step 7            |
-|**Encryption**                          |Settings whether the text field created will be encrypted or not                     |
-|**Size**                                |The length of the field box displayed                                                |
-|**Read only**                           |Options for reading only                                                             |
-|**Display field as Label when read-only**|Option to display fields as Label when only read                                     |                      
-
-7. Cofiguration validator
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_validator1.png" alt="" />
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_validator.png" alt="" />
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_.png" alt="" />
 
 Description :
 
-| FIELD | DESCRIPTION |
-|-------|-------------|
-|**Mandatory**|Settings for the text field to be created must be filled|
-|**Type**|The data type of the text field that must be entered|
-|**Custom Regular Expression**|Make regular expressions as desired for the text field to be created|
-|**Custom Error Message to show when Validation Fail**|Error message when a user enters incorrect data|
+|Field|Description|
+|**Formatter**|Jenis format text yang akan dipilih|
+|**Allignment**|Pengaturan poisi dari tulisannya|
+                     
+
+7. Next to tab configure currency formatter
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+
+Description :
+
+|Field|Description|
+|**Source Format**|Format penulisan currencynya|
+|**Other Formatting**|Format tampilan tulisannya|
+|**Locale**|Format dari mata uang|
+|**Show Symbol**|Pilihan untuk menunjukkan simbol dari mata uang|
+|**Show Decimal**|Pilihan untuk menunjukkan format desimal|
+|**Font Size**|Pengaturan ukuran dari tulisannya|
+|**Font Color Code**|Pengaturan warna dari tulisannya|
+|**Allignment**|Pengaturan poisi dari tulisannya|
+
 
 8. Click ok
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_ok.png" alt="" />
 
 
 9. Click save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_save.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_save.png" alt="" />
 
 
 10. Result
 - Input data normally
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_result.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextField_result.png" alt="" />
 
 - Fill out if mandatory data is not filled out
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_result2.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
