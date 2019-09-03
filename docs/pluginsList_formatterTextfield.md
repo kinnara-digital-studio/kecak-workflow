@@ -41,8 +41,8 @@ Description :
 
 |Field|Description|
 |-----|-----------|
-|**Formatter**|Jenis format text yang akan dipilih|
-|**Allignment**|Pengaturan poisi dari tulisannya|
+|**Formatter**|Type of text format to be selected |
+|**Allignment**|Set the position of the text|
                      
 
 7. Next to tab configure currency formatter
@@ -53,14 +53,14 @@ Description :
 
 |Field|Description|
 |-----|-----------|
-|**Source Format**|Format penulisan currencynya|
-|**Other Formatting**|Format tampilan tulisannya|
-|**Locale**|Format dari mata uang|
-|**Show Symbol**|Pilihan untuk menunjukkan simbol dari mata uang|
-|**Show Decimal**|Pilihan untuk menunjukkan format desimal|
-|**Font Size**|Pengaturan ukuran dari tulisannya|
-|**Font Color Code**|Pengaturan warna dari tulisannya|
-|**Allignment**|Pengaturan poisi dari tulisannya|
+|**Source Format**|Currency writing format|
+|**Other Formatting**|Display format of writing|
+|**Locale**|Currency Format|
+|**Show Symbol**|Option to display currency symbols|
+|**Show Decimal**|Option to display decimal format|
+|**Font Size**|Set text size|
+|**Font Color Code**|Color settings from text|
+|**Allignment**|Set the position of the text|
 
 
 8. Click ok
