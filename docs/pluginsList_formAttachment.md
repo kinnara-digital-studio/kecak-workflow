@@ -20,12 +20,12 @@ This attachment form is a plugins that functions to display data from datalist i
 
 4. Edit form attachment
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_edit.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_edit.png" alt="" />
 
 
-5. List that must be edited
+5. Fill in the fields as shown in the image below
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_editPlugins.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_editForm.png" alt="" />
 
 | Field | Description |
 |-------|-------------|
@@ -35,38 +35,32 @@ This attachment form is a plugins that functions to display data from datalist i
 |Datalist| Datalist will be displayed on the attachment form |
 |Columns| Which data will be displayed on the attachment form of the selected datalist |
 
-6. Fill in the fields as shown in the image below
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_fillField.png" alt="" />
+6. Click OK
 
-
-7. Click OK
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_ok.png" alt="" />
 
 
 8. Click save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_save.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_save.png" alt="" />
 
 
 9. Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
 - When form attachment is not filled
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_result1.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result.png" alt="" />
 
 
 - When click plus button
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_result2.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result2.png" alt="" />
 
 - When check list data
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_result3.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result3.png" alt="" />
 
-- When attachment is filled
+- When attachment submitted
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formAttach_result4.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result4.png" alt="" />
