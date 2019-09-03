@@ -1,6 +1,6 @@
-# Form Attachment
+# Form Attachment Grid
 
-This attachment form is a plugins that functions to display data from datalist in a form.
+Form attachment grid is a plugins that functions to display data from datalist in a form.
 
 ## How to use
 
