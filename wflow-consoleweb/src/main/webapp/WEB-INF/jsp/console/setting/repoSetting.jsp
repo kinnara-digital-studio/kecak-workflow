@@ -43,12 +43,16 @@
         <div id="repoSetup">
             <form method="post" action="${pageContext.request.contextPath}/web/console/setting/repo/submit">
             <div class="main-body-content-subheader">
-                <span><fmt:message key="console.setting.general.header.repoSetup"/></span>
+                <span><fmt:message key="console.setting.git.header.repoSetup"/></span>
             </div>
             <div class="main-body-row">
                 <span class="row-content">
                     <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.repoURL"/></label>
+                        <label for="dataFileBasePath">
+                            <fmt:message key="console.setting.git.label.repoURL"/>
+                            <br>
+                            <fmt:message key="console.setting.git.label.repoURL.desc"/>
+                        </label>
                         <span class="form-input">
                             <input id="repoURL" type="text" name="repoURL" value="<c:out value="${settingMap['repoURL']}"/>"/>
                         </span>
@@ -59,12 +63,22 @@
                 <span class="row-content">
                     <div class="form-row">
                         <label for="dataFileBasePath">
-                            <fmt:message key="console.setting.general.label.privateKey"/>
-                            <br>
-                            <fmt:message key="console.setting.general.label.desc"/>
+                            <fmt:message key="console.setting.git.label.username"/>
                         </label>
                         <span class="form-input">
-                            <textarea rows="8" id="repoKey" name="repoKey"><c:out value="${settingMap['repoKey']}"/></textarea>
+                            <input id="repoUsername" type="text" name="repoUsername" value="<c:out value="${settingMap['repoUsername']}"/>"/>
+                        </span>
+                    </div>
+                </span>
+            </div>
+            <div class="main-body-row">
+                <span class="row-content">
+                    <div class="form-row">
+                        <label for="dataFileBasePath">
+                            <fmt:message key="console.setting.git.label.password"/>
+                        </label>
+                        <span class="form-input">
+                            <input id="repoPassword" type="password" name="repoPassword" value="<c:out value="${settingMap['repoPassword']}"/>"/>
                         </span>
                     </div>
                 </span>

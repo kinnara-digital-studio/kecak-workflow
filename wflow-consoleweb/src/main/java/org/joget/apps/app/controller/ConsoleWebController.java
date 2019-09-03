@@ -4,7 +4,10 @@ import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.comparator.NameFileComparator;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.model.*;
 import org.joget.apps.app.service.AppService;
@@ -81,7 +84,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
@@ -3923,10 +3925,13 @@ public class ConsoleWebController {
     }
 
     @RequestMapping("/console/setting/plugin/pull")
-    public void consoleSettingPluginPull(Writer writer) throws GitAPIException {
+    public String consoleSettingPluginPull(ModelMap map) throws GitAPIException {
         Setting setting = setupManager.getSettingByProperty("repoURL");
+        Setting repoUser = setupManager.getSettingByProperty("repoUsername");
+        Setting repoPassword = setupManager.getSettingByProperty("repoPassword");
         String baseDir = pluginManager.getBaseDirectory();
         File appPluginDir = new File(baseDir);
+        boolean moved = false;
         if(!appPluginDir.exists()){
             appPluginDir.mkdirs();
         }else{
@@ -3934,28 +3939,25 @@ public class ConsoleWebController {
             File tmpDir = new File(wflow.getPath()+"/tmp_app_plugins");
             try {
                 Path movePath = Files.move(appPluginDir.toPath(), tmpDir.toPath());
-                if(movePath != null)
-                {
-                    System.out.println("File renamed and moved successfully");
-                }
-                else
-                {
-                    System.out.println("Failed to move the file");
+                if(movePath != null){
+                    moved = true;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LogUtil.error(this.getClass().getName(), e, e.getMessage());
             }
         }
-        File keyFile = new File(appPluginDir.getParentFile().getPath()+"/"+DIR_SSH_KEY, SSH_KEY_NAME);
-        SshTransportConfigCallback transportConfig = new SshTransportConfigCallback(keyFile.getPath());
-        LogUtil.info(this.getClass().getName(), "PRIVATE KEY PATH: "+keyFile.getPath());
-//        Git git = Git.cloneRepository()
-//                .setURI( setting.getValue())
-//                .setDirectory(appPluginDir)
-//                .setTransportConfigCallback(transportConfig)
-//                .call();
+        Git git = Git.cloneRepository()
+                .setURI( setting.getValue())
+                .setDirectory(appPluginDir)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider( repoUser.getValue(), repoPassword.getValue()) )
+                .call();
+        Repository repo = git.getRepository();
+        if(repo!=null){
+            pluginManager.refresh();
+        }else{
 
-        pluginManager.refresh();
+        }
+        return "redirect:/web/console/setting/plugin";
     }
 
     @RequestMapping("/console/setting/plugin/upload")
@@ -4522,27 +4524,26 @@ public class ConsoleWebController {
 
         Map<String, String> settingMap = new HashMap<String, String>();
         for (Setting setting : settingList) {
-            if(setting.getProperty().equals("repoURL"))
-                settingMap.put(setting.getProperty(), setting.getValue());
+            settingMap.put(setting.getProperty(), setting.getValue());
         }
 
-        String baseDir = pluginManager.getBaseDirectory();
-        File appPluginDir = new File(baseDir);
-        File keyFile = new File(appPluginDir.getParentFile().getPath()+"/"+DIR_SSH_KEY, SSH_KEY_NAME);
-
-        try (BufferedReader in = new BufferedReader(new FileReader(keyFile))){
-            StringBuilder keyValue = new StringBuilder();
-            String line;
-            while((line = in.readLine()) != null)
-            {
-                keyValue.append(line);
-            }
-            settingMap.put("repoKey", keyValue.toString());
-        } catch (FileNotFoundException e) {
-            LogUtil.error(this.getClass().getName(), e, e.getMessage());
-        } catch (IOException e) {
-            LogUtil.error(this.getClass().getName(), e, e.getMessage());
-        }
+//        String baseDir = pluginManager.getBaseDirectory();
+//        File appPluginDir = new File(baseDir);
+//        File keyFile = new File(appPluginDir.getParentFile().getPath()+"/"+DIR_SSH_KEY, SSH_KEY_NAME);
+//
+//        try (BufferedReader in = new BufferedReader(new FileReader(keyFile))){
+//            StringBuilder keyValue = new StringBuilder();
+//            String line;
+//            while((line = in.readLine()) != null)
+//            {
+//                keyValue.append(line);
+//            }
+//            settingMap.put("repoKey", keyValue.toString());
+//        } catch (FileNotFoundException e) {
+//            LogUtil.error(this.getClass().getName(), e, e.getMessage());
+//        } catch (IOException e) {
+//            LogUtil.error(this.getClass().getName(), e, e.getMessage());
+//        }
 
         map.addAttribute("settingMap", settingMap);
         return "console/setting/repoSetting";
@@ -4565,31 +4566,31 @@ public class ConsoleWebController {
             } else {
                 setting.setValue(paramValue);
             }
-            // Generate Private Key File in wflow
-            if(paramName.equals(REPO_KEY)){
-                String baseDir = pluginManager.getBaseDirectory();
-                File appPluginDir = new File(baseDir);
-                File wflow = appPluginDir.getParentFile();
-                File dirKey = new File(wflow.getPath()+"/"+DIR_SSH_KEY);
-                if(!dirKey.exists()){
-                    dirKey.mkdirs();
-                    LogUtil.info(this.getClass().getName(), "[CREATING NEW PRIVATE KEY]");
-                    // create new file
-                    File keyFile = new File(dirKey.getPath(), SSH_KEY_NAME);
-                    byte[] keyBytes = paramValue.getBytes();
-                    Files.write(keyFile.toPath(),keyBytes);
-                }else{ // update existing private key file
-                    LogUtil.info(this.getClass().getName(), "[UPDATING PRIVATE KEY]");
-                    File sshKey = new File(dirKey.getPath()+"/"+SSH_KEY_NAME);
-                    if(sshKey.delete()){
-                        Path keyPath = Paths.get(dirKey.getPath()+"/"+SSH_KEY_NAME);
-                        byte[] keyBytes = paramValue.getBytes();
-                        Files.write(keyPath,keyBytes);
-                    }else{
-                        LogUtil.info(this.getClass().getName(), "[FAILED TO DELETE EXISTING PRIVATE KEY]");
-                    }
-                }
-            }
+//            // Generate Private Key File in wflow
+//            if(paramName.equals(REPO_KEY)){
+//                String baseDir = pluginManager.getBaseDirectory();
+//                File appPluginDir = new File(baseDir);
+//                File wflow = appPluginDir.getParentFile();
+//                File dirKey = new File(wflow.getPath()+"/"+DIR_SSH_KEY);
+//                if(!dirKey.exists()){
+//                    dirKey.mkdirs();
+//                    LogUtil.info(this.getClass().getName(), "[CREATING NEW PRIVATE KEY]");
+//                    // create new file
+//                    File keyFile = new File(dirKey.getPath(), SSH_KEY_NAME);
+//                    byte[] keyBytes = paramValue.getBytes();
+//                    Files.write(keyFile.toPath(),keyBytes);
+//                }else{ // update existing private key file
+//                    LogUtil.info(this.getClass().getName(), "[UPDATING PRIVATE KEY]");
+//                    File sshKey = new File(dirKey.getPath()+"/"+SSH_KEY_NAME);
+//                    if(sshKey.delete()){
+//                        Path keyPath = Paths.get(dirKey.getPath()+"/"+SSH_KEY_NAME);
+//                        byte[] keyBytes = paramValue.getBytes();
+//                        Files.write(keyPath,keyBytes);
+//                    }else{
+//                        LogUtil.info(this.getClass().getName(), "[FAILED TO DELETE EXISTING PRIVATE KEY]");
+//                    }
+//                }
+//            }
 
             setting.setDateModified(new Date());
             setting.setModifiedBy(currentUsername);
