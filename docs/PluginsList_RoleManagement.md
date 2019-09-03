@@ -8,7 +8,7 @@ Displays the role management settings
 - **Authorization Object**
 : attached to each field, user view or datalist, or element.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/authorizationObject.png" alt="authorizationObject" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_auth.png" alt="authorizationObject" />
 
 Description :
 
