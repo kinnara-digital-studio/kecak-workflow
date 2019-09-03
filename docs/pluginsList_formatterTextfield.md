@@ -1,6 +1,6 @@
 # Plugins Formatter Text Field
 
-Plugins formatter textfield are plugins that function to format the data that will be entered into the field in various formats, for example in the form of currency, date, etc.
+Plugins formatter textfield are plugins that function to format the data that will be entered into the field in various formats, for example in the form of currency, date, etc. These plugins are run using the plugins formatter datalist.
 
 ## How to use a plugins formatter text field
 
