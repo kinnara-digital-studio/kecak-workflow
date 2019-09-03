@@ -37,12 +37,12 @@ This attachment form is a plugins that functions to display data from datalist i
 
 6. Next to tab store binder
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_storeBinder.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_editStoreBinder.png" alt="" />
 
 
 7. Next to tab load binder
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_loadBinder.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_editLoadBinder.png" alt="" />
 
 
 6. Click OK
