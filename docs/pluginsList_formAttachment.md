@@ -67,7 +67,7 @@ This attachment form is a plugins that functions to display data from datalist i
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result2.png" alt="" />
 
 
-- When check list data
+- When check list data (1) and click button submit (2) aftar check list data
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result3.png" alt="" />
 
