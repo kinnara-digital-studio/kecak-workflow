@@ -35,18 +35,27 @@ This attachment form is a plugins that functions to display data from datalist i
 |Datalist| Datalist will be displayed on the attachment form |
 |Columns| Which data will be displayed on the attachment form of the selected datalist |
 
+6. Next to tab store binder
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_storeBinder.png" alt="" />
+
+
+7. Next to tab load binder
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_loadBinder.png" alt="" />
+
 
 6. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_ok.png" alt="" />
 
 
-8. Click save
+9. Click save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_save.png" alt="" />
 
 
-9. Result
+10. Result
 
 - When form attachment is not filled
 
@@ -57,9 +66,11 @@ This attachment form is a plugins that functions to display data from datalist i
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result2.png" alt="" />
 
+
 - When check list data
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/fag_result3.png" alt="" />
+
 
 - When attachment submitted
 
