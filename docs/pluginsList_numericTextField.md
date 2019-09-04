@@ -1,6 +1,7 @@
 # Numeric Text Field
 
-Field khusus untuk mumeric dan bisa menggunakan formula di dalamnya.
+Special fields for numeric and can use the formula in it.
+
 
 ## How to use plugins
 
@@ -45,11 +46,11 @@ Description :
 
 |Field |Description|
 |-|-|
-|Validator|Further settings for the text field to be made|
-|Formatter|Type of text format to be selected|
-|Currency Reference Field|Field to insert currency references|
-|Hidden?|Option for hidden field|
-|Display as Label?|Option for display as label from this field|
+|Validator|Validation settings for the text field to be created|
+|Formatter|The type of text format to be selected|
+|Currency Reference Field|A field for entering currency references|
+|Hidden | Option to hide fields|
+|Display as Label |Option to display fields as labels|
 
 7. Choose formatter
 
