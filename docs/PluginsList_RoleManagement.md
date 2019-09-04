@@ -8,7 +8,7 @@ Displays the role management settings
 - **Authorization Object**
 : attached to each field, user view or datalist, or element.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_auth.png" alt="authorizationObject" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement1_fieldAddNew.png" alt="authorizationObject" />
 
 Description :
 
@@ -30,12 +30,12 @@ The difference between Object Type Field and Menu / Section is, in Object Type F
 
 The following is an example of data filling with Object Type in the form of Menu / Section:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_budget.png" alt="roleManagement_budget" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2_fieldAddNew.png" alt="roleManagement_budget" />
 
 In Object Type Menu / Section does not have to input Object Name.
 
 The following is an example of data filling with Object Type in the form of Field:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2.png" alt="roleManagement2" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement3_fieldAddNew.png" alt="roleManagement2" />
 In Object Type Field must input Object Name (not mandatory)
 
 The data has been stored, then the data display is as follows (red marked):
