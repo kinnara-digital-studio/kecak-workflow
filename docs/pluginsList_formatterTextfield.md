@@ -47,7 +47,10 @@ Description :
 
 7. Next to tab configure currency formatter
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_chooseFormatter.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_sourceFormat.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/formatterTextfield_sourceFormat.png" alt="" />
+
 
 Description :
 
