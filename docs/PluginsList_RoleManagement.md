@@ -39,7 +39,7 @@ The following is an example of data filling with Object Type in the form of Fiel
 In Object Type Field must input Object Name (not mandatory)
 
 The data has been stored, then the data display is as follows (red marked):
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_authObjectList.png" alt="rm_authObjectList" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4_list.png" alt="rm_authObjectList" />
 
 
 - **Role**
