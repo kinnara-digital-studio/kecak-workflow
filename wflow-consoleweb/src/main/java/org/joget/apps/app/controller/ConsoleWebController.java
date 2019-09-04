@@ -3665,10 +3665,9 @@ public class ConsoleWebController {
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
 
-        camelRouteManager.stopContext();
-        Thread.sleep(3000);
-
-        camelRouteManager.startContext();
+//        camelRouteManager.stopContext();
+//        Thread.sleep(3000);
+//        camelRouteManager.startContext();
 
         return "redirect:/web/console/setting/general";
     }
@@ -4318,6 +4317,10 @@ public class ConsoleWebController {
             settingMap.put(setting.getProperty(), setting.getValue());
         }
         map.addAttribute("settingMap", settingMap);
+
+        camelRouteManager.stopContext();
+        camelRouteManager.startContext();
+
         return "console/setting/eaSetting";
     }
 

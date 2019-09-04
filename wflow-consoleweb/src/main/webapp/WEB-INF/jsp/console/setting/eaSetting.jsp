@@ -42,72 +42,78 @@
     <div id="main-body">
         <div id="generalSetup">
             <form method="post" action="${pageContext.request.contextPath}/web/console/setting/eaSettings/submit">
-            <div class="main-body-content-subheader">
-                <span><fmt:message key="console.setting.general.header.eaSettings"/></span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailAccount"/></label>
-                        <span class="form-input">
-                            <input id="emailAccount" type="text" name="emailAccount" value="<c:out value="${settingMap['emailAccount']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailPassword"/></label>
-                        <span class="form-input">
-                            <input id="emailPassword" type="password" name="emailPassword" value="<c:out value="${settingMap['emailPassword']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailProtocol"/></label>
-                        <span class="form-input">
-                            <input id="emailProtocol" type="text" name="emailProtocol" value="<c:out value="${settingMap['emailProtocol']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailHost"/></label>
-                        <span class="form-input">
-                            <input id="emailHost" type="text" name="emailHost" value="<c:out value="${settingMap['emailHost']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailPort"/></label>
-                        <span class="form-input">
-                            <input id="emailPort" type="text" name="emailPort" value="<c:out value="${settingMap['emailPort']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="dataFileBasePath"><fmt:message key="console.setting.general.label.emailFolder"/></label>
-                        <span class="form-input">
-                            <input id="emailFolder" type="text" name="emailFolder" value="<c:out value="${settingMap['emailFolder']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="form-buttons">
-                <input class="form-button" type="submit" value="<fmt:message key="general.method.label.submit"/>" />
-            </div>
+                <div class="main-body-content-subheader">
+                    <span><fmt:message key="console.setting.general.header.eaSettings"/></span>
+                </div>
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="emailAccount"><fmt:message key="console.setting.general.label.emailAccount"/></label>
+                            <span class="form-input">
+                                <input id="emailAccount" type="text" name="emailAccount" value="<c:out value="${settingMap['emailAccount']}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="emailPassword"><fmt:message key="console.setting.general.label.emailPassword"/></label>
+                            <span class="form-input">
+                                <input id="emailPassword" type="password" name="emailPassword" value="<c:out value="${settingMap['emailPassword']}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="emailProtocol"><fmt:message key="console.setting.general.label.emailProtocol"/></label>
+                            <span class="form-input">
+                                <%-- <input id="emailProtocol" type="text" name="emailProtocol" value="<c:out value="${settingMap['emailProtocol']}"/>"/> --%>
+                                <c:set var="imapSelected"><c:if test="${'imap' == settingMap['emailProtocol']}"> selected</c:if></c:set>
+                                <c:set var="imapsSelected"><c:if test="${'imaps' == settingMap['emailProtocol']}"> selected</c:if></c:set>
+                                <select id="emailProtocol" name="emailProtocol">
+                                    <option value="imap" ${imapSelected}>IMAP</option>
+                                    <option value="imaps" ${imapsSelected}>IMAPS</option>
+                                </select>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="emailHost"><fmt:message key="console.setting.general.label.emailHost"/></label>
+                            <span class="form-input">
+                                <input id="emailHost" type="text" name="emailHost" value="<c:out value="${settingMap['emailHost']}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="emailPort"><fmt:message key="console.setting.general.label.emailPort"/></label>
+                            <span class="form-input">
+                                <input id="emailPort" type="text" name="emailPort" value="<c:out value="${settingMap['emailPort']}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="emailFolder"><fmt:message key="console.setting.general.label.emailFolder"/></label>
+                            <span class="form-input">
+                                <input id="emailFolder" type="text" name="emailFolder" value="<c:out value="${settingMap['emailFolder']}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+                <div class="form-buttons">
+                    <input class="form-button" type="submit" value="<fmt:message key="general.method.label.submit"/>" />
+                </div>
             </form>
         </div>
     </div>
