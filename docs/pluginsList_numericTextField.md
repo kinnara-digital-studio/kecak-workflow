@@ -34,7 +34,7 @@ Description :
 |-|-|
 |ID|ID for the text field to be created|
 |Label|The name of the text field to be created|
-|Variable||
+|Variable|Option to add variable manually|
 |Calculation Load Binder|Instead of using above equation, calculation will be done in Load Binder|
 
 6. Next tab advance configure
@@ -47,7 +47,7 @@ Description :
 |-|-|
 |Validator|Further settings for the text field to be made|
 |Formatter|Type of text format to be selected|
-|Currency Reference Field||
+|Currency Reference Field|Field to insert currency references|
 |Hidden?|Option for hidden field|
 |Display as Label?|Option for display as label from this field|
 
