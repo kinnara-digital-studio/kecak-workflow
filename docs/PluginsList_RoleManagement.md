@@ -24,16 +24,14 @@ Description :
 * Menu/Section: paired on the load binder
 * Action: Trigger process/ execute button in data list action button (For Write)
 
-The image above is the image of the fill field for the authorization object, which is filled Object ID, Object Type (Field or Menu/Section), and Object Name.
-
-The difference between Object Type Field and Menu / Section is, in Object Type Field must input Object Name, while in Object Type Menu / Section does not have to input Object Name.
+The image above is the image of the fill field for the authorization object, which is filled Object ID, Object Type (Action or Menu/Section).
 
 The following is an example of data filling with Object Type in the form of **Menu / Section**:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2_addNew.png" alt="roleManagement_budget" />
 
 
-The following is an example of data filling with Object Type in the form of **Actin** :
+The following is an example of data filling with Object Type in the form of **Action** :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement3_addNew.png" alt="roleManagement2" />
 
@@ -63,7 +61,7 @@ The following is an example of data filling:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement6.png" alt="roleManagement6" />
 
 
-The data has been stored, then the data display is as follows (red marked):
+The data has been stored, then the data display is as follows :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_roleList.png" alt="roleList" />
 
 - **Role Group**
@@ -86,7 +84,7 @@ The image above is the image of the fill field for the Role Group, which is fill
 The following is an example of data filling:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_roleGroup.png" alt="roleManagement_roleGroup" />
 
-The data has been stored, then the data display is as follows (red marked):
+The data has been stored, then the data display is as follows:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleGroupList.png" alt="roleGroupList" />
 
