@@ -3,6 +3,7 @@ package org.joget.commons.spring.model;
 import java.io.Serializable;
 import java.util.Date;
 
+@Deprecated
 public class EmailApprovalContent implements Serializable {
 
 	/**

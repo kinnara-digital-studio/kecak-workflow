@@ -1,9 +1,7 @@
-<div class="form-cell" ${elementMetaData!}>
-    <link rel="stylesheet" href="${request.contextPath}/plugin/${className}/bower_components/select2/dist/css/select2.min.css" />
+<div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
     <script type="text/javascript" src="${request.contextPath}/plugin/${className}/bower_components/select2/dist/js/select2.min.js"></script>
-    <script type="text/javascript" src="${request.contextPath}/js/json/formUtil.js"></script>
-
-    <label class="label">${element.properties.label} <span class="form-cell-validator">${decoration}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>
+    <link rel="stylesheet" href="${request.contextPath}/plugin/${className}/bower_components/select2/dist/css/select2.min.css">
+    <label class="label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
     <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
         <div class="form-cell-value">
             <#list options as option>
@@ -17,26 +15,28 @@
         </div>
         <div style="clear:both;"></div>
     <#else>
-        <select class="js-select2" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'> disabled </#if>>
-            <#if element.properties.lazyLoading! != 'true' >
-                <#list options! as option>
-                    <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>
-                </#list>
-            <#else>
-                <#list options! as option>
-                    <#if values?? && values?seq_contains(option.value!) || option.value == ''>
+        <div class="form-cell-value">
+            <select style="width:${element.properties.size}%" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> class="form-control <#if error??>form-error-cell</#if>" <#if element.properties.readonly! == 'true'> disabled </#if>>
+                <#if element.properties.lazyLoading! != 'true' >
+                    <#list options! as option>
                         <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>
-                    </#if>
-                </#list>
-            </#if>
-        </select>
+                    </#list>
+                <#else>
+                    <#list options! as option>
+                        <#if values?? && values?seq_contains(option.value!) || option.value == ''>
+                            <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>
+                        </#if>
+                    </#list>
+                </#if>
+            </select>
+        </div>
     </#if>
     <#if element.properties.readonly! == 'true'>
         <#list values as value>
             <input type="hidden" id="${elementParamName!}" name="${elementParamName!}" value="${value?html}" />
         </#list>
     </#if>
-
+    <#if error??> <span class="form-error-message help-block">${error}</span></#if>
     <#if element.properties.controlField?? && element.properties.controlField! != "" && !(element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
         <script type="text/javascript" src="${request.contextPath}/plugin/org.joget.apps.form.lib.SelectBox/js/jquery.dynamicoptions.js"></script>
         <script type="text/javascript">
@@ -59,10 +59,8 @@
     <#if element.properties.modernStyle! == 'true' >
         <script type="text/javascript">
             $(document).ready(function(){
-                $('#${elementParamName!}${element.properties.elementUniqueKey!}.js-select2').select2({
+                $('#${elementParamName!}${element.properties.elementUniqueKey!}').select2({
                     placeholder: '${element.properties.placeholder!}',
-                    width : '${width!}',
-                    theme : 'classic',
                     language : {
                        errorLoading: () => '${element.properties.messageErrorLoading!}',
                        loadingMore: () => '${element.properties.messageLoadingMore!}',

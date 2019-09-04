@@ -1,4 +1,7 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+<%@ page import="java.net.URLEncoder" %>
+<c:set var="encodedOrgId" value="${URLEncoder.encode(department.organization.id.toString(),'UTF-8')}"/>
+
 
 <commons:header />
 
@@ -18,14 +21,14 @@
     <div id="main-title"></div>
     <div id="main-action">
         <ul id="main-action-buttons">
-            <li><button onclick="onEdit()"><fmt:message key="console.directory.department.edit.label"/></button></li>
-            <li><button onclick="onDelete()"><fmt:message key="console.directory.department.delete.label"/></button></li>
-            <li><button onclick="onCreateSubDepartment()"><fmt:message key="console.directory.department.create.label.createSubDepartment"/></button></li>
-            <li><button onclick="onSetHOD()"><fmt:message key="console.directory.department.hod.set.label"/></button></li>
+            <li class="btnDeptEdit"><button onclick="onEdit()"><fmt:message key="console.directory.department.edit.label"/></button></li>
+            <li class="btnDeptDelete"><button onclick="onDelete()"><fmt:message key="console.directory.department.delete.label"/></button></li>
+            <li class="btnCreateSubDept"><button onclick="onCreateSubDepartment()"><fmt:message key="console.directory.department.create.label.createSubDepartment"/></button></li>
+            <li class="btnSetHod"><button onclick="onSetHOD()"><fmt:message key="console.directory.department.hod.set.label"/></button></li>
             <c:if test="${!empty hod}">
-                <li><button onclick="onRemoveHOD()"><fmt:message key="console.directory.department.hod.remove.label"/></button></li>
+                <li class="btnSetHod"><button onclick="onRemoveHOD()"><fmt:message key="console.directory.department.hod.remove.label"/></button></li>
             </c:if>
-            <li><button onclick="assignUsers()"><fmt:message key="console.directory.department.user.assign.label"/></button></li>
+            <li class="btnAssignUsers"><button onclick="assignUsers()"><fmt:message key="console.directory.department.user.assign.label"/></button></li>
         </ul>
     </div>
     <div id="main-body">
@@ -33,7 +36,7 @@
             <legend><fmt:message key="console.directory.department.common.label.details"/></legend>
             <div class="form-row">
                 <label for="field1"><fmt:message key="console.directory.org.common.label"/></label>
-                <span class="form-input"><a href="${pageContext.request.contextPath}/web/console/directory/org/view/${department.organization.id}"><c:out value="${department.organization.name}"/></a></span>
+                <span class="form-input"><a href="${pageContext.request.contextPath}/web/console/directory/org/view/${encodedOrgId}"><c:out value="${department.organization.name}"/></a></span>
             </div>
             <c:if test="${!empty department.parent}">
                 <div class="form-row">
@@ -80,7 +83,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton1="console.directory.department.create.label.createSubDepartment"
                        checkboxCallback1="onCreateSubDepartment"
                        checkboxOptional1="true"
@@ -123,7 +126,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton1="console.directory.department.user.assign.label"
                        checkboxCallback1="assignUsers"
                        checkboxOptional1="true"
@@ -147,15 +150,15 @@
         $('#JsonDeptDataTable_searchTerm').hide();
         $('#JsonUserDataTable_searchTerm').hide();
 
-        <c:if test="${isCustomDirectoryManager || department.readonly}">
+        <c:if test="${(isCustomDirectoryManager && isReadOnly) || department.readonly}">
             $('#main-action-buttons').remove();
             $('#JsonDeptDataTable_departmentList-buttons').remove();
             $('#JsonUserDataTable_userList-buttons').remove();
         </c:if>
     });
 
-    <ui:popupdialog var="popupDialog" src="${pageContext.request.contextPath}/web/console/directory/dept/edit/${department.id}?orgId=${department.organization.id}"/>
-    <ui:popupdialog var="popupDialog2" src="${pageContext.request.contextPath}/web/console/directory/dept/create?orgId=${department.organization.id}&parentId=${department.id}"/>
+    <ui:popupdialog var="popupDialog" src="${pageContext.request.contextPath}/web/console/directory/dept/edit/${department.id}?orgId=${encodedOrgId}"/>
+    <ui:popupdialog var="popupDialog2" src="${pageContext.request.contextPath}/web/console/directory/dept/create?orgId=${encodedOrgId}&parentId=${department.id}"/>
     <ui:popupdialog var="popupDialog3" src="${pageContext.request.contextPath}/web/console/directory/dept/${department.id}/hod/set/view"/>
     <ui:popupdialog var="popupDialog4" src="${pageContext.request.contextPath}/web/console/directory/dept/${department.id}/user/assign/view"/>
 
@@ -197,7 +200,7 @@
         if (confirm('<fmt:message key="console.directory.department.delete.label.confirmation"/>')) {
             var callback = {
                 success : function() {
-                    document.location = '${pageContext.request.contextPath}/web/console/directory/org/view/${department.organization.id}';
+                    document.location = '${pageContext.request.contextPath}/web/console/directory/org/view/${encodedOrgId}';
                 }
             }
             var request = ConnectionManager.post('${pageContext.request.contextPath}/web/console/directory/dept/delete', callback, 'ids=${department.id}');

@@ -158,7 +158,7 @@ public class WorkflowHttpAuthProcessingFilter extends UsernamePasswordAuthentica
 
     protected Authentication authenticate(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request, response));
-        
+
         boolean isAnonymous = workflowUserManager.isCurrentUserAnonymous();
         UserSecurity us = DirectoryUtil.getUserSecurity();
         if (us != null && us.getForceSessionTimeout() && !isAnonymous) {

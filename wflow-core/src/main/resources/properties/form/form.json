@@ -121,8 +121,8 @@
                 type:'header'
             },
             {
-                name:'customAssignmentCompleteButton',
-                label:'@@form.form.customAssignmentCompleteButton@@',
+                name:'assignmentCompleteButton',
+                label:'@@form.form.assignmentCompleteButton@@',
                 type:'elementselect',
                 options_ajax:'[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormAction',
                 url:'[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions',

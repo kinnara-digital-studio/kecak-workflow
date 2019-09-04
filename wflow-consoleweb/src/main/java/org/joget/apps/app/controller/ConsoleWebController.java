@@ -4,6 +4,10 @@ import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.comparator.NameFileComparator;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.model.*;
 import org.joget.apps.app.service.AppService;
@@ -19,7 +23,8 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
-import org.joget.apps.route.KecakRouteManager;
+import org.kecak.apps.app.model.EmailProcessorPlugin;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.kecak.apps.scheduler.SchedulerManager;
 import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
 import org.kecak.apps.scheduler.dao.SchedulerLogDao;
@@ -46,6 +51,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.route.CamelRouteManager;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +82,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
@@ -89,6 +97,10 @@ public class ConsoleWebController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleWebController.class);
 
     public static final String APP_ZIP_PREFIX = "APP_";
+    public String REPO_KEY = "repoKey";
+    public String DIR_SSH_KEY= "app_ssh_key";
+    public String SSH_KEY_NAME="id_rsa";
+
     @Autowired
     UserDao userDao;
     @Autowired
@@ -151,7 +163,7 @@ public class ConsoleWebController {
     @Autowired
     JdbcDataListDao jdbcDataListDao;
     @Autowired
-    KecakRouteManager kecakRouteManager;
+    CamelRouteManager camelRouteManager;
     @Autowired
     SchedulerManager schedulerManager;
     @Autowired
@@ -209,6 +221,7 @@ public class ConsoleWebController {
         model.addAttribute("departments", departments);
         model.addAttribute("grades", grades);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly", directoryManager.isReadOnly());
         return "console/directory/orgView";
     }
 
@@ -302,10 +315,10 @@ public class ConsoleWebController {
 
     @RequestMapping("/console/directory/dept/create")
     public String consoleDeptCreate(ModelMap model, @RequestParam("orgId") String orgId, @RequestParam(value = "parentId", required = false) String parentId) {
-        model.addAttribute("organization", organizationDao.getOrganization(orgId));
+        model.addAttribute("organization", directoryManager.getOrganization(orgId));
         model.addAttribute("department", new Department());
         if (parentId != null && parentId.trim().length() > 0) {
-            model.addAttribute("parent", departmentDao.getDepartment(parentId));
+            model.addAttribute("parent", directoryManager.getDepartmentById(parentId));
         }
         return "console/directory/deptCreate";
     }
@@ -324,26 +337,27 @@ public class ConsoleWebController {
         }
 
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
 
         return "console/directory/deptView";
     }
 
     @RequestMapping("/console/directory/dept/edit/(*:id)")
     public String consoleDeptEdit(ModelMap model, @RequestParam("id") String id, @RequestParam("orgId") String orgId, @RequestParam(value = "parentId", required = false) String parentId) {
-        model.addAttribute("organization", organizationDao.getOrganization(orgId));
-        model.addAttribute("department", departmentDao.getDepartment(id));
+        model.addAttribute("organization", directoryManager.getOrganization(orgId));
+        model.addAttribute("department", directoryManager.getDepartmentById(id));
         if (parentId != null && parentId.trim().length() > 0) {
-            model.addAttribute("parent", departmentDao.getDepartment(parentId));
+            model.addAttribute("parent", directoryManager.getDepartmentById(parentId));
         }
         return "console/directory/deptEdit";
     }
 
     @RequestMapping(value = "/console/directory/dept/submit/(*:action)", method = RequestMethod.POST)
     public String consoleDeptSubmit(ModelMap model, @RequestParam("action") String action, @RequestParam("orgId") String orgId, @RequestParam(value = "parentId", required = false) String parentId, @ModelAttribute("department") Department department, BindingResult result) {
-        Organization organization = organizationDao.getOrganization(orgId);
+        Organization organization = directoryManager.getOrganization(orgId);
         Department parent = null;
         if (parentId != null && parentId.trim().length() > 0) {
-            parent = departmentDao.getDepartment(parentId);
+            parent = directoryManager.getDepartmentById(parentId);
         }
 
         // validate ID
@@ -352,24 +366,24 @@ public class ConsoleWebController {
         boolean invalid = result.hasErrors();
         if (!invalid) {
             // check error
-            Collection<String> errors = new ArrayList<String>();
+            Collection<String> errors = new ArrayList<>();
 
             if ("create".equals(action)) {
                 // check id exist
-                if (departmentDao.getDepartment(department.getId()) != null) {
+                if (directoryManager.getDepartmentById(department.getId()) != null) {
                     errors.add("console.directory.department.error.label.idExists");
                 } else {
                     department.setOrganization(organization);
                     if (parent != null) {
                         department.setParent(parent);
                     }
-                    invalid = !departmentDao.addDepartment(department);
+                    invalid = !directoryManager.addDepartment(department);
                 }
             } else {
-                Department d = departmentDao.getDepartment(department.getId());
+                Department d = directoryManager.getDepartmentById(department.getId());
                 d.setName(department.getName());
                 d.setDescription(department.getDescription());
-                invalid = !departmentDao.updateDepartment(d);
+                invalid = !directoryManager.updateDepartment(d);
             }
 
             if (!errors.isEmpty()) {
@@ -412,7 +426,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-            departmentDao.deleteDepartment(id);
+            directoryManager.deleteDepartment(id);
         }
         return "console/directory/orgList";
     }
@@ -420,7 +434,7 @@ public class ConsoleWebController {
     @RequestMapping("/console/directory/dept/(*:id)/hod/set/view")
     public String consoleDeptHodSet(ModelMap model, @RequestParam(value = "id") String id) {
         model.addAttribute("id", id);
-        Department department = departmentDao.getDepartment(id);
+        Department department = directoryManager.getDepartmentById(id);
         if (department != null && department.getOrganization() != null) {
             Collection<Grade> grades = directoryManager.getGradesByOrganizationId(null, department.getOrganization().getId(), "name", false, null, null);
             model.addAttribute("grades", grades);
@@ -430,13 +444,13 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/directory/dept/(*:deptId)/hod/set/submit", method = RequestMethod.POST)
     public String consoleDeptHodSetSubmit(ModelMap model, @RequestParam(value = "deptId") String deptId, @RequestParam(value = "userId") String userId) {
-        employmentDao.assignUserAsDepartmentHOD(userId, deptId);
+        directoryManager.assignUserAsDepartmentHOD(userId, deptId);
         return "console/directory/deptHodSetView";
     }
 
     @RequestMapping(value = "/console/directory/dept/(*:deptId)/hod/remove", method = RequestMethod.POST)
     public String consoleDeptHodRemove(@RequestParam(value = "deptId") String deptId, @RequestParam(value = "userId") String userId) {
-        employmentDao.unassignUserAsDepartmentHOD(userId, deptId);
+        directoryManager.unassignUserAsDepartmentHOD(userId, deptId);
         return "console/directory/deptView";
     }
 
@@ -455,7 +469,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            employmentDao.assignUserToDepartment(userId, id);
+            directoryManager.assignUserToDepartment(userId, id);
         }
         return "console/directory/deptUserAssign";
     }
@@ -465,14 +479,14 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            employmentDao.unassignUserFromDepartment(userId, id);
+            directoryManager.unassignUserFromDepartment(userId, id);
         }
         return "console/directory/deptView";
     }
 
     @RequestMapping("/console/directory/grade/create")
     public String consoleGradeCreate(ModelMap model, @RequestParam("orgId") String orgId) {
-        model.addAttribute("organization", organizationDao.getOrganization(orgId));
+        model.addAttribute("organization", directoryManager.getOrganization(orgId));
         model.addAttribute("grade", new Grade());
         return "console/directory/gradeCreate";
     }
@@ -488,19 +502,20 @@ public class ConsoleWebController {
         }
 
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
         return "console/directory/gradeView";
     }
 
     @RequestMapping("/console/directory/grade/edit/(*:id)")
     public String consoleGradeEdit(ModelMap model, @RequestParam("id") String id, @RequestParam("orgId") String orgId) {
-        model.addAttribute("organization", organizationDao.getOrganization(orgId));
-        model.addAttribute("grade", gradeDao.getGrade(id));
+        model.addAttribute("organization", directoryManager.getOrganization(orgId));
+        model.addAttribute("grade", directoryManager.getGradeById(id));
         return "console/directory/gradeEdit";
     }
 
     @RequestMapping(value = "/console/directory/grade/submit/(*:action)", method = RequestMethod.POST)
     public String consoleGradeSubmit(ModelMap model, @RequestParam("action") String action, @RequestParam("orgId") String orgId, @ModelAttribute("grade") Grade grade, BindingResult result) {
-        Organization organization = organizationDao.getOrganization(orgId);
+        Organization organization = directoryManager.getOrganization(orgId);
 
         // validate ID
         validator.validate(grade, result);
@@ -512,17 +527,17 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check id exist
-                if (gradeDao.getGrade(grade.getId()) != null) {
+                if(directoryManager.getGradeById(grade.getId()) != null){
                     errors.add("console.directory.grade.error.label.idExists");
                 } else {
                     grade.setOrganization(organization);
-                    invalid = !gradeDao.addGrade(grade);
+                    invalid = !directoryManager.addGrade(grade);
                 }
             } else {
-                Grade g = gradeDao.getGrade(grade.getId());
+                Grade g = directoryManager.getGradeById(grade.getId());
                 g.setName(grade.getName());
                 g.setDescription(grade.getDescription());
-                invalid = !gradeDao.updateGrade(g);
+                invalid = !directoryManager.updateGrade(g);
             }
 
             if (!errors.isEmpty()) {
@@ -558,7 +573,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-            gradeDao.deleteGrade(id);
+            directoryManager.deleteGrade(id);
         }
         return "console/directory/orgList";
     }
@@ -578,7 +593,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            employmentDao.assignUserToGrade(userId, id);
+            directoryManager.assignUserToGrade(userId, id);
         }
         return "console/directory/gradeUserAssign";
     }
@@ -588,7 +603,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            employmentDao.unassignUserFromGrade(userId, id);
+            directoryManager.unassignUserFromGrade(userId, id);
         }
         return "console/directory/gradeView";
     }
@@ -598,12 +613,18 @@ public class ConsoleWebController {
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
         return "console/directory/groupList";
     }
 
     @RequestMapping("/console/directory/group/create")
     public String consoleGroupCreate(ModelMap model) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = null;
+        if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+            organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
+        } else {
+            organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        }
         model.addAttribute("organizations", organizations);
         model.addAttribute("group", new Group());
         return "console/directory/groupCreate";
@@ -613,18 +634,19 @@ public class ConsoleWebController {
     public String consoleGroupView(ModelMap model, @RequestParam("id") String id) {
         model.addAttribute("group", directoryManager.getGroupById(id));
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
         return "console/directory/groupView";
     }
 
     @RequestMapping("/console/directory/group/edit/(*:id)")
     public String consoleGroupEdit(ModelMap model, @RequestParam("id") String id) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
-        Group group = groupDao.getGroup(id);
+        Group group = directoryManager.getGroupById(id);
         if (group.getOrganization() != null) {
             group.setOrganizationId(group.getOrganization().getId());
         }
-        model.addAttribute("group", groupDao.getGroup(id));
+        model.addAttribute("group", directoryManager.getGroupById(id));
         return "console/directory/groupEdit";
     }
 
@@ -640,21 +662,21 @@ public class ConsoleWebController {
 
             if ("create".equals(action)) {
                 // check id exist
-                if (groupDao.getGroup(group.getId()) != null) {
+                if(directoryManager.getGroupById(group.getId()) != null){
                     errors.add("console.directory.group.error.label.idExists");
                 } else {
                     if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
-                        group.setOrganization(organizationDao.getOrganization(group.getOrganizationId()));
+                        group.setOrganization(directoryManager.getOrganization(group.getOrganizationId()));
                     }
-                    invalid = !groupDao.addGroup(group);
+                    invalid = !directoryManager.addGroup(group);
                 }
             } else {
-                Group g = groupDao.getGroup(group.getId());
+                Group g = directoryManager.getGroupById(group.getId());
                 group.setUsers(g.getUsers());
                 if (group.getOrganizationId() != null && group.getOrganizationId().trim().length() > 0) {
-                    group.setOrganization(organizationDao.getOrganization(group.getOrganizationId()));
+                    group.setOrganization( directoryManager.getOrganizationByName(group.getOrganizationId()));
                 }
-                invalid = !groupDao.updateGroup(group);
+                invalid = !directoryManager.updateGroup(group);
             }
 
             if (!errors.isEmpty()) {
@@ -664,7 +686,7 @@ public class ConsoleWebController {
         }
 
         if (invalid) {
-            Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+            Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
             model.addAttribute("organizations", organizations);
             model.addAttribute("group", group);
             if ("create".equals(action)) {
@@ -686,7 +708,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String id = (String) strToken.nextElement();
-            groupDao.deleteGroup(id);
+            directoryManager.deleteGroup(id);
         }
         return "console/directory/groupList";
     }
@@ -702,7 +724,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            userDao.assignUserToGroup(userId, id);
+            directoryManager.assignUserToGroup(userId, id);
         }
         return "console/directory/groupUserAssign";
     }
@@ -712,7 +734,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String userId = (String) strToken.nextElement();
-            userDao.unassignUserFromGroup(userId, id);
+            directoryManager.unassignUserFromGroup(userId, id);
         }
         return "console/directory/groupList";
     }
@@ -722,6 +744,7 @@ public class ConsoleWebController {
         Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly",directoryManager.isReadOnly());
 
         return "console/directory/userList";
     }
@@ -729,7 +752,8 @@ public class ConsoleWebController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/console/directory/user/create")
     public String consoleUserCreate(ModelMap model) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = null;
+        organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("roles", roleDao.getRoles(null, "name", false, null, null));
         model.addAttribute("timezones", TimeZoneUtil.getList());
@@ -752,7 +776,6 @@ public class ConsoleWebController {
         Set roles = new HashSet();
         roles.add(roleDao.getRole("ROLE_USER"));
         user.setRoles(roles);
-        //user.setTimeZone(TimeZoneUtil.getServerTimeZone());
         model.addAttribute("user", user);
         model.addAttribute("employeeDepartmentHod", "no");
         return "console/directory/userCreate";
@@ -791,13 +814,14 @@ public class ConsoleWebController {
         }
 
         model.addAttribute("isCustomDirectoryManager", DirectoryUtil.isCustomDirectoryManager());
+        model.addAttribute("isReadOnly", directoryManager.isReadOnly());
 
         return "console/directory/userView";
     }
 
     @RequestMapping("/console/directory/user/edit/(*:id)")
     public String consoleUserEdit(ModelMap model, @RequestParam("id") String id) {
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         model.addAttribute("roles", roleDao.getRoles(null, "name", false, null, null));
         model.addAttribute("timezones", TimeZoneUtil.getList());
@@ -807,12 +831,13 @@ public class ConsoleWebController {
         status.put("0", "Inactive");
         model.addAttribute("status", status);
 
-        User user = userDao.getUserById(id);
+        User user = directoryManager.getUserById(id);
         model.addAttribute("user", user);
 
         Employment employment = null;
         if (user.getEmployments() != null && user.getEmployments().size() > 0) {
             employment = (Employment) user.getEmployments().iterator().next();
+            employment = directoryManager.getEmployment(employment.getId());
         } else {
             employment = new Employment();
         }
@@ -878,20 +903,6 @@ public class ConsoleWebController {
 
                 if (errors.isEmpty()) {
                     user.setId(user.getUsername());
-                    if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
-                        user.setConfirmPassword(user.getPassword());
-                        if (us != null) {
-                            user.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
-                        } else {
-                            //md5 password
-                            //user.setPassword(StringUtil.md5Base16(user.getPassword()));
-                            HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
-                            userSalt.setId(UUID.randomUUID().toString());
-                            userSalt.setRandomSalt(hashSalt.getSalt());
-
-                            user.setPassword(hashSalt.getHash());
-                        }
-                    }
 
                     //set roles
                     if (user.getRoles() != null && user.getRoles().size() > 0) {
@@ -901,11 +912,29 @@ public class ConsoleWebController {
                         }
                         user.setRoles(roles);
                     }
-                    userSalt.setUserId(user.getUsername());
-                    userSaltDao.addUserSalt(userSalt);
-                    invalid = !userDao.addUser(user);
-                    if (us != null && !invalid) {
-                        us.insertUserPostProcessing(user);
+                    if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                         invalid = !directoryManager.addUser(user);
+                    } else {
+                        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+                            user.setConfirmPassword(user.getPassword());
+                            if (us != null) {
+                                user.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
+                            } else {
+                                //md5 password
+                                //user.setPassword(StringUtil.md5Base16(user.getPassword()));
+                                HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
+                                userSalt.setId(UUID.randomUUID().toString());
+                                userSalt.setRandomSalt(hashSalt.getSalt());
+
+                                user.setPassword(hashSalt.getHash());
+                            }
+                        }
+                        userSalt.setUserId(user.getUsername());
+                        userSaltDao.addUserSalt(userSalt);
+                        invalid = !userDao.addUser(user);
+                        if (us != null && !invalid) {
+                            us.insertUserPostProcessing(user);
+                        }
                     }
                 }
             } else {
@@ -931,28 +960,11 @@ public class ConsoleWebController {
                     boolean passwordReset = false;
                     boolean passwordUpdated = false;
 
-                    User u = userDao.getUserById(user.getId());
+                    User u = directoryManager.getUserById(user.getId());
                     u.setFirstName(user.getFirstName());
                     u.setLastName(user.getLastName());
                     u.setEmail(user.getEmail());
 
-                    if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
-                        u.setConfirmPassword(user.getPassword());
-                        if (us != null) {
-                            passwordReset = true;
-                            u.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
-                        } else {
-                            //md5 password
-                            //u.setPassword(StringUtil.md5Base16(user.getPassword()));
-                            passwordUpdated = true;
-                            HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
-                            u.setPassword(hashSalt.getHash());
-
-                            userSalt.setUserId(u.getUsername());
-                            userSalt.setRandomSalt(hashSalt.getSalt());
-
-                        }
-                    }
                     //set roles
                     if (user.getRoles() != null && user.getRoles().size() > 0) {
                         Set roles = new HashSet();
@@ -964,22 +976,48 @@ public class ConsoleWebController {
                     u.setTimeZone(user.getTimeZone());
                     u.setActive(user.getActive());
 
-                    invalid = !userDao.updateUser(u);
-                    if (passwordUpdated) {
-                        UserSalt currentUserSalt = userSaltDao.getUserSaltByUserId(u.getUsername());
-                        if (currentUserSalt == null) {
-                            userSalt.setId(UUID.randomUUID().toString());
-                            userSaltDao.addUserSalt(userSalt);
+                    if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+                            u.setPassword(user.getPassword());
                         } else {
-                            userSalt.setId(currentUserSalt.getId());
-                            userSaltDao.updateUserSalt(userSalt);
+                            u.setPassword(null);
                         }
-                    }
+                        invalid = !directoryManager.updateUser(u);
+                    } else {
+                        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+                            u.setConfirmPassword(user.getPassword());
+                            if (us != null) {
+                                passwordReset = true;
+                                u.setPassword(us.encryptPassword(user.getUsername(), user.getPassword()));
+                            } else {
+                                //md5 password
+                                //u.setPassword(StringUtil.md5Base16(user.getPassword()));
+                                passwordUpdated = true;
+                                HashSalt hashSalt = PasswordGeneratorUtil.createNewHashWithSalt(user.getPassword());
+                                u.setPassword(hashSalt.getHash());
 
-                    if (us != null && !invalid) {
-                        us.updateUserPostProcessing(u);
-                        if (passwordReset) {
-                            us.passwordResetPostProcessing(u);
+                                userSalt.setUserId(u.getUsername());
+                                userSalt.setRandomSalt(hashSalt.getSalt());
+
+                            }
+                        }
+                        invalid = !userDao.updateUser(u);
+                        if (passwordUpdated) {
+                            UserSalt currentUserSalt = userSaltDao.getUserSaltByUserId(u.getUsername());
+                            if (currentUserSalt == null) {
+                                userSalt.setId(UUID.randomUUID().toString());
+                                userSaltDao.addUserSalt(userSalt);
+                            } else {
+                                userSalt.setId(currentUserSalt.getId());
+                                userSaltDao.updateUserSalt(userSalt);
+                            }
+                        }
+
+                        if (us != null && !invalid) {
+                            us.updateUserPostProcessing(u);
+                            if (passwordReset) {
+                                us.passwordResetPostProcessing(u);
+                            }
                         }
                     }
                 }
@@ -992,7 +1030,8 @@ public class ConsoleWebController {
         }
 
         if (invalid) {
-            Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+//            Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+            Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
             model.addAttribute("organizations", organizations);
             model.addAttribute("roles", roleDao.getRoles(null, "name", false, null, null));
             model.addAttribute("timezones", TimeZoneUtil.getList());
@@ -1037,7 +1076,8 @@ public class ConsoleWebController {
                 employment = new Employment();
             } else {
                 try {
-                    employment = (Employment) userDao.getUserById(user.getId()).getEmployments().iterator().next();
+                    employment = (Employment) directoryManager.getUserById(user.getId()).getEmployments().iterator().next();
+                    employment = directoryManager.getEmployment(employment.getId());
                 } catch (Exception e) {
                     employment = new Employment();
                 }
@@ -1068,27 +1108,26 @@ public class ConsoleWebController {
             }
             if (employment.getId() == null) {
                 employment.setUser(user);
-                employmentDao.addEmployment(employment);
+                directoryManager.addEmployment(employment);
             } else {
-                employmentDao.updateEmployment(employment);
+                directoryManager.updateEmployment(employment);
             }
 
             //Hod
             if ("yes".equals(employeeDepartmentHod) && employeeDepartment != null && employeeDepartment.trim().length() > 0) {
                 if (prevDepartmentId != null) {
-                    User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+                    User prevHod = directoryManager.getDepartmentHod(prevDepartmentId);
                     if (prevHod != null) {
-                        employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
+                        directoryManager.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                     }
                 }
-                employmentDao.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
+                directoryManager.assignUserAsDepartmentHOD(user.getId(), employeeDepartment);
             } else if (prevDepartmentId != null) {
-                User prevHod = userDao.getHodByDepartmentId(prevDepartmentId);
+                User prevHod = directoryManager.getDepartmentHod(prevDepartmentId);
                 if (prevHod != null && prevHod.getId().equals(user.getId())) {
-                    employmentDao.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
+                    directoryManager.unassignUserAsDepartmentHOD(prevHod.getId(), prevDepartmentId);
                 }
             }
-
             String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
             String url = contextPath;
             url += "/web/console/directory/user/view/" + user.getId() + ".";
@@ -1106,15 +1145,19 @@ public class ConsoleWebController {
             String id = (String) strToken.nextElement();
 
             if (id != null && !id.equals(currentUsername)) {
-                userDao.deleteUser(id);
-                UserSalt userSalt = userSaltDao.getUserSaltByUserId(id);
-                if (userSalt != null) {
-                    userSaltDao.deleteUserSalt(userSalt.getId());
-                }
+                if(DirectoryUtil.isCustomDirectoryManager() && !directoryManager.isReadOnly()){
+                    directoryManager.deleteUser(id);
+                } else {
+                    userDao.deleteUser(id);
+                    UserSalt userSalt = userSaltDao.getUserSaltByUserId(id);
+                    if (userSalt != null) {
+                        userSaltDao.deleteUserSalt(userSalt.getId());
+                    }
 
-                UserSecurity us = DirectoryUtil.getUserSecurity();
-                if (us != null) {
-                    us.deleteUserPostProcessing(id);
+                    UserSecurity us = DirectoryUtil.getUserSecurity();
+                    if (us != null) {
+                        us.deleteUserPostProcessing(id);
+                    }
                 }
             }
         }
@@ -1124,7 +1167,7 @@ public class ConsoleWebController {
     @RequestMapping("/console/directory/user/(*:id)/group/assign/view")
     public String consoleUserGroupAssign(ModelMap model, @RequestParam(value = "id") String id) {
         model.addAttribute("id", id);
-        Collection<Organization> organizations = organizationDao.getOrganizationsByFilter(null, "name", false, null, null);
+        Collection<Organization> organizations = directoryManager.getOrganizationsByFilter(null, "name", false, null, null);
         model.addAttribute("organizations", organizations);
         return "console/directory/userGroupAssign";
     }
@@ -1146,13 +1189,13 @@ public class ConsoleWebController {
 
     @RequestMapping(value = "/console/directory/user/(*:id)/reportTo/assign/submit", method = RequestMethod.POST)
     public String consoleUserReportToAssignSubmit(ModelMap model, @RequestParam(value = "id") String id, @RequestParam(value = "userId") String userId) {
-        employmentDao.assignUserReportTo(id, userId);
+        directoryManager.assignUserReportTo(id, userId);
         return "console/directory/userReportToAssign";
     }
 
     @RequestMapping(value = "/console/directory/user/(*:id)/reportTo/unassign", method = RequestMethod.POST)
     public String consoleUserReportToUnassign(@RequestParam(value = "id") String id) {
-        employmentDao.unassignUserReportTo(id);
+        directoryManager.unassignUserReportTo(id);
         return "console/directory/userView";
     }
 
@@ -1161,7 +1204,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String groupId = (String) strToken.nextElement();
-            userDao.assignUserToGroup(id, groupId);
+            directoryManager.assignUserToGroup(id,groupId);
         }
         return "console/directory/userGroupAssign";
     }
@@ -1171,7 +1214,7 @@ public class ConsoleWebController {
         StringTokenizer strToken = new StringTokenizer(ids, ",");
         while (strToken.hasMoreTokens()) {
             String groupId = (String) strToken.nextElement();
-            userDao.unassignUserFromGroup(id, groupId);
+            directoryManager.unassignUserFromGroup(id,groupId);
         }
         return "console/directory/userList";
     }
@@ -3219,9 +3262,11 @@ public class ConsoleWebController {
                 Map data = new HashMap();
                 data.put("id", pluginDefaultProperties.getId());
                 Plugin p = pluginManager.getPlugin(pluginDefaultProperties.getId());
-                data.put("pluginName", p.getI18nLabel());
-                data.put("pluginDescription", p.getI18nDescription());
-                jsonObject.accumulate("data", data);
+                if(p != null) {
+                    data.put("pluginName", p.getI18nLabel());
+                    data.put("pluginDescription", p.getI18nDescription());
+                    jsonObject.accumulate("data", data);
+                }
             }
         }
 
@@ -3530,7 +3575,7 @@ public class ConsoleWebController {
 
         return "console/setting/general";
     }
-
+    
     @RequestMapping("/console/setting/general/loginHash")
     public void loginHash(Writer writer, @RequestParam(value = "callback", required = false) String callback, @RequestParam("username") String username, @RequestParam("password") String password) throws JSONException, IOException {
         if (SetupManager.SECURE_VALUE.equals(password)) {
@@ -3620,10 +3665,9 @@ public class ConsoleWebController {
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
 
-        kecakRouteManager.stopContext();
-        Thread.sleep(3000);
-
-        kecakRouteManager.startContext();
+//        camelRouteManager.stopContext();
+//        Thread.sleep(3000);
+//        camelRouteManager.startContext();
 
         return "redirect:/web/console/setting/general";
     }
@@ -3879,6 +3923,42 @@ public class ConsoleWebController {
     public void consoleSettingPluginRefresh(Writer writer) {
         setupManager.clearCache();
         pluginManager.refresh();
+    }
+
+    @RequestMapping("/console/setting/plugin/pull")
+    public String consoleSettingPluginPull(ModelMap map) throws GitAPIException {
+        Setting setting = setupManager.getSettingByProperty("repoURL");
+        Setting repoUser = setupManager.getSettingByProperty("repoUsername");
+        Setting repoPassword = setupManager.getSettingByProperty("repoPassword");
+        String baseDir = pluginManager.getBaseDirectory();
+        File appPluginDir = new File(baseDir);
+        boolean moved = false;
+        if(!appPluginDir.exists()){
+            appPluginDir.mkdirs();
+        }else{
+            File wflow = appPluginDir.getParentFile();
+            File tmpDir = new File(wflow.getPath()+"/tmp_app_plugins");
+            try {
+                Path movePath = Files.move(appPluginDir.toPath(), tmpDir.toPath());
+                if(movePath != null){
+                    moved = true;
+                }
+            } catch (IOException e) {
+                LogUtil.error(this.getClass().getName(), e, e.getMessage());
+            }
+        }
+        Git git = Git.cloneRepository()
+                .setURI( setting.getValue())
+                .setDirectory(appPluginDir)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider( repoUser.getValue(), repoPassword.getValue()) )
+                .call();
+        Repository repo = git.getRepository();
+        if(repo!=null){
+            pluginManager.refresh();
+        }else{
+
+        }
+        return "redirect:/web/console/setting/plugin";
     }
 
     @RequestMapping("/console/setting/plugin/upload")
@@ -4228,6 +4308,45 @@ public class ConsoleWebController {
             return "console/dialogClose";
         }
     }
+    
+    @RequestMapping("/console/setting/eaSettings")
+    public String consoleSettingEmailApprovalSettings(ModelMap map) {
+        Collection<Setting> settingList = setupManager.getSettingList("email", null, null, null, null);
+        Map<String, String> settingMap = new HashMap<String, String>();
+        for (Setting setting : settingList) {
+            settingMap.put(setting.getProperty(), setting.getValue());
+        }
+        map.addAttribute("settingMap", settingMap);
+
+        camelRouteManager.stopContext();
+        camelRouteManager.startContext();
+
+        return "console/setting/eaSetting";
+    }
+
+    @RequestMapping(value = "/console/setting/eaSettings/submit", method = RequestMethod.POST)
+    public String consoleSettingEmailApprovalSettingsSubmit(HttpServletRequest request, ModelMap map) throws Exception {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        Enumeration e = request.getParameterNames();
+        while (e.hasMoreElements()) {
+            String paramName = (String) e.nextElement();
+            String paramValue = request.getParameter(paramName);
+
+            Setting setting = SetupManager.getSettingByProperty(paramName);
+            if (setting == null) {
+                setting = new Setting();
+                setting.setProperty(paramName);
+                setting.setValue(paramValue);
+            } else {
+                setting.setValue(paramValue);
+            }
+
+            setting.setDateModified(new Date());
+            setting.setModifiedBy(currentUsername);
+            setupManager.saveSetting(setting);
+        }
+        return "redirect:/web/console/setting/eaSettings";
+    }
 
     @RequestMapping("/console/setting/scheduler")
     public String consoleSettingSchedulerContent(ModelMap map) {
@@ -4278,11 +4397,11 @@ public class ConsoleWebController {
             } else {
                 SchedulerDetails details = schedulerDetailsDao.getSchedulerDetailsById(schedulerDetails.getId());
                 details.setCronExpression(schedulerDetails.getCronExpression());
-                details.setJobClassName(schedulerDetails.getJobClassName());
+//                details.setJobClassName(schedulerDetails.getJobClassName());
                 details.setDateModified(now);
                 details.setModifiedBy(currUsername);
 
-                LogUtil.info(getClass().getName(), "getCronExpression ["+schedulerDetails.getCronExpression()+"] getJobClassName ["+schedulerDetails.getJobClassName()+"]");
+                LogUtil.info(getClass().getName(), "getCronExpression [" + details.getCronExpression() + "] getJobClassName [" + details.getJobClassName() + "]");
 
                 try {
                     schedulerManager.updateJobDetails(details);
@@ -4397,6 +4516,92 @@ public class ConsoleWebController {
         SchedulerDetails schedulerDetails = schedulerDetailsDao.getSchedulerDetailsById(id);
         map.addAttribute("schedulerDetails", schedulerDetails);
         return "console/setting/schedulerEdit";
+    }
+    
+    @RequestMapping("/console/setting/eaSetting")
+    public String consoleEmailApprovalSetting(ModelMap map) {
+        return "console/setting/eaSetting";
+    }
+
+    @RequestMapping("/console/setting/repo")
+    public String consoleSettingRepo(ModelMap map) {
+        Collection<Setting> settingList = setupManager.getSettingList("repo", null, null, null, null);
+
+        Map<String, String> settingMap = new HashMap<String, String>();
+        for (Setting setting : settingList) {
+            settingMap.put(setting.getProperty(), setting.getValue());
+        }
+
+//        String baseDir = pluginManager.getBaseDirectory();
+//        File appPluginDir = new File(baseDir);
+//        File keyFile = new File(appPluginDir.getParentFile().getPath()+"/"+DIR_SSH_KEY, SSH_KEY_NAME);
+//
+//        try (BufferedReader in = new BufferedReader(new FileReader(keyFile))){
+//            StringBuilder keyValue = new StringBuilder();
+//            String line;
+//            while((line = in.readLine()) != null)
+//            {
+//                keyValue.append(line);
+//            }
+//            settingMap.put("repoKey", keyValue.toString());
+//        } catch (FileNotFoundException e) {
+//            LogUtil.error(this.getClass().getName(), e, e.getMessage());
+//        } catch (IOException e) {
+//            LogUtil.error(this.getClass().getName(), e, e.getMessage());
+//        }
+
+        map.addAttribute("settingMap", settingMap);
+        return "console/setting/repoSetting";
+    }
+
+    @RequestMapping(value="/console/setting/repo/submit", method=RequestMethod.POST)
+    public String consoleSettingRepoSubmit(HttpServletRequest request,ModelMap map) throws IOException {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+
+        Enumeration e = request.getParameterNames();
+        while (e.hasMoreElements()) {
+            String paramName = (String) e.nextElement();
+            String paramValue = request.getParameter(paramName);
+
+            Setting setting = SetupManager.getSettingByProperty(paramName);
+            if (setting == null) {
+                setting = new Setting();
+                setting.setProperty(paramName);
+                setting.setValue(paramValue);
+            } else {
+                setting.setValue(paramValue);
+            }
+//            // Generate Private Key File in wflow
+//            if(paramName.equals(REPO_KEY)){
+//                String baseDir = pluginManager.getBaseDirectory();
+//                File appPluginDir = new File(baseDir);
+//                File wflow = appPluginDir.getParentFile();
+//                File dirKey = new File(wflow.getPath()+"/"+DIR_SSH_KEY);
+//                if(!dirKey.exists()){
+//                    dirKey.mkdirs();
+//                    LogUtil.info(this.getClass().getName(), "[CREATING NEW PRIVATE KEY]");
+//                    // create new file
+//                    File keyFile = new File(dirKey.getPath(), SSH_KEY_NAME);
+//                    byte[] keyBytes = paramValue.getBytes();
+//                    Files.write(keyFile.toPath(),keyBytes);
+//                }else{ // update existing private key file
+//                    LogUtil.info(this.getClass().getName(), "[UPDATING PRIVATE KEY]");
+//                    File sshKey = new File(dirKey.getPath()+"/"+SSH_KEY_NAME);
+//                    if(sshKey.delete()){
+//                        Path keyPath = Paths.get(dirKey.getPath()+"/"+SSH_KEY_NAME);
+//                        byte[] keyBytes = paramValue.getBytes();
+//                        Files.write(keyPath,keyBytes);
+//                    }else{
+//                        LogUtil.info(this.getClass().getName(), "[FAILED TO DELETE EXISTING PRIVATE KEY]");
+//                    }
+//                }
+//            }
+
+            setting.setDateModified(new Date());
+            setting.setModifiedBy(currentUsername);
+            setupManager.saveSetting(setting);
+        }
+        return "redirect:/web/console/setting/repo";
     }
 
     @RequestMapping("/console/setting/property")
@@ -5046,6 +5251,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.workflow.model.ParticipantPlugin", ResourceBundleUtil.getMessage("setting.plugin.processParticipant"));
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
         pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
+        pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewMenu", ResourceBundleUtil.getMessage("setting.plugin.userviewMenu"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewPermission", ResourceBundleUtil.getMessage("setting.plugin.userviewPermission"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewTheme", ResourceBundleUtil.getMessage("setting.plugin.userviewTheme"));
@@ -5062,6 +5268,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.workflow.model.ParticipantPlugin", ResourceBundleUtil.getMessage("setting.plugin.processParticipant"));
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
         pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
+        pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
 
         return PagingUtils.sortMapByValue(pluginTypeMap, false);
     }

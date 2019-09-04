@@ -1,0 +1,172 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/process/schemas">
+
+    <xs:element name = "AssignmentAcceptRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "activityId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentAcceptResponse" />
+
+    <xs:element name = "AssignmentCompleteRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "activityId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentCompleteResponse" />
+
+    <xs:element name = "AssignmentCompleteWithVariableRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "activityId" type = "xs:string"/>
+                <xs:element name = "variables"  type = "xps:MapType" minOccurs="0"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentCompleteWithVariableResponse" />
+
+    <xs:element name = "AssignmentListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "packageId" type = "xs:string"/>
+                <xs:element name = "processDefId" type = "xs:string"/>
+                <xs:element name = "processId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentListResponse" />
+
+    <xs:element name = "AssignmentListCountRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "packageId" type = "xs:string"/>
+                <xs:element name = "processDefId" type = "xs:string"/>
+                <xs:element name = "processId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentListCountResponse" />
+
+    <xs:element name = "AssignmentListAcceptedRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentListAcceptedResponse" />
+
+    <xs:element name = "AssignmentListAcceptedCountRequest"/>
+    <xs:element name = "AssignmentListAcceptedCountResponse" />
+
+    <xs:element name = "AssignmentListAcceptedProcessRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "checkWhiteList" type = "xs:boolean"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentListAcceptedProcessResponse" />
+
+    <xs:element name = "AssignmentListPendingRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentListPendingResponse" />
+
+    <xs:element name = "AssignmentListPendingCountRequest" />
+    <xs:element name = "AssignmentListPendingCountResponse" />
+
+    <xs:element name = "AssignmentListPendingProcessRequest" >
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "checkWhiteList" type = "xs:boolean"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentListPendingProcessResponse" />
+
+    <xs:element name = "AssignmentProcessViewRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentProcessViewResponse" />
+
+    <xs:element name = "AssignmentWithdrawRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "activityId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentWithdrawResponse" />
+
+    <xs:element name = "AssignmentVariableRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "activityId" type = "xs:string"/>
+                <xs:element name = "variable" type = "xs:string"/>
+                <xs:element name = "value" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentVariableResponse" />
+
+    <xs:element name = "AssignmentViewRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "activityId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AssignmentViewResponse" />
+
+    <xs:element name="map">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="xps:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="item">
+            <xs:selector xpath="item"/>
+            <xs:field xpath="key"/>
+        </xs:unique>
+    </xs:element>
+
+    <xs:complexType name="MapType">
+        <xs:sequence>
+            <xs:element ref="xps:map"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MapItemType">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

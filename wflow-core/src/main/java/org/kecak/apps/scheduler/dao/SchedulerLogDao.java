@@ -6,6 +6,9 @@ import org.kecak.apps.scheduler.model.SchedulerLog;
 
 import java.util.List;
 
+/**
+ * Kecak Exclusive
+ */
 public class SchedulerLogDao extends AbstractSpringDao<SchedulerLog> {
 
 	public static final String ENTITY_NAME = "SchedulerLog";

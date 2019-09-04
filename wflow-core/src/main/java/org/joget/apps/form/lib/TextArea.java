@@ -2,13 +2,10 @@ package org.joget.apps.form.lib;
 
 import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 
-public class TextArea extends Element implements FormBuilderPaletteElement {
+public class TextArea extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
     public String getName() {
         return "Text Area";
@@ -26,7 +23,10 @@ public class TextArea extends Element implements FormBuilderPaletteElement {
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "textArea.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
 
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         // set value
         String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
@@ -61,5 +61,18 @@ public class TextArea extends Element implements FormBuilderPaletteElement {
 
     public String getFormBuilderIcon() {
         return "/plugin/org.joget.apps.form.lib.TextArea/images/textArea_icon.gif";
+    }
+
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceTextArea.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel){
+        String template = "AdminLteTheme/AdminLteTextArea.ftl";
+        return renderTemplate(template,formData,dataModel);
     }
 }

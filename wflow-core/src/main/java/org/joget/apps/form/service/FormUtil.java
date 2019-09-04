@@ -1,22 +1,5 @@
 package org.joget.apps.form.service;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.StringTokenizer;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
@@ -29,21 +12,7 @@ import org.joget.apps.app.service.MobileUtil;
 import org.joget.apps.datalist.lib.FormRowDataListBinder;
 import org.joget.apps.datalist.model.DataListColumn;
 import org.joget.apps.form.lib.FormOptionsBinder;
-import org.joget.apps.form.model.AbstractSubForm;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormAction;
-import org.joget.apps.form.model.FormAjaxOptionsBinder;
-import org.joget.apps.form.model.FormAjaxOptionsElement;
-import org.joget.apps.form.model.FormBinder;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormLoadBinder;
-import org.joget.apps.form.model.FormLoadOptionsBinder;
-import org.joget.apps.form.model.FormReferenceDataRetriever;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
-import org.joget.apps.form.model.FormStoreBinder;
-import org.joget.apps.form.model.Validator;
+import org.joget.apps.form.model.*;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
@@ -64,6 +33,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Utility methods for the Form module.
@@ -216,6 +190,7 @@ public class FormUtil implements ApplicationContextAware {
 
             if (parent != null) {
                 element.setParent(parent);
+
                 // recurse into child elements
                 Collection<Element> childElements = parent.getChildren();
                 if (childElements == null) {

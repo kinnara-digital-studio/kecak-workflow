@@ -1,8 +1,10 @@
 package org.joget.directory.model.service;
 
 import org.joget.directory.model.Department;
+import org.joget.directory.model.Employment;
 import org.joget.directory.model.Grade;
 import org.joget.directory.model.Group;
+import org.joget.directory.model.Organization;
 import org.joget.directory.model.Role;
 import org.joget.directory.model.User;
 import java.util.Collection;
@@ -241,4 +243,68 @@ public interface DirectoryManager {
      * @return Collection of Grades within the directory
      */
     Collection<Grade> getGradeList();
+
+    Boolean addUser(User user);
+
+    Boolean updateUser(User user);
+
+    Boolean deleteUser(String username);
+
+    Boolean isReadOnly();
+
+    Boolean addGroup(Group group);
+
+    Boolean deleteGroup(String id);
+
+    Boolean updateGroup(Group group);
+
+    Collection<User> getUsersNotInGroup(String filterString, String groupId, String sort, Boolean desc, Integer start, Integer rows);
+
+    Long getTotalUsersNotInGroup(String filterString, String groupId);
+
+    Boolean assignUserToGroup(String userId, String groupId);
+
+    Boolean unassignUserFromGroup(String userId, String groupId);
+
+    Collection<Employment> getEmploymentsNotInDepartment(String filterString, String orgId, String deptId, String sort, Boolean desc, Integer start, Integer rows);
+
+    Long getTotalEmploymentsNotInDepartment(String filterString, String orgId, String deptId);
+
+    Collection<Employment> getEmploymentsNotInGrade(String filterString, String orgId, String gradeId, String sort, Boolean desc, Integer start, Integer rows);
+
+    Long getTotalEmploymentsNotInGrade(String filterString, String orgId, String gradeId);
+
+    Boolean addDepartment(Department department);
+
+    Boolean updateDepartment(Department department);
+
+    Boolean deleteDepartment(String id);
+
+    Boolean addGrade(Grade grade);
+
+    Boolean updateGrade(Grade grade);
+
+    Boolean deleteGrade(String id);
+
+    Boolean assignUserToDepartment(String userId, String departmentId);
+
+    Boolean unassignUserFromDepartment(String userId, String departmentId);
+
+    Boolean assignUserToGrade(String userId, String gradeId);
+
+    Boolean unassignUserFromGrade(String userId, String gradeId);
+
+    Boolean addEmployment(Employment employment);
+
+    Boolean updateEmployment(Employment employment);
+
+    Boolean deleteEmployment(String id);
+
+    Boolean assignUserAsDepartmentHOD(String userId, String departmentId);
+
+    Boolean unassignUserAsDepartmentHOD(String userId, String departmentId);
+
+    Boolean assignUserReportTo(String userId, String reportToUserId);
+
+    Boolean unassignUserReportTo(String userId);
 }

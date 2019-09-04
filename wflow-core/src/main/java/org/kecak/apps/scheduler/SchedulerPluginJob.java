@@ -1,12 +1,10 @@
 package org.kecak.apps.scheduler;
 
 import org.joget.apps.app.dao.AppDefinitionDao;
-import org.joget.apps.app.model.AppDefinition;
-import org.joget.apps.app.model.DefaultSchedulerPlugin;
-import org.joget.apps.app.model.PluginDefaultProperties;
-import org.joget.apps.app.model.SchedulerPlugin;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
+import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.quartz.Job;
@@ -17,9 +15,12 @@ import org.springframework.context.ApplicationContext;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
+ * Kecak Exclusive
+ *
  * @author aristo
  *
  * Job for Scheduler Plugin
@@ -36,35 +37,37 @@ public class SchedulerPluginJob implements Job {
         final PluginManager pluginManager = (PluginManager) applicationContext.getBean("pluginManager");
         final AppDefinitionDao appDefinitionDao = (AppDefinitionDao) applicationContext.getBean("appDefinitionDao");
 
-        Collection<AppDefinition> appDefinitions = appDefinitionDao.findPublishedApps(null, null, null, null);
-        if(appDefinitions == null) {
-            return;
-        }
+        Optional.ofNullable(appDefinitionDao.findPublishedApps(null, null, null, null))
+                .map(Collection::stream)
+                .orElse(Stream.empty())
 
-        appDefinitions.forEach(appDefinition -> {
-            Collection<PluginDefaultProperties> pluginDefaultProperties = appDefinition.getPluginDefaultPropertiesList();
-            if(pluginDefaultProperties != null) {
-                pluginDefaultProperties.forEach(pluginDefaultPropery -> {
-                    Stream.of(pluginDefaultPropery)
+                // set current app definition
+                .peek(AppUtil::setCurrentAppDefinition)
+
+                .forEach(appDefinition -> Optional.ofNullable(appDefinition.getPluginDefaultPropertiesList())
+                        .map(Collection::stream)
+                        .orElse(Stream.empty())
+                        .forEach(pluginDefaultProperty -> Stream.of(pluginDefaultProperty)
                             .map(p -> pluginManager.getPlugin(p.getId()))
-                            .filter(p -> p instanceof DefaultSchedulerPlugin)
-                            .map(p -> (DefaultSchedulerPlugin)p)
-                            .forEach(p -> {
-                                Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultPropery.getPluginProperties());
-                                p.setProperties(pluginProperties);
+                            .filter(p -> p instanceof SchedulerPlugin && p instanceof ExtDefaultPlugin)
+                            .map(p -> (ExtDefaultPlugin)p)
+                            .forEach(plugin -> {
+                                Map<String, Object> pluginProperties = PropertyUtil.getPropertiesValueFromJson(pluginDefaultProperty.getPluginProperties());
+                                plugin.setProperties(pluginProperties);
 
                                 Map<String, Object> parameterProperties = new HashMap<>(pluginProperties);
                                 parameterProperties.put(SchedulerPlugin.PROPERTY_APP_DEFINITION, appDefinition);
                                 parameterProperties.put(SchedulerPlugin.PROPERTY_PLUGIN_MANAGER, pluginManager);
-                                parameterProperties.put(SchedulerPlugin.PROPERTY_TIMESTAMP, context.getFireTime());
 
-                                if(p.filter(parameterProperties)) {
-                                    LogUtil.info(getClass().getName(), "Running Scheduler Job Plugin ["+p.getName()+"] for application ["+appDefinition.getAppId()+"]");
-                                    p.jobRun(parameterProperties);
+                                try {
+                                    if (((SchedulerPlugin) plugin).filter(context, parameterProperties)) {
+                                        ((SchedulerPlugin) plugin).jobRun(context, parameterProperties);
+                                    } else {
+                                        LogUtil.debug(getClass().getName(), "Skipping Scheduler Job Plugin [" + plugin.getName() + "] : Not meeting filter condition");
+                                    }
+                                } catch (Exception e) {
+                                    ((SchedulerPlugin) plugin).onJobError(context, parameterProperties, e);
                                 }
-                            });
-                });
-            }
-        });
+                            })));
     }
 }

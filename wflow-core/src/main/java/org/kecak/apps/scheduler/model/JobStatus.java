@@ -1,5 +1,8 @@
 package org.kecak.apps.scheduler.model;
 
+/**
+ * Kecak Exclusive
+ */
 public enum JobStatus {
 
 	SUCCESS("Success"), FAIL("Fail");

@@ -14,6 +14,9 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Kecak Exclusive
+ */
 public class SchedulerManager {
 
     private static final Logger logger = LoggerFactory.getLogger(SchedulerManager.class);

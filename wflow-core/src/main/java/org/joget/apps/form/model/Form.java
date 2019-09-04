@@ -10,7 +10,7 @@ import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.json.JSONObject;
 
-public class Form extends Element implements FormBuilderEditable, FormContainer {
+public class Form extends Element implements FormBuilderEditable, FormContainer, AceFormElement, AdminLteFormElement {
 
     private Map<String, String[]> formMetas = new HashMap<String, String[]>();
     private Collection<FormAction> actions = new ArrayList<FormAction>();
@@ -31,7 +31,11 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "form.ftl";
-        
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    private String renderTemplate(String template,FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+
         //for preview
         if (formData.getFormResult(FormService.PREVIEW_MODE) != null) {
             setFormMeta("json", new String[]{formData.getRequestParameter("json")});
@@ -43,17 +47,17 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
             dataModel.put("appId", appDef.getAppId());
             dataModel.put("appVersion", appDef.getVersion());
         }
-        
+
         // check whether in form builder
         boolean formBuilderActive = FormUtil.isFormBuilderActive();
-       
+
         // check for quick edit mode
         boolean isQuickEditEnabled = (!formBuilderActive && AppUtil.isQuickEditEnabled()) || (formBuilderActive && getParent() != null);
         dataModel.put("quickEditEnabled", isQuickEditEnabled);
         if (((Boolean) dataModel.get("includeMetaData") == true) || isAuthorize(formData)) {
             dataModel.put("isAuthorize", true);
             dataModel.put("isRecordExist", true);
-            
+
             String paramName = FormUtil.getElementParameterName(this);
             setFormMeta(paramName+"_SUBMITTED", new String[]{"true"});
             String primaryKey = this.getPrimaryKeyValue(formData);
@@ -62,8 +66,8 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
                 boolean isRuntimeLoad = (formData.getFormResult(FormService.PREVIEW_MODE) == null || !dataModel.containsKey("elementMetaData"))
                         && !FormUtil.isFormSubmitted(this, formData);
                 boolean urlHasId = (formData.getRequestParameter("id") != null || formData.getRequestParameter("fk_id") != null
-                            || formData.getRequestParameter("fke_id") != null || formData.getRequestParameter("recordId") != null);
-                
+                        || formData.getRequestParameter("fke_id") != null || formData.getRequestParameter("recordId") != null);
+
                 if (isRuntimeLoad && urlHasId) {
                     //check for record exist
                     FormRowSet data = formData.getLoadBinderData(this);
@@ -71,7 +75,7 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
                         dataModel.put("isRecordExist", false);
                     }
                 }
-                
+
                 if (formData.getRequestParameter("_FORM_META_ORIGINAL_ID") != null) {
                     setFormMeta("_FORM_META_ORIGINAL_ID", new String[]{formData.getRequestParameter(FormUtil.FORM_META_ORIGINAL_ID)});
                 } else if (primaryKey != null) {
@@ -79,7 +83,7 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
                 } else {
                     setFormMeta("_FORM_META_ORIGINAL_ID", new String[]{""});
                 }
-                
+
                 //store form erros
                 Map<String, String> errors = formData.getFormErrors();
                 if (errors != null && !errors.isEmpty()) {
@@ -156,5 +160,17 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
             this.actions = new ArrayList<FormAction>();
         }
         this.actions.add(action);
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceForm.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteForm.ftl";
+        return renderTemplate(template,formData,dataModel);
     }
 }

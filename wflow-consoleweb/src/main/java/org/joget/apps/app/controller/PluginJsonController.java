@@ -1,6 +1,9 @@
 package org.joget.apps.app.controller;
 
 import java.io.IOException;
+
+import org.kecak.apps.app.model.EmailProcessorPlugin;
+import org.kecak.apps.app.model.SchedulerPlugin;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
 import java.io.Writer;
@@ -49,12 +52,12 @@ public class PluginJsonController {
             if (className != null && !className.trim().isEmpty()) {
                 pluginList = pluginManager.list(Class.forName(className));
             } else {
-                pluginList = new ArrayList<Plugin>();
+                pluginList = new ArrayList<>();
 
                 Collection<Plugin> fullPluginList = pluginManager.list();
 
                 for (Plugin plugin : fullPluginList) {
-                    if (plugin instanceof AuditTrailPlugin || plugin instanceof DeadlinePlugin || plugin instanceof ParticipantPlugin || plugin instanceof ApplicationPlugin) {
+                    if (plugin instanceof AuditTrailPlugin || plugin instanceof DeadlinePlugin || plugin instanceof ParticipantPlugin || plugin instanceof ApplicationPlugin || plugin instanceof SchedulerPlugin || plugin instanceof EmailProcessorPlugin) {
                         pluginList.add(plugin);
                     }
                 }

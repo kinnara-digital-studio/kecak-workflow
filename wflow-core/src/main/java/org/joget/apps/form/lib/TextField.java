@@ -10,8 +10,10 @@ import org.joget.apps.form.model.FormRow;
 import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
+import org.joget.apps.form.model.AceFormElement;
+import org.joget.apps.form.model.AdminLteFormElement;
 
-public class TextField extends Element implements FormBuilderPaletteElement {
+public class TextField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
     public String getName() {
         return "Text Field";
@@ -29,12 +31,15 @@ public class TextField extends Element implements FormBuilderPaletteElement {
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "textField.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
 
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         // set value
         String value = FormUtil.getElementPropertyValue(this, formData);
-        
+
         value = SecurityUtil.decrypt(value);
-        
+
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
@@ -97,5 +102,17 @@ public class TextField extends Element implements FormBuilderPaletteElement {
 
     public String getFormBuilderIcon() {
         return "/plugin/org.joget.apps.form.lib.TextField/images/textField_icon.gif";
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceTextField.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel){
+        String template = "AdminLteTheme/AdminLteTextField.ftl";
+        return renderTemplate(template,formData,dataModel);
     }
 }

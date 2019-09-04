@@ -1,21 +1,31 @@
 package org.joget.apps.app.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.FileUtils;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppService;
+import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.apps.userview.service.UserviewThemeProcesser;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.model.User;
+import org.joget.directory.model.service.ExtDirectoryManager;
+import org.joget.workflow.model.service.WorkflowUserManager;
+import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Base64;
 
 @Controller
 public class UserviewWebController {
@@ -74,6 +84,28 @@ public class UserviewWebController {
         map.addAttribute("menuId", menuId);
         map.addAttribute("embed", embed);
         map.addAttribute("queryString", request.getQueryString());
+        String username = WorkflowUtil.getCurrentUsername();
+        boolean isLoggedIn = username != null && !WorkflowUserManager.ROLE_ANONYMOUS.equals(username);
+        map.addAttribute("is_logged_in", isLoggedIn);
+        if (isLoggedIn) {
+            ExtDirectoryManager directoryManager = (ExtDirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
+            User user = directoryManager.getUserByUsername(username);
+            String pp = "";
+            if(user.getProfilePicture() != null) {
+                int blobLength = (int) user.getProfilePicture().length();
+                byte[] blobAsBytes = user.getProfilePicture().getBytes(1, blobLength);
+                pp = Base64.getEncoder().encodeToString(blobAsBytes);
+            }
+            else {
+                Resource resource = AppUtil.getApplicationContext().getResource("classpath:images/no-image.jpg");
+                File noPicture = resource.getFile();
+                byte[] fileAsBytes = FileUtils.readFileToByteArray(noPicture);
+                pp = Base64.getEncoder().encodeToString(fileAsBytes);
+            }
+            map.addAttribute("username", username);
+            map.addAttribute("user", user);
+            map.addAttribute("profilePicture",pp);
+        }
         UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
         if (userview != null) {
             String json = userview.getJson();

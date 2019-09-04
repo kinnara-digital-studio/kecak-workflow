@@ -8,20 +8,14 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormContainer;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Grid extends Element implements FormBuilderPaletteElement, FormContainer {
+public class Grid extends Element implements FormBuilderPaletteElement, FormContainer, AceFormElement, AdminLteFormElement {
     protected Map<FormData, FormRowSet> cachedRowSet = new HashMap<FormData, FormRowSet>();
 
     public String getName() {
@@ -180,7 +174,10 @@ public class Grid extends Element implements FormBuilderPaletteElement, FormCont
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "grid.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
 
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         // set value
         String[] valueArray = FormUtil.getElementPropertyValues(this, formData);
         List<String> values = Arrays.asList(valueArray);
@@ -197,7 +194,7 @@ public class Grid extends Element implements FormBuilderPaletteElement, FormCont
         // set rows
         FormRowSet rows = getRows(formData);
         dataModel.put("rows", rows);
-        
+
         dataModel.put("customDecorator", getDecorator());
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
@@ -293,6 +290,18 @@ public class Grid extends Element implements FormBuilderPaletteElement, FormCont
         }
         
         return fieldNames;
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceGrid.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteGrid.ftl";
+        return renderTemplate(template,formData,dataModel);
     }
 }
 

@@ -3,6 +3,9 @@ package org.kecak.apps.scheduler.model;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Kecak Exclusive
+ */
 public class SchedulerDetails implements Serializable {
 
     /**

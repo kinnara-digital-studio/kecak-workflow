@@ -1,9 +1,5 @@
 package org.joget.apps.userview.lib;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.service.AppService;
@@ -13,8 +9,7 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.ResourceBundleUtil;
@@ -22,13 +17,20 @@ import org.joget.commons.util.StringUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.userview.model.AceUserviewMenu;
+import org.kecak.apps.userview.model.AdminLteUserviewMenu;
+import org.kecak.apps.userview.model.BootstrapUserview;
 import org.springframework.context.ApplicationContext;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * Represents a menu item that displays a data form and handles form submission.
  */
-public class FormMenu extends UserviewMenu {
-
+public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteUserviewMenu {
     @Override
     public String getIcon() {
         return "/plugin/org.joget.apps.userview.lib.FormMenu/images/subForm_icon.gif";
@@ -103,20 +105,7 @@ public class FormMenu extends UserviewMenu {
 
     @Override
     public String getJspPage() {
-        if ("submit".equals(getRequestParameterString("_action"))) {
-            // only allow POST
-            HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
-            if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
-                return "userview/plugin/unauthorized.jsp";
-            }
-            
-            // submit form
-            submitForm();
-        } else {
-            displayForm();
-
-        }
-        return "userview/plugin/form.jsp";
+        return getJspPage("userview/plugin/form.jsp", "userview/plugin/unauthorized.jsp");
     }
 
     @Override
@@ -476,5 +465,43 @@ public class FormMenu extends UserviewMenu {
         setProperty("redirectUrlAfterComplete", getPropertyString("redirectUrlAfterComplete"));
 
         return form;
+    }
+
+    protected String getJspPage(String jspFile, String unauthorizedJspFile) {
+        if ("submit".equals(getRequestParameterString("_action"))) {
+            // only allow POST
+            HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
+            if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
+                return unauthorizedJspFile;
+            }
+
+            // submit form
+            submitForm();
+        } else {
+            displayForm();
+
+        }
+
+        return jspFile;
+    }
+
+    @Override
+    public String getAceJspPage(BootstrapUserview theme) {
+        return getJspPage(theme.getFormJsp(), theme.getUnauthorizedJsp());
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserview theme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(BootstrapUserview theme) {
+        return getJspPage(theme.getFormJsp(), theme.getUnauthorizedJsp());
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserview theme) {
+        return getDecoratedMenu();
     }
 }

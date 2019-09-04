@@ -189,7 +189,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
 
-        <style type="text/css">
+            <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {
                 display: none;
             }

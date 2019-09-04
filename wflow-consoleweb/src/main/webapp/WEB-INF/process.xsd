@@ -2,7 +2,78 @@
    xmlns:xps = "http://kecak.org/soap/process/schemas"
    elementFormDefault = "qualified"
    targetNamespace = "http://kecak.org/soap/process/schemas">
-   
+
+    <xs:element name = "ProcessAbortRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessAbortResponse" />
+
+    <xs:element name = "ProcessLatestRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processDefId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessLatestResponse" />
+
+    <xs:element name = "ProcessListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "allVersion" type = "xs:string" default="no"/>
+                <xs:element name = "packageId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+                <xs:element name = "checkWhiteList" type = "xs:boolean"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessListResponse" />
+
+    <xs:element name = "ProcessListPackageRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "checkWhiteList" type = "xs:boolean" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessListPackageResponse" />
+
+    <xs:element name = "ProcessVariableRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processId" type = "xs:string"/>
+                <xs:element name = "variable" type = "xs:string" />
+                <xs:element name = "value" type = "xs:string" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessVariableResponse" />
+
+    <xs:element name = "ProcessViewRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processDefId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessViewResponse" />
+
+    <xs:element name = "ProcessVariableListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "processId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "ProcessVariableListResponse" />
+
    <xs:element name = "ProcessStartRequest">
       <xs:complexType>
          <xs:all>
@@ -13,6 +84,7 @@
          </xs:all>
       </xs:complexType>
    </xs:element>
+    <xs:element name = "ProcessStartResponse" />
 
    <xs:element name = "OtherRequest">
       <xs:complexType>

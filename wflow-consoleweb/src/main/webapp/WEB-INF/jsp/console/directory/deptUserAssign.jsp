@@ -1,4 +1,6 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+<%@ page import="java.net.URLEncoder" %>
+<c:set var="encodedOrgId" value="${URLEncoder.encode(organizationId,'UTF-8')}"/>
 
 <commons:popupHeader />
 
@@ -7,7 +9,7 @@
     </div>
 
     <div id="main-body-content">
-        <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/employment/noInDept/list?orgId=${organizationId}&deptId=${id}&${pageContext.request.queryString}"
+        <ui:jsontable url="${pageContext.request.contextPath}/web/json/directory/admin/employment/noInDept/list?orgId=${encodedOrgId}&deptId=${id}&${pageContext.request.queryString}"
                    var="JsonDataTable"
                    divToUpdate="employmentList"
                    jsonData="data"
