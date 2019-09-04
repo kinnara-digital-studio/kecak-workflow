@@ -1,0 +1,24 @@
+{
+  "name": "kecak-workflow-console-web",
+  "authors": [
+    "aristosh <aristo.hadisoeganda@gmail.com>"
+  ],
+  "description": "for wflow-consoleweb",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "datatables.net-bs": "^2.1.1",
+    "font-awesome": "^4.7.0",
+    "Ionicons": "ionicons#^2.0.1",
+    "select2": "^4.0.5",
+    "bootstrap": "^3.3.7"
+  }
+}
