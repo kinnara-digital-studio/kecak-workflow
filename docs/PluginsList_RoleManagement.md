@@ -28,20 +28,17 @@ The image above is the image of the fill field for the authorization object, whi
 
 The difference between Object Type Field and Menu / Section is, in Object Type Field must input Object Name, while in Object Type Menu / Section does not have to input Object Name.
 
-The following is an example of data filling with Object Type in the form of Menu / Section:
+The following is an example of data filling with Object Type in the form of **Menu / Section**:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2_addNew.png" alt="roleManagement_budget" />
 
 
-In Object Type Menu / Section does not have to input Object Name.
-
-The following is an example of data filling with Object Type in the form of Field:
+The following is an example of data filling with Object Type in the form of **Actin** :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement3_addNew.png" alt="roleManagement2" />
 
-In Object Type Field must input Object Name (not mandatory)
 
-The data has been stored, then the data display is as follows (red marked):
+The data has been stored, then the data display is as follows :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4_list.png" alt="rm_authObjectList" />
 
