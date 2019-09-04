@@ -1,54 +1,45 @@
-<<<<<<< HEAD
-## Overview
-Email Approval is one way approval is implemented on email (not through the form), so approval can be done more easily without having to open the website first.
+# Welcome to Kecak Workflow
 
-## Email Format
+### What is Kecak Workflow
 
-Example of very basic Email Tool setting
+Open source Business Process Management software which is packed with web application engine to provide bundle solution for workflow application.
 
-`<a href="mailto:admin@domain?subject=Approval processId:#assignment.processId#&body=approved" data-rel="external">APPROVE</a>`
-`<br>`
-`<br>`
-`<a href="mailto:admin@domain?subject=Revision processId:#assignment.processId#&body=revised" data-rel="external">REVISE</a>`
-`<br>`
-`<br>`
-`<a href="mailto:admin@domain?subject=Rejection processId:#assignment.processId#&body=rejected" data-rel="external">REJECT</a>`
+- Products & Services
 
-## Approval Settings
+  - Managing business processes can be cumbersome and time-consuming.
 
-##### Parameters
-* ID - Application ID
-* Process ID - Application Version (optional) : if not included will retrieve the latest version
-* Activity ID - The activity ID to do
-* Content - display any pop-ups that will be sent to the corresponding email.
+  - Kecak Workflow Platform helps you focusing in your core business, instead of administrative problems.
 
-Here is an example of filling fields in email approval:
+### What is Workflow
 
-![image](/uploads/00468fab18ec8d41be0458f963b4d9f9/image.png)
+Workflow is defined as tasks, required steps, and information moved (in and/or out) of any business process. Depending on the size and complexity of the organization, workflows may be a formal process or a very informal one so that no one recognizes it as an actual workflow.
+
+Automation business process consists of a sequence connected steps.
+
+Each step is declared as the work of a person, group, organization, or one mechanism or more
+4 types of possible interactions or transitions:
+
+- Human To Human
+
+- Human To Machine
+
+- Machine To Machine
+
+- Machine To Human
 
 
-1. Open Options * Settings * on the options on the right
-2. Select * Email Approval Content * on the left selection
-3. Click * Approval * on Activity ID
+**Value Proposition**
 
-![image](/uploads/81303da410e5873880727a63ea41f686/image.png)
+- **Enterprises:**
+  - Efficiency and productivity
+  - Process control
+  - Process improvement
+  - Reduced costs
+  
+- **IT/Developers:**
+  - Web based
+  - Drag-and-drop, wizard-style
+  - Build apps, not just process
+  - Extendable through plugins
+  - Integration
 
-## How to Determine what Content will be displayed in Email Approval ##
-
-in this case are an example for content Arya Noble email approval, the content is
-``` javascript
-Approval Status: {form_sf_approval_sf_appr_approval} {form_sf_approval_sf_appr_sf_remark_sf_app_history_approval_status} Remarks:[{form_sf_approval_sf_appr_sf_remark_sf_app_history_remark}]{nouse}
-```
-
-### * For {form_sf_approval_sf_appr_approval} ###
-#### the order is as follows : ####
-* form - form
-* sf_approval - subform (if its form type is subform)
-* sf_appr subform (if its form type is subform)
-* approval - 
-
-#### The trick is as follows: ####
-1. open *All Apps* in the menu options on the right
-2. Select *Payment Request Application*
-3. Find the form which will be taken (in this case the form will be taken is EAF-Approval form)
-4. Select the approval form and edit from approval to see the ID of the Approval Form (green box) and what form it uses (blue box)
