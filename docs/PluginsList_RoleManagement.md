@@ -101,7 +101,7 @@ example data from LDAP in Groups when Field Role Group:
 
 1. Open the apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_openApps.png" alt="" />
 
 
 2. Choose form
