@@ -64,6 +64,19 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/numer_configureCurrency2.png" alt="" />
 
+Description :
+
+|Field|Description|
+|-----|-----------|
+|**Source Format**|Currency writing format|
+|**Other Formatting**|Display format of writing|
+|**Locale**|Currency Format|
+|**Show Symbol**|Option to display currency symbols|
+|**Show Decimal**|Option to display decimal format|
+|**Font Size**|Set text size|
+|**Font Color Code**|Color settings from text|
+|**Allignment**|Set the position of the text|
+
 
 9. Click ok
 
