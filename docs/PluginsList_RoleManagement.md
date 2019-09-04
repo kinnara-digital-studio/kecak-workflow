@@ -89,7 +89,7 @@ The data has been stored, then the data display is as follows:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleGroupList.png" alt="roleGroupList" />
 
 - **LDAP**
-: active directory. Employee database. Name, phone number username, address, etc. [RELATED WITH EMAIL]
+: Active directory, employee database. [RELATED WITH EMAIL]
 
 example data from LDAP in Users when Field Role Group:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_group_user.png" alt="group_user" />
