@@ -16,7 +16,7 @@ Description :
 |-----------------|-------------------------------|
 |**Object ID**    |ID from authorization object   |
 |**Object Type**  |Type from authorization object |
-|**Object Name**  |Object Name for display        |
+
 
 **Object Type**
 
@@ -32,13 +32,17 @@ The following is an example of data filling with Object Type in the form of Menu
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2_fieldAddNew.png" alt="roleManagement_budget" />
 
+
 In Object Type Menu / Section does not have to input Object Name.
 
 The following is an example of data filling with Object Type in the form of Field:
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement3_fieldAddNew.png" alt="roleManagement2" />
+
 In Object Type Field must input Object Name (not mandatory)
 
 The data has been stored, then the data display is as follows (red marked):
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4_list.png" alt="rm_authObjectList" />
 
 
