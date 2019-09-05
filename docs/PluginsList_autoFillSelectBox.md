@@ -29,10 +29,14 @@ Provides autofill capabilities based on key specified by selecting a value from 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editSelectbox.png" alt="" />
 
-* ID - Element ID
-* Label - Element Label
-* Options (Hardcoded) - Static option items
-* Or Choose Options Binder - Load option items from **Options Binder**
+Description :
+
+|Field|Description|
+|-|-|
+|ID|Element ID|
+|Label|Element Label|
+|Options (Hardcoded)|Static option items|
+|Or Choose Options Binder|Load option items from **Options Binder**|
 
 6. Click ok
 
