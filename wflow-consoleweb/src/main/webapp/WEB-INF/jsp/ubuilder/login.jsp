@@ -4,6 +4,7 @@
 <%@ page import="org.joget.apps.userview.model.Userview"%>
 <%@ page import="org.joget.directory.model.service.DirectoryUtil"%>
 <%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 
 <%
     String rightToLeft = WorkflowUtil.getSystemSetupValue("rightToLeft");
@@ -53,10 +54,31 @@
                     ${userview.current.properties.label}
                 </c:if>
             </c:set>
-            <ui:stripTag html="${html}"/>  
+            <ui:stripTag html="${html}"/>
         </title>
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
+        <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
+            <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
+            <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+            <script type="text/javascript">
+                function onSignIn(googleUser) {
+                    var id_token = googleUser.getAuthResponse().id_token;
+                    $('#googleForm #auth_type').val('GOOGLE_AUTH');
+                    $('#googleForm #id_token').val(id_token);
+                    $('#googleForm').submit();
+                }
+                function onLoad() {
+                    <c:if test="${!empty param.login_error}">
+                      gapi.load('auth2', function() {
+                        gapi.auth2.init().then(function(){
+                            gapi.auth2.getAuthInstance().signOut();
+                        });
+                      });
+                    </c:if>
+                }
+            </script>
+        </c:if>
         
         <script type="text/javascript">
             ${userview.setting.theme.javascript}
@@ -130,6 +152,13 @@
                             </td></tr>
                         </table>
                     </form>
+                    <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
+                        <form id="googleForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
+                            <input type="hidden" id="auth_type" name="j_username">
+                            <input type="hidden" id="id_token" name="j_password">
+                        </form>
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    </c:if>
                     <c:if test="${!empty userview.setting.properties.loginPageBottom}">
                         ${userview.setting.properties.loginPageBottom}
                     </c:if>

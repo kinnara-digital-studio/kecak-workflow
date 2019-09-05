@@ -19,6 +19,8 @@ public interface UserDao {
 
     User getUserById(String id);
 
+    User getUserByEmail(String email);
+
     User getHodByDepartmentId(String departmentId);
 
     Collection<User> getUsers(String filterString, String organizationId, String departmentId, String gardeId, String groupId, String roleId, String active, String sort, Boolean desc, Integer start, Integer rows);

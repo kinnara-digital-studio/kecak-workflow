@@ -24,6 +24,8 @@
                 <value>org/joget/directory/model/Role.hbm.xml</value>
                 <value>org/joget/directory/model/User.hbm.xml</value>
                 <value>org/joget/directory/model/UserSalt.hbm.xml</value>
+                <value>org/joget/directory/model/UserToken.hbm.xml</value>
+                <value>org/joget/directory/model/Platform.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -47,6 +49,11 @@
     </bean>
     
     <bean id="userSaltDao" class="org.joget.directory.dao.UserSaltDaoImpl">
+        <property name="sessionFactory" ref="directorySessionFactory" />
+        <property name="workflowUserManager" ref="workflowUserManager"/>
+    </bean>
+
+    <bean id="userTokenDao" class="org.joget.directory.dao.UserTokenDaoImpl">
         <property name="sessionFactory" ref="directorySessionFactory" />
         <property name="workflowUserManager" ref="workflowUserManager"/>
     </bean>
@@ -116,6 +123,7 @@
         <property name="gradeDao" ref="gradeDao" />
         <property name="roleDao" ref="roleDao" />
         <property name="userSaltDao" ref="userSaltDao" />
+        <property name="userTokenDao" ref="userTokenDao" />
     </bean>
 
     <aop:config>

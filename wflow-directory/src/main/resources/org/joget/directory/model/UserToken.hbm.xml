@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class entity-name="UserToken" name="org.joget.directory.model.UserToken" table="dir_user_token">
+    <id column="id" name="id" type="string"/>
+    <property name="dateCreated" type="timestamp"/>
+    <property name="dateModified" type="timestamp"/>
+    <property name="createdBy" type="string"/>
+    <property name="modifiedBy" type="string"/>
+    <property name="deleted" type="boolean"/>
+    <property column="userId" name="userId" type="string" index="IDX_USER_ID_TOKEN"/>
+    <property column="platformId" name="platformId" type="string" index="IDX_PLATFORM_ID_TOKEN"/>
+    <property column="token" name="token" type="text"/>
+</class>
+</hibernate-mapping>

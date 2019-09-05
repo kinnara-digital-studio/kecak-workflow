@@ -435,6 +435,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
     public void saveOrUpdate(String formDefId, String tableName, FormRowSet rowSet) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
+        for (FormRow row : rowSet){
+            row.setDeleted(false);
+        }
         internalSaveOrUpdate(entityName, newTableName, rowSet);
     }
 

@@ -4,6 +4,7 @@
 <%@ page import="org.joget.apps.userview.model.Userview"%>
 <%@ page import="org.joget.directory.model.service.DirectoryUtil"%>
 <%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 
 <%
     String rightToLeft = WorkflowUtil.getSystemSetupValue("rightToLeft");
@@ -46,6 +47,27 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
+            <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
+            <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+            <script type="text/javascript">
+                function onSignIn(googleUser) {
+                    var id_token = googleUser.getAuthResponse().id_token;
+                    $('#googleForm #auth_type').val('GOOGLE_AUTH');
+                    $('#googleForm #id_token').val(id_token);
+                    $('#googleForm').submit();
+                }
+                function onLoad() {
+                    <c:if test="${!empty param.login_error}">
+                      gapi.load('auth2', function() {
+                        gapi.auth2.init().then(function(){
+                            gapi.auth2.getAuthInstance().signOut();
+                        });
+                      });
+                    </c:if>
+                }
+            </script>
+        </c:if>
         <title>
             <c:set var="html">
                 ${userview.properties.name} &nbsp;&gt;&nbsp;
@@ -61,9 +83,8 @@
             UI.base = "${pageContext.request.contextPath}";
             UI.userview_app_id = '${appId}';
             UI.userview_id = '${userview.properties.id}';
-            ${userview.setting.theme.javascript}
         </script>
-
+        ${userview.setting.theme.javascript}
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/bower_components/font-awesome/css/font-awesome.min.css">
@@ -147,6 +168,14 @@
                                                     <div class="space-4"></div>
                                                 </fieldset>
                                             </form>
+
+                                            <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
+                                                <form id="googleForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
+                                                    <input type="hidden" id="auth_type" name="j_username">
+                                                    <input type="hidden" id="id_token" name="j_password">
+                                                </form>
+                                                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                                            </c:if>
                                         </div><!-- /.widget-main -->
                                     </div><!-- /.widget-body -->
                                 </div><!-- /.login-box -->

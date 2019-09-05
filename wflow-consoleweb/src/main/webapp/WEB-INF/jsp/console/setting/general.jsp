@@ -238,6 +238,16 @@
                 </span>
             </div>
             </c:if>
+            <div class="main-body-row">
+                <span class="row-content">
+                    <div class="form-row">
+                        <label for="googleClientId"><fmt:message key="console.setting.general.label.googleClientId"/></label>
+                        <span class="form-input">
+                            <input id="googleClientId" type="text" name="googleClientId" value="<c:out value="${settingMap['googleClientId']}"/>"/>
+                        </span>
+                    </div>
+                </span>
+            </div>
             <c:if test="${!isVirtualHostEnabled}">
             <div class="main-body-row">
                 <span class="row-content">

@@ -6,6 +6,7 @@
 <%@ page import="org.joget.apps.app.service.MobileUtil"%>
 <%@ page import="org.joget.apps.app.service.AppUtil"%>
 <%@ page import="org.joget.apps.userview.model.Userview"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 <%@ page contentType="text/html" pageEncoding="utf-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
@@ -208,6 +209,21 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         </title>
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
+        <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
+            <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
+            <script src="https://apis.google.com/js/platform.js" async defer></script>
+            <script type="text/javascript">
+              $(function(){
+                gapi.load('auth2', function() {
+                  gapi.auth2.init();
+                });
+              });
+              function logout(){
+                gapi.auth2.getAuthInstance().signOut();
+                return true;
+              }
+            </script>
+        </c:if>
 
             <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {
@@ -306,7 +322,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                           </a>
                       </c:when>
                       <c:otherwise>
-                          <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat">
+                          <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat" onClick="return logout();">
                             ${userview.properties.logoutText}
                           </a>
                       </c:otherwise>
