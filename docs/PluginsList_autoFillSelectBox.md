@@ -36,15 +36,7 @@ This step-by-step will help you to put simple configuration to load data from an
 
 
 ### Version History ###
-*  **1.2.2**
-   * Fix bugs
-   * Load autofill when web page ready
-*  **1.2.0**
-   * Load autofill data from any **Load Binder** plugin
-*  **1.1.0**
-   * Load autofill data from form
 
-*  **1.0.0**
    * Initial creation
    * Isti Fatimah
 
