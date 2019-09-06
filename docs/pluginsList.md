@@ -36,7 +36,7 @@
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_chartMenu)
 - [Plugins CRUD Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudMenu)
 - [Plugins Run Proces Datalist](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_runProcessDatalist)
-- [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidger)
+- [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidget)
 - [Plugins Live Validation](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_liveValidation)
 - [Plugins Checkbox Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_checkboxTextfield)
 - [Plugins Popup Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popupSelectbox)
