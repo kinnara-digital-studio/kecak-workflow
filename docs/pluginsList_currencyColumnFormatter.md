@@ -1,5 +1,6 @@
 # Currency Column Formatter
 
+Currency column formatter are plugins to create a formatter in a column in the datalist.
 
 ## How to use
 
