@@ -41,4 +41,4 @@
 - [Plugins Checkbox Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_checkboxTextfield)
 - [Plugins Popup Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popupSelectbox)
 - [Plugins Numeric Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_numericTextField)
-- [Plugins Currency Column Formatter] (https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyColumnFormatter)
+- [Plugins Currency Column Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyColumnFormatter)
