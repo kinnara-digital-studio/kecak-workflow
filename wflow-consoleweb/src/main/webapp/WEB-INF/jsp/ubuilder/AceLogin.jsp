@@ -88,9 +88,7 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/bower_components/font-awesome/css/font-awesome.min.css">
-        <style type="text/css">
-            ${userview.setting.theme.css}
-        </style>
+        ${userview.setting.theme.css}
     </head>
 
     <body id="login" class="login-layout <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">

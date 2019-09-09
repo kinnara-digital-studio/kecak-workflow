@@ -28,8 +28,8 @@
         </script>
     </#if>
 
-    <label class="col-sm-3 control-label">${element.properties.label!} <span class="form-cell-validator">${decoration}${customDecorator}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>
-    <div class="col-sm-9 grid grid_${element.properties.elementUniqueKey!} form-element" id="${elementParamName!}" name="${elementParamName!}">
+    <label class="control-label">${element.properties.label!} <span class="form-cell-validator">${decoration}${customDecorator}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>
+    <div class="grid grid_${element.properties.elementUniqueKey!} form-element" id="${elementParamName!}" name="${elementParamName!}">
         <table cellspacing="0" class="table table-bordered table-hover" data-tablesaw-mode="stack">
             <thead>
                 <tr>
