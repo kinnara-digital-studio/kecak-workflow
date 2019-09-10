@@ -5,6 +5,15 @@ Provides autofill capabilities based on key specified by selecting a value from 
 
 ## How to use ##
 
+Assume the database that will be called to display in the autofill select box  field is available.
+
+An example of a database can be seen in the image below (named "Master Data") :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_masterData.png" alt="" />
+
+
+After that, follow the steps to create a selecbox autofill below:
+
 1. Open apps
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_openApps.png" alt="" />
@@ -38,9 +47,39 @@ Description :
 |Options (Hardcoded)|Static option items|
 |Or Choose Options Binder|Load option items from **Options Binder**|
 
+6. Edit Select Form
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editSelectForm.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editSelectForm2.png" alt="" />
+
+
+7. Choose autofill, form binder and mapping
+
+- Choose Autofill
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editAutofill.png" alt="" />
+
+- Choose form binder
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editFormBinder.png" alt="" />
+
+- Option for mapping 
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editMapping.png" alt="" />
+
+
 6. Click ok
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_ok.png" alt="" />
+
+siapkan field untuk mengisi data yang akan dimappingkan dengan mster data yang telah disediakan sebelumnya.
+
+Contoh field yang akan terhubung dengan master data yang ada adalah seperti gambar berikut :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_formMappingMasterData.png" alt="" />
+
+nb: ID dari setiap field yang akan dimapping pada form harus sama dengan ID field yang ada pada master data.
 
 
 7. Click save
