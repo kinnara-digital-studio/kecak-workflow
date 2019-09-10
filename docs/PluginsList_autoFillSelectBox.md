@@ -79,7 +79,7 @@ Examples of fields that will be connected to the existing master data are as fol
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_formMappingMasterData.png" alt="" />
 
-nb: ID dari setiap field yang akan dimapping pada form harus sama dengan ID field yang ada pada master data.
+Note: The ID of each field to be mapped on the form must be the same as the ID of the field in the master data.
 
 
 7. Click save
@@ -92,6 +92,9 @@ nb: ID dari setiap field yang akan dimapping pada form harus sama dengan ID fiel
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_result.png" alt="" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_result2.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_result3.png" alt="" />
+
 
 
 ### Version History ###
