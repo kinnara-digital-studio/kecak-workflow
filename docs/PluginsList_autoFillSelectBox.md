@@ -73,9 +73,9 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_ok.png" alt="" />
 
-siapkan field untuk mengisi data yang akan dimappingkan dengan mster data yang telah disediakan sebelumnya.
+Prepare fields to fill in the data to be mapped with the master data that has been provided previously.
 
-Contoh field yang akan terhubung dengan master data yang ada adalah seperti gambar berikut :
+Examples of fields that will be connected to the existing master data are as follows:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_formMappingMasterData.png" alt="" />
 
