@@ -53,6 +53,19 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_editSelectForm2.png" alt="" />
 
+Description :
+
+|Field|Description|
+|-|-|
+|Form |Select the form to be used|
+|ID Column|ID of the selected form|
+|Label Column|Column labeling|
+|Grouping Column|Grouping for columns (optional)|
+|Extra Filter Condition|Extra Filter Conditions if needed (optional)|
+|Show ID in Label|Option to display ID on the label|
+|Add Empty Option|Option to display empty label|
+|Empty Option Label|Labeling if you want to use the blank label option|
+|Use AJAX for cascade options|Optional options for using AJAX in cascade options|
 
 7. Choose autofill, form binder and mapping
 
