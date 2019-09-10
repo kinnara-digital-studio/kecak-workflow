@@ -91,7 +91,10 @@ Note: The ID of each field to be mapped on the form must be the same as the ID o
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_result.png" alt="" />
 
+- Choose the data :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_result2.png" alt="" />
+
+- Result of the selected data, fields marked with black boxes are filled in automatically (autofill) :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_result3.png" alt="" />
 
