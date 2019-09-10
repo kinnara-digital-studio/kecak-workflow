@@ -19,7 +19,9 @@ public interface UserDao {
 
     User getUserById(String id);
 
-    User getUserByEmail(String email);
+    default User getUserByEmail(String email) {
+        return null;
+    }
 
     User getHodByDepartmentId(String departmentId);
 

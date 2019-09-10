@@ -1,4 +1,4 @@
-package org.joget.directory.model.service;
+package org.kecak.directory.model.service;
 
 import org.joget.directory.model.service.DirectoryManager;
 

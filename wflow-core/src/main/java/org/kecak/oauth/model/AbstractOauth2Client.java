@@ -5,9 +5,7 @@ import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.springframework.security.authentication.BadCredentialsException;
 
-public abstract class DefaultOauth2Client extends ExtDefaultPlugin implements PropertyEditable {
-    public abstract User getUser(String clientToken) throws BadCredentialsException;
-
+public abstract class AbstractOauth2Client extends ExtDefaultPlugin implements Oauth2ClientPlugin, PropertyEditable {
     @Override
     public String getI18nLabel() {
         return getLabel();
@@ -15,6 +13,11 @@ public abstract class DefaultOauth2Client extends ExtDefaultPlugin implements Pr
 
     @Override
     public String getPropertyOptions() {
+        return null;
+    }
+
+    @Override
+    public User getUser(String clientToken) throws BadCredentialsException {
         return null;
     }
 }
