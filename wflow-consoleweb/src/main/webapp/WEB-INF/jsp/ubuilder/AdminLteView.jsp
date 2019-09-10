@@ -211,13 +211,15 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
         <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
             <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
-            <script src="https://apis.google.com/js/platform.js" async defer></script>
+            <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
             <script type="text/javascript">
-              $(function(){
+              function onLoad() {
                 gapi.load('auth2', function() {
-                  gapi.auth2.init();
+                  gapi.auth2.init().then(function(){
+                      gapi.auth2.getAuthInstance().signOut();
+                  });
                 });
-              });
+              }
               function logout(){
                 gapi.auth2.getAuthInstance().signOut();
                 return true;
@@ -554,9 +556,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-<style type="text/css">
-    ${userview.setting.theme.css}
-</style>
+${userview.setting.theme.css}
 
 <!-- REQUIRED JS SCRIPTS -->
 
@@ -565,10 +565,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 <script>
   $.fn.bootstrapBtn = $.fn.button.noConflict();
 </script>
-
-<script>
-    ${userview.setting.theme.javascript}
-</script>
+${userview.setting.theme.javascript}
 
 <script>
   $(document).ready(function () {

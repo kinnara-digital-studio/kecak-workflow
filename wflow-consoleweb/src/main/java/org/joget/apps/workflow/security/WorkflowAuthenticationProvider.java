@@ -92,7 +92,7 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
                             validLogin = true;
                             UserToken userToken = new UserToken();
                             userToken.setUserId(u.getId());
-                            userToken.setPlatformId("google");
+                            userToken.setPlatformId("GOOGLE");
                             userTokenDao.deleteUserToken(userToken);
                             userToken.setId(UUID.randomUUID().toString());
                             userToken.setToken(password);
