@@ -200,6 +200,24 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
         return null;
     }
 
+
+    public User getUserByTelegramUsername(String username) {
+        try {
+            User user = new User();
+            user.setTelegramUsername(username);
+            @SuppressWarnings("rawtypes")
+            List users = findByExample("User", user);
+
+            if (users.size() > 0) {
+                return (User) users.get(0);
+            }
+        } catch (Exception e) {
+            LogUtil.error(UserDaoImpl.class.getName(), e, "Get User By Email Error!");
+        }
+
+        return null;
+    }
+
     public User getHodByDepartmentId(String departmentId) {
         try {
             if (departmentId != null) {

@@ -147,6 +147,20 @@
                 </form>
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
             </c:if>
+            <c:if test="${userview.setting.properties.telegramSignInButton == 'true'}">
+                <form id="telegramForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
+                    <input type="hidden" class="auth_type" name="j_username">
+                    <input type="hidden" class="id_token" name="j_password">
+                </form>
+                <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="${SetupManager.getSettingValue('telegramBotName')}" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+                <script type="text/javascript">
+                  function onTelegramAuth(user) {
+                    $('#telegramForm .auth_type').val('TELEGRAM_AUTH');
+                    $('#telegramForm .id_token').val(JSON.stringify(user));
+                    $('#telegramForm').submit();
+                  }
+                </script>
+            </c:if>
           </div>
           <!-- /.login-box-body -->
           <div class="center" style="margin-top:10px;">

@@ -222,6 +222,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
               }
               function logout(){
                 gapi.auth2.getAuthInstance().signOut();
+                setcookie('tg_user', '');
                 return true;
               }
             </script>

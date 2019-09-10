@@ -248,6 +248,26 @@
                     </div>
                 </span>
             </div>
+            <div class="main-body-row">
+                <span class="row-content">
+                    <div class="form-row">
+                        <label for="googleClientId"><fmt:message key="console.setting.general.label.telegramBotName"/></label>
+                        <span class="form-input">
+                            <input id="telegramBotName" type="text" name="telegramBotName" value="<c:out value="${settingMap['telegramBotName']}"/>"/>
+                        </span>
+                    </div>
+                </span>
+            </div>
+            <div class="main-body-row">
+                <span class="row-content">
+                    <div class="form-row">
+                        <label for="telegramBotToken"><fmt:message key="console.setting.general.label.telegramBotToken"/></label>
+                        <span class="form-input">
+                            <input id="telegramBotToken" type="text" name="telegramBotToken" value="<c:out value="${settingMap['telegramBotToken']}"/>"/>
+                        </span>
+                    </div>
+                </span>
+            </div>
             <c:if test="${!isVirtualHostEnabled}">
             <div class="main-body-row">
                 <span class="row-content">

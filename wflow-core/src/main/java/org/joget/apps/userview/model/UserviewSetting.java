@@ -47,6 +47,7 @@ public class UserviewSetting extends Element {
                 + "{title:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPage")
                 + "', properties:["
                 + "{name:'googleSignInButton',label:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.googleSignInButton") + "',type:'checkbox',value :'false',options:[{value:'true',label :''}]},"
+                + "{name:'telegramSignInButton',label:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.telegramSignInButton") + "',type:'checkbox',value :'false',options:[{value:'true',label :''}]},"
                 +"{name:'loginPageTop', label: '" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPageTop") + "', type:'textarea', rows:'10', cols:'50'}, {name:'loginPageBottom', label: '" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPageBottom") + "', type:'textarea', rows:'10', cols:'50'}"
                 +"]}";
         if (!mobileDisabled) {

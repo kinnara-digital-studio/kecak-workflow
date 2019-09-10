@@ -11,5 +11,6 @@
     <property column="userId" name="userId" type="string" index="IDX_USER_ID_TOKEN"/>
     <property column="platformId" name="platformId" type="string" index="IDX_PLATFORM_ID_TOKEN"/>
     <property column="token" name="token" type="text"/>
+    <property column="externalId" name="externalId" type="text"/>
 </class>
 </hibernate-mapping>

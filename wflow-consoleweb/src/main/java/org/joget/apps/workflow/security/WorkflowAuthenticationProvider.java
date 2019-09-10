@@ -1,17 +1,14 @@
 package org.joget.apps.workflow.security;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.sql.Blob;
 import java.util.*;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.IOUtils;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.dao.FormDataDao;
 import org.joget.commons.util.HostManager;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SetupManager;
@@ -23,6 +20,9 @@ import org.joget.directory.model.User;
 import org.joget.directory.model.UserToken;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.workflow.model.dao.WorkflowHelper;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -37,6 +37,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 public class WorkflowAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
 
@@ -96,13 +101,49 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
                             userTokenDao.deleteUserToken(userToken);
                             userToken.setId(UUID.randomUUID().toString());
                             userToken.setToken(password);
+                            userToken.setExternalId(email);
                             userTokenDao.addUserToken(userToken);
                         }
                     } else {
                         throw new BadCredentialsException("Invalid Google Token");
                     }
                 }
-            } else {
+            } else if(username.equals("TELEGRAM_AUTH")){
+                String TelegramBotToken = SetupManager.getSettingValue("telegramBotToken");
+                if(!TelegramBotToken.isEmpty()){
+                    JSONParser parser = new JSONParser();
+                    JSONObject data = (JSONObject) parser.parse(password);
+                    String checkHash = data.get("hash").toString();
+                    data.remove("hash");
+                    String dataString = "";
+                    Integer i = 0;
+                    for (Object key: new TreeSet<String>(data.keySet())) {
+                        if(i > 0) dataString += "\n";
+                        dataString += key + "=" + data.get(key);
+                        i++;
+                    }
+                    byte[] secretKey = DigestUtils.sha256(TelegramBotToken);
+                    String hash  = encodeHMacSHA256(secretKey,dataString);
+                    if(checkHash.equals(hash)){
+                        User u = userDao.getUserByTelegramUsername(data.get("username").toString());
+                        if (u != null) {
+                            username = u.getUsername();
+                            validLogin = true;
+                            UserToken userToken = new UserToken();
+                            userToken.setUserId(u.getId());
+                            userToken.setPlatformId("TELEGRAM");
+                            userTokenDao.deleteUserToken(userToken);
+                            userToken.setId(UUID.randomUUID().toString());
+                            userToken.setToken(password);
+                            userToken.setExternalId(data.get("id").toString());
+                            userTokenDao.addUserToken(userToken);
+                        }
+                    } else {
+                        throw new BadCredentialsException("Invalid Telegram Token");
+
+                    }
+                }
+            } else{
                 validLogin = directoryManager.authenticate(username, password);
             }
         } catch (Exception e) {
@@ -144,5 +185,12 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
 
     public void setMessageSource(MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
+    }
+
+    public static String encodeHMacSHA256(byte[] key, String data) throws Exception {
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(key, "HmacSHA256");
+        sha256_HMAC.init(secret_key);
+        return Hex.encodeHexString(sha256_HMAC.doFinal(data.getBytes()));
     }
 }

@@ -2,17 +2,12 @@ package org.joget.apps.workflow.controller;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.security.GeneralSecurityException;
 import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.googleapis.util.Utils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.workflow.security.WorkflowUserDetails;
@@ -30,7 +25,6 @@ import org.joget.directory.model.Group;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
@@ -49,9 +43,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 @Controller
 public class DirectoryJsonController {
@@ -730,73 +721,6 @@ public class DirectoryJsonController {
             jsonObject.accumulate("isAdmin", "true");
         }
         
-        // csrf token
-        String csrfToken = SecurityUtil.getCsrfTokenName() + "=" + SecurityUtil.getCsrfTokenValue(httpRequest);
-        jsonObject.accumulate("token", csrfToken);
-
-        AppUtil.writeJson(writer, jsonObject, callback);
-    }
-
-
-    @RequestMapping("/json/directory/user/googleSignIn")
-    public void googleSignIn(Writer writer, HttpServletRequest httpRequest, HttpServletResponse httpResponse, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "idtoken", required = true) String idTokenString) throws JSONException, IOException, ServletException, GeneralSecurityException {
-        String CLIENT_ID = "89454262416-5lgedc4aq5vt6e62971ep19hce3nlu23.apps.googleusercontent.com";
-        if (idTokenString != null && !idTokenString.isEmpty()) {
-            try {
-                GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(Utils.getDefaultTransport(), new JacksonFactory())
-                        // Specify the CLIENT_ID of the app that accesses the backend:
-                        .setAudience(Collections.singletonList(CLIENT_ID))
-                        // Or, if multiple clients access the backend:
-                        //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-                        .build();
-
-// (Receive idTokenString by HTTPS POST)
-
-                GoogleIdToken idToken = verifier.verify(idTokenString);
-                if (idToken != null) {
-                    Payload payload = idToken.getPayload();
-
-                    // Print user identifier
-                    String userId = payload.getSubject();
-                    System.out.println("User ID: " + userId);
-
-                    // Get profile information from payload
-                    String email = payload.getEmail();
-                    boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
-                    String name = (String) payload.get("name");
-                    String pictureUrl = (String) payload.get("picture");
-                    String locale = (String) payload.get("locale");
-                    String familyName = (String) payload.get("family_name");
-                    String givenName = (String) payload.get("given_name");
-
-
-                } else {
-                    System.out.println("Invalid ID token.");
-                }
-
-            } catch (AuthenticationException e) {
-                // add failure to audit trail
-                if (idTokenString != null) {
-                    LogUtil.info(getClass().getName(), "Wrong ID Token");
-                    WorkflowHelper workflowHelper = (WorkflowHelper) AppUtil.getApplicationContext().getBean("workflowHelper");
-                    workflowHelper.addAuditTrail(this.getClass().getName(), "authenticate", "Wrong ID Token");
-                }
-            }
-        }
-
-        if (WorkflowUtil.isCurrentUserAnonymous()) {
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.accumulate("username", WorkflowUtil.getCurrentUsername());
-
-        boolean isAdmin = WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN);
-        if (isAdmin) {
-            jsonObject.accumulate("isAdmin", "true");
-        }
-
         // csrf token
         String csrfToken = SecurityUtil.getCsrfTokenName() + "=" + SecurityUtil.getCsrfTokenValue(httpRequest);
         jsonObject.accumulate("token", csrfToken);

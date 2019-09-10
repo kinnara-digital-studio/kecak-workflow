@@ -14,6 +14,7 @@ public class UserToken implements Serializable, Auditable{
     private String userId;
     private String platformId;
     private String token;
+    private String externalId;
     private Date dateCreated;
     private Date dateModified;
     private String createdBy;
@@ -50,6 +51,14 @@ public class UserToken implements Serializable, Auditable{
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     public Date getDateCreated() {
