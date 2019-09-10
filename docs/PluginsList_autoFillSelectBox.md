@@ -12,7 +12,7 @@ An example of a database can be seen in the image below (named "Master Data") :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/autofill_masterData.png" alt="" />
 
 
-After that, follow the steps to create a selecbox autofill below:
+After that, follow the steps to create a autofill selectbox below:
 
 1. Open apps
 
