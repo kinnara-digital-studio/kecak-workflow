@@ -2,7 +2,6 @@
 - [Plugins Calculation Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_CalculationField)
 - [Plugins Captcha](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_Captcha)
 - [Plugins Audit Trail](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_auditTrail)
-- [Plugins Auto Fill Select Box](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_autoFillSelectBox)
 - [Plugins Cancel Button](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_cancelButton)
 - [Plugins Datalist Filter Select Box](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistFilter_selectBox)
 - [Plugins Design Process](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_DesignProcess)
@@ -42,3 +41,4 @@
 - [Plugins Popup Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popupSelectbox)
 - [Plugins Numeric Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_numericTextField)
 - [Plugins Currency Column Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyColumnFormatter)
+- [Plugins Autofill Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_autoFillSelectBox)
