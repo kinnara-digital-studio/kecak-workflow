@@ -1,7 +1,6 @@
 # Numeric Text Field
 
-Special fields for numeric and can use the formula in it.
-
+Numeric text field is a plugin that intended for numeric data types. In addition, this plugin can also do calculations using formulas that are already available.
 
 ## How to use plugins
 
