@@ -22,11 +22,14 @@ import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
+import org.joget.plugin.base.Plugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Controller
@@ -46,6 +50,8 @@ public class LoginWebController {
     private UserviewService userviewService;
     @Autowired
     AppService appService;
+    @Autowired
+    PluginManager pluginManager;
     @Autowired
     UserviewDefinitionDao userviewDefinitionDao;
     @Autowired
@@ -156,6 +162,7 @@ public class LoginWebController {
             map.addAttribute("key", key);
             map.addAttribute("menuId", menuId);
             map.addAttribute("embed", embed);
+
             UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
             if (userview != null) {
                 String json = userview.getJson();
@@ -163,6 +170,14 @@ public class LoginWebController {
                 UserviewThemeProcesser processer = new UserviewThemeProcesser(userviewObject, request);
                 map.addAttribute("userview", userviewObject);
                 map.addAttribute("processer", processer);
+                //add oauth button on login view
+                Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+                String oauth2PluginButton = "";
+                for (Plugin plugin : pluginList){
+                    Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+                    oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
+                }
+                map.addAttribute("oauth2PluginButton",oauth2PluginButton);
                 String view = processer.getLoginView();
                 if (view != null) {
                     if (view.startsWith("redirect:")) {

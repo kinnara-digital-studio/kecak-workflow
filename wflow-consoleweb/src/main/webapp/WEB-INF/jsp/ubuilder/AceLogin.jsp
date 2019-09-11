@@ -47,7 +47,6 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
             <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
             <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
             <script type="text/javascript">
@@ -67,7 +66,6 @@
                     </c:if>
                 }
             </script>
-        </c:if>
         <title>
             <c:set var="html">
                 ${userview.properties.name} &nbsp;&gt;&nbsp;
@@ -166,28 +164,7 @@
                                                     <div class="space-4"></div>
                                                 </fieldset>
                                             </form>
-
-                                            <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
-                                                <form id="googleForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
-                                                    <input type="hidden" id="auth_type" name="j_username">
-                                                    <input type="hidden" id="id_token" name="j_password">
-                                                </form>
-                                                <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                                            </c:if>
-                                            <c:if test="${userview.setting.properties.telegramSignInButton == 'true'}">
-                                                <form id="telegramForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
-                                                    <input type="hidden" class="auth_type" name="j_username">
-                                                    <input type="hidden" class="id_token" name="j_password">
-                                                </form>
-                                                <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="${SetupManager.getSettingValue('telegramBotName')}" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-                                                <script type="text/javascript">
-                                                  function onTelegramAuth(user) {
-                                                    $('#telegramForm .auth_type').val('TELEGRAM_AUTH');
-                                                    $('#telegramForm .id_token').val(JSON.stringify(user));
-                                                    $('#telegramForm').submit();
-                                                  }
-                                                </script>
-                                            </c:if>
+                                            ${oauth2PluginButton}
                                         </div><!-- /.widget-main -->
                                     </div><!-- /.widget-body -->
                                 </div><!-- /.login-box -->

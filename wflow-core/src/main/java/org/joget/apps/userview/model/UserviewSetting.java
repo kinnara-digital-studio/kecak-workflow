@@ -46,8 +46,6 @@ public class UserviewSetting extends Element {
                 + "]},{title:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.configPermission") + "', properties:[{name:'permission',label:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.permission") + "',type:'elementselect',options_ajax:'[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.userview.model.UserviewPermission',url:'[CONTEXT_PATH]/web/property/json/getPropertyOptions'}]},"
                 + "{title:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPage")
                 + "', properties:["
-                + "{name:'googleSignInButton',label:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.googleSignInButton") + "',type:'checkbox',value :'false',options:[{value:'true',label :''}]},"
-                + "{name:'telegramSignInButton',label:'" + ResourceBundleUtil.getMessage("userview.userviewsetting.telegramSignInButton") + "',type:'checkbox',value :'false',options:[{value:'true',label :''}]},"
                 +"{name:'loginPageTop', label: '" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPageTop") + "', type:'textarea', rows:'10', cols:'50'}, {name:'loginPageBottom', label: '" + ResourceBundleUtil.getMessage("userview.userviewsetting.loginPageBottom") + "', type:'textarea', rows:'10', cols:'50'}"
                 +"]}";
         if (!mobileDisabled) {

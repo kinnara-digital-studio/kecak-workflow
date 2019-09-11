@@ -25,7 +25,6 @@
                 <value>org/joget/directory/model/User.hbm.xml</value>
                 <value>org/joget/directory/model/UserSalt.hbm.xml</value>
                 <value>org/joget/directory/model/UserToken.hbm.xml</value>
-                <value>org/joget/directory/model/Platform.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

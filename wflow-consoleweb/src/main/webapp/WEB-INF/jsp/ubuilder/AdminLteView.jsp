@@ -209,24 +209,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         </title>
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
-        <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
-            <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
-            <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-            <script type="text/javascript">
-              function onLoad() {
-                gapi.load('auth2', function() {
-                  gapi.auth2.init().then(function(){
-                      gapi.auth2.getAuthInstance().signOut();
-                  });
-                });
-              }
-              function logout(){
-                gapi.auth2.getAuthInstance().signOut();
-                setcookie('tg_user', '');
-                return true;
-              }
-            </script>
-        </c:if>
+        ${oauth2LogoutScript}
 
             <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {

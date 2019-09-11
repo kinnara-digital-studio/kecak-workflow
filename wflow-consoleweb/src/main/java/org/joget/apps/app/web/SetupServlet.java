@@ -191,26 +191,6 @@ public class SetupServlet extends HttpServlet {
 	                		LogUtil.error(getClass().getName(), e, e.getMessage());
 	                }
 	            }
-
-                try(Connection con = ds.getConnection()) {
-                    con.setAutoCommit(false);
-                    con.setCatalog(dbName);
-
-                    {
-                        String schemaFile = "/setup/sql/platforms.sql";
-                        LogUtil.info(getClass().getName(), "Execute schema [" + schemaFile + "]");
-                        ScriptRunner runner = new ScriptRunner(con, false, false);
-                        try(BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile)))) {
-                            runner.runScript(br);
-                        } catch (SQLException | IOException e) {
-                            LogUtil.error(getClass().getName(), e, e.getMessage());
-                        }
-                    }
-
-                    con.commit();
-                } catch(SQLException e) {
-                    LogUtil.error(getClass().getName(), e, e.getMessage());
-                }
             
 	            try(Connection con = ds.getConnection()) {
                     con.setAutoCommit(false);

@@ -13,8 +13,11 @@ import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
+import org.joget.plugin.base.Plugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.Base64;
+import java.util.Collection;
 
 @Controller
 public class UserviewWebController {
@@ -34,6 +38,8 @@ public class UserviewWebController {
     private UserviewService userviewService;
     @Autowired
     AppService appService;
+    @Autowired
+    PluginManager pluginManager;
     @Autowired
     UserviewDefinitionDao userviewDefinitionDao;
 
@@ -113,6 +119,14 @@ public class UserviewWebController {
             UserviewThemeProcesser processer = new UserviewThemeProcesser(userviewObject, request);
             map.addAttribute("userview", userviewObject);
             map.addAttribute("processer", processer);
+            //add oauth button on login view
+            Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+            String oauth2LogoutScript = "";
+            for (Plugin plugin : pluginList){
+                Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+                oauth2LogoutScript += oauthPlugin.renderHtmlLogoutScript();
+            }
+            map.addAttribute("oauth2LogoutScript",oauth2LogoutScript);
             String view = processer.getView();
             if (view != null) {
                 if (view.startsWith("redirect:")) {

@@ -238,36 +238,18 @@
                 </span>
             </div>
             </c:if>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="googleClientId"><fmt:message key="console.setting.general.label.googleClientId"/></label>
-                        <span class="form-input">
-                            <input id="googleClientId" type="text" name="googleClientId" value="<c:out value="${settingMap['googleClientId']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="googleClientId"><fmt:message key="console.setting.general.label.telegramBotName"/></label>
-                        <span class="form-input">
-                            <input id="telegramBotName" type="text" name="telegramBotName" value="<c:out value="${settingMap['telegramBotName']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
-            <div class="main-body-row">
-                <span class="row-content">
-                    <div class="form-row">
-                        <label for="telegramBotToken"><fmt:message key="console.setting.general.label.telegramBotToken"/></label>
-                        <span class="form-input">
-                            <input id="telegramBotToken" type="text" name="telegramBotToken" value="<c:out value="${settingMap['telegramBotToken']}"/>"/>
-                        </span>
-                    </div>
-                </span>
-            </div>
+            <c:forEach items="${oauthSetting}" var="oauthSettingId">
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="${oauthSettingId.key}">${oauthSettingId.value}</label>
+                            <span class="form-input">
+                                <input id="${oauthSettingId.key}" type="text" name="${oauthSettingId.key}" value="<c:out value="${settingMap[oauthSettingId.key]}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+            </c:forEach>
             <c:if test="${!isVirtualHostEnabled}">
             <div class="main-body-row">
                 <span class="row-content">
