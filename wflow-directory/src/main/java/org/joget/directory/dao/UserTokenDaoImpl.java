@@ -10,6 +10,8 @@ import org.joget.workflow.model.service.WorkflowUserManager;
 
 public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao {
 
+    public final static String ENTITY_NAME = "UserToken";
+
     private WorkflowUserManager workflowUserManager;
 
 
@@ -30,7 +32,7 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
             UserToken.setModifiedBy(currentUsername);
             UserToken.setDateCreated(currentDate);
             UserToken.setDateModified(currentDate);
-            save("UserToken", UserToken);
+            save(ENTITY_NAME, UserToken);
             return true;
         } catch (Exception e) {
             LogUtil.error(UserTokenDaoImpl.class.getName(), e, "Add UserToken Error!");
@@ -44,7 +46,7 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
 
             UserToken.setModifiedBy(currentUsername);
             UserToken.setDateModified(new Date());
-            merge("UserToken", UserToken);
+            merge(ENTITY_NAME, UserToken);
             return true;
         } catch (Exception e) {
             LogUtil.error(UserTokenDaoImpl.class.getName(), e, "Update UserToken Error!");
@@ -57,7 +59,7 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         try {
             UserToken UserToken = getUserToken(id);
             if (UserToken != null) {
-                delete("UserToken", UserToken);
+                delete(ENTITY_NAME, UserToken);
                 result = true;
             }
         } catch (Exception e) {
@@ -69,7 +71,7 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
     public UserToken getUserToken(String id) {
         UserToken result = null;
         try {
-            result = (UserToken) find("UserToken", id);
+            result = (UserToken) find(ENTITY_NAME, id);
         } catch (Exception e) {
             LogUtil.error(UserTokenDaoImpl.class.getName(), e, "Get UserToken By Id Error!");
         }
@@ -80,10 +82,10 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
     public Boolean deleteUserToken(UserToken userToken) {
         Boolean result = false;
         try {
-            List userTokens = findByExample("UserToken", userToken);
+            List userTokens = findByExample(ENTITY_NAME, userToken);
             if(userTokens.size() > 0) {
                 UserToken uToken = (UserToken) userTokens.get(0);
-                delete("UserToken",uToken);
+                delete(ENTITY_NAME,uToken);
                 result = true;
             }
         } catch (Exception e) {
