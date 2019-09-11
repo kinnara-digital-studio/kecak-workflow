@@ -58,28 +58,6 @@
         </title>
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
-        <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
-            <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
-            <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-            <script type="text/javascript">
-                function onSignIn(googleUser) {
-                    var id_token = googleUser.getAuthResponse().id_token;
-                    $('#googleForm #auth_type').val('GOOGLE_AUTH');
-                    $('#googleForm #id_token').val(id_token);
-                    $('#googleForm').submit();
-                }
-                function onLoad() {
-                    <c:if test="${!empty param.login_error}">
-                      gapi.load('auth2', function() {
-                        gapi.auth2.init().then(function(){
-                            gapi.auth2.getAuthInstance().signOut();
-                        });
-                      });
-                    </c:if>
-                }
-            </script>
-        </c:if>
-        
         <script type="text/javascript">
             ${userview.setting.theme.javascript}
             UI.base = "${pageContext.request.contextPath}";    
@@ -152,27 +130,7 @@
                             </td></tr>
                         </table>
                     </form>
-                    <c:if test="${userview.setting.properties.googleSignInButton == 'true'}">
-                        <form id="googleForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
-                            <input type="hidden" id="auth_type" name="j_username">
-                            <input type="hidden" id="id_token" name="j_password">
-                        </form>
-                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                    </c:if>
-                    <c:if test="${userview.setting.properties.telegramSignInButton == 'true'}">
-                        <form id="telegramForm" action="<c:url value='/j_spring_security_check'/>" method="POST">
-                            <input type="hidden" class="auth_type" name="j_username">
-                            <input type="hidden" class="id_token" name="j_password">
-                        </form>
-                        <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="${SetupManager.getSettingValue('telegramBotName')}" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-                        <script type="text/javascript">
-                          function onTelegramAuth(user) {
-                            $('#telegramForm .auth_type').val('TELEGRAM_AUTH');
-                            $('#telegramForm .id_token').val(JSON.stringify(user));
-                            $('#telegramForm').submit();
-                          }
-                        </script>
-                    </c:if>
+                    ${oauth2PluginButton}
                     <c:if test="${!empty userview.setting.properties.loginPageBottom}">
                         ${userview.setting.properties.loginPageBottom}
                     </c:if>

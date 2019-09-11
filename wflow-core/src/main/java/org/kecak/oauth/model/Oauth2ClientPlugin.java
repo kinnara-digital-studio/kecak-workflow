@@ -5,6 +5,9 @@ import org.joget.directory.model.service.DirectoryManager;
 import org.joget.plugin.base.Plugin;
 import org.springframework.security.authentication.BadCredentialsException;
 
+import java.util.Collection;
+import java.util.Map;
+
 public interface Oauth2ClientPlugin extends Plugin {
     /**
      * Validate clientToken and find {@link User} from {@link DirectoryManager} based on clientToken
@@ -20,4 +23,8 @@ public interface Oauth2ClientPlugin extends Plugin {
      * @return
      */
     String renderHtmlLoginButton();
+
+    String renderHtmlLogoutScript();
+
+    Map<String,String> getGeneralSetting();
 }

@@ -52,6 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.apps.route.CamelRouteManager;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -3572,6 +3573,15 @@ public class ConsoleWebController {
         // additional UserSecurity settings
         UserSecurity us = DirectoryUtil.getUserSecurity();
         map.addAttribute("userSecurity", us);
+
+        //add oauth setting
+        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+        Map<String,String> oauthSetting = new HashMap<>();
+        for (Plugin plugin : pluginList){
+            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+            oauthSetting.putAll(oauthPlugin.getGeneralSetting());
+        }
+        map.addAttribute("oauthSetting",oauthSetting);
 
         return "console/setting/general";
     }

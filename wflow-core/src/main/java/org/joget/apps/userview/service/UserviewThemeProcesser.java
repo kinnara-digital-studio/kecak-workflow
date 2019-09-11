@@ -6,6 +6,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.MobileUtil;
 import org.joget.apps.userview.lib.DefaultV5EmptyTheme;
 import org.joget.apps.userview.model.*;
+import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
@@ -13,12 +14,17 @@ import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryUtil;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.directory.model.service.UserSecurity;
+import org.joget.plugin.base.Plugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.apps.userview.model.BootstrapUserview;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 

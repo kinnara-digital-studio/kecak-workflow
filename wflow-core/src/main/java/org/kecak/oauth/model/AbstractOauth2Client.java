@@ -5,6 +5,11 @@ import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.springframework.security.authentication.BadCredentialsException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class AbstractOauth2Client extends ExtDefaultPlugin implements Oauth2ClientPlugin, PropertyEditable {
     @Override
     public String getI18nLabel() {
@@ -20,4 +25,7 @@ public abstract class AbstractOauth2Client extends ExtDefaultPlugin implements O
     public User getUser(String clientToken) throws BadCredentialsException {
         return null;
     }
+
+    @Override
+    public Map<String,String> getGeneralSetting(){return new HashMap<>(); }
 }
