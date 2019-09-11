@@ -8,11 +8,12 @@ import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.UserSalt;
 import org.joget.workflow.model.service.WorkflowUserManager;
 
-public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
+public class UserSaltDaoImpl extends AbstractSpringDao<UserSalt> implements UserSaltDao {
+
+	public final static String ENTITY_NAME = "UserSalt";
 
 	private WorkflowUserManager workflowUserManager;
-	
-	
+
 	public WorkflowUserManager getWorkflowUserManager() {
 		return workflowUserManager;
 	}
@@ -30,10 +31,10 @@ public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
         	userSalt.setModifiedBy(currentUsername);
         	userSalt.setDateCreated(currentDate);
         	userSalt.setDateModified(currentDate);
-			save("UserSalt", userSalt);
+			save(ENTITY_NAME, userSalt);
 			return true;
 		} catch (Exception e) {
-			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Add UserSalt Error!");
+			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Add " + ENTITY_NAME + " Error!");
 			return false;
 		}
 	}
@@ -44,10 +45,10 @@ public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
 
         	userSalt.setModifiedBy(currentUsername);
         	userSalt.setDateModified(new Date());
-			merge("UserSalt", userSalt);
+			merge(ENTITY_NAME, userSalt);
 			return true;
 		} catch (Exception e) {
-			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Update UserSalt Error!");
+			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Update "+ENTITY_NAME+" Error!");
 			return false;
 		}
 	}
@@ -57,11 +58,11 @@ public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
 		try {
 			UserSalt userSalt = getUserSalt(id);
 			if (userSalt != null) {
-				delete("UserSalt", userSalt);
+				delete(ENTITY_NAME, userSalt);
 				result = true;
 			}
 		} catch (Exception e) {
-			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Update UserSalt Error!");
+			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Update " +ENTITY_NAME+" Error!");
 		}
 		return result;
 	}
@@ -69,9 +70,9 @@ public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
 	public UserSalt getUserSalt(String id) {
 		UserSalt result = null;
 		try {
-			result = (UserSalt) find("UserSalt", id);
+			result = (UserSalt) find(ENTITY_NAME, id);
 		} catch (Exception e) {
-			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Get UserSalt By Id Error!");
+			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Get "+ENTITY_NAME+" By Id Error!");
 		}
 		return result;
 	}
@@ -81,16 +82,15 @@ public class UserSaltDaoImpl extends AbstractSpringDao implements UserSaltDao {
 			UserSalt userSalt = new UserSalt();
 			userSalt.setUserId(userId);
 			@SuppressWarnings("rawtypes")
-			List list = findByExample("UserSalt", userSalt);
+			List list = findByExample(ENTITY_NAME, userSalt);
 
 			if (list.size() > 0) {
 				return (UserSalt) list.get(0);
 			}
 		} catch (Exception e) {
-			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Get UserSalt By UserId Error!");
+			LogUtil.error(UserSaltDaoImpl.class.getName(), e, "Get "+ENTITY_NAME+" By UserId Error!");
 		}
 
 		return null;
 	}
-
 }
