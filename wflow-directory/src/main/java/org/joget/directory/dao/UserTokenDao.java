@@ -12,5 +12,8 @@ public interface UserTokenDao {
 
     UserToken getUserToken(String id);
 
+    UserToken getUserToken(String userId, String platformId);
+
     Boolean deleteUserToken(UserToken userToken);
+
 }
