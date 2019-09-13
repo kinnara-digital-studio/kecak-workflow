@@ -87,3 +87,6 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/numer_save.png" alt="" />
 
+11. Result
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/numeric_result1.png" alt="" />
