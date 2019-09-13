@@ -78,6 +78,22 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         return result;
     }
 
+    public UserToken getUserToken(String userId, String platformId) {
+        UserToken result = null;
+        try {
+            UserToken userToken = new UserToken();
+            userToken.setUserId(userId);
+            userToken.setPlatformId(platformId);
+            List userTokens = findByExample(ENTITY_NAME, userToken);
+            if(userTokens.size() > 0) {
+                result = (UserToken) userTokens.get(0);
+            }
+        } catch (Exception e) {
+            LogUtil.error(UserTokenDaoImpl.class.getName(), e, "Get UserToken By Id Error!");
+        }
+        return result;
+    }
+
 
     public Boolean deleteUserToken(UserToken userToken) {
         Boolean result = false;
