@@ -8,7 +8,7 @@ Displays the role management settings
 - **Authorization Object**
 : attached to each field, user view or datalist, or element.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_auth.png" alt="authorizationObject" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement1_fieldAddNew.png" alt="authorizationObject" />
 
 Description :
 
@@ -16,7 +16,7 @@ Description :
 |-----------------|-------------------------------|
 |**Object ID**    |ID from authorization object   |
 |**Object Type**  |Type from authorization object |
-|**Object Name**  |Object Name for display        |
+
 
 **Object Type**
 
@@ -24,22 +24,21 @@ Description :
 * Menu/Section: paired on the load binder
 * Action: Trigger process/ execute button in data list action button (For Write)
 
-The image above is the image of the fill field for the authorization object, which is filled Object ID, Object Type (Field or Menu/Section), and Object Name.
+The image above is the image of the fill field for the authorization object, which is filled Object ID, Object Type (Action or Menu/Section).
 
-The difference between Object Type Field and Menu / Section is, in Object Type Field must input Object Name, while in Object Type Menu / Section does not have to input Object Name.
+The following is an example of data filling with Object Type in the form of **Menu / Section**:
 
-The following is an example of data filling with Object Type in the form of Menu / Section:
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2_addNew.png" alt="roleManagement_budget" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_budget.png" alt="roleManagement_budget" />
 
-In Object Type Menu / Section does not have to input Object Name.
+The following is an example of data filling with Object Type in the form of **Action** :
 
-The following is an example of data filling with Object Type in the form of Field:
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement2.png" alt="roleManagement2" />
-In Object Type Field must input Object Name (not mandatory)
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement3_addNew.png" alt="roleManagement2" />
 
-The data has been stored, then the data display is as follows (red marked):
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_authObjectList.png" alt="rm_authObjectList" />
+
+The data has been stored, then the data display is as follows :
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement4_list.png" alt="rm_authObjectList" />
 
 
 - **Role**
@@ -62,7 +61,7 @@ The following is an example of data filling:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement6.png" alt="roleManagement6" />
 
 
-The data has been stored, then the data display is as follows (red marked):
+The data has been stored, then the data display is as follows :
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_roleList.png" alt="roleList" />
 
 - **Role Group**
@@ -85,12 +84,12 @@ The image above is the image of the fill field for the Role Group, which is fill
 The following is an example of data filling:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleManagement_roleGroup.png" alt="roleManagement_roleGroup" />
 
-The data has been stored, then the data display is as follows (red marked):
+The data has been stored, then the data display is as follows:
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/roleGroupList.png" alt="roleGroupList" />
 
 - **LDAP**
-: active directory. Employee database. Name, phone number username, address, etc. [RELATED WITH EMAIL]
+: Active directory, employee database. [RELATED WITH EMAIL]
 
 example data from LDAP in Users when Field Role Group:
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/rm_group_user.png" alt="group_user" />
@@ -102,7 +101,7 @@ example data from LDAP in Groups when Field Role Group:
 
 1. Open the apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/textField_openApps.png" alt="" />
 
 
 2. Choose form

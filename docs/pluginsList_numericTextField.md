@@ -1,6 +1,6 @@
 # Numeric Text Field
 
-Field khusus untuk mumeric dan bisa menggunakan formula di dalamnya.
+Numeric text field is a plugin that intended for numeric data types. In addition, this plugin can also do calculations using formulas that are already available.
 
 ## How to use plugins
 
@@ -34,7 +34,7 @@ Description :
 |-|-|
 |ID|ID for the text field to be created|
 |Label|The name of the text field to be created|
-|Variable||
+|Variable|Option to add variable manually|
 |Calculation Load Binder|Instead of using above equation, calculation will be done in Load Binder|
 
 6. Next tab advance configure
@@ -45,11 +45,11 @@ Description :
 
 |Field |Description|
 |-|-|
-|Validator|Further settings for the text field to be made|
-|Formatter|Type of text format to be selected|
-|Currency Reference Field||
-|Hidden?|Option for hidden field|
-|Display as Label?|Option for display as label from this field|
+|Validator|Validation settings for the text field to be created|
+|Formatter|The type of text format to be selected|
+|Currency Reference Field|A field for entering currency references|
+|Hidden | Option to hide fields|
+|Display as Label |Option to display fields as labels|
 
 7. Choose formatter
 
@@ -87,3 +87,6 @@ Description :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/numer_save.png" alt="" />
 
+11. Result
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/numeric_result1.png" alt="" />

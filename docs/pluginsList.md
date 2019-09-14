@@ -2,7 +2,6 @@
 - [Plugins Calculation Field](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_CalculationField)
 - [Plugins Captcha](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_Captcha)
 - [Plugins Audit Trail](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_auditTrail)
-- [Plugins Auto Fill Select Box](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_autoFillSelectBox)
 - [Plugins Cancel Button](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_cancelButton)
 - [Plugins Datalist Filter Select Box](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistFilter_selectBox)
 - [Plugins Design Process](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_DesignProcess)
@@ -36,6 +35,18 @@
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_chartMenu)
 - [Plugins CRUD Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudMenu)
 - [Plugins Run Proces Datalist](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_runProcessDatalist)
+- [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidget)
 - [Plugins Live Validation](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_liveValidation)
 - [Plugins Checkbox Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_checkboxTextfield)
 - [Plugins Popup Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popupSelectbox)
+- [Plugins Numeric Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_numericTextField)
+- [Plugins Currency Column Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyColumnFormatter)
+- [Plugins Autofill Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_autoFillSelectBox)
+- [Plugins Form Attachment Grid](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_formAttachmentGrid)
+- [Plugins Dahboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_dashboardWidget)
+- [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_chartMenu)
+- [Plugins Currency Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_currencyTextfield)
+- [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidget)
+
+
+
