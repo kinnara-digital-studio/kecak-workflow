@@ -9,6 +9,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.xpath.operations.Bool;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
@@ -41,6 +42,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -175,7 +177,12 @@ public class LoginWebController {
                 String oauth2PluginButton = "";
                 for (Plugin plugin : pluginList){
                     Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
-                    oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
+                    Map<String,String> generalSetting = oauthPlugin.getGeneralSetting();
+                    Boolean showed = (generalSetting == null)?false:true;
+                    for (String setting: generalSetting.keySet()){
+                        if(SetupManager.getSettingValue(setting) == null || SetupManager.getSettingValue(setting).isEmpty()) showed = false;
+                    }
+                    if(showed) oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
                 }
                 map.addAttribute("oauth2PluginButton",oauth2PluginButton);
                 String view = processer.getLoginView();
