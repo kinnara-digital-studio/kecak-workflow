@@ -90,6 +90,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.TreeMap;
 
 @SuppressWarnings("restriction")
 @Controller
@@ -3576,7 +3577,9 @@ public class ConsoleWebController {
 
         //add oauth setting
         Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
-        Map<String,String> oauthSetting = new HashMap<>();
+        Map<String, String> oauthSetting = new TreeMap<>(
+                (Comparator<String>) (o1, o2) -> o2.compareTo(o1)
+        );
         for (Plugin plugin : pluginList){
             Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
             oauthSetting.putAll(oauthPlugin.getGeneralSetting());
