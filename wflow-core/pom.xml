@@ -39,7 +39,7 @@
 				<configuration>
 					<executable>bower</executable>
 					<arguments>
-						<argument>install</argument>
+						<argument>install --force</argument>
 					</arguments>
 					<workingDirectory>${project.basedir}/src/main/resources/resources</workingDirectory>
 				</configuration>
