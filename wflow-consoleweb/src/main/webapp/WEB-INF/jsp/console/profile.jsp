@@ -38,6 +38,10 @@
                     <span class="form-input"><form:input path="email" cssErrorClass="form-input-error" /></span>
                 </div>
                 <div class="form-row">
+                    <label for="field1"><fmt:message key="console.directory.user.common.label.telephoneNumber"/></label>
+                    <span class="form-input"><form:input path="telephoneNumber" cssErrorClass="form-input-error" /></span>
+                </div>
+                <div class="form-row">
                     <label for="field1"><fmt:message key="console.directory.user.common.label.timeZone"/></label>
                     <span class="form-input">
                         <form:select path="timeZone" cssErrorClass="form-input-error">

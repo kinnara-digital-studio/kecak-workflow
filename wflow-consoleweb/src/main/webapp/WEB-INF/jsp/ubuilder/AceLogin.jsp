@@ -164,7 +164,9 @@
                                                     <div class="space-4"></div>
                                                 </fieldset>
                                             </form>
-                                            ${oauth2PluginButton}
+                                            <div style="text-align: center">
+                                                ${oauth2PluginButton}
+                                            </div>
                                         </div><!-- /.widget-main -->
                                     </div><!-- /.widget-body -->
                                 </div><!-- /.login-box -->

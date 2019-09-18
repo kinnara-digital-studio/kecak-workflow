@@ -34,6 +34,7 @@ public class User implements Serializable, Auditable {
     private String locale;
 	private Blob profilePicture;
 	private String telegramUsername;
+	private String telephoneNumber;
 
     //join
     @SuppressWarnings("rawtypes")
@@ -241,5 +242,13 @@ public class User implements Serializable, Auditable {
 
     public void setTelegramUsername(String telegramUsername) {
         this.telegramUsername = telegramUsername;
+    }
+
+    public String getTelephoneNumber() {
+        return telephoneNumber;
+    }
+
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
     }
 }
