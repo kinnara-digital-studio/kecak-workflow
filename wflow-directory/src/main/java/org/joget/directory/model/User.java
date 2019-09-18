@@ -33,7 +33,7 @@ public class User implements Serializable, Auditable {
     private String timeZone;
     private String locale;
 	private Blob profilePicture;
-	private String telegramUsername;
+	private String telephoneNumber;
 
     //join
     @SuppressWarnings("rawtypes")
@@ -235,11 +235,11 @@ public class User implements Serializable, Auditable {
 		this.deleted = deleted;
 	}
 
-    public String getTelegramUsername() {
-        return telegramUsername;
+    public String getTelephoneNumber() {
+        return telephoneNumber;
     }
 
-    public void setTelegramUsername(String telegramUsername) {
-        this.telegramUsername = telegramUsername;
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
     }
 }
