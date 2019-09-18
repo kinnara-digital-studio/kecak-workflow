@@ -69,6 +69,19 @@ public class LoginWebController {
             savedUrl = request.getHeader("referer");
         }
 
+        //add oauth button on login view
+        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+        String oauth2PluginButton = "";
+        for (Plugin plugin : pluginList){
+            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+            Map<String,String> generalSetting = oauthPlugin.getGeneralSetting();
+            Boolean showed = (generalSetting == null)?false:true;
+            for (String setting: generalSetting.keySet()){
+                if(SetupManager.getSettingValue(setting) == null || SetupManager.getSettingValue(setting).isEmpty()) showed = false;
+            }
+            if(showed) oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
+        }
+
         if (savedUrl.contains("/web/userview") || savedUrl.contains("/web/embed/userview")) {
             String embedPrefix = "";
             if (savedUrl.contains("/web/userview")) {
@@ -164,7 +177,7 @@ public class LoginWebController {
             map.addAttribute("key", key);
             map.addAttribute("menuId", menuId);
             map.addAttribute("embed", embed);
-
+            map.addAttribute("oauth2PluginButton",oauth2PluginButton);
             UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
             if (userview != null) {
                 String json = userview.getJson();
@@ -172,19 +185,6 @@ public class LoginWebController {
                 UserviewThemeProcesser processer = new UserviewThemeProcesser(userviewObject, request);
                 map.addAttribute("userview", userviewObject);
                 map.addAttribute("processer", processer);
-                //add oauth button on login view
-                Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
-                String oauth2PluginButton = "";
-                for (Plugin plugin : pluginList){
-                    Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
-                    Map<String,String> generalSetting = oauthPlugin.getGeneralSetting();
-                    Boolean showed = (generalSetting == null)?false:true;
-                    for (String setting: generalSetting.keySet()){
-                        if(SetupManager.getSettingValue(setting) == null || SetupManager.getSettingValue(setting).isEmpty()) showed = false;
-                    }
-                    if(showed) oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
-                }
-                map.addAttribute("oauth2PluginButton",oauth2PluginButton);
                 String view = processer.getLoginView();
                 if (view != null) {
                     if (view.startsWith("redirect:")) {
@@ -259,7 +259,7 @@ public class LoginWebController {
         } else if (savedUrl.contains(request.getContextPath() + "/mobile")) {
             return "mobile/mLogin";
         }
-
+        map.addAttribute("oauth2PluginButton",oauth2PluginButton);
         return "login";
     }
 

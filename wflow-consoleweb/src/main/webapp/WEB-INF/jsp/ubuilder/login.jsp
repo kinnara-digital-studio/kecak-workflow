@@ -130,7 +130,9 @@
                             </td></tr>
                         </table>
                     </form>
-                    ${oauth2PluginButton}
+                    <div style="text-align: center">
+                        ${oauth2PluginButton}
+                    </div>
                     <c:if test="${!empty userview.setting.properties.loginPageBottom}">
                         ${userview.setting.properties.loginPageBottom}
                     </c:if>

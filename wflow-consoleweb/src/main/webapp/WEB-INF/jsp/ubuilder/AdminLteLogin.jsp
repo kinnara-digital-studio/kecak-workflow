@@ -138,7 +138,9 @@
               </div>
             </form>
                 <br>
-                ${oauth2PluginButton}
+                <div style="text-align: center">
+                    ${oauth2PluginButton}
+                </div>
           </div>
           <!-- /.login-box-body -->
           <div class="center" style="margin-top:10px;">

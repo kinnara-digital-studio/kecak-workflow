@@ -966,6 +966,7 @@ public class ConsoleWebController {
                     u.setFirstName(user.getFirstName());
                     u.setLastName(user.getLastName());
                     u.setEmail(user.getEmail());
+                    u.setTelephoneNumber(user.getTelephoneNumber());
 
                     //set roles
                     if (user.getRoles() != null && user.getRoles().size() > 0) {
@@ -1348,6 +1349,7 @@ public class ConsoleWebController {
             currentUser.setFirstName(user.getFirstName());
             currentUser.setLastName(user.getLastName());
             currentUser.setEmail(user.getEmail());
+            currentUser.setTelephoneNumber(user.getTelephoneNumber());
             currentUser.setTimeZone(user.getTimeZone());
             currentUser.setLocale(user.getLocale());
             UserSalt userSalt = userSaltDao.getUserSaltByUserId(currentUser.getUsername());
