@@ -966,7 +966,7 @@ public class ConsoleWebController {
                     u.setFirstName(user.getFirstName());
                     u.setLastName(user.getLastName());
                     u.setEmail(user.getEmail());
-                    u.setTelephoneNumber(user.setTelephoneNumber());
+                    u.setTelephoneNumber(user.getTelephoneNumber());
 
                     //set roles
                     if (user.getRoles() != null && user.getRoles().size() > 0) {

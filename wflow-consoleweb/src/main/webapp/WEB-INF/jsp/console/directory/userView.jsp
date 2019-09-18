@@ -49,6 +49,10 @@
                 <span class="form-input"><c:out value="${user.email}"/></span>
             </div>
             <div class="form-row">
+                <label for="field1"><fmt:message key="console.directory.user.common.label.telephoneNumber"/></label>
+                <span class="form-input"><c:out value="${user.telephoneNumber}"/></span>
+            </div>
+            <div class="form-row">
                 <label for="field1"><fmt:message key="console.directory.user.common.label.role"/></label>
                 <span class="form-input"><c:out value="${roles}"/></span>
             </div>
