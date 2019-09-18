@@ -81,7 +81,6 @@ public class LoginWebController {
             }
             if(showed) oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
         }
-        map.addAttribute("oauth2PluginButton",oauth2PluginButton);
 
         if (savedUrl.contains("/web/userview") || savedUrl.contains("/web/embed/userview")) {
             String embedPrefix = "";
@@ -178,7 +177,7 @@ public class LoginWebController {
             map.addAttribute("key", key);
             map.addAttribute("menuId", menuId);
             map.addAttribute("embed", embed);
-
+            map.addAttribute("oauth2PluginButton",oauth2PluginButton);
             UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
             if (userview != null) {
                 String json = userview.getJson();
@@ -260,7 +259,7 @@ public class LoginWebController {
         } else if (savedUrl.contains(request.getContextPath() + "/mobile")) {
             return "mobile/mLogin";
         }
-
+        map.addAttribute("oauth2PluginButton",oauth2PluginButton);
         return "login";
     }
 
