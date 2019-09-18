@@ -54,7 +54,7 @@ public abstract class AbstractSpringDao<T> extends HibernateDaoSupport {
     }
 
     @SuppressWarnings("rawtypes")
-	protected List findByExample(String entityName, T object) {
+	protected List<T> findByExample(String entityName, T object) {
         Session session = findSession();
         Criteria crit = session.createCriteria(object.getClass());
         Example example = Example.create(object);

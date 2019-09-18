@@ -200,13 +200,13 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
         return null;
     }
 
-
-    public User getUserByTelegramUsername(String username) {
+    @Override
+    public User getUserByTelephoneNumber(String telephoneNumber) {
         try {
             User user = new User();
-            user.setTelegramUsername(username);
+            user.setTelephoneNumber(telephoneNumber);
             @SuppressWarnings("rawtypes")
-            List users = findByExample("User", user);
+            List<User> users = findByExample("User", user);
 
             if (users.size() > 0) {
                 return (User) users.get(0);

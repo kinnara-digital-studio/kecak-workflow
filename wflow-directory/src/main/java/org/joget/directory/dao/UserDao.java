@@ -23,7 +23,9 @@ public interface UserDao {
         return null;
     }
 
-    User getUserByTelegramUsername(String username);
+    default User getUserByTelephoneNumber(String telephoneNumber) {
+        return null;
+    }
 
     User getHodByDepartmentId(String departmentId);
 

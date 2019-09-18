@@ -33,7 +33,6 @@ public class User implements Serializable, Auditable {
     private String timeZone;
     private String locale;
 	private Blob profilePicture;
-	private String telegramUsername;
 	private String telephoneNumber;
 
     //join
@@ -235,14 +234,6 @@ public class User implements Serializable, Auditable {
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
-
-    public String getTelegramUsername() {
-        return telegramUsername;
-    }
-
-    public void setTelegramUsername(String telegramUsername) {
-        this.telegramUsername = telegramUsername;
-    }
 
     public String getTelephoneNumber() {
         return telephoneNumber;
