@@ -49,3 +49,19 @@ Description :
 |Label Column||
 |Grouping Column||
 |Extra Filter Condition||
+
+5. Click OK
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crud_ok.png" alt = "" />
+
+
+6. Click Save
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crud_save.png" alt = "" />
+
+
+7. Result
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crud_result1.png" alt = "" />
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crud_result.png" alt = "" />
