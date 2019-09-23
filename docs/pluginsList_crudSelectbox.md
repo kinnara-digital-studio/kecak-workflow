@@ -25,5 +25,27 @@ This crud selectbox functions to be able to edit, add, or delete data from exist
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crud_edit.png" alt = "" />
 
+Description:
+
+|Field|Description|
+|-|-|
+|ID|The form ID to be created from the currency field|
+|Label|Naming for the form of currency to be used|
+|Form ID||
+|Placeholder||
+|Add New Option Label||
+|Choose Options Binder||
+|Permission||
+
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt = "" />
+
+Description :
+
+|||
+|-|-|
+|Form||
+|ID Column||
+|Label Column||
+|Grouping Column||
+|Extra Filter Condition||
