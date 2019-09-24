@@ -31,24 +31,23 @@ Description:
 |-|-|
 |ID|The form ID to be created from the currency field|
 |Label|Naming for the form of currency to be used|
-|Form ID||
-|Placeholder||
-|Add New Option Label||
-|Choose Options Binder||
-|Permission||
-
+|Form ID|Choose data from which form to display|
+|Placeholder|Naming the selecbox crud field before the data is selected|
+|Add New Option Label|Label for the name field for adding new data|
+|Choose Options Binder|Choose the binder option|
+|Permission|Choose anyone who can CRUD data|
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt = "" />
 
 Description :
 
-|||
+|Field|Description|
 |-|-|
-|Form||
-|ID Column||
-|Label Column||
-|Grouping Column||
-|Extra Filter Condition||
+|Form|Choose data from which form to display|
+|ID Column|ID of the form field for the data to be displayed in the CRUD Selectbox|
+|Label Column|Label of the form field for the data to be displayed in the CRUD Selectbox|
+|Grouping Column|Grouping column|
+|Extra Filter Condition|Extra Filter Condition|
 
 5. Click OK
 
