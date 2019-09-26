@@ -10,9 +10,11 @@ public interface UserTokenDao {
 
     Boolean deleteUserToken(String id);
 
-    UserToken getUserToken(String id);
+    UserToken getUserTokenByUserId(String userId);
 
-    UserToken getUserToken(String userId, String platformId);
+    UserToken getUserTokenByUserId(String userId, String platformId);
+
+    UserToken getUserTokenByExternalId(String externalId, String platformId);
 
     Boolean deleteUserToken(UserToken userToken);
 

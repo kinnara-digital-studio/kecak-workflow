@@ -838,6 +838,7 @@ public class DataJsonController {
                                     @RequestParam(value = "appId", required = false) final String appId,
                                     @RequestParam(value = "version", required = false) final Long version,
                                     @RequestParam(value = "processId", required = false) final String processId) throws IOException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
@@ -916,13 +917,12 @@ public class DataJsonController {
                         Form form = packageActivityForm.getForm();
                         if ("assignmentForm".equals(form.getPropertyString("id"))) {
                             // form not found, get workflow variable as form set
-                            LogUtil.info(getClass().getName(), "No form is attached to assignment [" + assignment.getActivityId() + "]");
                             FormRow row = workflowManager.getActivityVariableList(assignment.getActivityId()).stream()
-                                    .peek(workflowVariable -> LogUtil.info(getClass().getName(), "workflow variables [" + workflowVariable.getId() + "] [" + workflowVariable.getVal() + "]"))
                                     .filter(workflowVariable -> workflowVariable.getVal() != null)
-                                    .collect(FormRow::new, (formRow, workflowVariable) -> {
-                                        formRow.setProperty(workflowVariable.getId(), workflowVariable.getVal().toString());
-                                    }, FormRow::putAll);
+                                    .collect(
+                                            FormRow::new,
+                                            (formRow, workflowVariable) -> formRow.setProperty(workflowVariable.getId(), workflowVariable.getVal().toString()),
+                                            FormRow::putAll);
 
                             row.setProperty(FormUtil.PROPERTY_ID, formData.getPrimaryKeyValue());
                             row.setProperty("activityId", assignment.getActivityId());
@@ -1127,16 +1127,30 @@ public class DataJsonController {
 
                         .peek(row -> {
                             // add process information
-                            String primaryKey = row.get(dataList.getBinder().getPrimaryKeyColumnName()).toString();
-                            mapPrimaryKeyToProcessId
-                                    .get(primaryKey)
-                                    .stream()
+                            Optional.ofNullable(dataList.getBinder())
+                                    .map(DataListBinder::getPrimaryKeyColumnName)
+                                    .map(row::get)
+                                    .map(Object::toString)
+                                    .map(mapPrimaryKeyToProcessId::get)
+                                    .map(Collection::stream)
+                                    .orElseGet(Stream::empty)
                                     .map(workflowManager::getAssignmentByProcess)
                                     .findFirst()
                                     .ifPresent(a -> {
                                         row.put("activityId", a.getActivityId());
                                         row.put("processId", a.getProcessId());
                                         row.put("assigneeId", a.getAssigneeId());
+
+                                        AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(a.getProcessId());
+                                        if(appDef != null) {
+                                            row.put("appId", appDef.getAppId());
+                                            row.put("appVersion", appDef.getVersion());
+                                        }
+
+                                        Form form = getAssignmentForm(appDef, a);
+                                        if(form != null) {
+                                            row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
+                                        }
                                     });
 
                         })
@@ -1171,6 +1185,18 @@ public class DataJsonController {
             LogUtil.warn(getClass().getName(), e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
+    }
+
+    /**
+     * Get Form for assignment
+     * @param assignment
+     * @return
+     */
+    private Form getAssignmentForm(AppDefinition appDef, WorkflowAssignment assignment) {
+        FormData formData = new FormData();
+        PackageActivityForm activityForm = appService.viewAssignmentForm(appDef.getAppId(), String.valueOf(appDef.getVersion()), assignment.getActivityId(), formData, null);
+        Form form = activityForm.getForm();
+        return form;
     }
 
     /**
@@ -1239,7 +1265,10 @@ public class DataJsonController {
 
                 // get original process ID from assignments
                 @Nonnull List<String> originalPids = workflowProcessLinkDao
-                        .getOriginalIds(assignmentList.stream().map(WorkflowAssignment::getProcessId).collect(Collectors.toList()))
+                        .getOriginalIds(assignmentList
+                                .stream()
+                                .map(WorkflowAssignment::getProcessId)
+                                .collect(Collectors.toList()))
                         .keySet()
                         .stream()
                         .distinct()
