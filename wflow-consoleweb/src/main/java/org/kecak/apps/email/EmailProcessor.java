@@ -140,47 +140,47 @@ public class EmailProcessor {
 //        this.emailApprovalContentDao = emailApprovalContentDao;
 //    }
 
-    public WorkflowManager getWorkflowManager() {
-        return workflowManager;
-    }
-
-    public void setWorkflowManager(WorkflowManager workflowManager) {
-        this.workflowManager = workflowManager;
-    }
-
-    public AppService getAppService() {
-        return appService;
-    }
-
-    public void setAppService(AppService appService) {
-        this.appService = appService;
-    }
-
-    public WorkflowUserManager getWorkflowUserManager() {
-        return workflowUserManager;
-    }
-
-    public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
-        this.workflowUserManager = workflowUserManager;
-    }
-
-    public DirectoryManager getDirectoryManager() {
-        return directoryManager;
-    }
-
-    public void setDirectoryManager(DirectoryManager directoryManager) {
-        this.directoryManager = directoryManager;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
-    }
-
-    public void setPluginManager(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
-    }
-
-    public void setAppDefinitionDao(AppDefinitionDao appDefinitionDao) {
-        this.appDefinitionDao = appDefinitionDao;
-    }
+//    public WorkflowManager getWorkflowManager() {
+//        return workflowManager;
+//    }
+//
+//    public void setWorkflowManager(WorkflowManager workflowManager) {
+//        this.workflowManager = workflowManager;
+//    }
+//
+//    public AppService getAppService() {
+//        return appService;
+//    }
+//
+//    public void setAppService(AppService appService) {
+//        this.appService = appService;
+//    }
+//
+//    public WorkflowUserManager getWorkflowUserManager() {
+//        return workflowUserManager;
+//    }
+//
+//    public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
+//        this.workflowUserManager = workflowUserManager;
+//    }
+//
+//    public DirectoryManager getDirectoryManager() {
+//        return directoryManager;
+//    }
+//
+//    public void setDirectoryManager(DirectoryManager directoryManager) {
+//        this.directoryManager = directoryManager;
+//    }
+//
+//    public PluginManager getPluginManager() {
+//        return pluginManager;
+//    }
+//
+//    public void setPluginManager(PluginManager pluginManager) {
+//        this.pluginManager = pluginManager;
+//    }
+//
+//    public void setAppDefinitionDao(AppDefinitionDao appDefinitionDao) {
+//        this.appDefinitionDao = appDefinitionDao;
+//    }
 }
