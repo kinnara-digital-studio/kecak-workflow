@@ -3,6 +3,11 @@
 Userview menu to create charts from DataList
 
 
+# set data
+1. create form
+
+2. create datalist
+
 
 # Chart Menu
 
