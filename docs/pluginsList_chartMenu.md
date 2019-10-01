@@ -3,10 +3,20 @@
 Userview menu to create charts from DataList
 
 
-# set data
-1. create form
+# Make data to display on the chart
 
-2. create datalist
+**1. create form**
+
+The following is a picture of the form that will be created and will be called by the datalist which will be displayed on the chart:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_openApps.png" alt="" />
+
+
+**2. create datalist**
+
+The picture below is a datalist that calls data from a previously created form, and this datalist will be used to display the chart:
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_openApps.png" alt="" />
 
 
 # Chart Menu
@@ -37,7 +47,9 @@ This menu chart is a plugin whose function is to inform various data in the form
 
 5. Fill available field
 
-* Dashboard
+In this section, select data in accordance with the name of the datalist that was created previously.
+
+* Tab userview
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_fillField.png" alt="" />
 
@@ -50,19 +62,7 @@ This menu chart is a plugin whose function is to inform various data in the form
 |Chart Type | Chart type |
     
     
-* Chart Action
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_fillFieldChart.png" alt="" />
-
-
-| Field | Description |
-|-------|-------------|
-| URL | URL to visit on chart click |
-| Parameter key | Key appended to url (www.url.com?[key]=value) |
-| Parameter field | Field from datalist as value for parameter (www.url.com?key=[value]) |
-    
-    
-* Data
+* Tab Data
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_fillFieldData.png" alt="" />
 
@@ -72,18 +72,6 @@ This menu chart is a plugin whose function is to inform various data in the form
 | Label Field | field name that will be used for chart label |
 | Value Fields | fields name that will be used as chart data value |
 
-
-* UI
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_fillFieldUi.png" alt="" />
-
-
-| Field | Description |
-|-------|-------------|
-| Height | |
-| Width | |
-| Custom Colors | provides custom colors for specific value |
-    
     
 6. Click OK
 
