@@ -20,6 +20,10 @@ The picture below is a datalist that calls data from a previously created form, 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_buildList.png" alt="" />
 
+- Sample data on the datalist
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_data.png" alt="" />
+
 
 # Chart Menu
 
