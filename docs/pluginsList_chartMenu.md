@@ -5,18 +5,20 @@ Userview menu to create charts from DataList
 
 # Make data to display on the chart
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_buildFormAndList.png" alt="" />
+
 **1. create form**
 
 The following is a picture of the form that will be created and will be called by the datalist which will be displayed on the chart:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_openApps.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_buildForm.png" alt="" />
 
 
 **2. create datalist**
 
 The picture below is a datalist that calls data from a previously created form, and this datalist will be used to display the chart:
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_openApps.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_buildList.png" alt="" />
 
 
 # Chart Menu
