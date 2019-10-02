@@ -833,7 +833,7 @@ public class DataJsonController {
      * @param processId     Process Definition ID
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/assignments/count", method = RequestMethod.GET)
+        @RequestMapping(value = "/json/data/assignments/count", method = RequestMethod.GET)
     public void getAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
                                     @RequestParam(value = "appId", required = false) final String appId,
                                     @RequestParam(value = "version", required = false) final Long version,
@@ -994,7 +994,8 @@ public class DataJsonController {
         final FormData formData = new FormData();
 
         // read request body and convert request body to json
-        JSONObject jsonBody = new JSONObject(request.getReader().lines().collect(Collectors.joining()));
+        String payload = request.getReader().lines().collect(Collectors.joining());
+        JSONObject jsonBody = new JSONObject(payload.isEmpty() ? "{}" : payload);
         Iterator i = jsonBody.keys();
         while (i.hasNext()) {
             String key = String.valueOf(i.next());
