@@ -21,11 +21,31 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/emailApprovalConfiguration.png" alt="" />
 
+Description :
+
+|Field|Description|
+|-|-|
+|SMTP Host|SMTP Host from google gmail|
+|SMTP Port|SMTP port from google gmail|
+|Security|Type of security to be selected|
+|SMTP Username|Username from your gmail account|
+|SMTP Password|Password from your gmail account|
 
 5. Tab Email
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/tabEmail.png" alt="" />
 
+Description :
+
+|Field|Descrption|
+|-|-|
+|From||
+|To||
+|To||
+|CC||
+|BCC||
+|Subject||
+|Message||
 
 6. Click Submit
 
