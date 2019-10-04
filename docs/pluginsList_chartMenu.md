@@ -95,7 +95,4 @@ In this section, select data in accordance with the name of the datalist that wa
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_reslutBar.png" alt="" />
 
-- Pie
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/chart_reslutPie.png" alt="" />
 
