@@ -39,13 +39,14 @@ Description :
 
 |Field|Descrption|
 |-|-|
-|From||
-|To||
-|To||
-|CC||
-|BCC||
-|Subject||
-|Message||
+|From|From which email will send the approval|
+|To|Sent to a specific email address|
+|To|Sent to participant ID|
+|CC|CC to whom|
+|BCC|BCC to whom|
+|Subject|What is the title of the approval email|
+|Message|Fill in the message of the approval to be delivered|
+
 
 6. Click Submit
 
