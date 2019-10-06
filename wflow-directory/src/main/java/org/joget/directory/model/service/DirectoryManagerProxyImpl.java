@@ -1,26 +1,18 @@
 package org.joget.directory.model.service;
 
-import java.util.ArrayList;
-import org.joget.directory.ext.DirectoryManagerAuthenticatorImpl;
 import org.joget.commons.spring.model.Setting;
 import org.joget.commons.util.CsvUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SetupManager;
-import org.joget.directory.model.Department;
-import org.joget.directory.model.Employment;
-import org.joget.directory.model.Grade;
-import org.joget.directory.model.Group;
-import org.joget.directory.model.Organization;
-import org.joget.directory.model.Role;
-import org.joget.directory.model.User;
-import org.joget.plugin.base.PluginManager;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.model.*;
+import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
+import org.kecak.directory.ext.DirectoryManagerAuthenticatorImpl;
+import org.kecak.directory.model.service.DirectoryManagerAuthenticator;
+
+import java.util.*;
 
 public class DirectoryManagerProxyImpl implements ExtDirectoryManager {
 

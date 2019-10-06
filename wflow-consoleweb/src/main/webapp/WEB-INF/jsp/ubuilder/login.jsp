@@ -4,6 +4,7 @@
 <%@ page import="org.joget.apps.userview.model.Userview"%>
 <%@ page import="org.joget.directory.model.service.DirectoryUtil"%>
 <%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 
 <%
     String rightToLeft = WorkflowUtil.getSystemSetupValue("rightToLeft");
@@ -53,11 +54,10 @@
                     ${userview.current.properties.label}
                 </c:if>
             </c:set>
-            <ui:stripTag html="${html}"/>  
+            <ui:stripTag html="${html}"/>
         </title>
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
-        
         <script type="text/javascript">
             ${userview.setting.theme.javascript}
             UI.base = "${pageContext.request.contextPath}";    
@@ -130,6 +130,9 @@
                             </td></tr>
                         </table>
                     </form>
+                    <div style="text-align: center">
+                        ${oauth2PluginButton}
+                    </div>
                     <c:if test="${!empty userview.setting.properties.loginPageBottom}">
                         ${userview.setting.properties.loginPageBottom}
                     </c:if>

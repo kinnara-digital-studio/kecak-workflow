@@ -1,6 +1,6 @@
 <div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <label class="col-sm-3 control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
-    <div class="form-cell-value col-sm-9" id="${elementParamName!}${element.properties.elementUniqueKey!}">
+    <label class="control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
+    <div class="form-cell-value" id="${elementParamName!}${element.properties.elementUniqueKey!}">
     <#list options as option>
         <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
             <#if values?? && values?seq_contains(option.value!)>

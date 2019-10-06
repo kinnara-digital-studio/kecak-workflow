@@ -23,7 +23,8 @@
         <ul id="main-action-buttons">
             <li><button onclick="reload()"><fmt:message key="console.setting.plugin.common.label.reloadPlugin"/></button></li>
             <li><button onclick="upload()"><fmt:message key="console.setting.plugin.upload.label"/></button></li>
-            <li><button onclick="pull()"><fmt:message key="console.setting.plugin.sync.label"/></button></li>
+            <%-- Aristo : preparation for next release --%>
+            <%-- <li><button onclick="pull()"><fmt:message key="console.setting.plugin.sync.label"/></button></li> --%>
         </ul>
     </div>
     <div id="main-body">

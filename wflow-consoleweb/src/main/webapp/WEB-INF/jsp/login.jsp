@@ -50,7 +50,10 @@
 	                <a href="${pageContext.request.contextPath}/" class="btn btn-default block full-width m-b">Home</a><br/>
 	                
             	</form>
-            	<p class="m-t"><small>@Copyright Kecak Workflow 2018</small> </p>
+                <div style="text-align: center">
+                    ${oauth2PluginButton}
+                </div>
+            	<p class="m-t"><small>@Copyright Kecak Workflow 2019</small> </p>
         	</div>
     	</div>
     	<script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>

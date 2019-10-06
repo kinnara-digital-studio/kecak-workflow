@@ -56,6 +56,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.apps.route.CamelRouteManager;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +95,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.TreeMap;
 
 @SuppressWarnings("restriction")
 @Controller
@@ -969,6 +971,7 @@ public class ConsoleWebController {
                     u.setFirstName(user.getFirstName());
                     u.setLastName(user.getLastName());
                     u.setEmail(user.getEmail());
+                    u.setTelephoneNumber(user.getTelephoneNumber());
 
                     //set roles
                     if (user.getRoles() != null && user.getRoles().size() > 0) {
@@ -1351,6 +1354,7 @@ public class ConsoleWebController {
             currentUser.setFirstName(user.getFirstName());
             currentUser.setLastName(user.getLastName());
             currentUser.setEmail(user.getEmail());
+            currentUser.setTelephoneNumber(user.getTelephoneNumber());
             currentUser.setTimeZone(user.getTimeZone());
             currentUser.setLocale(user.getLocale());
             UserSalt userSalt = userSaltDao.getUserSaltByUserId(currentUser.getUsername());
@@ -3267,9 +3271,11 @@ public class ConsoleWebController {
                 Map data = new HashMap();
                 data.put("id", pluginDefaultProperties.getId());
                 Plugin p = pluginManager.getPlugin(pluginDefaultProperties.getId());
-                data.put("pluginName", p.getI18nLabel());
-                data.put("pluginDescription", p.getI18nDescription());
-                jsonObject.accumulate("data", data);
+                if(p != null) {
+                    data.put("pluginName", p.getI18nLabel());
+                    data.put("pluginDescription", p.getI18nDescription());
+                    jsonObject.accumulate("data", data);
+                }
             }
         }
 
@@ -3576,6 +3582,17 @@ public class ConsoleWebController {
         UserSecurity us = DirectoryUtil.getUserSecurity();
         map.addAttribute("userSecurity", us);
 
+        //add oauth setting
+        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+        Map<String, String> oauthSetting = new TreeMap<>(
+                (Comparator<String>) (o1, o2) -> o2.compareTo(o1)
+        );
+        for (Plugin plugin : pluginList){
+            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+            oauthSetting.putAll(oauthPlugin.getGeneralSetting());
+        }
+        map.addAttribute("oauthSetting",oauthSetting);
+
         return "console/setting/general";
     }
     
@@ -3668,10 +3685,9 @@ public class ConsoleWebController {
         workflowManager.internalUpdateDeadlineChecker();
         FileStore.updateFileSizeLimit();
 
-        camelRouteManager.stopContext();
-        Thread.sleep(3000);
-
-        camelRouteManager.startContext();
+//        camelRouteManager.stopContext();
+//        Thread.sleep(3000);
+//        camelRouteManager.startContext();
 
         return "redirect:/web/console/setting/general";
     }
@@ -4362,6 +4378,10 @@ public class ConsoleWebController {
             settingMap.put(setting.getProperty(), setting.getValue());
         }
         map.addAttribute("settingMap", settingMap);
+
+        camelRouteManager.stopContext();
+        camelRouteManager.startContext();
+
         return "console/setting/eaSetting";
     }
 

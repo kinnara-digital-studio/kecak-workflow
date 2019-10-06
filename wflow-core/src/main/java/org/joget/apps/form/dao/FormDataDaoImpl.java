@@ -246,7 +246,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         try {
             String query = "SELECT e FROM " + tableName + " e ";
-            query += ((condition != null && condition != "")? condition + " AND ":" WHERE ") + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null") ;
+            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)");
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
@@ -340,7 +340,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         Session session = getHibernateSession(tableName, tableName, null, ACTION_TYPE_LOAD);
         try {
             String query = "SELECT COUNT(*) FROM " + tableName + " e ";
-            query += ((condition != null && condition != "")? condition + " AND ":" WHERE ") + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null");
+            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)");
             Query q = session.createQuery(query);
 
             if (params != null) {
@@ -435,6 +435,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
     public void saveOrUpdate(String formDefId, String tableName, FormRowSet rowSet) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
+        for (FormRow row : rowSet){
+            row.setDeleted(false);
+        }
         internalSaveOrUpdate(entityName, newTableName, rowSet);
     }
 

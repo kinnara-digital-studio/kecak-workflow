@@ -6,6 +6,7 @@
 <%@ page import="org.joget.apps.app.service.MobileUtil"%>
 <%@ page import="org.joget.apps.app.service.AppUtil"%>
 <%@ page import="org.joget.apps.userview.model.Userview"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 <%@ page contentType="text/html" pageEncoding="utf-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
@@ -208,6 +209,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         </title>
 
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
+        ${oauth2LogoutScript}
 
             <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {
@@ -297,7 +299,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                           </a>
                       </c:when>
                       <c:otherwise>
-                          <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat">
+                          <a href="${pageContext.request.contextPath}/j_spring_security_logout" class="btn btn-default btn-flat" onClick="return logout();">
                             <i class="ace-icon fa fa-power-off"></i> ${userview.properties.logoutText}
                           </a>
                       </c:otherwise>
@@ -421,9 +423,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     </div><!-- /.main-container -->
 
     <!-- basic scripts -->
-    <style type="text/css">
-        ${userview.setting.theme.css}
-    </style>
+    ${userview.setting.theme.css}
 
     <!-- REQUIRED JS SCRIPTS -->
 
@@ -442,10 +442,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         });
       });
     </script>
-
-    <script type="text/javascript">
-        ${userview.setting.theme.javascript}
-    </script>
+    ${userview.setting.theme.javascript}
 
     <script type="text/javascript">
             HelpGuide.base = "${pageContext.request.contextPath}"
