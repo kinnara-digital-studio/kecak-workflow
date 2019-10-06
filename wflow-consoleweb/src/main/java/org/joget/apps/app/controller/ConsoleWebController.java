@@ -3,10 +3,14 @@ package org.joget.apps.app.controller;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.NameFileComparator;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullCommand;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.model.*;
@@ -82,6 +86,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
@@ -3925,7 +3930,7 @@ public class ConsoleWebController {
     }
 
     @RequestMapping("/console/setting/plugin/pull")
-    public String consoleSettingPluginPull(ModelMap map) throws GitAPIException {
+    public String consoleSettingPluginPull(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws GitAPIException {
         Setting setting = setupManager.getSettingByProperty("repoURL");
         Setting repoUser = setupManager.getSettingByProperty("repoUsername");
         Setting repoPassword = setupManager.getSettingByProperty("repoPassword");
@@ -3935,29 +3940,70 @@ public class ConsoleWebController {
         if(!appPluginDir.exists()){
             appPluginDir.mkdirs();
         }else{
-            File wflow = appPluginDir.getParentFile();
-            File tmpDir = new File(wflow.getPath()+"/tmp_app_plugins");
+            // Check is it already have Repo
             try {
-                Path movePath = Files.move(appPluginDir.toPath(), tmpDir.toPath());
-                if(movePath != null){
-                    moved = true;
+                Repository repo = Git.open(appPluginDir).getRepository();
+                if(repo!=null){
+                    // if it has then pull no need to move to tmp_app_plugins folder
+                    Git git = Git.wrap(repo);
+                    PullCommand pull = git.pull()
+                            .setCredentialsProvider(new UsernamePasswordCredentialsProvider( repoUser.getValue(), repoPassword.getValue()) );
+                    PullResult result = pull.call();
+                    if(result.isSuccessful()){
+                        LogUtil.info(this.getClass().getName(), "[PULL LATEST PLUGIN SUCCESS]");
+                    }else{
+                        LogUtil.info(this.getClass().getName(),"[PULL LATEST PLUGIN FAILED]");
+                    }
                 }
             } catch (IOException e) {
-                LogUtil.error(this.getClass().getName(), e, e.getMessage());
+                // if its not, move to tmp_app_plugins folder first then clone
+                File wflow = appPluginDir.getParentFile();
+                File tmpDir = new File(wflow.getPath()+"/tmp_app_plugins");
+                try {
+                    Path movePath = Files.move(appPluginDir.toPath(), tmpDir.toPath());
+                    if(movePath != null){
+                        moved = true;
+                    }
+                } catch (IOException ex) {
+                    LogUtil.error(this.getClass().getName(), ex, ex.getMessage());
+                }
+
+                PrintWriter writeLog = new PrintWriter(System.out);
+                try(Git git = Git.cloneRepository()
+                        .setProgressMonitor(new TextProgressMonitor(writeLog))
+                        .setURI( setting.getValue())
+                        .setDirectory(appPluginDir)
+                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider( repoUser.getValue(), repoPassword.getValue()) )
+                        .call()){
+
+                }
+                LogUtil.info(this.getClass().getName(), "[START LOG] ");
+                writeLog.println();
+                wflow = appPluginDir.getParentFile();
+                tmpDir = new File(wflow.getPath()+"/tmp_app_plugins");
+                File pluginDir = new File(wflow.getPath()+"/app_plugins");
+                try(DirectoryStream<Path> files = Files.newDirectoryStream(tmpDir.toPath())){
+                    for(Path f:files){
+                        File tmpFile = new File(pluginDir.getPath()+f.getFileName());
+                        System.out.println("File Name: "+tmpFile.getName());
+                        System.out.println("IS FILE EXIST "+tmpFile.exists());
+                        if(!tmpFile.exists())
+                            Files.copy(f, pluginDir.toPath().resolve(f.getFileName()));
+                    }
+                } catch (IOException ex) {
+//                    ex.printStackTrace();
+                }
+                // delete directory tmp dir
+                try {
+                    FileUtils.deleteDirectory(tmpDir);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                pluginManager.refresh();
             }
         }
-        Git git = Git.cloneRepository()
-                .setURI( setting.getValue())
-                .setDirectory(appPluginDir)
-                .setCredentialsProvider(new UsernamePasswordCredentialsProvider( repoUser.getValue(), repoPassword.getValue()) )
-                .call();
-        Repository repo = git.getRepository();
-        if(repo!=null){
-            pluginManager.refresh();
-        }else{
 
-        }
-        return "redirect:/web/console/setting/plugin";
+        return "redirect:/web/console/setting/general";
     }
 
     @RequestMapping("/console/setting/plugin/upload")
