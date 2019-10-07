@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.joget.apps.app.controller.TokenAuthenticationService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.workflow.security.WorkflowUserDetails;
 import org.joget.commons.util.LogUtil;
@@ -16,20 +17,16 @@ import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.dao.ClientAppDao;
 import org.joget.directory.dao.EmploymentDao;
 import org.joget.directory.dao.UserDao;
-import org.joget.directory.model.Department;
-import org.joget.directory.model.Employment;
-import org.joget.directory.model.Grade;
-import org.joget.directory.model.Group;
+import org.joget.directory.model.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
-import org.joget.directory.model.Organization;
-import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.workflow.model.dao.WorkflowHelper;
@@ -56,6 +53,8 @@ public class DirectoryJsonController {
     UserDao userDao;
     @Autowired
     EmploymentDao employmentDao;
+    @Autowired
+    ClientAppDao clientAppDao;
 
     public EmploymentDao getEmploymentDao() {
         return employmentDao;
@@ -801,5 +800,67 @@ public class DirectoryJsonController {
         jsonObject.accumulate("token", csrfToken);
 
         AppUtil.writeJson(writer, jsonObject, callback);
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/json/setting/admin/clientApp/list")
+    public void listClientApp(Writer writer, @RequestParam(value = "callback", required = false) String callback,
+                         @RequestParam(value = "name", required = false) String name,
+                         @RequestParam(value = "active", required = false) String active, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "desc", required = false) Boolean desc,
+                         @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "rows", required = false) Integer rows) throws JSONException, IOException {
+
+        Collection<ClientApp> clientApps = null;
+        if ("".equals(active)) {
+            active = null;
+        }
+        clientApps = clientAppDao.getClientAppList(name,active,sort,desc,start,rows);
+        JSONObject jsonObject = new JSONObject();
+        if (clientApps != null) {
+            for (ClientApp clientApp : clientApps) {
+                @SuppressWarnings("rawtypes")
+                Map data = new HashMap();
+                data.put("id", clientApp.getId());
+                data.put("appName", clientApp.getAppName());
+                data.put("clientSecret", clientApp.getClientSecret());
+                data.put("redirectUrl", clientApp.getRedirectUrl());
+                data.put("active", (clientApp.getActive() == 1)? ResourceBundleUtil.getMessage("console.directory.clientApp.common.label.status.active") : ResourceBundleUtil.getMessage("console.directory.clientApp.common.label.status.inactive"));
+                jsonObject.accumulate("data", data);
+            }
+        }
+
+        jsonObject.accumulate("total", clientAppDao.getTotalClientApp(name,active));
+        jsonObject.accumulate("start", start);
+        jsonObject.accumulate("sort", sort);
+        jsonObject.accumulate("desc", desc);
+
+        if (callback != null && callback.trim().length() != 0) {
+            writer.write(StringEscapeUtils.escapeHtml(callback) + "(" + jsonObject + ");");
+        } else {
+            jsonObject.write(writer);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/api/user.identity")
+    public void getUserIdentity(Writer writer, HttpServletRequest httpRequest, HttpServletResponse httpResponse, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "token", required = false) String token) throws Exception {
+
+        User user = TokenAuthenticationService.getAuthentication(httpRequest);
+        JSONObject jsonObject = new JSONObject();
+        if (user != null) {
+            Map data = new HashMap();
+            data.put("id", user.getId());
+            data.put("username", user.getUsername());
+            data.put("firstName", user.getFirstName());
+            data.put("lastName", user.getLastName());
+            data.put("email", user.getEmail());
+            data.put("active", (user.getActive() == 1)? ResourceBundleUtil.getMessage("console.directory.user.common.label.status.active") : ResourceBundleUtil.getMessage("console.directory.user.common.label.status.inactive"));
+            jsonObject.accumulate("data", data);
+        }
+
+        if (callback != null && callback.trim().length() != 0) {
+            writer.write(StringEscapeUtils.escapeHtml(callback) + "(" + jsonObject + ");");
+        } else {
+            jsonObject.write(writer);
+        }
     }
 }

@@ -2,6 +2,7 @@ package org.joget.apps.app.controller;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.comparator.NameFileComparator;
 import org.eclipse.jgit.api.Git;
@@ -81,6 +82,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -176,6 +178,8 @@ public class ConsoleWebController {
     PropertiesTemplate applicationProperties;
     @Autowired
     PropertyDao propertyDao;
+    @Autowired
+    ClientAppDao clientAppDao;
 
     @RequestMapping({"/index", "/", "/home"})
     public String index() {
@@ -5497,6 +5501,142 @@ public class ConsoleWebController {
     @RequestMapping({"/desktop/marketplace/app"})
     public String marketplaceApp() {
         return "desktop/marketplaceApp";
+    }
+
+
+    @RequestMapping("/console/setting/clientApps")
+    public String consoleClientAppList(ModelMap model) {
+        Collection<ClientApp> clientApps = clientAppDao.getClientAppList(null,null,"app_name",false,null,null);
+        model.addAttribute("clientApps",clientApps);
+        return "console/setting/clientAppList";
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/console/setting/clientApp/create")
+    public String consoleClientAppCreate(ModelMap model) {
+        Map<String, String> status = new HashMap<String, String>();
+        status.put("1", "Active");
+        status.put("0", "Inactive");
+        model.addAttribute("status", status);
+
+        ClientApp clientApp = new ClientApp();
+        clientApp.setActive(1);
+        model.addAttribute("clientApp", clientApp);
+        return "console/setting/clientAppCreate";
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping("/console/setting/clientApp/view/(*:id)")
+    public String consoleClientAppView(ModelMap model, @RequestParam("id") String id) {
+        ClientApp clientApp = clientAppDao.getClientApp(id);
+        model.addAttribute("clientApp",clientApp);
+        return "console/setting/clientAppView";
+    }
+
+    @RequestMapping("/console/setting/clientApp/edit/(*:id)")
+    public String consoleClientAppEdit(ModelMap model, @RequestParam("id") String id) {
+        ClientApp clientApp = clientAppDao.getClientApp(id);
+        model.addAttribute("clientApp",clientApp);
+
+        Map<String, String> status = new HashMap<String, String>();
+        status.put("1", "Active");
+        status.put("0", "Inactive");
+        model.addAttribute("status", status);
+        return "console/setting/clientAppEdit";
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @RequestMapping(value = "/console/setting/clientApp/submit/(*:action)", method = RequestMethod.POST)
+    public String consoleClientAppSubmit(ModelMap model, @RequestParam("action") String action, @ModelAttribute("clientApp") ClientApp clientApp, BindingResult result) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        // validate ID
+        validator.validate(clientApp, result);
+
+        boolean invalid = result.hasErrors();
+        if (!invalid) {
+            // check error
+            Collection<String> errors = new ArrayList<String>();
+
+            //Check App Name
+            if(clientApp.getAppName().isEmpty()){
+                errors.add(ResourceBundleUtil.getMessage("console.setting.clientApp.error.label.appName"));
+            }
+            //Check Redirect URL Empty
+            if(clientApp.getRedirectUrl().isEmpty()){
+                errors.add(ResourceBundleUtil.getMessage("console.setting.clientApp.error.label.redirectUrl"));
+            }
+
+            if(!isValidUrl(clientApp.getRedirectUrl())){
+                errors.add(ResourceBundleUtil.getMessage("console.setting.clientApp.error.label.redirectUrl.notValid"));
+            }
+
+            if ("create".equals(action)) {
+                if (errors.isEmpty()) {
+                    clientApp.setId(UUID.randomUUID().toString());
+                    clientApp.setClientSecret(DigestUtils.sha256Hex(UUID.randomUUID().toString()));
+                    clientApp.setUserId(WorkflowUtil.getCurrentUsername());
+                    clientAppDao.addClientApp(clientApp);
+                }
+            } else {
+                if (errors.isEmpty()) {
+                    if(clientApp.getClientSecret().equals("NEW")){
+                        clientApp.setClientSecret(DigestUtils.sha256Hex(UUID.randomUUID().toString()));
+                    }
+                    clientAppDao.updateClientApp(clientApp);
+                }
+            }
+
+            if (!errors.isEmpty()) {
+                model.addAttribute("errors", errors);
+                invalid = true;
+            }
+        }
+
+        if (invalid) {
+
+            Map<String, String> status = new HashMap<String, String>();
+            status.put("1", "Active");
+            status.put("0", "Inactive");
+            model.addAttribute("status", status);
+
+            model.addAttribute("clientApp", clientApp);
+
+            if ("create".equals(action)) {
+                return "console/setting/clientAppCreate";
+            } else {
+                return "console/setting/clientAppEdit";
+            }
+        } else {
+
+            String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
+            String url = contextPath;
+            url += "/web/console/setting/clientApp/view/" + clientApp.getId() + ".";
+            model.addAttribute("url", url);
+            return "console/dialogClose";
+        }
+    }
+
+
+    public static boolean isValidUrl(String url)
+    {
+        try {
+            new URL(url).toURI();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @RequestMapping(value = "/console/setting/clientApp/delete", method = RequestMethod.POST)
+    public String consoleClientAppDelete(@RequestParam(value = "ids") String ids) {
+        StringTokenizer strToken = new StringTokenizer(ids, ",");
+        while (strToken.hasMoreTokens()) {
+            String id = (String) strToken.nextElement();
+
+            if (id != null) {
+                clientAppDao.deleteClientApp(id);
+            }
+        }
+        return "console/setting/clientAppList";
     }
 
 }

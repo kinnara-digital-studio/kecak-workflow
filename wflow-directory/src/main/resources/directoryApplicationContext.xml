@@ -25,6 +25,7 @@
                 <value>org/joget/directory/model/User.hbm.xml</value>
                 <value>org/joget/directory/model/UserSalt.hbm.xml</value>
                 <value>org/joget/directory/model/UserToken.hbm.xml</value>
+                <value>org/joget/directory/model/ClientApp.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -53,6 +54,11 @@
     </bean>
 
     <bean id="userTokenDao" class="org.joget.directory.dao.UserTokenDaoImpl">
+        <property name="sessionFactory" ref="directorySessionFactory" />
+        <property name="workflowUserManager" ref="workflowUserManager"/>
+    </bean>
+
+    <bean id="clientAppDao" class="org.joget.directory.dao.ClientAppDaoImpl">
         <property name="sessionFactory" ref="directorySessionFactory" />
         <property name="workflowUserManager" ref="workflowUserManager"/>
     </bean>
