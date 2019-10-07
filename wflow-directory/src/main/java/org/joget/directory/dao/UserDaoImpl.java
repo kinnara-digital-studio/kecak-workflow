@@ -1,22 +1,16 @@
 package org.joget.directory.dao;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
-import org.joget.directory.model.Department;
-import org.joget.directory.model.Employment;
-import org.joget.directory.model.Group;
-import org.joget.directory.model.Role;
-import org.joget.directory.model.User;
+import org.joget.directory.model.*;
 import org.joget.directory.model.service.DirectoryUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.springframework.context.ApplicationContext;
 
-public class UserDaoImpl extends AbstractSpringDao implements UserDao {
+import java.util.*;
+
+public class UserDaoImpl extends AbstractSpringDao<User> implements UserDao {
+    private final static String ENTITY_NAME = "User";
 
     private GroupDao groupDao;
     private RoleDao roleDao;
@@ -76,7 +70,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
         	user.setModifiedBy(currentUsername);
         	user.setDateCreated(currentDate);
         	user.setDateModified(currentDate);
-            save("User", user);
+            save(ENTITY_NAME, user);
             return true;
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Add User Error!");
@@ -92,7 +86,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
 
         	user.setModifiedBy(currentUsername);
         	user.setDateModified(new Date());
-            merge("User", user);
+            merge(ENTITY_NAME, user);
             return true;
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Update User Error!");
@@ -115,7 +109,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
 
                 	user.setModifiedBy(currentUsername);
                 	user.setDateModified(new Date());
-                    saveOrUpdate("User", user);
+                    saveOrUpdate(ENTITY_NAME, user);
                 }
             }
 
@@ -147,7 +141,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
                     }
                     employments.clear();
                 }
-                delete("User", user);
+                delete(ENTITY_NAME, user);
             }
             return true;
         } catch (Exception e) {
@@ -161,7 +155,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
         try {
             User user = new User();
             user.setUsername(username);
-            List users = findByExample("User", user);
+            List users = findByExample(ENTITY_NAME, user);
 
             if (users.size() > 0) {
                 return (User) users.get(0);
@@ -175,7 +169,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
 
     public User getUserById(String id) {
         try {
-            return (User) find("User", id);
+            return (User) find(ENTITY_NAME, id);
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Get User By Id Error!");
             return null;
@@ -188,7 +182,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
             User user = new User();
             user.setEmail(email);
             @SuppressWarnings("rawtypes")
-            List users = findByExample("User", user);
+            List users = findByExample(ENTITY_NAME, user);
 
             if (users.size() > 0) {
                 return (User) users.get(0);
@@ -206,13 +200,13 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
             User user = new User();
             user.setTelephoneNumber(telephoneNumber);
             @SuppressWarnings("rawtypes")
-            List<User> users = findByExample("User", user);
+            List<User> users = findByExample(ENTITY_NAME, user);
 
             if (users.size() > 0) {
-                return (User) users.get(0);
+                return users.get(0);
             }
         } catch (Exception e) {
-            LogUtil.error(UserDaoImpl.class.getName(), e, "Get User By Email Error!");
+            LogUtil.error(UserDaoImpl.class.getName(), e, "Get User By Telephone Number Error!");
         }
 
         return null;
@@ -239,7 +233,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
     @SuppressWarnings("unchecked")
 	public Collection<User> findUsers(String condition, Object[] params, String sort, Boolean desc, Integer start, Integer rows) {
         try {
-            return find("User", condition, params, sort, desc, start, rows);
+            return find(ENTITY_NAME, condition, params, sort, desc, start, rows);
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Find Users Error!");
         }
@@ -249,7 +243,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
 
     public Long countUsers(String condition, Object[] params) {
         try {
-            return count("User", condition, params);
+            return count(ENTITY_NAME, condition, params);
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Count Users Error!");
         }
@@ -300,7 +294,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
                 param.add(("1".equals(active) ? 1 : 0));
             }
 
-            return find("User", condition, param.toArray(), sort, desc, start, rows);
+            return find(ENTITY_NAME, condition, param.toArray(), sort, desc, start, rows);
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Get Users Error!");
         }
@@ -351,7 +345,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
                 param.add(("1".equals(active) ? 1 : 0));
             }
 
-            return count("User", condition, param.toArray());
+            return count(ENTITY_NAME, condition, param.toArray());
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Count Users Error!");
         }
@@ -371,7 +365,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
 
             	user.setModifiedBy(currentUsername);
             	user.setDateModified(new Date());
-                saveOrUpdate("User", user);
+                saveOrUpdate(ENTITY_NAME, user);
                 return true;
             }
         } catch (Exception e) {
@@ -391,7 +385,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
 
             	user.setModifiedBy(currentUsername);
             	user.setDateModified(new Date());
-                saveOrUpdate("User", user);
+                saveOrUpdate(ENTITY_NAME, user);
                 return true;
             }
         } catch (Exception e) {
@@ -419,7 +413,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
                 param.add(groupId);
             }
 
-            return find("User", condition, param.toArray(), sort, desc, start, rows);
+            return find(ENTITY_NAME, condition, param.toArray(), sort, desc, start, rows);
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Get Users Not In Group Error!");
         }
@@ -446,7 +440,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
                 param.add(groupId);
             }
 
-            return count("User", condition, param.toArray());
+            return count(ENTITY_NAME, condition, param.toArray());
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Get Total Users Not In Group Error!");
         }
@@ -462,7 +456,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
             String condition = "where e.id in (select t.subordinate.user.id from EmploymentReportTo t where t.reportTo.user.id = ?)";
             param.add(username);
 
-            return find("User", condition, param.toArray(), sort, desc, start, rows);
+            return find(ENTITY_NAME, condition, param.toArray(), sort, desc, start, rows);
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Get Users Subordinate Error!");
         }
@@ -478,7 +472,7 @@ public class UserDaoImpl extends AbstractSpringDao implements UserDao {
             String condition = "where e.id in (select t.subordinate.user.id from EmploymentReportTo t where t.reportTo.user.id = ?)";
             param.add(username);
 
-            return count("User", condition, param.toArray());
+            return count(ENTITY_NAME, condition, param.toArray());
         } catch (Exception e) {
             LogUtil.error(UserDaoImpl.class.getName(), e, "Get Total Users Not In Group Error!");
         }

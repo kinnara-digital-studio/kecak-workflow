@@ -4,6 +4,7 @@
 <c:set var="isVirtualHostEnabled" value="<%= HostManager.isVirtualHostEnabled() %>"/>
 
 <commons:header />
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/blockui/jquery.blockUI.js"></script>
 
 <div id="nav">
     <div id="nav-title">
@@ -95,6 +96,16 @@
     }
 
     function pull(dummy){
+        $.blockUI({ css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff'
+        } });
+
         var callback = {
             success : function() {
                 document.location = '${pageContext.request.contextPath}/web/console/setting/plugin';

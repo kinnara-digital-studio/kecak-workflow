@@ -1,14 +1,19 @@
 package org.joget.directory.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.UserToken;
 import org.joget.workflow.model.service.WorkflowUserManager;
 
-public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+public class UserTokenDaoImpl extends AbstractSpringDao<UserToken> implements UserTokenDao {
 
     public final static String ENTITY_NAME = "UserToken";
 
@@ -23,6 +28,8 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         this.workflowUserManager = workflowUserManager;
     }
 
+    @Override
+    @Nonnull
     public Boolean addUserToken(UserToken UserToken) {
         try {
             String currentUsername = workflowUserManager.getCurrentUsername();
@@ -40,6 +47,8 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         }
     }
 
+    @Override
+    @Nonnull
     public Boolean updateUserToken(UserToken UserToken) {
         try {
             String currentUsername = workflowUserManager.getCurrentUsername();
@@ -54,10 +63,12 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         }
     }
 
+    @Override
+    @Nonnull
     public Boolean deleteUserToken(String id) {
         Boolean result = false;
         try {
-            UserToken UserToken = getUserToken(id);
+            UserToken UserToken = getUserTokenByUserId(id);
             if (UserToken != null) {
                 delete(ENTITY_NAME, UserToken);
                 result = true;
@@ -68,24 +79,28 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         return result;
     }
 
-    public UserToken getUserToken(String id) {
+    @Override
+    @Nullable
+    public UserToken getUserTokenByUserId(String userId) {
         UserToken result = null;
         try {
-            result = (UserToken) find(ENTITY_NAME, id);
+            result = (UserToken) find(ENTITY_NAME, userId);
         } catch (Exception e) {
             LogUtil.error(UserTokenDaoImpl.class.getName(), e, "Get UserToken By Id Error!");
         }
         return result;
     }
 
-    public UserToken getUserToken(String userId, String platformId) {
+    @Override
+    @Nullable
+    public UserToken getUserTokenByUserId(String userId, String platformId) {
         UserToken result = null;
         try {
             UserToken userToken = new UserToken();
             userToken.setUserId(userId);
             userToken.setPlatformId(platformId);
             List userTokens = findByExample(ENTITY_NAME, userToken);
-            if(userTokens.size() > 0) {
+            if(userTokens != null && userTokens.size() > 0) {
                 result = (UserToken) userTokens.get(0);
             }
         } catch (Exception e) {
@@ -94,9 +109,17 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         return result;
     }
 
+    @Override
+    @Nullable
+    public UserToken getUserTokenByExternalId(String externalId, String platformId) {
+        Collection<UserToken> userTokens = find(ENTITY_NAME, "WHERE platformId = ? AND externalId = ?", new String[] {platformId, externalId}, "dateCreated", true, null, 1);
+        return Optional.ofNullable(userTokens).map(Collection::stream).orElseGet(Stream::empty).findFirst().orElse(null);
+    }
 
+    @Override
+    @Nonnull
     public Boolean deleteUserToken(UserToken userToken) {
-        Boolean result = false;
+        boolean result = false;
         try {
             List userTokens = findByExample(ENTITY_NAME, userToken);
             if(userTokens.size() > 0) {
@@ -109,5 +132,4 @@ public class UserTokenDaoImpl extends AbstractSpringDao implements UserTokenDao 
         }
         return result;
     }
-
 }

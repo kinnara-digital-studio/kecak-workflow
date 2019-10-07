@@ -13,7 +13,6 @@ import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.kecak.apps.scheduler.SchedulerManager;
 import org.kecak.apps.scheduler.SchedulerPluginJob;
-import org.kecak.apps.scheduler.dao.SchedulerDetailsDao;
 import org.kecak.apps.scheduler.model.SchedulerDetails;
 import org.kecak.apps.scheduler.model.TriggerTypes;
 import org.springframework.context.ApplicationContext;
