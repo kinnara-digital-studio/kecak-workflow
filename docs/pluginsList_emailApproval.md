@@ -1,5 +1,8 @@
 # Email Approval
 
+Email approval plugins is approval that is done by email.
+
+
 ## How to use
 
 1. Open Apps
