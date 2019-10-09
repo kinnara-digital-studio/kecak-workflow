@@ -67,7 +67,11 @@ Description :
 
 - When Test Send Email
 
+inbox :
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/email_result.png" alt="" />
+
+messages :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/email_result2.png" alt="" />
 
