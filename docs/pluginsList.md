@@ -47,6 +47,7 @@
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_chartMenu)
 - [Plugins Currency Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_currencyTextfield)
 - [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidget)
+- [Plugins Email Approval](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_emailApproval)
 
 
 
