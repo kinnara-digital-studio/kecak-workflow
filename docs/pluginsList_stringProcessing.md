@@ -39,6 +39,15 @@
 
 6. Click OK
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringProcessing_ok.png" alt="" />
+
+
 7. Click Save
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringProcessing_save.png" alt="" />
+
+
 8. Result
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringProcessing_result.png" alt="" />
+
