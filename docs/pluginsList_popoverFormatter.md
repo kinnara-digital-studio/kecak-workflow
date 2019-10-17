@@ -16,7 +16,15 @@
 
 4. Go to tab formatter
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/popover_popoverFormatter.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/popover_formatter.png" alt="" />
+
+
+Description :
+
+|Field|Description|
+|-|-|
+|Formatter| Choose the format to be implemented in the list
+ |
 
 5. Choose Formatter
 
@@ -25,6 +33,17 @@
 6. Formatter Choosed
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/popover_formatterResult.png" alt="" />
+
+7. Go to tab popover formatter
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/popover_popoverFormatter.png" alt="" />
+
+Description :
+
+|Field|Description|
+|-|-|
+|Max Character|The maximum number of characters that will be displayed on the list|
+|Read More Text|Writing format to read more data in the field|
 
 7. Click Ok
 
