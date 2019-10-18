@@ -29,12 +29,15 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringProcessing_editProperties.png" alt="" />
 
+
+Description:
+
 |Field|Description|
 |-|-|
-|||
-|||
-|||
-|||
+|ID|The form ID to be created from the currency field|
+|Label|Naming for the form of currency to be used|
+|Variable| Variable|
+|String Formula| Formula that will be used in this field|
 
 
 6. Click OK
