@@ -48,6 +48,9 @@
 - [Plugins Currency Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_currencyTextfield)
 - [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidget)
 - [Plugins Email Approval](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_emailApproval)
+- [Plugins String Processing](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringProcessing)
+- [Plugins Popover Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popoverFormatter)
+
 
 
 
