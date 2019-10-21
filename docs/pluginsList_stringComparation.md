@@ -29,6 +29,8 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/comparation_choosePermission2.png" alt="" />
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/comparation_permissionChoosed.png" alt="" />
+
 
 6. Edit permission
 
