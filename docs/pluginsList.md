@@ -43,13 +43,16 @@
 - [Plugins Currency Column Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_currencyColumnFormatter)
 - [Plugins Autofill Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_autoFillSelectBox)
 - [Plugins Form Attachment Grid](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_formAttachmentGrid)
-- [Plugins Dahboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_dashboardWidget)
 - [Plugins Chart Menu](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_chartMenu)
 - [Plugins Currency Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_currencyTextfield)
-- [Plugins Dashboard Widget](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardWidget)
 - [Plugins Email Approval](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_emailApproval)
 - [Plugins String Processing](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringProcessing)
 - [Plugins Popover Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popoverFormatter)
+- [Plugins Toggle Button](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_toggleButton)
+- [Plugins String Comparation Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringComparation)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 
 
 
