@@ -33,5 +33,5 @@ A toggle button allows the user to change a setting between two states.
 
 7. Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/toggle_save.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/toggle_result.png" alt="" />
 
