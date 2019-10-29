@@ -26,6 +26,15 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/ref_fill.png" alt="" />
 
+|Field|Description|
+|-|-|
+|ID||
+|Label||
+|Datalist||
+|Field||
+|Field in the reference form||
+|Field in this form||
+
 
 6. Click OK
 
