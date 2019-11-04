@@ -1,0 +1,230 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/process/schemas">
+
+    <xs:element name = "AdminDeptListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminDeptListResponse" />
+
+    <xs:element name = "AdminEmploymentListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "deptId" type = "xs:string"/>
+                <xs:element name = "gradeId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminEmploymentListResponse" />
+
+    <xs:element name = "AdminEmploymentNoHaveOrgListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminEmploymentNoHaveOrgListResponse" />
+
+    <xs:element name = "AdminEmploymentNoInDeptListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "deptId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminEmploymentNoInDeptListResponse" />
+
+    <xs:element name = "AdminEmploymentNoInGradeListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "gradeId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminEmploymentNoInGradeListResponse" />
+
+    <xs:element name = "AdminGroupListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminGroupListResponse" />
+
+    <xs:element name = "AdminGradeListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminGradeListResponse" />
+
+    <xs:element name = "AdminOrgListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminOrgListResponse" />
+
+    <xs:element name = "AdminSubDeptListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "deptId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminSubDeptListResponse" />
+
+    <xs:element name = "AdminUserDeptAndGradeOptionsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "orgId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminUserDeptAndGradeOptionsResponse" />
+
+    <xs:element name = "AdminUserGroupListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "userId" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "inGroup" type = "xs:boolean"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminUserGroupListResponse" />
+
+    <xs:element name = "AdminUserListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "orgId" type = "xs:string"/>
+                <xs:element name = "deptId" type = "xs:string"/>
+                <xs:element name = "gradeId" type = "xs:string"/>
+                <xs:element name = "groupId" type = "xs:string"/>
+                <xs:element name = "roleId" type = "xs:string"/>
+                <xs:element name = "active" type = "xs:boolean"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminUserListResponse" />
+
+    <xs:element name = "AdminUserNotInGroupListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "groupId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminUserNotInGroupListResponse" />
+
+    <xs:element name = "AdminUserSSORequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "username" type = "xs:string"/>
+                <xs:element name = "password" type = "xs:string"/>
+                <xs:element name = "hash" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AdminUserSSOResponse" />
+
+    <xs:element name = "WorkflowCurrentUsernameRequest"/>
+    <xs:element name = "WorkflowCurrentUsernameResponse" />
+
+    <xs:element name="map">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="xps:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="item">
+            <xs:selector xpath="item"/>
+            <xs:field xpath="key"/>
+        </xs:unique>
+    </xs:element>
+
+    <xs:complexType name="MapType">
+        <xs:sequence>
+            <xs:element ref="xps:map"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MapItemType">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

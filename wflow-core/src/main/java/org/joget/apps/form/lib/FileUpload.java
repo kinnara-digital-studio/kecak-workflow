@@ -10,15 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.FileDownloadSecurity;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormPermission;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.FileManager;
@@ -28,7 +20,7 @@ import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 
-public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity {
+public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
     public String getName() {
         return "File Upload";
@@ -45,20 +37,24 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     @SuppressWarnings("unchecked")
 	public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "fileUpload.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    private String renderTemplate(String template,FormData formData,@SuppressWarnings("rawtypes")  Map dataModel){
 
         // set value
         String[] values = FormUtil.getElementPropertyValues(this, formData);
-        
+
         //check is there a stored value
         String storedValue = formData.getStoreBinderDataProperty(this);
         if (storedValue != null) {
             values = storedValue.split(";");
         }
-        
-        
+
+
         Map<String, String> tempFilePaths = new HashMap<String, String>();
         Map<String, String> filePaths = new HashMap<String, String>();
-        
+
         String primaryKeyValue = getPrimaryKeyValue(formData);
         String formDefId = "";
         Form form = FormUtil.findRootForm(this);
@@ -74,11 +70,11 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
             appId = appDef.getId();
             appVersion = appDef.getVersion().toString();
         }
-                
+
         for (String value : values) {
             // check if the file is in temp file
             File file = FileManager.getFileByPath(value);
-            
+
             if (file != null) {
                 tempFilePaths.put(value, file.getName());
             } else if (value != null && !value.isEmpty()) {
@@ -92,7 +88,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                         // ignore
                     }
                 }
-                
+
                 String filePath = "/web/client/app/" + appId + "/" + appVersion + "/form/download/" + formDefId + "/" + primaryKeyValue + "/" + encodedFileName + ".";
                 if (Boolean.valueOf(getPropertyString("attachment")).booleanValue()) {
                     filePath += "?attachment=true";
@@ -100,14 +96,14 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                 filePaths.put(filePath, value);
             }
         }
-        
+
         if (!tempFilePaths.isEmpty()) {
             dataModel.put("tempFilePaths", tempFilePaths);
         }
         if (!filePaths.isEmpty()) {
             dataModel.put("filePaths", filePaths);
         }
-        
+
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
     }
@@ -305,5 +301,17 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         } else {
             return !WorkflowUtil.isCurrentUserAnonymous();
         }
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceFileUpload.ftl";
+        return renderTemplate(template,formData,dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteFileUpload.ftl";
+        return renderTemplate(template,formData,dataModel);
     }
 }

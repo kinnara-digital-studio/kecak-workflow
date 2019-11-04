@@ -212,7 +212,7 @@
                                 <jarResource>
                                     <groupId>commons-codec</groupId>
                                     <artifactId>commons-codec</artifactId>
-                                    <version>1.2</version>
+                                    <version>1.9</version>
                                 </jarResource>
                                 <jarResource>
                                     <groupId>org.apache.httpcomponents</groupId>

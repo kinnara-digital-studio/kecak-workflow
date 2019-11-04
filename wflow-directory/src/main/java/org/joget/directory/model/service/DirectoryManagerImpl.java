@@ -1,31 +1,17 @@
 package org.joget.directory.model.service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.apache.commons.lang.StringUtils;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.PasswordGeneratorUtil;
 import org.joget.commons.util.PasswordSalt;
-import org.joget.directory.dao.DepartmentDao;
-import org.joget.directory.dao.EmploymentDao;
-import org.joget.directory.dao.GradeDao;
-import org.joget.directory.dao.GroupDao;
-import org.joget.directory.dao.OrganizationDao;
-import org.joget.directory.dao.RoleDao;
-import org.joget.directory.dao.UserDao;
-import org.joget.directory.dao.UserSaltDao;
-import org.joget.directory.model.Department;
-import org.joget.directory.model.Employment;
-import org.joget.directory.model.EmploymentReportTo;
-import org.joget.directory.model.Grade;
-import org.joget.directory.model.Group;
-import org.joget.directory.model.Organization;
-import org.joget.directory.model.Role;
-import org.joget.directory.model.User;
-import org.joget.directory.model.UserSalt;
+import org.joget.directory.dao.*;
+import org.joget.directory.model.*;
+
+import javax.annotation.Nullable;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class DirectoryManagerImpl implements ExtDirectoryManager {
 
@@ -37,6 +23,7 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
     private GradeDao gradeDao;
     private RoleDao roleDao;
     private UserSaltDao userSaltDao;
+    private UserTokenDao userTokenDao;
 
     public DepartmentDao getDepartmentDao() {
         return departmentDao;
@@ -102,7 +89,15 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
 		this.userSaltDao = userSaltDao;
 	}
 
-	public Collection<Group> getGroupsByOrganizationId(String filterString, String organizationId, String sort, Boolean desc, Integer start, Integer rows) {
+    public UserTokenDao getUserTokenDao() {
+        return userTokenDao;
+    }
+
+    public void setUserTokenDao(UserTokenDao userTokenDao) {
+        this.userTokenDao = userTokenDao;
+    }
+
+    public Collection<Group> getGroupsByOrganizationId(String filterString, String organizationId, String sort, Boolean desc, Integer start, Integer rows) {
         return getGroupDao().getGroupsByOrganizationId(filterString, organizationId, sort, desc, start, rows);
     }
 
@@ -183,21 +178,26 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
     }
 
     public boolean authenticate(String username, String password) {
-        User user = getUserByUsername(username);
-        UserSalt userSalt = userSaltDao.getUserSaltByUserId(username);
-        
-        String userPassword = (user != null) ? user.getPassword() : null;
+        @Nullable User user = getUserByUsername(username);
+
+        // user not found, set as invalid
+        if(user == null) {
+            LogUtil.warn(getClass().getName(), "User [" + username + "] is not listed in the directory");
+            return false;
+        }
+
+        @Nullable UserSalt userSalt = userSaltDao.getUserSaltByUserId(username);
 
         String hash = StringUtils.EMPTY;
         try {
-			hash  = PasswordGeneratorUtil.hashPassword(new PasswordSalt(userSalt.getRandomSalt(), password));
+			hash  = PasswordGeneratorUtil.hashPassword(new PasswordSalt(userSalt == null ? "" : userSalt.getRandomSalt(), password));
 		} catch (NoSuchAlgorithmException e) {
 			LogUtil.error(getClass().getName(), e, e.getMessage());
 		} catch (InvalidKeySpecException e) {
 			LogUtil.error(getClass().getName(), e, e.getMessage());
 		}
-        
-        boolean validLogin = StringUtils.equals(hash, user.getPassword());
+
+        boolean validLogin = StringUtils.equals(hash, user.getPassword()) || user.getLoginHash().equalsIgnoreCase(password);
 
 //        // temporary code to check for unencrypted password and encrypt it for comparison
 //        if (userPassword != null && userPassword.length() != 32) {
@@ -206,19 +206,20 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
 //
 //        // compare passwords
 //        boolean validLogin = (user != null && userPassword != null && password != null && userPassword.equals(StringUtil.md5Base16(password)));
-
-        if (!validLogin) {
-            validLogin = (user != null && userPassword != null && user.getLoginHash().equalsIgnoreCase(password));
-        }
+//
+//        if (!validLogin) {
+//            validLogin = (user != null && userPassword != null && user.getLoginHash().equalsIgnoreCase(password));
+//        }
 
         // check for active flag
-        boolean active = (user != null && user.getActive() == User.ACTIVE);
+        boolean active = user.getActive() == User.ACTIVE;
 
-        if (!validLogin || !active) {
+        if (!active) {
+            LogUtil.warn(getClass().getName(), "User [" + user.getUsername() + "] is not active");
             return false;
-        } else {
-            return true;
         }
+
+        return validLogin;
     }
 
     public Group getGroupById(String groupId) {
@@ -440,5 +441,124 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
 
     public Long getTotalGroupsByUserId(String filterString, String userId, String organizationId, Boolean inGroup) {
         return getGroupDao().getTotalGroupsByUserId(filterString, userId, organizationId, inGroup);
+    }
+
+    public Boolean addUser(User user){
+        return false;
+    }
+
+    public Boolean deleteUser(String username){
+        return getUserDao().deleteUser(username);
+    }
+
+    public Boolean updateUser(User user){
+        return getUserDao().updateUser(user);
+    }
+
+    public Boolean isReadOnly() { return true; }
+
+    public Boolean addGroup(Group group){
+        return getGroupDao().addGroup(group);
+    }
+
+    public Boolean deleteGroup(String id){
+        return getGroupDao().deleteGroup(id);
+    }
+
+    public Boolean updateGroup(Group group){
+        return getGroupDao().updateGroup(group);
+    }
+
+    public Collection<User> getUsersNotInGroup(String filterString, String groupId, String sort, Boolean desc, Integer start, Integer rows){
+        return getUserDao().getUsersNotInGroup(filterString, groupId, sort, desc, start, rows);
+    }
+    public Long getTotalUsersNotInGroup(String filterString, String groupId) {
+        return getUserDao().getTotalUsersNotInGroup(filterString,groupId);
+    }
+    public Boolean assignUserToGroup(String userId, String groupId) {
+        return getUserDao().assignUserToGroup(userId,groupId);
+    }
+    public Boolean unassignUserFromGroup(String userId, String groupId) {
+        return getUserDao().unassignUserFromGroup(userId, groupId);
+    }
+    public Collection<Employment> getEmploymentsNotInDepartment(String filterString, String orgId, String deptId, String sort, Boolean desc, Integer start, Integer rows){
+        return this.getEmploymentDao().getEmploymentsNotInDepartment(filterString,orgId,deptId,sort,desc,start,rows);
+    }
+    public Long getTotalEmploymentsNotInDepartment(String filterString, String organizationId, String departmentId){
+        return this.getEmploymentDao().getTotalEmploymentsNotInDepartment(filterString,organizationId,departmentId);
+    }
+
+    public Collection<Employment> getEmploymentsNotInGrade(String filterString, String orgId, String gradeId, String sort, Boolean desc, Integer start, Integer rows){
+        return this.getEmploymentDao().getEmploymentsNotInGrade(filterString,orgId,gradeId,sort,desc,start,rows);
+    }
+    public Long getTotalEmploymentsNotInGrade(String filterString, String organizationId, String gradeId){
+        return this.getEmploymentDao().getTotalEmploymentsNotInGrade(filterString,organizationId,gradeId);
+    }
+
+    public Boolean addDepartment(Department department) {
+        return this.getDepartmentDao().addDepartment(department);
+    }
+
+    public Boolean updateDepartment(Department department) {
+        return this.getDepartmentDao().updateDepartment(department);
+    }
+
+    public Boolean deleteDepartment(String id) {
+        return this.getDepartmentDao().deleteDepartment(id);
+    }
+
+    public Boolean addGrade(Grade grade) {
+        return this.getGradeDao().addGrade(grade);
+    }
+
+    public Boolean updateGrade(Grade grade) {
+        return this.getGradeDao().updateGrade(grade);
+    }
+
+    public Boolean deleteGrade(String id) {
+        return this.getGradeDao().deleteGrade(id);
+    }
+
+    public Boolean assignUserToDepartment(String userId, String departmentId) {
+        return this.getEmploymentDao().assignUserToDepartment(userId,departmentId);
+    }
+
+    public Boolean unassignUserFromDepartment(String userId, String departmentId) {
+        return this.getEmploymentDao().unassignUserFromDepartment(userId,departmentId);
+    }
+
+    public Boolean assignUserToGrade(String userId, String gradeId) {
+        return this.getEmploymentDao().assignUserToGrade(userId,gradeId);
+    }
+
+    public Boolean unassignUserFromGrade(String userId, String gradeId) {
+        return this.getEmploymentDao().unassignUserFromGrade(userId,gradeId);
+    }
+
+    public Boolean addEmployment(Employment employment) {
+        return this.getEmploymentDao().addEmployment(employment);
+    }
+
+    public Boolean updateEmployment(Employment employment) {
+        return this.getEmploymentDao().updateEmployment(employment);
+    }
+
+    public Boolean deleteEmployment(String id) {
+        return this.getEmploymentDao().deleteEmployment(id);
+    }
+    public Boolean assignUserAsDepartmentHOD(String userId, String departmentId) {
+        return this.getEmploymentDao().assignUserAsDepartmentHOD(userId,departmentId);
+    }
+
+    public Boolean unassignUserAsDepartmentHOD(String userId, String departmentId) {
+        return this.getEmploymentDao().unassignUserAsDepartmentHOD(userId,departmentId);
+    }
+
+    public Boolean assignUserReportTo(String userId, String reportToUserId) {
+        return this.getEmploymentDao().assignUserReportTo(userId,reportToUserId);
+    }
+
+    public Boolean unassignUserReportTo(String userId) {
+        return this.getEmploymentDao().unassignUserReportTo(userId);
     }
 }

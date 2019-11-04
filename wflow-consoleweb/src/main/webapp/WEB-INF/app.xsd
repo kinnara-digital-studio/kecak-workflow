@@ -1,0 +1,284 @@
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           elementFormDefault = "qualified"
+           targetNamespace = "http://kecak.org/soap/process/schemas">
+
+    <xs:element name = "AppFormColumnsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "formId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppFormColumnsResponse" />
+
+    <xs:element name = "AppsInstallRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "url" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppsInstallResponse" />
+
+    <xs:element name = "AppsPublishedProcessesRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppsPublishedProcessesResponse" />
+
+    <xs:element name = "AppsPublishedUserviewsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppsPublishedUserviewsResponse" />
+
+    <xs:element name = "AppListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppListResponse" />
+
+    <xs:element name = "AppVersionListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppVersionListResponse" />
+
+    <xs:element name = "AppBuilderActionsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppBuilderActionsResponse" />
+
+    <xs:element name = "AppEnvVariableListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "filter" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppEnvVariableListResponse" />
+
+    <xs:element name = "AppDatalistListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "filter" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppDatalistListResponse" />
+
+    <xs:element name = "AppDatalistOptionsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppDatalistOptionsResponse" />
+
+    <xs:element name = "AppFormTableNameListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppFormTableNameListResponse" />
+
+    <xs:element name = "AppFormsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "name" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppFormsResponse" />
+
+    <xs:element name = "AppFormsOptionsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppFormsOptionsResponse" />
+
+    <xs:element name = "AppPackageDeployRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "packageXpdl" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence maxOccurs="unbounded">
+                            <xs:element name = "XPDL_File" type="xs:string"/>
+                            <xs:element name = "row">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Line" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppPackageDeployResponse" />
+
+    <xs:element name = "AppPackageXpdlRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppPackageXpdlResponse" />
+
+    <xs:element name = "AppPluginDefaultListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "filter" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppPluginDefaultListResponse" />
+
+    <xs:element name = "AppMessageListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "filter" type = "xs:string"/>
+                <xs:element name = "locale" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppMessageListResponse" />
+
+    <xs:element name = "AppUserviewListRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "filter" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppUserviewListResponse" />
+
+    <xs:element name = "AppUserviewOptionsRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type = "xs:string"/>
+                <xs:element name = "version" type = "xs:string"/>
+                <xs:element name = "sort" type = "xs:string"/>
+                <xs:element name = "desc" type = "xs:boolean"/>
+                <xs:element name = "start" type = "xs:int"/>
+                <xs:element name = "rows" type = "xs:int"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "AppUserviewOptionsResponse" />
+
+    <xs:element name = "WorkflowPackageListRequest" />
+    <xs:element name = "WorkflowPackageListResponse" />
+
+    <xs:element name="map">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="xps:MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+        <xs:unique name="item">
+            <xs:selector xpath="item"/>
+            <xs:field xpath="key"/>
+        </xs:unique>
+    </xs:element>
+
+    <xs:complexType name="MapType">
+        <xs:sequence>
+            <xs:element ref="xps:map"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MapItemType">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

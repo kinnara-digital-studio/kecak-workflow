@@ -2,6 +2,7 @@ package org.joget.apps.app.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -9,6 +10,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.xpath.operations.Bool;
+import org.hibernate.jdbc.Work;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
@@ -21,12 +24,17 @@ import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.dao.ClientAppDao;
+import org.joget.directory.model.ClientApp;
 import org.joget.directory.model.User;
+import org.joget.plugin.base.Plugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -37,6 +45,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -47,9 +57,13 @@ public class LoginWebController {
     @Autowired
     AppService appService;
     @Autowired
+    PluginManager pluginManager;
+    @Autowired
     UserviewDefinitionDao userviewDefinitionDao;
     @Autowired
     WorkflowUserManager workflowUserManager;
+    @Autowired
+    ClientAppDao clientAppDao;
 
     @RequestMapping("/login")
     public String login(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -59,6 +73,19 @@ public class LoginWebController {
             savedUrl = savedRequest.getRedirectUrl();
         } else if (request.getHeader("referer") != null) { //for userview logout
             savedUrl = request.getHeader("referer");
+        }
+
+        //add oauth button on login view
+        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+        String oauth2PluginButton = "";
+        for (Plugin plugin : pluginList){
+            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+            Map<String,String> generalSetting = oauthPlugin.getGeneralSetting();
+            Boolean showed = (generalSetting == null)?false:true;
+            for (String setting: generalSetting.keySet()){
+                if(SetupManager.getSettingValue(setting) == null || SetupManager.getSettingValue(setting).isEmpty()) showed = false;
+            }
+            if(showed) oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
         }
 
         if (savedUrl.contains("/web/userview") || savedUrl.contains("/web/embed/userview")) {
@@ -156,6 +183,7 @@ public class LoginWebController {
             map.addAttribute("key", key);
             map.addAttribute("menuId", menuId);
             map.addAttribute("embed", embed);
+            map.addAttribute("oauth2PluginButton",oauth2PluginButton);
             UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
             if (userview != null) {
                 String json = userview.getJson();
@@ -237,7 +265,7 @@ public class LoginWebController {
         } else if (savedUrl.contains(request.getContextPath() + "/mobile")) {
             return "mobile/mLogin";
         }
-
+        map.addAttribute("oauth2PluginButton",oauth2PluginButton);
         return "login";
     }
 
@@ -251,7 +279,31 @@ public class LoginWebController {
         return "mobile/mLogin";
     }
 
-    @RequestMapping("/browserExtension")
+    @RequestMapping("/oauth2/login")
+    public String oauth2Login(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return "oauth2/login";
+    }
+
+//    @RequestMapping("/oauth2/authorize")
+//    public String oauth2Authorize(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
+//        String currentUsername = WorkflowUtil.getCurrentUsername();
+//        ClientApp searchParam = new ClientApp();
+////        HttpSession session = request.getSession();
+////        searchParam.setClientId(session.getAttribute("clientId").toString());
+////        searchParam.setClientSecret(session.getAttribute("clientSecret").toString());
+//        searchParam.setClientId(request.getParameter("clientId"));
+//        searchParam.setClientId(request.getParameter("clientSecret"));
+//        ClientApp clientApp = clientAppDao.getClientApp(searchParam);
+//        if(!WorkflowUtil.isCurrentUserAnonymous() && clientApp != null) {
+//            String redirectUrl = clientApp.getRedirectUrl();
+//            String token = TokenAuthenticationService.addAuthentication(response,currentUsername);
+//            return "redirect:" + redirectUrl + "&token=" + token;
+//        } else {
+//            return "redirect:/web/oauth2/login?login_error=1";
+//        }
+//    }
+
+        @RequestMapping("/browserExtension")
     public String browserExtension(ModelMap map, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String registrationId = request.getParameter("registrationId");
         if(registrationId == null || registrationId.isEmpty()) {

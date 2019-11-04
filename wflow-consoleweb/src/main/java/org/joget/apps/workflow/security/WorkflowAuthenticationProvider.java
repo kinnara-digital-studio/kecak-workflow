@@ -1,16 +1,20 @@
 package org.joget.apps.workflow.security;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import org.apache.commons.codec.binary.Hex;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.HostManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.directory.dao.RoleDao;
+import org.joget.directory.dao.UserDao;
+import org.joget.directory.dao.UserTokenDao;
 import org.joget.directory.model.Role;
 import org.joget.directory.model.User;
+import org.joget.directory.model.UserToken;
 import org.joget.directory.model.service.DirectoryManager;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.dao.WorkflowHelper;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -26,12 +30,26 @@ import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 public class WorkflowAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
 
     transient
     @Autowired
     @Qualifier("main")
     private DirectoryManager directoryManager;
+
+    @Autowired
+    private PluginManager pluginManager;
+
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private UserTokenDao userTokenDao;
+    @Autowired
+    private RoleDao roleDao;
+
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
     public DirectoryManager getDirectoryManager() {
@@ -45,7 +63,9 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // reset profile and set hostname
         HostManager.initHost();
-            
+
+        LogUtil.debug(this.getClass().getName(), "INSIDE AUTH PROVIDER");
+
         // Determine username
         String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
         String password = authentication.getCredentials().toString();
@@ -53,7 +73,25 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         // check credentials
         boolean validLogin = false;
         try {
-            validLogin = directoryManager.authenticate(username, password);
+            Oauth2ClientPlugin oauth2ClientPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(username);
+            if(oauth2ClientPlugin != null){
+                User u = oauth2ClientPlugin.getUser(password);
+                if (u != null) {
+                    username = u.getUsername();
+                    validLogin = true;
+                    UserToken userToken = new UserToken();
+                    userToken.setUserId(u.getId());
+                    userToken.setPlatformId(oauth2ClientPlugin.getClass().getName());
+                    userTokenDao.deleteUserToken(userToken);
+                    userToken.setId(UUID.randomUUID().toString());
+                    userToken.setToken(password);
+                    userTokenDao.addUserToken(userToken);
+                } else {
+                    throw new BadCredentialsException("User not found");
+                }
+            } else {
+                validLogin = directoryManager.authenticate(username, password);
+            }
         } catch (Exception e) {
             throw new BadCredentialsException(e.getMessage());
         }
@@ -93,5 +131,12 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
 
     public void setMessageSource(MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
+    }
+
+    public static String encodeHMacSHA256(byte[] key, String data) throws Exception {
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(key, "HmacSHA256");
+        sha256_HMAC.init(secret_key);
+        return Hex.encodeHexString(sha256_HMAC.doFinal(data.getBytes()));
     }
 }

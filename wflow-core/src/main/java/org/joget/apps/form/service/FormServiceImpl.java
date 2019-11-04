@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joget.apps.app.dao.UserviewDefinitionDao;
+import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.AbstractSubForm;
 import org.joget.apps.form.model.Element;
@@ -19,6 +21,8 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.model.FormStoreBinder;
+import org.joget.apps.userview.model.Userview;
+import org.joget.apps.userview.service.UserviewService;
 import org.joget.commons.util.FileLimitException;
 import org.joget.commons.util.FileManager;
 import org.joget.commons.util.FileStore;
@@ -39,6 +43,12 @@ public class FormServiceImpl implements FormService {
 		
 	@Autowired
 	SetupManager setupManager;
+
+	@Autowired
+    UserviewService userviewService;
+
+    @Autowired
+    UserviewDefinitionDao userviewDefinitionDao;
 
 
     /**
@@ -81,7 +91,7 @@ public class FormServiceImpl implements FormService {
 
     /**
      * Creates an element object from a JSON definition
-     * @param formJson
+     * @param elementJson
      * @return
      */
     public Element createElementFromJson(String elementJson) {
@@ -90,7 +100,7 @@ public class FormServiceImpl implements FormService {
 
     /**
      * Creates an element object from a JSON definition
-     * @param formJson
+     * @param elementJson
      * @param processHashVariable
      * @return
      */

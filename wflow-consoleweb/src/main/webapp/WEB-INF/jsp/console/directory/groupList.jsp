@@ -49,7 +49,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton2="general.method.label.delete"
                        checkboxCallback2="deleteGroup"
                        searchItems="name|Name"
@@ -67,7 +67,7 @@
     $(document).ready(function(){
         $('#JsonDataTable_searchTerm').hide();
 
-        <c:if test="${isCustomDirectoryManager}">
+        <c:if test="${isCustomDirectoryManager && isReadOnly}">
             $('#main-action-buttons').remove();
             $('#JsonDataTable_groupList-buttons').remove();
         </c:if>

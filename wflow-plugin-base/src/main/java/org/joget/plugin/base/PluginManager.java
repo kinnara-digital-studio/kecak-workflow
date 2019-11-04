@@ -1,33 +1,12 @@
 package org.joget.plugin.base;
 
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.SetupManager;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import freemarker.cache.URLTemplateLoader;
+import freemarker.template.*;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.StringMap;
-import org.joget.commons.util.HostManager;
+import org.joget.commons.util.*;
+import org.joget.plugin.property.model.PropertyEditable;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -37,24 +16,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
-import freemarker.cache.URLTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Collections;
-import java.util.Comparator;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.joget.commons.util.ResourceBundleUtil;
-import org.joget.commons.util.StringUtil;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.LocaleResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
+import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Service methods used to manage plugins
@@ -120,7 +96,7 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Used by system to sets a list of custom scanning packages
-     * @param blackList 
+     * @param scanPackageList
      */
     public void setScanPackageList(Set<String> scanPackageList) {
         this.scanPackageList = scanPackageList;
@@ -278,8 +254,19 @@ public class PluginManager implements ApplicationContextAware {
 
     protected boolean startBundle(Bundle bundle) {
         try {
+            final BundleContext context = felix.getBundleContext();
+
             //bundle.update();
             bundle.start();
+
+            // execute event onInstall
+            Optional.ofNullable(bundle.getRegisteredServices()).map(Arrays::stream).orElse(Stream.empty())
+                    .filter(Objects::nonNull)
+                    .map(context::getService)
+                    .filter(o -> o instanceof Plugin)
+                    .map(o -> (Plugin) o)
+                    .forEach(p -> p.onInstall(applicationContext));
+
             LogUtil.info(PluginManager.class.getName(), "Bundle " + bundle.getSymbolicName() + " started");
         } catch (Exception be) {
             LogUtil.error(PluginManager.class.getName(), be, "Failed bundle start for " + bundle + ": " + be.toString());
@@ -376,11 +363,7 @@ public class PluginManager implements ApplicationContextAware {
         }
         // sort plugins
 		List<BeanDefinition> componentList = new ArrayList(components);
-        Collections.sort(componentList, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                return ((BeanDefinition)o1).getBeanClassName().compareTo(((BeanDefinition)o2).getBeanClassName());
-            }
-        });
+        componentList.sort(Comparator.comparing(BeanDefinition::getBeanClassName));
         for (BeanDefinition component : componentList) {
             String beanClassName = component.getBeanClassName();
             if (blackList == null || !blackList.contains(beanClassName)) {
@@ -413,7 +396,7 @@ public class PluginManager implements ApplicationContextAware {
      * @return
      */
     protected Collection<Plugin> loadOsgiPlugins() {
-        Collection<Plugin> list = new ArrayList<Plugin>();
+        Collection<Plugin> list = new ArrayList<>();
         BundleContext context = felix.getBundleContext();
         Bundle[] bundles = context.getBundles();
         for (Bundle b : bundles) {
@@ -472,14 +455,12 @@ public class PluginManager implements ApplicationContextAware {
             }
 
             // write file
-            FileOutputStream out = null;
-            try {
-                outputFile = new File(getBaseDirectory(), filename);
-                File outputDir = outputFile.getParentFile();
-                if (!outputDir.exists()) {
-                    outputDir.mkdirs();
-                }
-                out = new FileOutputStream(outputFile);
+            outputFile = new File(getBaseDirectory(), filename);
+            File outputDir = outputFile.getParentFile();
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+            try(FileOutputStream out = new FileOutputStream(outputFile)) {
                 BufferedInputStream bin = new BufferedInputStream(in);
                 int len = 0;
                 byte[] buffer = new byte[4096];
@@ -488,24 +469,11 @@ public class PluginManager implements ApplicationContextAware {
                 }
                 out.flush();
                 location = outputFile.toURI().toURL().toExternalForm();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    LogUtil.error(PluginManager.class.getName(), ex, "");
-                }
             }
 
             // validate jar file
             boolean isValid = false;
-            JarFile jarFile = null;
-            try {
-                jarFile = new JarFile(outputFile);
+            try (JarFile jarFile = new JarFile(outputFile)) {
                 isValid = true;
             } catch (IOException ex) {
                 //delete invalid file
@@ -520,10 +488,6 @@ public class PluginManager implements ApplicationContextAware {
             } catch (Exception ex) {
                 LogUtil.error(PluginManager.class.getName(), ex, "");
                 throw new PluginException("Invalid jar file");
-            } finally {
-                if (jarFile != null) {
-                    jarFile.close();
-                }
             }
 
             // install
@@ -543,7 +507,7 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Uninstall/remove all plugin, option to deleting the plugin file
-     * @param name
+     * @param deleteFiles
      * @return
      */
     public void uninstallAll(boolean deleteFiles) {
@@ -575,8 +539,18 @@ public class PluginManager implements ApplicationContextAware {
         if (sr != null) {
             try {
                 Bundle bundle = sr.getBundle();
+
+                // execute event onUninstall
+                Optional.ofNullable(bundle.getRegisteredServices()).map(Arrays::stream).orElse(Stream.empty())
+                        .filter(Objects::nonNull)
+                        .map(context::getService)
+                        .filter(o -> o instanceof Plugin)
+                        .map(o -> (Plugin)o)
+                        .forEach(p -> p.onUninstall(applicationContext));
+
                 bundle.stop();
                 bundle.uninstall();
+
                 String location = bundle.getLocation();
                 context.ungetService(sr);
 
@@ -972,7 +946,6 @@ public class PluginManager implements ApplicationContextAware {
     /**
      * Retrieves a URL to a resource from a plugin. The plugin may either be from OSGI container or system classpath.
      * @param pluginName
-     * @param pluginName
      * @param resourceUrl
      * @return
      */
@@ -1055,24 +1028,16 @@ public class PluginManager implements ApplicationContextAware {
 
         // install plugin
         if (install && (!existing || override)) {
-            InputStream in = null;
             try {
                 LogUtil.info(PluginManager.class.getName(), " ===install=== ");
                 File file = new File(location);
                 if (file.exists()) {
-                    in = new FileInputStream(file);
-                    upload(file.getName(), in);
+                    try(InputStream in = new FileInputStream(file)) {
+                        upload(file.getName(), in);
+                    }
                 }
             } catch (Exception ex) {
                 LogUtil.error(PluginManager.class.getName(), ex, "");
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    LogUtil.error(PluginManager.class.getName(), ex, "");
-                }
             }
         }
 
@@ -1099,7 +1064,6 @@ public class PluginManager implements ApplicationContextAware {
 //        String pluginDirectory = "target/wflow-bundles";
         PluginManager pm = new PluginManager();
 
-        FileInputStream in = null;
         try {
             LogUtil.info(PluginManager.class.getName(), " ===Plugin List=== ");
             for (Plugin p : pm.list()) {
@@ -1108,21 +1072,12 @@ public class PluginManager implements ApplicationContextAware {
             String samplePluginFile = "../wflow-plugins/wflow-plugin-sample/target/wflow-plugin-sample.jar";
             String samplePlugin = "org.joget.plugin.sample.SamplePlugin";
 
-            try {
-                LogUtil.info(PluginManager.class.getName(), " ===Install SamplePlugin=== ");
-                File file = new File(samplePluginFile);
-                in = new FileInputStream(file);
+            File file = new File(samplePluginFile);
+            LogUtil.info(PluginManager.class.getName(), " ===Install SamplePlugin=== ");
+            try(FileInputStream in = new FileInputStream(file)) {
                 pm.upload(file.getName(), in);
             } catch (Exception ex) {
                 LogUtil.error(PluginManager.class.getName(), ex, "");
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    LogUtil.error(PluginManager.class.getName(), ex, "");
-                }
             }
 
             LogUtil.info(PluginManager.class.getName(), " ===Plugin List after install=== ");
@@ -1183,7 +1138,7 @@ public class PluginManager implements ApplicationContextAware {
 
     /**
      * Method used for system to set ApplicationContext
-     * @param context
+     * @param appContext
      * @throws BeansException 
      */
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
@@ -1205,5 +1160,47 @@ public class PluginManager implements ApplicationContextAware {
     	
     	return result;
     	
+    }
+
+    /**
+     * Kecak Exclusive
+     *
+     * Generate plugin object
+     *
+     * @param elementSelect
+     * @param <T>
+     * @return
+     */
+    public <T extends PropertyEditable> T getPluginObject(Map<String, Object> elementSelect) {
+        if (elementSelect == null)
+            return null;
+
+        String className = (String) elementSelect.get("className");
+        Map<String, Object> properties = (Map<String, Object>) elementSelect.get("properties");
+
+        return getPluginObject(className, properties);
+    }
+
+    /**
+     * Kecak Exclusive
+     *
+     * Generate plugin object
+     *
+     * @param className class name
+     * @param properties plugin properties
+     * @param <T> plugin class
+     * @return plugin object
+     */
+    public <T extends PropertyEditable> T getPluginObject(String className, Map<String, Object> properties) {
+        T plugin = (T) getPlugin(className);
+        if (plugin == null) {
+            LogUtil.warn(PluginManager.class.getName(), "Error generating plugin [" + className + "]");
+            return null;
+        }
+
+        if(properties != null)
+            properties.forEach(plugin::setProperty);
+
+        return plugin;
     }
 }

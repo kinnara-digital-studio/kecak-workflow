@@ -59,7 +59,7 @@
                        hrefDialogWidth="600px"
                        hrefDialogHeight="400px"
                        hrefDialogTitle="Process Dialog"
-                       checkbox="${!isCustomDirectoryManager}"
+                       checkbox="${!(isCustomDirectoryManager && isReadOnly)}"
                        checkboxButton1="console.directory.group.user.assign.label"
                        checkboxCallback1="assignUsers"
                        checkboxOptional1="true"
@@ -80,7 +80,7 @@
     $(document).ready(function(){
         $('#JsonDataTable_searchTerm').hide();
 
-        <c:if test="${isCustomDirectoryManager || group.readonly}">
+        <c:if test="${(isCustomDirectoryManager || group.readonly) && isReadOnly}">
             $('#main-action-buttons').remove();
             $('#JsonDataTable_userList-buttons').remove();
         </c:if>

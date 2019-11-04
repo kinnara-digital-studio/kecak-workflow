@@ -1,18 +1,12 @@
 package org.joget.apps.userview.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.MobileUtil;
 import org.joget.apps.userview.lib.DefaultV5EmptyTheme;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewCategory;
-import org.joget.apps.userview.model.UserviewMenu;
-import org.joget.apps.userview.model.UserviewV5Theme;
+import org.joget.apps.userview.model.*;
+import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.StringUtil;
@@ -20,8 +14,19 @@ import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryUtil;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.directory.model.service.UserSecurity;
+import org.joget.plugin.base.Plugin;
+import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.userview.model.BootstrapUserview;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserviewThemeProcesser {
 
@@ -47,7 +52,11 @@ public class UserviewThemeProcesser {
 
     public String getPreviewView() {
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-            return "ubuilder/preview";
+            if(userview.getSetting().getTheme() instanceof BootstrapUserview) {
+                return ((BootstrapUserview)userview.getSetting().getTheme()).getPreviewJsp();
+            } else {
+                return "ubuilder/preview";
+            }
         }
 
         init();
@@ -57,7 +66,11 @@ public class UserviewThemeProcesser {
 
     public String getLoginView() {
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-            return "ubuilder/login";
+            if(userview.getSetting().getTheme() instanceof BootstrapUserview) {
+                return ((BootstrapUserview)userview.getSetting().getTheme()).getLoginJsp();
+            } else {
+                return "ubuilder/login";
+            }
         }
         
         String loginRedirection = loginRedirection();
@@ -72,9 +85,14 @@ public class UserviewThemeProcesser {
     }
 
     public String getView() {
-        
+
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-            return "ubuilder/view";
+//            if(userview.getSetting().getPropertyString("useNewLayout").equals("true")) {
+            if(userview.getSetting().getTheme() instanceof BootstrapUserview) {
+                return ((BootstrapUserview)userview.getSetting().getTheme()).getUserviewJsp();
+            } else {
+                return "ubuilder/view";
+            }
         }
 
         String mobileViewRedirection = mobileViewRedirection();

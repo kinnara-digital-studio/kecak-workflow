@@ -1,8 +1,5 @@
 package org.joget.apps.userview.lib;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.http.HttpServletRequest;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.DatalistDefinition;
@@ -11,15 +8,20 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.commons.util.StringUtil;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.userview.model.AceUserviewMenu;
+import org.kecak.apps.userview.model.AdminLteUserviewMenu;
+import org.kecak.apps.userview.model.BootstrapUserview;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
-public class DataListMenu extends UserviewMenu {
+import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, AceUserviewMenu {
     private DataList cacheDataList = null;
 
     public String getClassName() {
@@ -96,6 +98,10 @@ public class DataListMenu extends UserviewMenu {
 
     @Override
     public String getJspPage() {
+        return getJspPage("userview/plugin/datalist.jsp");
+    }
+
+    protected String getJspPage(String jspFile) {
         try {
             // get data list
             DataList dataList = getDataList();
@@ -133,8 +139,9 @@ public class DataListMenu extends UserviewMenu {
             String message = ex.toString();
             message += "\r\n<pre class=\"stacktrace\">" + out.getBuffer() + "</pre>";
             setProperty("error", message);
-        }    
-        return "userview/plugin/datalist.jsp";
+        }
+
+        return jspFile;
     }
 
     protected DataList getDataList() throws BeansException {
@@ -164,5 +171,25 @@ public class DataListMenu extends UserviewMenu {
             }
         }
         return cacheDataList;
+    }
+
+    @Override
+    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getDataListJsp());
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getDataListJsp());
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
+        return getDecoratedMenu();
     }
 }

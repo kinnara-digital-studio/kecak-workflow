@@ -1,4 +1,5 @@
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
+<%@ page import="java.net.URLEncoder" %>
 
 <commons:popupHeader />
 
@@ -33,6 +34,10 @@
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.directory.user.common.label.email"/></label>
                     <span class="form-input"><form:input path="email" cssErrorClass="form-input-error" /></span>
+                </div>
+                <div class="form-row">
+                    <label for="field1"><fmt:message key="console.directory.user.common.label.telephoneNumber"/></label>
+                    <span class="form-input"><form:input path="telephoneNumber" cssErrorClass="form-input-error" /></span>
                 </div>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.directory.user.common.label.password"/></label>
@@ -87,7 +92,7 @@
                         <select id="employeeOrganization" name="employeeOrganization">
                             <option value=""></option>
                             <c:forEach items="${organizations}" var="org">
-                                <option value="<c:out value="${org.id}"/>" <c:if test="${org.id eq employeeOrganization}">selected</c:if>><c:out value="${org.name}"/></option>
+                                <option value="<c:out value="${URLEncoder.encode(org.id)}"/>" <c:if test="${org.id eq employeeOrganization}">selected</c:if>><c:out value="${org.name}"/></option>
                             </c:forEach>
                         </select>
                     </span>

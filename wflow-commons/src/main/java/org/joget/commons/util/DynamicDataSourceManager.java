@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -33,81 +32,43 @@ public class DynamicDataSourceManager {
     }
     
     public static boolean testConnection(String driver, String url, String user, String password) {
-        Connection conn = null;
         try {
             Class.forName(driver);
-            conn = DriverManager.getConnection(url, user, password);
-            return true;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
+            try(Connection conn = DriverManager.getConnection(url, user, password)) {
+                return true;
             }
+        } catch (Exception e) {
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
+            return false;
         }
     }
 
     public static Properties getProperties() {
         Properties properties = profilePropertyManager.newInstance();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(new File(determineFilePath(getCurrentProfile())));
+        try(FileInputStream fis = new FileInputStream(new File(determineFilePath(getCurrentProfile())))) {
             properties.load(fis);
-        } catch (FileNotFoundException e) {
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return properties;
     }
 
     public static String getProperty(String key) {
         Properties properties = profilePropertyManager.newInstance();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(new File(determineFilePath(getCurrentProfile())));
+        try(FileInputStream fis = new FileInputStream(new File(determineFilePath(getCurrentProfile())));) {
             properties.load(fis);
             return properties.getProperty(key);
-        } catch (FileNotFoundException e) {
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return null;
     }
 
     public static List<String> getProfileList() {
         try {
-            File[] fileList = new File(FILE_PATH).listFiles(new FilenameFilter() {
+            File[] fileList = new File(FILE_PATH).listFiles((dir, name) -> name.startsWith(FILE_PREFIX) && name.endsWith(FILE_EXTENSION) && name.length() > (FILE_PREFIX.length() + FILE_EXTENSION.length()));
 
-                public boolean accept(File dir, String name) {
-                    if (name.startsWith(FILE_PREFIX) && name.endsWith(FILE_EXTENSION) && name.length() > (FILE_PREFIX.length() + FILE_EXTENSION.length())) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            });
-
-            List<String> profileList = new ArrayList<String>();
+            List<String> profileList = new ArrayList<>();
             for (File file : fileList) {
                 String fileName = file.getName();
                 String profileName = fileName.replace(FILE_PREFIX, "").replace(FILE_EXTENSION, "");
@@ -115,43 +76,33 @@ public class DynamicDataSourceManager {
             }
             return profileList;
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return null;
     }
 
     public static Properties getProfileProperties() {
         Properties properties = profilePropertyManager.newInstance();
-        FileInputStream fis = null;
         String defaultDataSourceFilename = determineDefaultDataSourceFilename();
-        try {
-            fis = new FileInputStream(new File(defaultDataSourceFilename));
+        try(FileInputStream fis = new FileInputStream(new File(defaultDataSourceFilename))) {
             properties.load(fis);
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return properties;
     }
 
     public static String getCurrentProfile() {
         Properties properties = new Properties();
-        FileInputStream fis = null;
         String defaultDataSourceFilename = determineDefaultDataSourceFilename();
         try {
             // look for profile or hostname set by HostManager in thread
             String currentProfile = HostManager.getCurrentProfile();
             if (currentProfile == null || currentProfile.trim().length() == 0) {
                 // load from properties file
-                fis = new FileInputStream(new File(defaultDataSourceFilename));
-                properties.load(fis);
+                try(FileInputStream fis = new FileInputStream(new File(defaultDataSourceFilename))) {
+                    properties.load(fis);
+                }
 
                 String hostname = HostManager.getCurrentHost();
                 if (hostname != null && hostname.trim().length() > 0) {
@@ -179,25 +130,17 @@ public class DynamicDataSourceManager {
                 // As of v5, don't automatically create default profile, to allow setup on first startup
                 // createDefaultProfile();
                 LogUtil.debug(DynamicDataSourceManager.class.getName(), defaultDataSourceFilename + " not found, using default datasource");
+            } else {
+                LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
             }
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return null;
     }
 
     public static void changeProfile(String profileName) {
         Properties properties = new Properties();
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
         String defaultDataSourceFilename = determineDefaultDataSourceFilename();
         try {
             File datasourceFile = new File(defaultDataSourceFilename);
@@ -205,26 +148,19 @@ public class DynamicDataSourceManager {
                 new File(FILE_PATH).mkdirs();
                 datasourceFile.createNewFile();
             }
-            fis = new FileInputStream(datasourceFile);
-            properties.load(fis);
+            try(FileInputStream fis = new FileInputStream(datasourceFile)) {
+                properties.load(fis);
+            }
+
             properties.setProperty(CURRENT_PROFILE_KEY, profileName);
 
-            fos = new FileOutputStream(datasourceFile);
-            properties.store(fos, "");
+            try(FileOutputStream fos = new FileOutputStream(datasourceFile)) {
+                properties.store(fos, "");
+            }
+
             HostManager.setCurrentProfile(profileName);
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-                if (fos != null) {
-                    fos.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
     }
 
@@ -238,7 +174,7 @@ public class DynamicDataSourceManager {
             file.createNewFile();
             return true;
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return false;
     }
@@ -248,57 +184,37 @@ public class DynamicDataSourceManager {
             File file = new File(determineFilePath(profileName));
             file.delete();
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return false;
     }
 
     public static void writeProperty(String key, String value) {
         Properties properties = profilePropertyManager.newInstance();
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
         try {
             String currentProfile = getCurrentProfile();
-            fis = new FileInputStream(new File(determineFilePath(currentProfile)));
-            properties.load(fis);
+            try(FileInputStream fis = new FileInputStream(new File(determineFilePath(currentProfile)))) {
+                properties.load(fis);
+            }
+
             properties.setProperty(key, value);
 
-            fos = new FileOutputStream(new File(determineFilePath(currentProfile)));
-            properties.store(fos, "");
-        } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-                if (fos != null) {
-                    fos.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
+            try(FileOutputStream fos = new FileOutputStream(new File(determineFilePath(currentProfile)))) {
+                properties.store(fos, "");
             }
+        } catch (Exception e) {
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
     }
 
     @SuppressWarnings("rawtypes")
 	public static Set getPropertyKeySet() {
         Properties properties = profilePropertyManager.newInstance();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(new File(determineFilePath(getCurrentProfile())));
+        try(FileInputStream fis = new FileInputStream(new File(determineFilePath(getCurrentProfile())))) {
             properties.load(fis);
             return properties.keySet();
         } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
+            LogUtil.error(DynamicDataSourceManager.class.getName(), e, e.getMessage());
         }
         return null;
     }
@@ -320,18 +236,20 @@ public class DynamicDataSourceManager {
     }
 
     protected static void createDefaultProfile() {
-        Properties properties = new Properties();
-        FileOutputStream fos = null;
-        String defaultDataSourceFilename = determineDefaultDataSourceFilename();
         try {
+            String defaultDataSourceFilename = determineDefaultDataSourceFilename();
             //create datasource properties file
             File file = new File(defaultDataSourceFilename);
             new File(FILE_PATH).mkdirs();
             file.createNewFile();
 
-            fos = new FileOutputStream(file);
+            Properties properties = new Properties();
             properties.setProperty(CURRENT_PROFILE_KEY, DEFAULT_PROFILE);
-            properties.store(fos, "");
+            try(FileOutputStream fos = new FileOutputStream(file)) {
+                properties.store(fos, "");
+            }
+
+
 
             //create default datasource properties file
             createProfile(DEFAULT_PROFILE);
@@ -339,19 +257,11 @@ public class DynamicDataSourceManager {
 
             writeProperty("workflowUser", "root");
             writeProperty("workflowPassword", "");
-            writeProperty("workflowDriver", "com.mysql.jdbc.Driver");
+            writeProperty("workflowDriver", "com.mysql.cj.jdbc.Driver");
             writeProperty("workflowUrl", "jdbc:mysql://localhost:3306/jwdb?characterEncoding=UTF-8");
             writeProperty("profileName", "");
         } catch (Exception e) {
             LogUtil.error(DynamicDataSourceManager.class.getName(), e, "Error creating default profile");
-        } finally {
-            try {
-                if (fos != null) {
-                    fos.close();
-                }
-            } catch (Exception e) {
-                LogUtil.error(DynamicDataSourceManager.class.getName(), e, "");
-            }
         }
     }
 }

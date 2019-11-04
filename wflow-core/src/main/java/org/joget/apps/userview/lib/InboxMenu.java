@@ -1,16 +1,5 @@
 package org.joget.apps.userview.lib;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.model.PackageDefinition;
@@ -24,8 +13,7 @@ import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.LogUtil;
@@ -39,9 +27,22 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
+import org.kecak.apps.userview.model.AceUserviewMenu;
+import org.kecak.apps.userview.model.AdminLteUserviewMenu;
+import org.kecak.apps.userview.model.BootstrapUserview;
 import org.springframework.context.ApplicationContext;
 
-public class InboxMenu extends UserviewMenu implements PluginWebSupport {
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUserviewMenu, AdminLteUserviewMenu {
     private DataList cacheDataList = null;
 
     public static final String PREFIX_SELECTED = "selected_";
@@ -110,6 +111,10 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
 
     @Override
     public String getJspPage() {
+        return getJspPage("userview/plugin/form.jsp", "userview/plugin/datalist.jsp");
+    }
+
+    private String getJspPage(String jspFormFile, String jspListFile) {
         String mode = getRequestParameterString("_mode");
 
         if ("assignment".equals(mode)) {
@@ -117,7 +122,9 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
             setProperty("customFooter", getPropertyString(mode + "-customFooter"));
             setProperty("messageShowAfterComplete", getPropertyString(mode + "-messageShowAfterComplete"));
             setAlertMessage(getPropertyString(mode + "-messageShowAfterComplete"));
-            return handleForm();
+
+//                return handleBootstrapForm();
+            return handleForm(jspFormFile);
         } else {
             String customHeader = "<style>";
             customHeader += "span.dot_red{background-color: red;display: block;height: 15px;text-align: left;width: 15px;}";
@@ -129,17 +136,17 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
             }
             setProperty("customHeader", customHeader);
             setProperty("customFooter", getPropertyString("list-customFooter"));
-            return handleList();
+            return handleList(jspListFile);
         }
     }
 
-    protected String handleList() {
+    protected String handleList(String jspFile) {
         viewList();
 
-        return "userview/plugin/datalist.jsp";
+        return jspFile;
     }
 
-    protected void viewList() {
+    private void viewList() {
         try {
             // get data list
             DataList dataList = getDataList();
@@ -179,7 +186,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    protected DataList getDataList() {
+    private DataList getDataList() {
         if (cacheDataList == null) {
             // get datalist
             ApplicationContext ac = AppUtil.getApplicationContext();
@@ -193,7 +200,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	protected DataListCollection getRows(DataList dataList) {
+    private DataListCollection getRows(DataList dataList) {
         try {
             DataListCollection resultList = new DataListCollection();
 
@@ -252,7 +259,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    public int getDataTotalRowCount() {
+    private int getDataTotalRowCount() {
         WorkflowManager workflowManager = (WorkflowManager) WorkflowUtil.getApplicationContext().getBean("workflowManager");
 
         String packageId = null;
@@ -285,7 +292,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         return count;
     }
 
-    protected String handleForm() {
+    private String handleForm(String jspFile) {
         AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         if ("submit".equals(getRequestParameterString("_action"))) {
             // only allow POST
@@ -293,7 +300,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
                 return "userview/plugin/unauthorized.jsp";
             }
-            
+
             // submit form
             submitForm();
         } else {
@@ -302,7 +309,8 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
         //reset appDef
         AppUtil.setCurrentAppDefinition(appDef);
-        return "userview/plugin/form.jsp";
+
+        return jspFile;
     }
 
     protected void displayForm() {
@@ -348,7 +356,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    protected PackageActivityForm retrieveAssignmentForm(FormData formData, WorkflowAssignment assignment) {
+    private PackageActivityForm retrieveAssignmentForm(FormData formData, WorkflowAssignment assignment) {
         String activityId = assignment.getActivityId();
         String formUrl = addParamToUrl(getUrl(), "_action", "submit");
         formUrl = addParamToUrl(formUrl, "_mode", "assignment");
@@ -438,7 +446,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
     }
 
     @SuppressWarnings("deprecation")
-	protected Form submitAssignmentForm(FormData formData, WorkflowAssignment assignment, PackageActivityForm activityForm) {
+    private Form submitAssignmentForm(FormData formData, WorkflowAssignment assignment, PackageActivityForm activityForm) {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -539,7 +547,27 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    protected String addParamToUrl(String url, String name, String value) {
+    private String addParamToUrl(String url, String name, String value) {
         return StringUtil.addParamsToUrl(url, name, value);
+    }
+
+    @Override
+    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp());
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp());
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
+        return getDecoratedMenu();
     }
 }

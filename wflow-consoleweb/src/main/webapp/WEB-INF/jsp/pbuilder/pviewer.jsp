@@ -36,6 +36,53 @@
         <script src="${pageContext.request.contextPath}/web/console/i18n/pbuilder"></script>
         <script src="${pageContext.request.contextPath}/pbuilder/js/pbuilder.js"></script>
         <script>
+            function allowDrop(ev) {
+              ev.preventDefault();
+              if($(ev.target).hasClass('node_label')){
+                $(ev.target).parent().addClass('node_active');
+              } else {
+                $(ev.target).addClass('node_active');
+              }
+            }
+
+            function leaveDropZone(ev) {
+              $(ev.target).removeClass("node_active");
+              if($(ev.target).hasClass('node_label')){
+                $(ev.target).parent().removeClass('node_active');
+              } else {
+                $(ev.target).removeClass('node_active');
+              }
+            }
+
+            function drag(ev) {
+              ev.dataTransfer.setData("text", ev.target.id);
+            }
+
+            function drop(ev) {
+              ev.preventDefault();
+              var data = ev.dataTransfer.getData("text");
+              var actId;
+              if($(ev.target).hasClass('node_label')){
+                $(ev.target).parent().addClass('node_active');
+                actId = $(ev.target).parent().attr('id');
+              } else {
+                $(ev.target).addClass('node_active');
+                actId = $(ev.target).attr('id');
+              }
+              actId = actId.replace('node_','');
+              $(data).removeClass('node_active');
+              $.ajax({
+                  url: "${pageContext.request.contextPath}/web/json/workflow/assignment/process/${wfProcess.instanceId}/transfer/" + actId,
+                  type:"GET",
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  success: function (data) {
+                    var url = document.URL;
+                    url = url.replace('${wfProcess.instanceId}',data.processId);
+                    window.location = url;
+                  }
+              });
+            }
             $(function() {
                 //init ApiClient base url (add to support different context path)
                 ProcessBuilder.ApiClient.baseUrl = "${pageContext.request.contextPath}";
@@ -54,35 +101,46 @@
                     </c:forEach>
                     for (var i=0; i<selectedNodes.length; i++) {
                         $("#node_" + selectedNodes[i]).addClass("node_active");
+                        $("#node_" + selectedNodes[i]).clone().attr('id',"#node_" + selectedNodes[i])
+                            .attr('draggable','true').attr('ondragstart','drag(event)')
+                            .insertAfter("#node_" + selectedNodes[i]);
                     }
+                    $('.node.activity').each(function(e){
+                        $(this).find('.node_label').attr('tabindex','-1');
+                        $(this).attr('ondrop','drop(event)').attr('ondragover','allowDrop(event)').
+                                attr('ondragleave','leaveDropZone(event)');
+                    });
                 }
             });
         </script>
     </head>
 
     <body id="pviewer">
-        <div id="pviewer-container">
-            <div id="viewport">
-                <div id="canvas"></div>
-            </div>
-            <div id="panel">
-                <div id="controls">                                    
-                    <a href="#" onclick="ProcessBuilder.Designer.setZoom(0.7); return false"><i class="icon-zoom-out"></i> </a> 
-                    <a href="#" onclick="ProcessBuilder.Designer.setZoom(1.0); return false"><i class="icon-zoom-in"></i></a> | 
-                    <a href="#" onclick="$('#config').toggle(); return false"><i class="icon-cog"></i> <fmt:message key="pbuilder.label.debug"/></a>
+        <section class="content" id="pviewer-container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="viewport">
+                        <div id="canvas"></div>
+                    </div>
+                    <div id="panel">
+                        <div id="controls">
+                            <a href="#" onclick="ProcessBuilder.Designer.setZoom(0.7); return false"><i class="icon-zoom-out"></i> </a>
+                            <a href="#" onclick="ProcessBuilder.Designer.setZoom(1.0); return false"><i class="icon-zoom-in"></i></a> |
+                            <a href="#" onclick="$('#config').toggle(); return false"><i class="icon-cog"></i> <fmt:message key="pbuilder.label.debug"/></a>
+                        </div>
+                        <div id="config">
+                            <form method="POST">
+                                <textarea id="xpdl" name="xpdl" rows="12" cols="30"><c:out value="${xpdl}" escapeXml="true"/></textarea>
+                                <br />
+                                <input type="hidden" name="editable" value="false"/>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div id="config">
-                    <form method="POST">
-                        <textarea id="xpdl" name="xpdl" rows="12" cols="30"><c:out value="${xpdl}" escapeXml="true"/></textarea>
-                        <br />
-                        <input type="hidden" name="editable" value="false"/>
-                    </form>
-                </div>
-            </div>        
-        </div>
 
-        <div id="builder-message"></div>
-        <div id="builder-screenshot"></div>
-        
+                <div id="builder-message"></div>
+                <div id="builder-screenshot"></div>
+            </div>
+        </section>
     </body>
 </html>

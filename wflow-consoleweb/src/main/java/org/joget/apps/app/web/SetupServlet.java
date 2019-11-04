@@ -11,6 +11,10 @@ import org.joget.commons.util.DynamicDataSourceManager;
 import org.joget.commons.util.HostManager;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
+import org.kecak.apps.scheduler.SchedulerManager;
+import org.kecak.apps.scheduler.SchedulerPluginJob;
+import org.kecak.apps.scheduler.model.SchedulerDetails;
+import org.kecak.apps.scheduler.model.TriggerTypes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -28,6 +32,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -101,7 +106,7 @@ public class SetupServlet extends HttpServlet {
                 // test connection
                 message = ResourceBundleUtil.getMessage("setup.datasource.label.success");
 
-                LogUtil.info(getClass().getName(), "Use database " + dbName);
+                LogUtil.info(getClass().getName(), "Use database [" + dbName + "]");
                 con.setCatalog(dbName);
 
                 // check for existing tables
@@ -110,17 +115,17 @@ public class SetupServlet extends HttpServlet {
 
                     exists = rs.next();
                 } catch (SQLException ex) {
-                    LogUtil.error(getClass().getName(), ex, "");
+                    LogUtil.error(getClass().getName(), ex, ex.getMessage());
                 }
             } catch (SQLException e) {
-            		LogUtil.error(getClass().getName(), e, "");
+            		LogUtil.error(getClass().getName(), e, e.getMessage());
 			}
             
             try {
 	            if (exists) {
-	            	LogUtil.info(getClass().getName(), "Database already initialized " + jdbcUrl);
+	            	LogUtil.info(getClass().getName(), "Database already initialized [" + jdbcUrl + "]");
 	            } else {
-                    LogUtil.info(getClass().getName(), "Database not yet initialized " + jdbcUrl);
+                    LogUtil.info(getClass().getName(), "Database not yet initialized [" + jdbcUrl + "]");
 	            		
 	                // get schema file
 	                String schemaFile = null;
@@ -146,10 +151,10 @@ public class SetupServlet extends HttpServlet {
 	                		ds.setUrl(jdbcUrl);
 	                     try( Connection con = ds.getConnection();
 	                    		 Statement stmt = con.createStatement()) {
-                        LogUtil.info(getClass().getName(), "Create database " + dbName);
+                        LogUtil.info(getClass().getName(), "Create database [" + dbName + "]");
                         stmt.executeUpdate("CREATE DATABASE " + dbName + ";");
 	                    } catch(SQLException ex) {
-	                         LogUtil.error(getClass().getName(), ex, "");
+	                         LogUtil.error(getClass().getName(), ex, ex.getMessage());
 	                    }
 	                }
 	                
@@ -160,7 +165,7 @@ public class SetupServlet extends HttpServlet {
 
 	                    {
 		                    // execute schema file
-		                    LogUtil.info(getClass().getName(), "Execute schema " + schemaFile);
+		                    LogUtil.info(getClass().getName(), "Execute schema [" + schemaFile + "]");
 		                    ScriptRunner runner = new ScriptRunner(con, false, false);
 		                    try(BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile)))) {
                                 runner.runScript(br);
@@ -171,7 +176,7 @@ public class SetupServlet extends HttpServlet {
 	                    
 	                    {
 		                    // execute quartz file
-		                    LogUtil.info(getClass().getName(), "Execute quartz " + quartzFile);
+		                    LogUtil.info(getClass().getName(), "Execute quartz [" + quartzFile + "]");
 		                    ScriptRunner runner = new ScriptRunner(con, false, false);
 		                    try(BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(quartzFile)))) {
                                 runner.runScript(br);
@@ -182,7 +187,7 @@ public class SetupServlet extends HttpServlet {
 
                         con.commit();
 	                } catch(SQLException e) {
-	                		LogUtil.error(getClass().getName(), e, "");
+	                		LogUtil.error(getClass().getName(), e, e.getMessage());
 	                }
 	            }
             
@@ -193,19 +198,20 @@ public class SetupServlet extends HttpServlet {
 	                if ("true".equals(sampleUsers)) {
 	                    // create users
 	                    String schemaFile = "/setup/sql/users.sql";
-	                    LogUtil.info(getClass().getName(), "Create users using schema " + schemaFile);
+	                    LogUtil.info(getClass().getName(), "Create users using schema [" + schemaFile + "]");
                         con.setCatalog(dbName);
 	                    ScriptRunner runner = new ScriptRunner(con, false, true);
 	                    runner.runScript(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(schemaFile))));
 	                }
 
 	                con.commit();
-	                LogUtil.info(getClass().getName(), "Datasource init complete: " + success);
+	                LogUtil.info(getClass().getName(), "Datasource init complete [" + success + "]");
 	                
 	                // save profile
-	                String profileName = (dbName != null && !dbName.trim().isEmpty()) ? dbName : "custom";
+//	                String profileName = (dbName != null && !dbName.trim().isEmpty()) ? dbName : "custom";
+	                String profileName = DynamicDataSourceManager.DEFAULT_PROFILE;
 	                String jdbcUrlToSave = (jdbcFullUrl != null && !jdbcFullUrl.trim().isEmpty()) ? jdbcFullUrl : jdbcUrl;
-	                LogUtil.info(getClass().getName(), "Save profile " + profileName);
+	                LogUtil.info(getClass().getName(), "Save profile [" + profileName + "]");
 	                DynamicDataSourceManager.createProfile(profileName);
 	                DynamicDataSourceManager.changeProfile(profileName);
 	                DynamicDataSourceManager.writeProperty("workflowDriver", jdbcDriver);
@@ -236,12 +242,30 @@ public class SetupServlet extends HttpServlet {
 	                    }
 	                }                
 	                
-	                LogUtil.info(getClass().getName(), "Profile init complete: " + profileName);
+	                LogUtil.info(getClass().getName(), "Profile init complete [" + profileName + "]");
 	                LogUtil.info(getClass().getName(), "===== Database Setup Complete =====");
+
+	                //Initialize Scheduler Job
+                    SchedulerDetails schedulerDetails = new SchedulerDetails();
+                    schedulerDetails.setJobName("SchedulerJob");
+                    schedulerDetails.setJobClassName(SchedulerPluginJob.class.getName());
+//                    schedulerDetails.setCronExpression("0 0/1 * 1/1 * ? *"); // run every 1 minute
+                    schedulerDetails.setCronExpression("0 0/5 * 1/1 * ? *"); // run every 5 minutes
+                    schedulerDetails.setGroupJobName("SchedulerJob");
+                    schedulerDetails.setGroupTriggerName("SchedulerJob");
+                    Date now = new Date();
+                    schedulerDetails.setDateCreated(now);
+                    schedulerDetails.setCreatedBy("admin");
+                    schedulerDetails.setDateModified(now);
+                    schedulerDetails.setModifiedBy("admin");
+                    schedulerDetails.setTriggerTypes(TriggerTypes.CRON);
+                    schedulerDetails.setTriggerName("SchedulerJob");
+                    SchedulerManager schedulerManager = (SchedulerManager) AppUtil.getApplicationContext().getBean("schedulerManager");
+                    schedulerManager.saveOrUpdateJobDetails(schedulerDetails);
 	            }
                 
             } catch (Exception ex) {
-                LogUtil.error(getClass().getName(), null, ex.toString());
+                LogUtil.error(getClass().getName(), ex, ex.toString());
                 success = false;
                 message = ex.getMessage().replace("'", " ");
             } finally {

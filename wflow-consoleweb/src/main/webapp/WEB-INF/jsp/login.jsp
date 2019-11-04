@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ include file="/WEB-INF/jsp/includes/taglibs.jsp" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="org.joget.workflow.util.WorkflowUtil"%>
@@ -15,9 +16,9 @@
 	<head>
 		<meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+
 	    <title>TAP PT.TIMAH - Login</title>
-	
+
 	    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/inspinia/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/inspinia/font-awesome.css" >
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/inspinia/animate.css" >
@@ -52,15 +53,13 @@
 	                <a href="${pageContext.request.contextPath}/" class="btn btn-default block full-width m-b">Home</a><br/>
 	                
             	</form>
-            	<p class="m-t"><small>@Copyright TAP PT. TIMAH 2018</small> </p>
+            	<div class="oauth2_login_container">
+                    ${oauth2PluginButton}
+                </div>
+            	<p class="m-t"><small>@Copyright TAP PT. TIMAH 2019</small> </p>
         	</div>
     	</div>
     	<script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
     	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 	</body>
 </html>
-
-      
-
-
-

@@ -6,6 +6,7 @@
 <%@ page import="org.joget.apps.app.service.MobileUtil"%>
 <%@ page import="org.joget.apps.app.service.AppUtil"%>
 <%@ page import="org.joget.apps.userview.model.Userview"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 <%@ page contentType="text/html" pageEncoding="utf-8"%>
 
 <%
@@ -21,7 +22,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 <%
     String rightToLeft = WorkflowUtil.getSystemSetupValue("rightToLeft");
     pageContext.setAttribute("rightToLeft", rightToLeft);
-    
+
     StopWatch sw = new StopWatch(request.getRequestURI());
     sw.start("userview");
 %>
@@ -62,8 +63,8 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
             <c:set var="key" scope="request" value="<%= Userview.USERVIEW_KEY_EMPTY_VALUE %>"/>
             <c:if test="${!empty menuId}">
                 <c:set var="redirectUrl" scope="request" value="${redirectUrl}${key}"/>
-            </c:if>    
-        </c:otherwise>    
+            </c:if>
+        </c:otherwise>
     </c:choose>
     <c:if test="${!empty menuId}">
         <c:set var="redirectUrl" scope="request" value="${redirectUrl}/${menuId}"/>
@@ -103,7 +104,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
             <c:if test="${isQuickEditEnabled}">
             <div class="quickEdit" style="display: none">
                 <a href="${pageContext.request.contextPath}/web/console/app/${appId}/${appVersion}/userview/builder/${userview.properties.id}?menuId=${userview.current.properties.id}" target="_blank"><i class="icon-edit"></i> <fmt:message key="adminBar.label.page"/>: <c:out value="${userview.current.properties.label}"/></a>
-            </div>            
+            </div>
             </c:if>
             <c:set var="properties" scope="request" value="${userview.current.properties}"/>
             <c:set var="requestParameters" scope="request" value="${userview.current.requestParameters}"/>
@@ -177,6 +178,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
         <title>
             <c:set var="html">
                 ${userview.properties.name} &nbsp;&gt;&nbsp;
@@ -184,22 +186,21 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                     ${userview.current.properties.label}
                 </c:if>
             </c:set>
-            <ui:stripTag html="${html}"/>    
+            <ui:stripTag html="${html}"/>
         </title>
-
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
-
+        ${oauth2LogoutScript}
         <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {
                 display: none;
             }
         </style>
-        
+
         <script type="text/javascript">
             function userviewPrint(){
                 $('head').append('<link id="userview_print_css" rel="stylesheet" href="${pageContext.request.contextPath}/css/userview_print.css" type="text/css" media="print"/>');
                 $('body').addClass("userview_print");
-                setTimeout("do_print()", 1000); 
+                setTimeout("do_print()", 1000);
             }
 
             function do_print(){
@@ -207,7 +208,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                 $('body').removeClass("userview_print");
                 $('#userview_print_css').remove();
             }
-            
+
             ${userview.setting.theme.javascript}
             UI.base = "${pageContext.request.contextPath}";
             UI.userview_app_id = '${appId}';
@@ -252,7 +253,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                                 <a href="${pageContext.request.contextPath}/web/ulogin/${appId}/${userview.properties.id}/<c:out value="${key}"/>"><span id="loginText"><fmt:message key="ubuilder.login"/></span></a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/j_spring_security_logout"><span id="logoutText"><ui:stripTag html="${userview.properties.logoutText}" relaxed="true"/></span></a>
+                                <a href="${pageContext.request.contextPath}/j_spring_security_logout" onClick="return logout();"><span id="logoutText"><ui:stripTag html="${userview.properties.logoutText}" relaxed="true"/></span></a>
                             </c:otherwise>
                         </c:choose>
                     </div>

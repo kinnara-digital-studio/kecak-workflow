@@ -1,26 +1,18 @@
 package org.joget.directory.model.service;
 
-import java.util.ArrayList;
-import org.joget.directory.ext.DirectoryManagerAuthenticatorImpl;
 import org.joget.commons.spring.model.Setting;
 import org.joget.commons.util.CsvUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SetupManager;
-import org.joget.directory.model.Department;
-import org.joget.directory.model.Employment;
-import org.joget.directory.model.Grade;
-import org.joget.directory.model.Group;
-import org.joget.directory.model.Organization;
-import org.joget.directory.model.Role;
-import org.joget.directory.model.User;
-import org.joget.plugin.base.PluginManager;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.model.*;
+import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
+import org.kecak.directory.ext.DirectoryManagerAuthenticatorImpl;
+import org.kecak.directory.model.service.DirectoryManagerAuthenticator;
+
+import java.util.*;
 
 public class DirectoryManagerProxyImpl implements ExtDirectoryManager {
 
@@ -501,5 +493,127 @@ public class DirectoryManagerProxyImpl implements ExtDirectoryManager {
 
     public Collection<Grade> getGradeList() {
         return getDirectoryManagerImpl().getGradeList();
+    }
+
+    public Boolean addUser(User user) {
+        return getDirectoryManagerImpl().addUser(user);
+    }
+
+    public Boolean updateUser(User user){
+        return getDirectoryManagerImpl().updateUser(user);
+    }
+
+    public Boolean deleteUser(String username){
+        return getDirectoryManagerImpl().deleteUser(username);
+    }
+
+    public Boolean isReadOnly() {
+        return getDirectoryManagerImpl().isReadOnly();
+    }
+
+    public Boolean addGroup(Group group){
+        return getDirectoryManagerImpl().addGroup(group);
+    }
+
+    public Boolean deleteGroup(String id){
+        return getDirectoryManagerImpl().deleteGroup(id);
+    }
+    public Boolean updateGroup(Group group){
+        return getDirectoryManagerImpl().updateGroup(group);
+    }
+    public Collection<User> getUsersNotInGroup(String filterString, String groupId, String sort, Boolean desc, Integer start, Integer rows){
+        return getDirectoryManagerImpl().getUsersNotInGroup(filterString, groupId, sort, desc, start, rows);
+    }
+    public Long getTotalUsersNotInGroup(String filterString, String groupId) {
+        return getDirectoryManagerImpl().getTotalUsersNotInGroup(filterString,groupId);
+    }
+
+    public Boolean assignUserToGroup(String userId, String groupId) {
+        return getDirectoryManagerImpl().assignUserToGroup(userId,groupId);
+    }
+
+    public Boolean unassignUserFromGroup(String userId, String groupId) {
+        return getDirectoryManagerImpl().unassignUserFromGroup(userId, groupId);
+    }
+
+    public Collection<Employment> getEmploymentsNotInDepartment(String filterString, String orgId, String deptId, String sort, Boolean desc, Integer start, Integer rows){
+        return this.getDirectoryManagerImpl().getEmploymentsNotInDepartment(filterString,orgId,deptId,sort,desc,start,rows);
+    }
+    public Long getTotalEmploymentsNotInDepartment(String filterString, String organizationId, String departmentId){
+        return this.getDirectoryManagerImpl().getTotalEmploymentsNotInDepartment(filterString,organizationId,departmentId);
+    }
+
+    public Collection<Employment> getEmploymentsNotInGrade(String filterString, String orgId, String gradeId, String sort, Boolean desc, Integer start, Integer rows){
+        return this.getDirectoryManagerImpl().getEmploymentsNotInGrade(filterString,orgId,gradeId,sort,desc,start,rows);
+    }
+    public Long getTotalEmploymentsNotInGrade(String filterString, String organizationId, String gradeId){
+        return this.getDirectoryManagerImpl().getTotalEmploymentsNotInGrade(filterString,organizationId,gradeId);
+    }
+
+    public Boolean addDepartment(Department department) {
+        return this.getDirectoryManagerImpl().addDepartment(department);
+    }
+
+    public Boolean updateDepartment(Department department) {
+        return this.getDirectoryManagerImpl().updateDepartment(department);
+    }
+
+    public Boolean deleteDepartment(String id) {
+        return this.getDirectoryManagerImpl().deleteDepartment(id);
+    }
+
+    public Boolean addGrade(Grade grade) {
+        return this.getDirectoryManagerImpl().addGrade(grade);
+    }
+
+    public Boolean updateGrade(Grade grade) {
+        return this.getDirectoryManagerImpl().updateGrade(grade);
+    }
+
+    public Boolean deleteGrade(String id) {
+        return this.getDirectoryManagerImpl().deleteGrade(id);
+    }
+
+    public Boolean assignUserToDepartment(String userId, String departmentId) {
+        return this.getDirectoryManagerImpl().assignUserToDepartment(userId,departmentId);
+    }
+
+    public Boolean unassignUserFromDepartment(String userId, String departmentId) {
+        return this.getDirectoryManagerImpl().unassignUserFromDepartment(userId,departmentId);
+    }
+
+    public Boolean assignUserToGrade(String userId, String gradeId) {
+        return this.getDirectoryManagerImpl().assignUserToGrade(userId,gradeId);
+    }
+
+    public Boolean unassignUserFromGrade(String userId, String gradeId) {
+        return this.getDirectoryManagerImpl().unassignUserFromGrade(userId,gradeId);
+    }
+
+    public Boolean addEmployment(Employment employment) {
+        return this.getDirectoryManagerImpl().addEmployment(employment);
+    }
+
+    public Boolean updateEmployment(Employment employment) {
+        return this.getDirectoryManagerImpl().updateEmployment(employment);
+    }
+
+    public Boolean deleteEmployment(String id) {
+        return this.getDirectoryManagerImpl().deleteEmployment(id);
+    }
+    public Boolean assignUserAsDepartmentHOD(String userId, String departmentId) {
+        return this.getDirectoryManagerImpl().assignUserAsDepartmentHOD(userId,departmentId);
+    }
+
+    public Boolean unassignUserAsDepartmentHOD(String userId, String departmentId) {
+        return this.getDirectoryManagerImpl().unassignUserAsDepartmentHOD(userId,departmentId);
+    }
+
+    public Boolean assignUserReportTo(String userId, String reportToUserId) {
+        return this.getDirectoryManagerImpl().assignUserReportTo(userId,reportToUserId);
+    }
+
+    public Boolean unassignUserReportTo(String userId) {
+        return this.getDirectoryManagerImpl().unassignUserReportTo(userId);
     }
 }

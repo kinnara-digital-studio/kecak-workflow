@@ -92,7 +92,7 @@ public class DataListDecorator extends CheckboxTableDecorator {
         }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<input type=\"checkbox\" name=\"");
+        buffer.append("<label class=\"pos-rel\"><input type=\"checkbox\" class=\"ace\" name=\"");
         buffer.append(fieldName);
         buffer.append("\" value=\"");
         buffer.append(StringEscapeUtils.escapeHtml(evaluatedId));
@@ -101,7 +101,7 @@ public class DataListDecorator extends CheckboxTableDecorator {
             checkedIds.remove(evaluatedId);
             buffer.append(" checked=\"checked\"");
         }
-        buffer.append("/>");
+        buffer.append("/><span class=\"lbl\"></span></label>");
 
         return buffer.toString();
     }
@@ -202,7 +202,7 @@ public class DataListDecorator extends CheckboxTableDecorator {
             index++;
         }
 
-        if (!column.getName().equals(columnName) && ((skipHidden && column.isHidden()) || (!column.isHidden() && "true".equals(column.getPropertyString("exclude_export"))))) {
+        if (!column.getName().equals(columnName) && (!column.isPermitted() && (skipHidden && column.isHidden()) || (!column.isHidden() && "true".equals(column.getPropertyString("exclude_export"))))) {
             column = findColumn(columnName);
         }
         
@@ -277,7 +277,11 @@ public class DataListDecorator extends CheckboxTableDecorator {
                     confirmationString = " onclick=\"return confirm('" + confirmation + "')\"";
                 }
             }
-            link = "<a href=\"" + link + "\"" + targetString + confirmationString + ">" + text + "</a>";
+            String badgeClass = "";
+            if (confirmation != null && confirmation.trim().length() > 0){
+                badgeClass = "class=\"btn btn-minier btn-primary\"";
+            }
+            link = "<a "+ badgeClass +" href=\"" + link + "\"" + targetString + confirmationString + ">" + text + "</a>";
         }
         return link;
     }

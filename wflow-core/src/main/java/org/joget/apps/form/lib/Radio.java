@@ -3,14 +3,10 @@ package org.joget.apps.form.lib;
 import java.util.Collection;
 import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 
-public class Radio extends SelectBox implements FormBuilderPaletteElement {
+public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
     @Override
     public String getName() {
@@ -60,16 +56,19 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement {
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "radio.ftl";
-        
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
-        
+
         // set value
         String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
 
         // set options
         @SuppressWarnings("rawtypes")
-		Collection<Map> optionMap = getOptionMap(formData);
+        Collection<Map> optionMap = getOptionMap(formData);
         dataModel.put("options", optionMap);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
@@ -109,6 +108,19 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement {
     @Override
     public String getFormBuilderIcon() {
         return null;
+    }
+
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceRadio.ftl";
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteRadio.ftl";
+        return renderTemplate(template, formData, dataModel);
     }
 }
 

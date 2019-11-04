@@ -36,15 +36,11 @@
                 </div>
                 <div class="form-row">
                     <label for="jobClassName"><fmt:message key="console.setting.scheduler.common.label.jobClassName"/></label>
-                    <span class="form-input"><form:input path="jobClassName" cssErrorClass="form-input-error"  size="30" value="org.joget.apps.scheduler.StartProcess" readonly="true"/> *</span>
+                    <span class="form-input"><form:input path="jobClassName" cssErrorClass="form-input-error"  size="30" /> *</span>
                 </div>
                 <div class="form-row">
                     <label for="cronExpression"><fmt:message key="console.setting.scheduler.common.label.cronExpression"/></label>
                     <span class="form-input"><form:input path="cronExpression" cssErrorClass="form-input-error"  size="30"/> *</span>
-                </div>
-                <div class="form-row">
-                    <label for="processDefId"><fmt:message key="console.setting.scheduler.common.label.processDefId"/></label>
-                    <span class="form-input"><form:input path="processDefId" cssErrorClass="form-input-error"  size="30"/> *</span>
                 </div>
             </fieldset>
             <div class="form-buttons">

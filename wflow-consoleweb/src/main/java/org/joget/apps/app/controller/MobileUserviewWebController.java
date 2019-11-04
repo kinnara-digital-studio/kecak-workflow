@@ -165,15 +165,19 @@ public class MobileUserviewWebController {
 
     @RequestMapping({"/mobile", "/mobile/", "/mobile/apps"})
     public String mobileRunApps(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
+        LogUtil.info(getClass().getName(),"tes 1");
         if (MobileUtil.isMobileDisabled()) {
             return "error404";
         }
+        LogUtil.info(getClass().getName(),"tes 2");
         
         // get list of published apps.
         Collection<AppDefinition> resultAppDefinitionList = appService.getPublishedApps(null, true, false);
-        
+
+        LogUtil.info(getClass().getName(),"tes 3");
         Map<String, Cookie> cookiesMap = getCookiesMap(request);
-        
+
+        LogUtil.info(getClass().getName(),"tes 4");
         if (request.getParameter("_cordova") != null) {
             String value = request.getParameter("_cordova");
             
@@ -197,7 +201,8 @@ public class MobileUserviewWebController {
         } else if (cookiesMap.get("cordova") != null && "true".equals(cookiesMap.get("cordova").getValue())) {
             model.addAttribute("showDesktopButton", "false");
         }
-        
+
+        LogUtil.info(getClass().getName(),"tes 5");
         //redirect directly to app when only has one userview
         if (resultAppDefinitionList.size() == 1 && !WorkflowUtil.isCurrentUserAnonymous()) {
             AppDefinition appDef = resultAppDefinitionList.iterator().next();
@@ -224,7 +229,8 @@ public class MobileUserviewWebController {
             cookie.setPath(request.getContextPath());
             response.addCookie(cookie);
         }
-        
+
+        LogUtil.info(getClass().getName(),"tes 6");
         model.addAttribute("appDefinitionList", resultAppDefinitionList);
         LogUtil.debug(getClass().getName(), "Request: /web/mobile/apps");
         return "mobile/mApps";

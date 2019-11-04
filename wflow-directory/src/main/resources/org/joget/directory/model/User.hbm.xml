@@ -17,6 +17,7 @@
         <property column="locale" name="locale" type="string"/>
         <property column="active" name="active" type="integer"/>
 		<property column="profile_picture" name="profilePicture" type="blob"/>
+        <property column="telephone_number" name="telephoneNumber" type="string"/>
         <!-- join tables -->
         <set name="roles" table="dir_user_role">
             <key column="userId"/>

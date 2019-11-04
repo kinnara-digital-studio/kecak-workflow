@@ -1,13 +1,5 @@
 package org.joget.apps.userview.lib;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.model.PackageDefinition;
@@ -19,8 +11,7 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.LogUtil;
@@ -36,9 +27,21 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
+import org.kecak.apps.userview.model.AceUserviewMenu;
+import org.kecak.apps.userview.model.AdminLteUserviewMenu;
+import org.kecak.apps.userview.model.BootstrapUserview;
 import org.springframework.context.ApplicationContext;
 
-public class RunProcess extends UserviewMenu implements PluginWebSupport {
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUserviewMenu, AdminLteUserviewMenu {
 
     public String getClassName() {
         return getClass().getName();
@@ -133,8 +136,8 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
         return null;
     }
 
+    @Override
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         boolean isAdmin = WorkflowUtil.isCurrentUserInRole(WorkflowUserManager.ROLE_ADMIN);
         if (!isAdmin) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -180,13 +183,17 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
     @Override
     public String getJspPage() {
+        return getJspPage("userview/plugin/runProcess.jsp");
+    }
+
+    protected String getJspPage(String jspFile) {
         if ("start".equals(getRequestParameterString("_action")) || "run".equals(getRequestParameterString("_action"))) {
             // only allow POST
             HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
                 return "userview/plugin/unauthorized.jsp";
             }
-            
+
             startProcess(getRequestParameterString("_action"));
         } else if ("assignmentView".equals(getRequestParameterString("_action"))) {
             assignmentView();
@@ -196,7 +203,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
                 return "userview/plugin/unauthorized.jsp";
             }
-            
+
             assignmentSubmit();
         } else {
             ApplicationContext ac = AppUtil.getApplicationContext();
@@ -220,10 +227,11 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
                 viewProcess(null);
             }
         }
-        return "userview/plugin/runProcess.jsp";
+
+        return jspFile;
     }
 
-    private void viewProcess(PackageActivityForm startFormDef) {
+    protected void viewProcess(PackageActivityForm startFormDef) {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -297,7 +305,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    private void startProcess(String action) {
+    protected void startProcess(String action) {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -356,7 +364,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
             // set result
             if (result != null) {
-                setAlertMessage(getPropertyString("messageShowAfterComplete"));
+                setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
                 // Show next activity if available
                 Collection<WorkflowActivity> activities = result.getActivities();
                 if (activities != null && !activities.isEmpty()) {
@@ -376,7 +384,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    private void assignmentView() {
+    protected void assignmentView() {
         String activityId = getRequestParameterString("activityId");
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
@@ -418,7 +426,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
     }
 
     @SuppressWarnings("deprecation")
-	private void assignmentSubmit() {
+	protected void assignmentSubmit() {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -451,7 +459,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
                     Map<String, String> errors = formResult.getFormErrors();
                     if (!formResult.getStay() && (errors == null || errors.isEmpty()) && activityForm.isAutoContinue()) {
-                        setAlertMessage(getPropertyString("messageShowAfterComplete"));
+                        setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
                         // redirect to next activity if available
                         WorkflowAssignment nextActivity = workflowManager.getAssignmentByProcess(processId);
                         if (nextActivity != null) {
@@ -462,6 +470,13 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
                             setRedirectUrl(redirectUrl);
                             return;
                         }
+                    }
+                } else {
+                    String redirectUrl = getPropertyString("redirectUrlAfterSaveAsDraft");
+                    if(redirectUrl != null && !redirectUrl.isEmpty()){
+                        setAlertMessage(getPropertyString("messageTitleShowAfterSaved"),getPropertyString("messageShowAfterSaved"));
+                        setRedirectUrl(redirectUrl);
+                        return;
                     }
                 }
 
@@ -531,8 +546,8 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
         }
     }
 
-    private void processStarted(Form form, FormData formData) {
-        setAlertMessage(getPropertyString("messageShowAfterComplete"));
+    protected void processStarted(Form form, FormData formData) {
+        setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
         if (getPropertyString("redirectUrlAfterComplete") != null && !getPropertyString("redirectUrlAfterComplete").isEmpty()) {
             setProperty("view", "redirect");
             boolean redirectToParent = "Yes".equals(getPropertyString("showInPopupDialog"));            
@@ -590,5 +605,25 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport {
     @Override
     public String getCategory() {
         return UserviewBuilderPalette.CATEGORY_GENERAL;
+    }
+
+    @Override
+    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getRunProcessJsp());
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
+        return getDecoratedMenu();
+    }
+
+    @Override
+    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+        return getJspPage(bootstrapTheme.getRunProcessJsp());
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
+        return getDecoratedMenu();
     }
 }

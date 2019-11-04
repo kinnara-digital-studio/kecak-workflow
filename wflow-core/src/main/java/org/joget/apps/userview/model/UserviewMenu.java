@@ -1,6 +1,7 @@
 package org.joget.apps.userview.model;
 
 import org.joget.commons.util.StringUtil;
+import org.kecak.apps.userview.model.*;
 
 /**
  * A base abstract class to develop a Userview Menu plugin. 
@@ -11,6 +12,7 @@ public abstract class UserviewMenu extends ExtElement{
     public static final String REDIRECT_URL_PROPERTY = "userviewRedirectUrl";
     public static final String REDIRECT_PARENT_PROPERTY = "userviewRedirectParent";
     public static final String ALERT_MESSAGE_PROPERTY = "userviewAlertMessage";
+    public static final String ALERT_TITLE_PROPERTY = "userviewAlertTitle";
     
     private String url;
     private String key;
@@ -92,8 +94,17 @@ public abstract class UserviewMenu extends ExtElement{
      */
     public String getMenu() {
         // sanitize output if not decorated. Otherwise need to sanitize in individial plugins
-        String decoratedMenu = getDecoratedMenu();
-        if (decoratedMenu == null || (decoratedMenu != null && decoratedMenu.trim().length() == 0)) {
+        String decoratedMenu;
+
+        if(userview.getSetting().getTheme() instanceof AbstractAceUserviewTheme && this instanceof AceUserviewMenu) {
+            decoratedMenu = ((AceUserviewMenu)this).getAceDecoratedMenu((BootstrapUserview) userview.getSetting().getTheme());
+        } else if(userview.getSetting().getTheme() instanceof AbstractAdminLteUserviewTheme && this instanceof AdminLteUserviewMenu) {
+            decoratedMenu = ((AdminLteUserviewMenu)this).getAdminLteDecoratedMenu((BootstrapUserview) userview.getSetting().getTheme());
+        } else {
+            decoratedMenu = getDecoratedMenu();
+        }
+
+        if (decoratedMenu == null || decoratedMenu.trim().length() == 0) {
             // sanitize label
             String label = getPropertyString("label");
             if (label != null) {
@@ -129,7 +140,13 @@ public abstract class UserviewMenu extends ExtElement{
      */
     public String getReadyJspPage() {
         if (readyJspPage == null) {
-            readyJspPage = getJspPage();
+            if(userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceUserviewMenu) {
+                readyJspPage = ((AceUserviewMenu) this).getAceJspPage((BootstrapUserview) userview.getSetting().getTheme());
+            } else if(userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteUserviewMenu) {
+                readyJspPage = ((AdminLteUserviewMenu) this).getAdminLteJspPage((BootstrapUserview) userview.getSetting().getTheme());
+            } else {
+                readyJspPage = getJspPage();
+            }
         }
         return readyJspPage;
     }
@@ -198,6 +215,11 @@ public abstract class UserviewMenu extends ExtElement{
      * @param message
      */
     public void setAlertMessage(String message) {
+        setProperty(ALERT_MESSAGE_PROPERTY, message);
+    }
+
+    public void setAlertMessage(String title, String message) {
+        setProperty(ALERT_TITLE_PROPERTY, title);
         setProperty(ALERT_MESSAGE_PROPERTY, message);
     }
 }

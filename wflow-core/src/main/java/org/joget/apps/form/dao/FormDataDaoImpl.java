@@ -1,25 +1,7 @@
 package org.joget.apps.form.dao;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.sql.DataSource;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import net.sf.ehcache.Cache;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -33,12 +15,7 @@ import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.AbstractSubForm;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormColumnCache;
-import org.joget.apps.form.model.FormContainer;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.DynamicDataSourceManager;
@@ -49,14 +26,17 @@ import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import net.sf.ehcache.Cache;
+import javax.sql.DataSource;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  *
@@ -266,9 +246,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         try {
             String query = "SELECT e FROM " + tableName + " e ";
-            if (condition != null) {
-                query += condition;
-            }
+            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)");
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
@@ -361,7 +339,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         // get hibernate template
         Session session = getHibernateSession(tableName, tableName, null, ACTION_TYPE_LOAD);
         try {
-            Query q = session.createQuery("SELECT COUNT(*) FROM " + tableName + " e " + condition);
+            String query = "SELECT COUNT(*) FROM " + tableName + " e ";
+            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)");
+            Query q = session.createQuery(query);
 
             if (params != null) {
                 int i = 0;
@@ -455,6 +435,9 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
     public void saveOrUpdate(String formDefId, String tableName, FormRowSet rowSet) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
+        for (FormRow row : rowSet){
+            row.setDeleted(false);
+        }
         internalSaveOrUpdate(entityName, newTableName, rowSet);
     }
 
@@ -471,6 +454,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         try {
             // save the form data
             for (FormRow row : rowSet) {
+                if(row.getDeleted() == null) row.setDeleted(false);
                 session.saveOrUpdate(entityName, row);
             }
             session.flush();
@@ -506,16 +490,41 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         closeSession(session);
     }
 
+    private void deleteByPK(String entityName, String tableName, String[] primaryKeyValues){
+        for (String pk : primaryKeyValues){
+            FormRowSet rowSet = internalFind(entityName,tableName,"WHERE id=?", new Object[] {pk},null,false,0,0);
+            if(!rowSet.isEmpty()){
+                FormRow row = rowSet.get(0);
+                row.setDeleted(true);
+                rowSet.add(row);
+                internalSaveOrUpdate(entityName,tableName,rowSet);
+            }
+        }
+    }
+
     /**
      * Delete form data by primary keys
      * @param form
      * @param primaryKeyValues 
      */
-    public void delete(Form form, String[] primaryKeyValues) {
+    public void delete(Form form, String[] primaryKeyValues){
+        delete(form,primaryKeyValues,false);
+    }
+
+    /**
+     *
+     * @param form
+     * @param primaryKeyValues
+     * @param isHardDelete true for deleting data from database, false to flag data as deleted
+     */
+    public void delete(Form form, String[] primaryKeyValues, Boolean isHardDelete) {
         String entityName = getFormEntityName(form);
         String tableName = getFormTableName(form);
-
-        internalDelete(entityName, tableName, primaryKeyValues);
+        if(isHardDelete){
+            internalDelete(entityName, tableName, primaryKeyValues);
+        } else {
+            deleteByPK(entityName, tableName, primaryKeyValues);
+        }
     }
     
     /**
@@ -524,33 +533,58 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param tableName
      * @param primaryKeyValues 
      */
-    public void delete(String formDefId, String tableName, String[] primaryKeyValues) {
+    public void delete(String formDefId, String tableName, String[] primaryKeyValues){
+        delete(formDefId,tableName,primaryKeyValues,false);
+    }
+
+    /**
+     *
+     * @param formDefId
+     * @param tableName
+     * @param primaryKeyValues
+     * @param isHardDelete true for deleting data from database, false to flag data as deleted
+     */
+    public void delete(String formDefId, String tableName, String[] primaryKeyValues, Boolean isHardDelete) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
+        if(isHardDelete){
+            internalDelete(entityName, newTableName, primaryKeyValues);
+        } else {
+            deleteByPK(entityName, newTableName, primaryKeyValues);
+        }
 
-        internalDelete(entityName, newTableName, primaryKeyValues);
     }
-    
+
     /**
      * Delete form data by primary keys
      * @param formDefId
      * @param tableName
      * @param rows
      */
-    public void delete(String formDefId, String tableName, FormRowSet rows) {
+    public void delete(String formDefId, String tableName, FormRowSet rows){
+        delete(formDefId,tableName,rows,false);
+    }
+
+    public void delete(String formDefId, String tableName, FormRowSet rows, Boolean isHardDelete) {
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
-
-        // get hibernate template
-        Session session = getHibernateSession(entityName, newTableName, null, ACTION_TYPE_STORE);
-        try {
-            // save the form data
-            for (FormRow row : rows) {
-                session.delete(entityName, row);
+        if(isHardDelete){
+            // get hibernate template
+            Session session = getHibernateSession(entityName, newTableName, null, ACTION_TYPE_STORE);
+            try {
+                // save the form data
+                for (FormRow row : rows) {
+                    session.delete(entityName, row);
+                }
+                session.flush();
+            } finally {
+                closeSession(session);
             }
-            session.flush();
-        } finally {
-            closeSession(session);
+        } else {
+            for (FormRow row : rows) {
+                row.setDeleted(true);
+            }
+            internalSaveOrUpdate(entityName, newTableName, rows);
         }
     }
     
@@ -824,23 +858,10 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         // load default FormRow hbm xml
         synchronized(this) {
             if (formRowDocument == null) {
-                InputStream is = null;
-                try {
-                    is = Form.class.getResourceAsStream("/org/joget/apps/form/model/FormRow.hbm.xml");
+                try(InputStream is = Form.class.getResourceAsStream("/org/joget/apps/form/model/FormRow.hbm.xml")) {
                     formRowDocument = XMLUtil.loadDocument(is);
-                } catch (ParserConfigurationException e) {
+                } catch (ParserConfigurationException | SAXException | IOException e) {
                     throw new HibernateException("Unable to load FormRow.hbm.xml", e);
-                } catch (SAXException e) {
-                    throw new HibernateException("Unable to load FormRow.hbm.xml", e);
-                } catch (IOException e) {
-                    throw new HibernateException("Unable to load FormRow.hbm.xml", e);
-                } finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException ex) {
-                        }
-                    }
                 }
             }
         }
@@ -892,9 +913,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
                 // save new mapping file
                 XMLUtil.saveDocument(document, mappingFile.getPath());
-            } catch (TransformerException e) {
-                throw new HibernateException("Unable to save " + mappingFile.getPath(), e);
-            } catch (IOException e) {
+            } catch (TransformerException | IOException e) {
                 throw new HibernateException("Unable to save " + mappingFile.getPath(), e);
             }
 

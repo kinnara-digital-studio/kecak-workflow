@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport {
+public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
     private final WeakHashMap<String, Form> formCache = new WeakHashMap<>();
 
     private Element controlElement;
@@ -114,7 +114,10 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "selectBox.ftl";
-        
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value
@@ -124,7 +127,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
 
         // set options
         @SuppressWarnings("rawtypes")
-		final List<Map<String, String>> optionMap = new ArrayList<>();
+        final List<Map<String, String>> optionMap = new ArrayList<>();
         for(Map m : getOptionMap(formData)) {
             optionMap.add((Map<String,String>)m);
         }
@@ -290,7 +293,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
                         }
                     }
                 }
-            }
+        }
 
             // I wonder why these codes don't work; they got some NULL POINTER EXCEPTION
             //        JSONArray jsonResults = new JSONArray((optionsRowSet).stream()
@@ -328,6 +331,18 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         } else {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        String template = "AceTheme/AceSelectBox.ftl";
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        String template = "AdminLteTheme/AdminLteSelectBox.ftl";
+        return renderTemplate(template, formData, dataModel);
     }
 }
 
