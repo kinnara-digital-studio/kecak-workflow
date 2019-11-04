@@ -11,5 +11,4 @@
 <li id="nav-setting-schedulerContent"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/scheduler"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.scheduler"/></a></li>
 <li id="nav-setting-eaSettings"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/eaSettings"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.emailAppr"/></a></li>
 <li id="nav-setting-clientApp"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/clientApps"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.clientApp"/></a></li>
-<%-- Aristo : preparation for next release --%>
-<%-- <li id="nav-setting-repo"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/repo"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.repo"/></a></li> --%>
+<li id="nav-setting-repo"><a class="nav-link" href="${pageContext.request.contextPath}/web/console/setting/repo"><span class="nav-steps">&nbsp;</span><fmt:message key="console.header.submenu.label.setting.repo"/></a></li>
