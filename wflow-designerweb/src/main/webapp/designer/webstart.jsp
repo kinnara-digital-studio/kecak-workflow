@@ -36,7 +36,7 @@ response.addDateHeader("Last-Modified", java.util.Calendar.getInstance().getTime
         <jar href="xml-apis-1.3.04.jar"/>
         <jar href="itext-2.0.6.jar"/>
         <jar href="jedit-syntax-2.2.2.jar"/>
-        <jar href="commons-codec-1.2.jar"/>
+        <jar href="commons-codec-1.9.jar"/>
         <jar href="commons-discovery-0.2.jar"/>
         <jar href="commons-logging-1.0.4.jar"/>
         <jar href="officelnfs-2.7.jar"/>
