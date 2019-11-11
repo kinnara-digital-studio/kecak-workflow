@@ -257,7 +257,7 @@ public class DynamicDataSourceManager {
 
             writeProperty("workflowUser", "root");
             writeProperty("workflowPassword", "");
-            writeProperty("workflowDriver", "com.mysql.cj.jdbc.Driver");
+            writeProperty("workflowDriver", "com.mysql.jdbc.Driver");
             writeProperty("workflowUrl", "jdbc:mysql://localhost:3306/jwdb?characterEncoding=UTF-8");
             writeProperty("profileName", "");
         } catch (Exception e) {

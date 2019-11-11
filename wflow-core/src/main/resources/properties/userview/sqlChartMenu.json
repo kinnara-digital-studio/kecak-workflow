@@ -294,7 +294,7 @@
                 label:'@@userview.sqlchartmenu.databaseType@@',
                 description : '@@datalist.jdbcDataListBinder.driver.desc@@',
                 type : 'textfield',
-                value : 'com.mysql.cj.jdbc.Driver',
+                value : 'com.mysql.jdbc.Driver',
                 control_field: 'datasource',
                 control_value: 'custom',
                 control_use_regex: 'false',

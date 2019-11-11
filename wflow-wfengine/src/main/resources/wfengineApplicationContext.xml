@@ -55,6 +55,7 @@
                 <prop key="hibernate.connection.release_mode">after_transaction</prop>
                 <prop key="hibernate.query.plan_cache_max_size">16</prop>
                 <prop key="hibernate.query.plan_parameter_metadata_max_size">128</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
             </props>
         </property>
     </bean>

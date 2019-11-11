@@ -16,7 +16,7 @@
     <import resource="classpath:appsApplicationContext.xml" />
 
     <context:annotation-config/>
-    <context:component-scan base-package = "org.kecak"/>
+    <context:component-scan base-package = "org.joget, org.kecak"/>
 
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider" />

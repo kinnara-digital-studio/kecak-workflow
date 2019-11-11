@@ -35,6 +35,7 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.transaction.jta.platform">org.joget.commons.util.AtomikosJtaPlatform</prop>
                 <prop key="hibernate.connection.release_mode">after_transaction</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
             </props>
         </property>
     </bean>
