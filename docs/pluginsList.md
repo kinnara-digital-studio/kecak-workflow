@@ -50,8 +50,8 @@
 - [Plugins Popover Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_popoverFormatter)
 - [Plugins Toggle Button](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_toggleButton)
 - [Plugins String Comparation Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringComparation)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins Datalist Reference Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistReference)
+- [Plugins Login Using Telegram](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_loginTelegram)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 
 
