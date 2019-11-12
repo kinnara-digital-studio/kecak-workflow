@@ -1210,7 +1210,7 @@ public class DataJsonController {
         return Optional.ofNullable(parameter)
                 .map(Arrays::stream)
                 .orElse(Stream.of(""))
-                .map(s -> s.split(";"))
+                .map(s -> s.split(";,"))
                 .flatMap(Arrays::stream)
                 .map(String::trim)
                 .distinct()
@@ -1364,10 +1364,6 @@ public class DataJsonController {
      */
     private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
         Arrays.stream(dataList.getFilters())
-                .peek(f -> {
-                    if (!(f.getType() instanceof DataListFilterTypeDefault))
-                        LogUtil.warn(getClass().getName(), "DataList filter [" + f.getName() + "] is not instance of [" + DataListFilterTypeDefault.class.getName() + "], filter will be ignored");
-                })
                 .filter(f -> Objects.nonNull(requestParameters.get(f.getName())) && f.getType() instanceof DataListFilterTypeDefault)
                 .forEach(f -> f.getType().setProperty("defaultValue", String.join(";", requestParameters.get(f.getName()))));
     }

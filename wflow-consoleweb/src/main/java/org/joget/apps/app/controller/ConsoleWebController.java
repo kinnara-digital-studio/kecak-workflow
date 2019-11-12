@@ -5318,6 +5318,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
         pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
         pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
+        pluginTypeMap.put(Oauth2ClientPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.oAuth2Client"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewMenu", ResourceBundleUtil.getMessage("setting.plugin.userviewMenu"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewPermission", ResourceBundleUtil.getMessage("setting.plugin.userviewPermission"));
         pluginTypeMap.put("org.joget.apps.userview.model.UserviewTheme", ResourceBundleUtil.getMessage("setting.plugin.userviewTheme"));
@@ -5335,6 +5336,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.plugin.base.ApplicationPlugin", ResourceBundleUtil.getMessage("setting.plugin.processTool"));
         pluginTypeMap.put(SchedulerPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.scheduler"));
         pluginTypeMap.put(EmailProcessorPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.emailProcessor"));
+        pluginTypeMap.put(Oauth2ClientPlugin.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.oAuth2Client"));
 
         return PagingUtils.sortMapByValue(pluginTypeMap, false);
     }
