@@ -3,8 +3,10 @@ import java.util.*;
 
 import org.apache.commons.codec.binary.Hex;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.commons.util.CsvUtil;
 import org.joget.commons.util.HostManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.SetupManager;
 import org.joget.directory.dao.RoleDao;
 import org.joget.directory.dao.UserDao;
 import org.joget.directory.dao.UserTokenDao;
@@ -13,7 +15,10 @@ import org.joget.directory.model.User;
 import org.joget.directory.model.UserToken;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.plugin.base.PluginManager;
+import org.joget.plugin.property.model.PropertyEditable;
+import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.dao.WorkflowHelper;
+import org.kecak.oauth.model.AbstractOauth2Client;
 import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -73,8 +78,16 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         // check credentials
         boolean validLogin = false;
         try {
-            Oauth2ClientPlugin oauth2ClientPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(username);
-            if(oauth2ClientPlugin != null){
+            AbstractOauth2Client oauth2ClientPlugin = (AbstractOauth2Client) pluginManager.getPlugin(username);
+            String properties = SetupManager.getSettingValue(username);
+            if(oauth2ClientPlugin != null && !properties.isEmpty()){
+                Map propertyMap;
+                if (!(oauth2ClientPlugin instanceof PropertyEditable)) {
+                    propertyMap = CsvUtil.getPluginPropertyMap(properties);
+                } else {
+                    propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
+                }
+                oauth2ClientPlugin.setProperties(propertyMap);
                 User u = oauth2ClientPlugin.getUser(password);
                 if (u != null) {
                     username = u.getUsername();

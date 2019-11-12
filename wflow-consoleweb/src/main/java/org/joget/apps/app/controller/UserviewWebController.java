@@ -9,14 +9,19 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.apps.userview.service.UserviewThemeProcesser;
+import org.joget.commons.util.CsvUtil;
 import org.joget.commons.util.SecurityUtil;
+import org.joget.commons.util.SetupManager;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
+import org.joget.plugin.property.model.PropertyEditable;
+import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.oauth.model.AbstractOauth2Client;
 import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -30,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Map;
 
 @Controller
 public class UserviewWebController {
@@ -120,10 +126,20 @@ public class UserviewWebController {
             map.addAttribute("userview", userviewObject);
             map.addAttribute("processer", processer);
             //add oauth button on login view
-            Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+            Collection<Plugin> pluginList = pluginManager.list(AbstractOauth2Client.class);
             String oauth2LogoutScript = "";
             for (Plugin plugin : pluginList){
-                Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+                AbstractOauth2Client oauthPlugin = (AbstractOauth2Client) pluginManager.getPlugin(plugin.getClass().getName());
+                String properties = SetupManager.getSettingValue(plugin.getClass().getName());
+                if(oauthPlugin != null && !properties.isEmpty()) {
+                    Map propertyMap;
+                    if (!(oauthPlugin instanceof PropertyEditable)) {
+                        propertyMap = CsvUtil.getPluginPropertyMap(properties);
+                    } else {
+                        propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
+                    }
+                    oauthPlugin.setProperties(propertyMap);
+                }
                 oauth2LogoutScript += oauthPlugin.renderHtmlLogoutScript();
             }
             map.addAttribute("oauth2LogoutScript",oauth2LogoutScript);

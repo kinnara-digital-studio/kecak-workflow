@@ -3587,15 +3587,15 @@ public class ConsoleWebController {
         map.addAttribute("userSecurity", us);
 
         //add oauth setting
-        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
-        Map<String, String> oauthSetting = new TreeMap<>(
-                (Comparator<String>) (o1, o2) -> o2.compareTo(o1)
-        );
-        for (Plugin plugin : pluginList){
-            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
-            oauthSetting.putAll(oauthPlugin.getGeneralSetting());
-        }
-        map.addAttribute("oauthSetting",oauthSetting);
+//        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+//        Map<String, String> oauthSetting = new TreeMap<>(
+//                (Comparator<String>) (o1, o2) -> o2.compareTo(o1)
+//        );
+//        for (Plugin plugin : pluginList){
+//            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+//            oauthSetting.putAll(oauthPlugin.getGeneralSetting());
+//        }
+//        map.addAttribute("oauthSetting",oauthSetting);
 
         return "console/setting/general";
     }
@@ -3838,7 +3838,6 @@ public class ConsoleWebController {
             } else {
                 properties = SetupManager.getSettingValue(DirectoryUtil.IMPL_PROPERTIES);
             }
-
             if (!(plugin instanceof PropertyEditable)) {
                 @SuppressWarnings("rawtypes")
                 Map propertyMap = new HashMap();
@@ -3853,6 +3852,7 @@ public class ConsoleWebController {
             }
 
             map.addAttribute("plugin", plugin);
+            LogUtil.info(getClass().getName(),"directory : " + map.toString());
 
             String url = request.getContextPath() + "/web/console/setting/directoryManagerImpl/config/submit?id=" + directoryManagerImpl;
             map.addAttribute("actionUrl", url);
@@ -5305,6 +5305,7 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.apps.datalist.model.DataListFilterType", ResourceBundleUtil.getMessage("setting.plugin.datalistFilterType"));
         pluginTypeMap.put("org.joget.workflow.model.DeadlinePlugin", ResourceBundleUtil.getMessage("setting.plugin.deadline"));
         pluginTypeMap.put("org.joget.directory.model.service.DirectoryManagerPlugin", ResourceBundleUtil.getMessage("setting.plugin.directoryManager"));
+        pluginTypeMap.put("org.kecak.oauth.model.Oauth2ClientPlugin", ResourceBundleUtil.getMessage("setting.plugin.oauth2Login"));
         pluginTypeMap.put("org.joget.apps.form.model.Element", ResourceBundleUtil.getMessage("setting.plugin.formElement"));
         pluginTypeMap.put("org.joget.apps.form.model.FormLoadElementBinder", ResourceBundleUtil.getMessage("setting.plugin.formLoadBinder"));
         pluginTypeMap.put("org.joget.apps.form.model.FormLoadOptionsBinder", ResourceBundleUtil.getMessage("setting.plugin.formOptionsBinder"));
@@ -5683,6 +5684,101 @@ public class ConsoleWebController {
             }
         }
         return "console/setting/clientAppList";
+    }
+
+    @RequestMapping("/console/setting/oauth2plugin")
+    public String consoleSettingOauth2Plugin(ModelMap map) {
+        map.addAttribute("pluginType", getPluginType());
+        return "console/setting/oauth2Plugin";
+    }
+
+    @RequestMapping(value = "/console/setting/oauth2plugin/config",method = RequestMethod.GET)
+    public String consoleSettingOAuth2PluginConfig(ModelMap map, @RequestParam(value = "id") String id) throws IOException {
+        Plugin plugin = pluginManager.getPlugin(id);
+
+        if (plugin != null) {
+            String properties = SetupManager.getSettingValue(id);
+            LogUtil.info(getClass().getName(),properties);
+            if (!(plugin instanceof PropertyEditable)) {
+                @SuppressWarnings("rawtypes")
+                Map propertyMap = new HashMap();
+                propertyMap = CsvUtil.getPluginPropertyMap(properties);
+                map.addAttribute("propertyMap", propertyMap);
+                LogUtil.info(getClass().getName(),"property map" + propertyMap.toString());
+            } else {
+                map.addAttribute("properties", PropertyUtil.propertiesJsonLoadProcessing(properties));
+                LogUtil.info(getClass().getName(),"properties" + PropertyUtil.propertiesJsonLoadProcessing(properties));
+            }
+
+            if (plugin instanceof PropertyEditable) {
+                map.addAttribute("propertyEditable", (PropertyEditable) plugin);
+            }
+
+            map.addAttribute("plugin", plugin);
+
+            String url = WorkflowUtil.getHttpServletRequest().getContextPath() + "/web/console/setting/oauth2plugin/config/submit?id=" + id;
+            map.addAttribute("actionUrl", url);
+
+            return "console/plugin/pluginConfig";
+        } else {
+            return "error404";
+        }
+    }
+
+    @RequestMapping(value = "/console/setting/oauth2plugin/config/submit", method = RequestMethod.POST)
+    public String consoleSettingOauth2PluginConfigSubmit(ModelMap map, @RequestParam("id") String id, @RequestParam(value = "pluginProperties", required = false) String pluginProperties, HttpServletRequest request) {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        @SuppressWarnings("unused")
+        Plugin plugin = (Plugin) pluginManager.getPlugin(id);
+
+        Setting propertySetting = SetupManager.getSettingByProperty(id);
+        if (propertySetting == null) {
+            propertySetting = new Setting();
+            propertySetting.setProperty(id);
+        }
+
+        if (pluginProperties == null) {
+            //request params
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            Map<String, String> propertyMap = new HashMap();
+            Enumeration<String> e = request.getParameterNames();
+            while (e.hasMoreElements()) {
+                String paramName = e.nextElement();
+
+                if (!paramName.startsWith("param_")) {
+                    String[] paramValue = (String[]) request.getParameterValues(paramName);
+                    propertyMap.put(paramName, CsvUtil.getDeliminatedString(paramValue));
+                }
+            }
+
+            // form csv properties
+            StringWriter sw = new StringWriter();
+            try {
+                CSVWriter writer = new CSVWriter(sw);
+                @SuppressWarnings("rawtypes")
+                Iterator it = propertyMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    Map.Entry<String, String> pairs = (Map.Entry) it.next();
+                    writer.writeNext(new String[]{pairs.getKey(), pairs.getValue()});
+                }
+                writer.close();
+            } catch (Exception ex) {
+                LogUtil.error(getClass().getName(), ex, "");
+            }
+            String pluginProps = sw.toString();
+            propertySetting.setValue(pluginProps);
+        } else {
+            propertySetting.setValue(PropertyUtil.propertiesJsonStoreProcessing(propertySetting.getValue(), pluginProperties));
+        }
+        propertySetting.setDateModified(new Date());
+        propertySetting.setModifiedBy(currentUsername);
+        setupManager.saveSetting(propertySetting);
+
+        String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
+        String url = contextPath + "/web/console/setting/oauth2plugin";
+        map.addAttribute("url", url);
+        return "console/dialogClose";
     }
 
 }
