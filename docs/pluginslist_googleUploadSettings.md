@@ -72,5 +72,3 @@ if you don't have project, you can make your own project, then enable API
 15. Download JSON
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/12.GoogleFileUpload_downloadJson.png" alt="" />
-
-
