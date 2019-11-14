@@ -144,17 +144,16 @@ public class FormRow extends Properties {
 	}
 
 	public Boolean getDeleted() {
-		Boolean deleted = null;
-    	Object obj = get(FormUtil.PROPERTY_DELETED);
+    	String obj = getProperty(FormUtil.PROPERTY_DELETED);
     	if (obj != null) {
-    		deleted = (Boolean) obj;
+    		return Boolean.getBoolean(obj);
     	}
-    	return deleted;
+    	return false;
 	}
 
 	public void setDeleted(Boolean deleted) {
 		if (deleted != null) {
-            put(FormUtil.PROPERTY_DELETED, deleted);
+            setProperty(FormUtil.PROPERTY_DELETED, Boolean.toString(deleted));
         } else {
             remove(FormUtil.PROPERTY_DELETED);
         }
