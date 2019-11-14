@@ -1,5 +1,4 @@
 package org.joget.apps.workflow.security;
-import java.util.*;
 
 import org.apache.commons.codec.binary.Hex;
 import org.joget.apps.app.service.AppUtil;
@@ -19,7 +18,6 @@ import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.dao.WorkflowHelper;
 import org.kecak.oauth.model.AbstractOauth2Client;
-import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -37,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
 
 public class WorkflowAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
 

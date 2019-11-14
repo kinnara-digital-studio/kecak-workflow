@@ -154,7 +154,7 @@ public class FormRow extends Properties {
 
 	public void setDeleted(Boolean deleted) {
 		if (deleted != null) {
-            put(FormUtil.PROPERTY_DELETED, deleted);
+            setProperty(FormUtil.PROPERTY_DELETED, String.valueOf(deleted));
         } else {
             remove(FormUtil.PROPERTY_DELETED);
         }
@@ -225,7 +225,7 @@ public class FormRow extends Properties {
     public String getProperty(String key) {
         Object oval = super.get(key);
        
-        if (oval != null && oval instanceof Date) {
+        if (oval instanceof Date) {
             return TimeZoneUtil.convertToTimeZone((Date) oval, null, AppUtil.getAppDateFormat());
         } else {
             return super.getProperty(key);

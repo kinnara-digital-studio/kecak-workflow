@@ -395,7 +395,9 @@ public class AppWebController {
                     }
                 }
             }
-        } catch (Exception e){}
+        } catch (Exception e){
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
         
         if (!isAuthorize) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

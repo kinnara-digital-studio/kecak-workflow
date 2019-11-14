@@ -27,4 +27,9 @@ public abstract class AbstractOauth2Client extends ExtDefaultPlugin implements O
     public User getUser(String clientToken) throws BadCredentialsException {
         return null;
     }
+
+    @Override
+    public boolean isEnabled() {
+        return "true".equalsIgnoreCase(getPropertyString("isEnabled"));
+    }
 }

@@ -87,14 +87,9 @@ public class LoginWebController {
             AbstractOauth2Client oauthPlugin = (AbstractOauth2Client) pluginManager.getPlugin(plugin.getClass().getName());
             String properties = SetupManager.getSettingValue(plugin.getClass().getName());
             if(!properties.isEmpty()) {
-                Map propertyMap;
-                if (!(oauthPlugin instanceof PropertyEditable)) {
-                    propertyMap = CsvUtil.getPluginPropertyMap(properties);
-                } else {
-                    propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
-                }
+                Map propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
                 oauthPlugin.setProperties(propertyMap);
-                if (propertyMap.get("isEnabled") != null && propertyMap.get("isEnabled").toString().equals("yes")){
+                if (oauthPlugin.isEnabled()){
                     oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
                 }
             }

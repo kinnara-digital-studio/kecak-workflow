@@ -25,4 +25,6 @@ public interface Oauth2ClientPlugin extends Plugin {
     String renderHtmlLoginButton();
 
     String renderHtmlLogoutScript();
+
+    boolean isEnabled();
 }
