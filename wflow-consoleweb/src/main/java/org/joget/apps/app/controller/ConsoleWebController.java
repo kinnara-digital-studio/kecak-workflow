@@ -3587,15 +3587,15 @@ public class ConsoleWebController {
         map.addAttribute("userSecurity", us);
 
         //add oauth setting
-        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
-        Map<String, String> oauthSetting = new TreeMap<>(
-                (Comparator<String>) (o1, o2) -> o2.compareTo(o1)
-        );
-        for (Plugin plugin : pluginList){
-            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
-            oauthSetting.putAll(oauthPlugin.getGeneralSetting());
-        }
-        map.addAttribute("oauthSetting",oauthSetting);
+//        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+//        Map<String, String> oauthSetting = new TreeMap<>(
+//                (Comparator<String>) (o1, o2) -> o2.compareTo(o1)
+//        );
+//        for (Plugin plugin : pluginList){
+//            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
+//            oauthSetting.putAll(oauthPlugin.getGeneralSetting());
+//        }
+//        map.addAttribute("oauthSetting",oauthSetting);
 
         return "console/setting/general";
     }

@@ -1,22 +1,14 @@
 package org.joget.apps.app.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.xpath.operations.Bool;
-import org.hibernate.jdbc.Work;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppService;
-import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.apps.userview.service.UserviewThemeProcesser;
@@ -25,16 +17,14 @@ import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.dao.ClientAppDao;
-import org.joget.directory.model.ClientApp;
 import org.joget.directory.model.User;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
-import org.joget.workflow.model.service.WorkflowManager;
+import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.oauth.model.Oauth2ClientPlugin;
+import org.kecak.oauth.model.AbstractOauth2Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -42,6 +32,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -76,16 +68,18 @@ public class LoginWebController {
         }
 
         //add oauth button on login view
-        Collection<Plugin> pluginList = pluginManager.list(Oauth2ClientPlugin.class);
+        Collection<Plugin> pluginList = pluginManager.list(AbstractOauth2Client.class);
         String oauth2PluginButton = "";
         for (Plugin plugin : pluginList){
-            Oauth2ClientPlugin oauthPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(plugin.getClass().getName());
-            Map<String,String> generalSetting = oauthPlugin.getGeneralSetting();
-            Boolean showed = (generalSetting == null)?false:true;
-            for (String setting: generalSetting.keySet()){
-                if(SetupManager.getSettingValue(setting) == null || SetupManager.getSettingValue(setting).isEmpty()) showed = false;
+            AbstractOauth2Client oauthPlugin = (AbstractOauth2Client) pluginManager.getPlugin(plugin.getClass().getName());
+            String properties = SetupManager.getSettingValue(plugin.getClass().getName());
+            if(!properties.isEmpty()) {
+                Map propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
+                oauthPlugin.setProperties(propertyMap);
+                if (oauthPlugin.isEnabled()){
+                    oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
+                }
             }
-            if(showed) oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
         }
 
         if (savedUrl.contains("/web/userview") || savedUrl.contains("/web/embed/userview")) {
