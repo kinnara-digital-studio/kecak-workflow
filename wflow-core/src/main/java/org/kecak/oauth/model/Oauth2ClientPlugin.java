@@ -26,5 +26,5 @@ public interface Oauth2ClientPlugin extends Plugin {
 
     String renderHtmlLogoutScript();
 
-    Map<String,String> getGeneralSetting();
+    boolean isEnabled();
 }
