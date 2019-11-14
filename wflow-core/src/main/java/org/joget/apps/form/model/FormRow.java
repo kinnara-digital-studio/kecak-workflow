@@ -144,17 +144,16 @@ public class FormRow extends Properties {
 	}
 
 	public Boolean getDeleted() {
-		Boolean deleted = null;
-    	Object obj = get(FormUtil.PROPERTY_DELETED);
+    	String obj = getProperty(FormUtil.PROPERTY_DELETED);
     	if (obj != null) {
-    		deleted = (Boolean) obj;
+    		return Boolean.getBoolean(obj);
     	}
-    	return deleted;
+    	return false;
 	}
 
 	public void setDeleted(Boolean deleted) {
 		if (deleted != null) {
-            setProperty(FormUtil.PROPERTY_DELETED, String.valueOf(deleted));
+            setProperty(FormUtil.PROPERTY_DELETED, Boolean.toString(deleted));
         } else {
             remove(FormUtil.PROPERTY_DELETED);
         }
@@ -225,7 +224,7 @@ public class FormRow extends Properties {
     public String getProperty(String key) {
         Object oval = super.get(key);
        
-        if (oval instanceof Date) {
+        if (oval != null && oval instanceof Date) {
             return TimeZoneUtil.convertToTimeZone((Date) oval, null, AppUtil.getAppDateFormat());
         } else {
             return super.getProperty(key);
