@@ -2,7 +2,10 @@
 
 ## How to use
 
-1.
+### Settings Firebase
+
+1. Open Google Firebased
+
 2.
 3.
 4.
