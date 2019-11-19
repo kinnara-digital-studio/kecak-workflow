@@ -1395,7 +1395,7 @@ public class AppServiceImpl implements AppService {
                 
                 Date dateCreated = null;
                 String createdBy = null;
-                Boolean deleted = null;
+                boolean deleted = false;
                 
                 FormRowSet loadedRow = loadFormDataWithoutTransaction(formDefId, tableName, rowPrimaryKeyValue);
                 if (loadedRow != null && loadedRow.iterator().hasNext()) {
@@ -1407,11 +1407,8 @@ public class AppServiceImpl implements AppService {
                     dateCreated = currentDate;
                     createdBy = currentUsername;
                 }
-                
-                if (row.getDeleted() == null) {
-                	row.setDeleted(deleted);
-                }
-                
+
+                row.setDeleted(deleted);
                 row.setDateCreated(dateCreated);
                 row.setCreatedBy(createdBy);
             }
