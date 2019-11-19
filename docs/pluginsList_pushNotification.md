@@ -87,6 +87,8 @@ and you will show the private key downloaded.
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_configuration.png" alt="" />
 
+Input here server key and private key that you have get from firebased.
+
 
 6. Go to tab activity
 
