@@ -63,8 +63,37 @@ and you will show the private key downloaded.
 
 ### Settings in Kecak
 
-1. 
-2.
-3.
+1. Open Apps
 
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_openApps.png" alt="" />
+
+
+2. Go to process
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_process.png" alt="" />
+
+
+3. go to maps tools to plugins
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_mapsToolsToPlugins.png" alt="" />
+
+
+4. Choose tools then add/edit plugin
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_addEdit.png" alt="" />
+
+
+5. Edit configuration
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_configuration.png" alt="" />
+
+
+6. Go to tab activity
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_activity.png" alt="" />
+
+
+7. Go to notification
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_notification.png" alt="" />
 
