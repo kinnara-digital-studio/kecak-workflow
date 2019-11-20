@@ -95,13 +95,32 @@ and you will show the private key downloaded.
 
 Input here server key and private key that you have get from firebased.
 
+Description :
+
+|Field | Description|
+|-|-|
+|||
+|||
 
 7. Go to tab activity
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_activity.png" alt="" />
 
+Description :
+
+|Field | Description|
+|-|-|
+|||
+|||
 
 8. Go to notification
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_notification.png" alt="" />
 
+Description :
+
+|Field | Description|
+|-|-|
+|||
+|||
+|||
