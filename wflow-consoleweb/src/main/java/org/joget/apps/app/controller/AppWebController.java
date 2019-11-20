@@ -389,6 +389,9 @@ public class AppWebController {
                                         isAuthorize = security.isDownloadAllowed(request.getParameterMap());
                                         
                                         break;
+                                    } else {
+                                        isAuthorize = true;
+                                        break;
                                     }
                                 }
                             }
