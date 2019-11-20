@@ -68,14 +68,14 @@ and you will show the private key downloaded.
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_openApps.png" alt="" />
 
 
-2. Go to process
+2. Go to process and maps tools to plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_process.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_process-mapToTools.png" alt="" />
 
 
-3. go to maps tools to plugins
+3. Choose Tools
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_mapsToolsToPlugins.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_chooseTools.png" alt="" />
 
 
 4. Choose tools then add/edit plugin
@@ -83,19 +83,25 @@ and you will show the private key downloaded.
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_addEdit.png" alt="" />
 
 
-5. Edit configuration
+5. Choose Push Notification Tools
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_choose.png" alt="" />
+
+
+6. Edit configuration
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_configuration.png" alt="" />
+
 
 Input here server key and private key that you have get from firebased.
 
 
-6. Go to tab activity
+7. Go to tab activity
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_activity.png" alt="" />
 
 
-7. Go to notification
+8. Go to notification
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_notification.png" alt="" />
 
