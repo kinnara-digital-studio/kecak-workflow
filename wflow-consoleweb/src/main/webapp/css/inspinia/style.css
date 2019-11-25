@@ -4108,6 +4108,7 @@ body.skin-3 {
 .oauth2_login_container{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    margin-left: -2%;
+    justify-content: left;
+    margin: -2.5px;
+    margin-bottom: 15px;
 }
