@@ -52,7 +52,7 @@
 - [Plugins String Comparation Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringComparation)
 - [Plugins Datalist Reference Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistReference)
 - [Plugins Login Using Telegram](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_loginTelegram)
-- [Plugins Pending Assign Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pluginsList_pendingAssignFormatter)
+- [Plugins Pending Assign Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pendingAssignFormatter)
 
 
 
