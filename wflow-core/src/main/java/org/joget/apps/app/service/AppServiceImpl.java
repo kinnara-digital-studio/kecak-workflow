@@ -705,7 +705,8 @@ public class AppServiceImpl implements AppService {
         Form form = loadFormByFormDefId(appDef.getId(), appDef.getVersion().toString(), formDefId, formData, null);
 
         // set action URL
-        form.setProperty("url", formUrl);
+        if(formUrl != null)
+            form.setProperty("url", formUrl);
 
         // decorate form with actions
         if (saveButtonLabel != null) {
