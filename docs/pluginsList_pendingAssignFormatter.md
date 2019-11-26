@@ -1,6 +1,6 @@
 # Plugins Pending Assign Formatter
 
-Plugins for show user assignment pending
+Plugins for show user pending assignment.
 
 
 ## How to use
