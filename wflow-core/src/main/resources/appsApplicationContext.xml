@@ -277,6 +277,11 @@
         </property>
     </bean>
     <!-- END OF SCHEDULER -->
+
+    <!-- OAuth2 Login -->
+    <bean id="oauth2LoginService" class="org.kecak.oauth.service.Oauth2LoginServiceImpl">
+        <property name="pluginManager" ref="pluginManager" />
+    </bean>
     
     <!-- START OF Mobiles and Devices -->
     <bean id="deviceRegistrationFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

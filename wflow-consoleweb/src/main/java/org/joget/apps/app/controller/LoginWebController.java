@@ -82,15 +82,15 @@ public class LoginWebController {
 
         //add oauth button on login view
         Collection<Plugin> pluginList = pluginManager.list(AbstractOauth2Client.class);
-        String oauth2PluginButton = "";
+        StringBuilder oauth2PluginButton = new StringBuilder();
         for (Plugin plugin : pluginList){
             AbstractOauth2Client oauthPlugin = (AbstractOauth2Client) pluginManager.getPlugin(plugin.getClass().getName());
             String properties = SetupManager.getSettingValue(plugin.getClass().getName());
             if(!properties.isEmpty()) {
-                Map propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
+                Map<String, Object> propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
                 oauthPlugin.setProperties(propertyMap);
                 if (oauthPlugin.isEnabled()){
-                    oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
+                    oauth2PluginButton.append(oauthPlugin.renderHtmlLoginButton());
                 }
             }
         }
@@ -190,7 +190,7 @@ public class LoginWebController {
             map.addAttribute("key", key);
             map.addAttribute("menuId", menuId);
             map.addAttribute("embed", embed);
-            map.addAttribute("oauth2PluginButton",oauth2PluginButton);
+            map.addAttribute("oauth2PluginButton", oauth2PluginButton.toString());
             UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
             if (userview != null) {
                 String json = userview.getJson();
@@ -272,7 +272,7 @@ public class LoginWebController {
         } else if (savedUrl.contains(request.getContextPath() + "/mobile")) {
             return "mobile/mLogin";
         }
-        map.addAttribute("oauth2PluginButton",oauth2PluginButton);
+        map.addAttribute("oauth2PluginButton", oauth2PluginButton.toString());
         return "login";
     }
 
