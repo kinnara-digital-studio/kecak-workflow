@@ -279,7 +279,7 @@
     <!-- END OF SCHEDULER -->
 
     <!-- OAuth2 Login -->
-    <bean id="oauth2LoginService" class="org.kecak.oauth.service.Oauth2LoginServiceImpl">
+    <bean id="oauth2LoginService" class="org.kecak.oauth.service.Oauth2ServiceImpl">
         <property name="pluginManager" ref="pluginManager" />
     </bean>
     
