@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -424,12 +425,14 @@ public class DataJsonController {
             getCollectFilters(request.getParameterMap(), dataList);
 
             try {
-                JSONArray jsonData = Optional.ofNullable((DataListCollection<Map<String, Object>>)dataList.getRows(pageSize, rowStart))
+                JSONArray jsonData = Optional.of(dataList)
+                        .map(d -> d.getRows(pageSize, rowStart))
+                        .map(collection -> (DataListCollection<Map<String, Object>>)collection)
                         .orElse(new DataListCollection<>())
                         .stream()
 
                         // reformat content value
-                        .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
+                        .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
@@ -1124,40 +1127,33 @@ public class DataJsonController {
                         .stream()
 
                         // reformat content value
-                        .peek(row -> row.entrySet().forEach(e -> e.setValue(format(dataList, row, e.getKey()))))
-
-                        .peek(row -> {
-                            // add process information
-                            Optional.ofNullable(dataList.getBinder())
-                                    .map(DataListBinder::getPrimaryKeyColumnName)
-                                    .map(row::get)
-                                    .map(Object::toString)
-                                    .map(mapPrimaryKeyToProcessId::get)
-                                    .map(Collection::stream)
-                                    .orElseGet(Stream::empty)
-                                    .map(workflowManager::getAssignmentByProcess)
-                                    .findFirst()
-                                    .ifPresent(a -> {
-                                        row.put("activityId", a.getActivityId());
-                                        row.put("processId", a.getProcessId());
-                                        row.put("assigneeId", a.getAssigneeId());
-
-                                        AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(a.getProcessId());
-                                        if(appDef != null) {
-                                            row.put("appId", appDef.getAppId());
-                                            row.put("appVersion", appDef.getVersion());
-                                        }
-
-                                        Form form = getAssignmentForm(appDef, a);
-                                        if(form != null) {
-                                            row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
-                                        }
-                                    });
-
-                        })
+                        .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
-                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
+                        .collect(JSONArray::new, (jsonArray, row) -> {
+
+                            String primaryKeyColumn = getPrimaryKeyColumn(dataList);
+
+                            // put process detail
+                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + primaryKeyColumn));
+                            if(workflowAssignment != null) {
+                                row.put("activityId", workflowAssignment.getActivityId());
+                                row.put("processId", workflowAssignment.getProcessId());
+                                row.put("assigneeId", workflowAssignment.getAssigneeId());
+
+                                AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(workflowAssignment.getProcessId());
+                                if(appDef != null) {
+                                    row.put("appId", appDef.getAppId());
+                                    row.put("appVersion", appDef.getVersion());
+                                    Form form = getAssignmentForm(appDef, workflowAssignment);
+                                    if(form != null) {
+                                        row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
+                                    }
+                                }
+                            }
+
+                            jsonArray.put(row);
+                        }, (a1, a2) -> {
                             for(int i = 0, size = a2.length(); i < size; i++) {
                                 try {
                                     a1.put(a2.get(i));
@@ -1377,7 +1373,7 @@ public class DataJsonController {
      * @return
      */
     private @Nonnull
-    String format(DataList dataList, Map<String, Object> row, String field) {
+    String formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
         if (dataList.getColumns() == null) {
             return String.valueOf(row.get(field));
         }
@@ -1400,6 +1396,52 @@ public class DataJsonController {
         }
 
         return String.valueOf(row.get(field));
+    }
+
+    @Nonnull
+    private Map<String, Object> formatRow(DataList dataList, Map<String, Object> row) {
+        Map<String, Object> formatterRow = new HashMap<>();
+        for(DataListColumn column : dataList.getColumns()) {
+            String field = column.getName();
+            formatterRow.put(field, formatValue(dataList, row, field));
+        }
+
+        String primaryKeyColumn = getPrimaryKeyColumn(dataList);
+        formatterRow.put("_" + primaryKeyColumn, row.get(primaryKeyColumn));
+
+        return formatterRow;
+    }
+
+    @Nonnull
+    private String getPrimaryKeyColumn(@Nonnull final DataList dataList) {
+        return Optional.of(dataList).map(DataList::getBinder).map(DataListBinder::getPrimaryKeyColumnName).orElse("id");
+    }
+
+    @Nullable
+    private WorkflowAssignment getAssignmentFromProcessIdMap(final Map<String, Collection<String>> mapPrimaryKeyToProcessId, Object primaryKey) {
+        return Optional.ofNullable(primaryKey)
+                .map(mapPrimaryKeyToProcessId::get)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .map(workflowManager::getAssignmentByProcess)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Standard column includes id, dateModified, dateCreated
+     * @param columnName
+     * @return
+     */
+    private boolean isStandardColumns(@Nonnull String columnName) {
+        String[] standardColumns =  new String[] {
+                FormUtil.PROPERTY_ID,
+                FormUtil.PROPERTY_DATE_CREATED,
+                FormUtil.PROPERTY_DATE_MODIFIED
+        };
+
+        String matcher = Arrays.stream(standardColumns).collect(Collectors.joining("|", "\\b", "\\b"));
+        return columnName.matches(matcher);
     }
 
     /**
