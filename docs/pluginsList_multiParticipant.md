@@ -4,4 +4,8 @@
 
 1. Open Apps
 
-2. 
+2. Choose Process and tab map participant to users
+
+3. Choose tools
+
+4. 
