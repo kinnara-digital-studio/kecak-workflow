@@ -1,21 +1,5 @@
 package org.joget.apps.workflow.controller;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -27,20 +11,11 @@ import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.commons.util.DynamicDataSourceManager;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.PagedList;
-import org.joget.commons.util.StringUtil;
-import org.joget.commons.util.TimeZoneUtil;
+import org.joget.commons.util.*;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.report.model.ReportRow;
 import org.joget.report.service.ReportManager;
-import org.joget.workflow.model.WorkflowActivity;
-import org.joget.workflow.model.WorkflowAssignment;
-import org.joget.workflow.model.WorkflowPackage;
-import org.joget.workflow.model.WorkflowProcess;
-import org.joget.workflow.model.WorkflowProcessResult;
-import org.joget.workflow.model.WorkflowVariable;
+import org.joget.workflow.model.*;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
@@ -57,6 +32,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
 
 @Controller
 public class WorkflowJsonController {
@@ -625,6 +605,7 @@ public class WorkflowJsonController {
         JSONObject jsonObject = new JSONObject();
 
         String format = AppUtil.getAppDateFormat();
+        JSONArray jsonData = new JSONArray();
         for (WorkflowAssignment assignment : assignmentList) {
             @SuppressWarnings("rawtypes")
 			Map data = new HashMap();
@@ -645,8 +626,10 @@ public class WorkflowJsonController {
             data.put("label", assignment.getActivityName());
             data.put("description", assignment.getDescription());
 
-            jsonObject.accumulate("data", data);
+            jsonData.put(data);
         }
+
+        jsonObject.put("data", jsonData);
 
         jsonObject.accumulate("total", total);
         jsonObject.accumulate("start", start);
