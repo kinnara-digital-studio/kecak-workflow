@@ -72,5 +72,3 @@
 12. Click submit
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/multiParticipant_mappingSubmit.png" alt="" />
-
-
