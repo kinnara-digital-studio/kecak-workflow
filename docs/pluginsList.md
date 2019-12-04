@@ -53,6 +53,7 @@
 - [Plugins Datalist Reference Textfield](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistReference)
 - [Plugins Login Using Telegram](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_loginTelegram)
 - [Plugins Pending Assign Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pendingAssignFormatter)
+- [Plugins Multi Participant](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_multiParticipant)
 
 
 
