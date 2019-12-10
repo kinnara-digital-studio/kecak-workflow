@@ -12,7 +12,9 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
+import org.joget.apps.form.lib.FileUpload;
 import org.joget.apps.form.model.*;
+import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
@@ -30,6 +32,7 @@ import org.json.JSONObject;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +42,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -994,22 +1000,44 @@ public class DataJsonController {
      * @throws JSONException
      */
     private FormData extractBodyToFormData(final HttpServletRequest request, final Form form) throws IOException, JSONException {
+        // read request body and convert request body to json
+        final JSONObject jsonBody = getRequestPayload(request);
         final FormData formData = new FormData();
 
-        // read request body and convert request body to json
-        String payload = request.getReader().lines().collect(Collectors.joining());
-        JSONObject jsonBody = new JSONObject(payload.isEmpty() ? "{}" : payload);
-        Iterator i = jsonBody.keys();
+        @Nullable
+        final String primaryKey = jsonBody.optString(FormUtil.PROPERTY_ID);
+        if(primaryKey != null) {
+            formData.setPrimaryKeyValue(primaryKey);
+        }
+
+        Iterator<String> i = jsonBody.keys();
         while (i.hasNext()) {
-            String key = String.valueOf(i.next());
-            String value = jsonBody.getString(key);
+            String key = i.next();
 
-            if (key != null && value != null) {
+            Element element = FormUtil.findElement(key, form, new FormData());
+            if(element == null) {
+                continue;
+            }
 
-                // convert json to field data
-                Element element = FormUtil.findElement(key, form, new FormData());
-                if (element != null)
+            if(element instanceof FileDownloadSecurity) {
+                JSONArray jsonValues = jsonBody.optJSONArray(key);
+
+                if(jsonValues != null) {
+                    // multiple file, values are in JSONArray
+                    for(int j = 0; j < jsonValues.length(); j++) {
+                        String value = jsonValues.getString(j);
+                        addFileRequestParameter(value, element, formData);
+                    }
+                } else {
+                    // single file, value is in string
+                    String value = jsonBody.getString(key);
+                    addFileRequestParameter(value, element, formData);
+                }
+            } else {
+                String value = jsonBody.getString(key);
+                if(value != null) {
                     formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
+                }
             }
         }
 
@@ -1022,9 +1050,47 @@ public class DataJsonController {
             formData.setPrimaryKeyValue(jsonBody.getString(FormUtil.PROPERTY_ID));
         }
 
-        formData.setDoValidation(true);
-
         return formData;
+    }
+
+    /**
+     * Generate request body as JSONObject
+     *
+     * @param request
+     * @return
+     */
+    private JSONObject getRequestPayload(HttpServletRequest request) {
+        try {
+            String payload = request.getReader().lines().collect(Collectors.joining());
+            return new JSONObject(payload);
+        } catch (IOException | JSONException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+            return new JSONObject();
+        }
+    }
+
+    /**
+     *
+     * @param value follow this format : "[file name];[base64 encoded file]
+     * @param element
+     * @param formData
+     */
+    private void addFileRequestParameter(String value, Element element, FormData formData) {
+        String[] fileParts = value.split(";");
+        String filename = fileParts[0];
+        String encodedFile = fileParts[1];
+
+        // determine file path
+        byte[] data = Base64.getDecoder().decode(encodedFile);
+        FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
+
+        //                        File uploadFile = FileUtil.getFile(filename, element, primaryKey);
+        //                        try(FileOutputStream fos = new FileOutputStream(uploadFile)) {
+        //                            fos.write(data);
+        //                        }
+        //
+        //                        FileUtil.storeFile(uploadFile, element, primaryKey);
+        formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{filename});
     }
 
 
