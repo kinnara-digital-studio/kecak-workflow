@@ -1043,7 +1043,7 @@ public class DataJsonController {
 
         formData.setDoValidation(true);
         formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
-        formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{"true"});
+        formData.addRequestParameterValues("_action", new String[]{"submit"});
 
         // use field "ID" as primary key if possible
         if (jsonBody.has(FormUtil.PROPERTY_ID)) {
@@ -1078,18 +1078,22 @@ public class DataJsonController {
     private void addFileRequestParameter(String value, Element element, FormData formData) {
         String[] fileParts = value.split(";");
         String filename = fileParts[0];
-        String encodedFile = fileParts[1];
 
-        // determine file path
-        byte[] data = Base64.getDecoder().decode(encodedFile);
-        FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
+        if(fileParts.length > 1) {
+            String encodedFile = fileParts[1];
 
-        //                        File uploadFile = FileUtil.getFile(filename, element, primaryKey);
-        //                        try(FileOutputStream fos = new FileOutputStream(uploadFile)) {
-        //                            fos.write(data);
-        //                        }
-        //
-        //                        FileUtil.storeFile(uploadFile, element, primaryKey);
+            // determine file path
+            byte[] data = Base64.getDecoder().decode(encodedFile);
+            FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
+
+            //                        File uploadFile = FileUtil.getFile(filename, element, primaryKey);
+            //                        try(FileOutputStream fos = new FileOutputStream(uploadFile)) {
+            //                            fos.write(data);
+            //                        }
+            //
+            //                        FileUtil.storeFile(uploadFile, element, primaryKey);
+        }
+
         formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{filename});
     }
 
