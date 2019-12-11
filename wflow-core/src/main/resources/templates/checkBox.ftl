@@ -1,5 +1,5 @@
-<div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <label class="label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
+<div class="form-cell" ${elementMetaData!}>
+    <label class="label">${element.properties.label} <span class="form-cell-validator">${decoration}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>
     <div class="form-cell-value" id="${elementParamName!}${element.properties.elementUniqueKey!}">
     <#list options as option>
         <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
@@ -10,16 +10,13 @@
                 </label>
             </#if>
         <#else>
-            <div class="checkbox">
-                <label>
-                    <input grouping="${option.grouping!?html}" id="${elementParamName!}" name="${elementParamName!}" type="checkbox" value="${option.value!?html}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'>  onclick="return false" </#if> <#if values?? && values?seq_contains(option.value!)>checked</#if> />
-                    ${option.label!?html}
-                </label>
-            </div>
+            <label>
+                <input grouping="${option.grouping!?html}" id="${elementParamName!}" name="${elementParamName!}" type="checkbox" value="${option.value!?html}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'>  onclick="return false" </#if> <#if values?? && values?seq_contains(option.value!)>checked</#if> />
+                ${option.label!?html}
+            </label>
         </#if>
     </#list>
     </div>
-    <#if error??> <span class="form-error-message help-block">${error}</span></#if>
     <div style="clear:both;"></div>
 
     <#if (element.properties.controlField?? && element.properties.controlField! != "" && !(element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true')) >
