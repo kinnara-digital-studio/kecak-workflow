@@ -53,4 +53,3 @@ Plugins for show user pending assignment.
 9. Result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/assignFormatter_result.png" alt="" />
-
