@@ -1015,7 +1015,6 @@ public class DataJsonController {
 
             if(element instanceof FileDownloadSecurity) {
                 JSONArray jsonValues = jsonBody.optJSONArray(key);
-
                 if(jsonValues != null) {
                     // multiple file, values are in JSONArray
                     for(int j = 0; j < jsonValues.length(); j++) {
@@ -1028,8 +1027,8 @@ public class DataJsonController {
                     addFileRequestParameter(value, element, formData);
                 }
             } else {
-                String value = jsonBody.getString(key);
-                if(value != null) {
+                String value = jsonBody.optString(key, null);
+                if (value != null) {
                     formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
                 }
             }
@@ -1088,7 +1087,16 @@ public class DataJsonController {
             //                        FileUtil.storeFile(uploadFile, element, primaryKey);
         }
 
-        formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{filename});
+        String paramName = FormUtil.getElementParameterName(element);
+        List<String> values = Optional.ofNullable(formData.getRequestParameterValues(paramName))
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .map(v -> v.split(";"))
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toList());
+        values.add(filename);
+
+        formData.addRequestParameterValues(paramName, new String[] {String.join(";", values)});
     }
 
 
