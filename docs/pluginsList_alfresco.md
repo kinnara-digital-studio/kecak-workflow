@@ -10,7 +10,7 @@ These plugins are used to upload files that will be stored on the Alfresco serve
 
 
 2. Choose form
-
+ 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
 
