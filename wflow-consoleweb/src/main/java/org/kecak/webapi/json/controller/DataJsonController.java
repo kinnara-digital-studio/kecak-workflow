@@ -1,6 +1,7 @@
 package org.kecak.webapi.json.controller;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.hibernate.id.UUIDGenerator;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
@@ -19,6 +20,7 @@ import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcess;
@@ -1006,9 +1008,7 @@ public class DataJsonController {
 
         @Nullable
         final String primaryKey = jsonBody.optString(FormUtil.PROPERTY_ID);
-        if(primaryKey != null) {
-            formData.setPrimaryKeyValue(primaryKey);
-        }
+        formData.setPrimaryKeyValue(primaryKey == null ? UuidGenerator.getInstance().getUuid() : primaryKey);
 
         Iterator<String> i = jsonBody.keys();
         while (i.hasNext()) {
@@ -1430,6 +1430,10 @@ public class DataJsonController {
      */
     private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
         Arrays.stream(dataList.getFilters())
+                .peek(f -> {
+                    if(!(f.getType() instanceof DataListFilterTypeDefault))
+                        LogUtil.warn(getClass().getName(), "DataList filter ["+f.getName()+"] is not instance of ["+DataListFilterTypeDefault.class.getName()+"], filter will be ignored");
+                })
                 .filter(f -> Objects.nonNull(requestParameters.get(f.getName())) && f.getType() instanceof DataListFilterTypeDefault)
                 .forEach(f -> f.getType().setProperty("defaultValue", String.join(";", requestParameters.get(f.getName()))));
     }
