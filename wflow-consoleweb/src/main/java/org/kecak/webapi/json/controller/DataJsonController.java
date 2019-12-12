@@ -1,7 +1,6 @@
 package org.kecak.webapi.json.controller;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.hibernate.id.UUIDGenerator;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
@@ -13,12 +12,10 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.form.lib.FileUpload;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowActivity;
@@ -44,10 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1006,9 +1000,9 @@ public class DataJsonController {
         final JSONObject jsonBody = getRequestPayload(request);
         final FormData formData = new FormData();
 
-        @Nullable
+        @Nonnull
         final String primaryKey = jsonBody.optString(FormUtil.PROPERTY_ID);
-        formData.setPrimaryKeyValue(primaryKey == null ? UuidGenerator.getInstance().getUuid() : primaryKey);
+        formData.setPrimaryKeyValue(primaryKey.isEmpty() ? UuidGenerator.getInstance().getUuid() : primaryKey);
 
         Iterator<String> i = jsonBody.keys();
         while (i.hasNext()) {
