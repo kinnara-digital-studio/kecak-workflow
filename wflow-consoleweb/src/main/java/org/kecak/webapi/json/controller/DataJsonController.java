@@ -12,13 +12,12 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.form.lib.FileUpload;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcess;
@@ -42,10 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1004,11 +1000,9 @@ public class DataJsonController {
         final JSONObject jsonBody = getRequestPayload(request);
         final FormData formData = new FormData();
 
-        @Nullable
+        @Nonnull
         final String primaryKey = jsonBody.optString(FormUtil.PROPERTY_ID);
-        if(primaryKey != null) {
-            formData.setPrimaryKeyValue(primaryKey);
-        }
+        formData.setPrimaryKeyValue(primaryKey.isEmpty() ? UuidGenerator.getInstance().getUuid() : primaryKey);
 
         Iterator<String> i = jsonBody.keys();
         while (i.hasNext()) {
@@ -1021,7 +1015,6 @@ public class DataJsonController {
 
             if(element instanceof FileDownloadSecurity) {
                 JSONArray jsonValues = jsonBody.optJSONArray(key);
-
                 if(jsonValues != null) {
                     // multiple file, values are in JSONArray
                     for(int j = 0; j < jsonValues.length(); j++) {
@@ -1034,8 +1027,8 @@ public class DataJsonController {
                     addFileRequestParameter(value, element, formData);
                 }
             } else {
-                String value = jsonBody.getString(key);
-                if(value != null) {
+                String value = jsonBody.optString(key, null);
+                if (value != null) {
                     formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
                 }
             }
@@ -1043,7 +1036,7 @@ public class DataJsonController {
 
         formData.setDoValidation(true);
         formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
-        formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{"true"});
+        formData.addRequestParameterValues("_action", new String[]{"submit"});
 
         // use field "ID" as primary key if possible
         if (jsonBody.has(FormUtil.PROPERTY_ID)) {
@@ -1078,19 +1071,32 @@ public class DataJsonController {
     private void addFileRequestParameter(String value, Element element, FormData formData) {
         String[] fileParts = value.split(";");
         String filename = fileParts[0];
-        String encodedFile = fileParts[1];
 
-        // determine file path
-        byte[] data = Base64.getDecoder().decode(encodedFile);
-        FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
+        if(fileParts.length > 1) {
+            String encodedFile = fileParts[1];
 
-        //                        File uploadFile = FileUtil.getFile(filename, element, primaryKey);
-        //                        try(FileOutputStream fos = new FileOutputStream(uploadFile)) {
-        //                            fos.write(data);
-        //                        }
-        //
-        //                        FileUtil.storeFile(uploadFile, element, primaryKey);
-        formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{filename});
+            // determine file path
+            byte[] data = Base64.getDecoder().decode(encodedFile);
+            FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
+
+            //                        File uploadFile = FileUtil.getFile(filename, element, primaryKey);
+            //                        try(FileOutputStream fos = new FileOutputStream(uploadFile)) {
+            //                            fos.write(data);
+            //                        }
+            //
+            //                        FileUtil.storeFile(uploadFile, element, primaryKey);
+        }
+
+        String paramName = FormUtil.getElementParameterName(element);
+        List<String> values = Optional.ofNullable(formData.getRequestParameterValues(paramName))
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .map(v -> v.split(";"))
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toList());
+        values.add(filename);
+
+        formData.addRequestParameterValues(paramName, new String[] {String.join(";", values)});
     }
 
 
@@ -1426,6 +1432,10 @@ public class DataJsonController {
      */
     private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
         Arrays.stream(dataList.getFilters())
+                .peek(f -> {
+                    if(!(f.getType() instanceof DataListFilterTypeDefault))
+                        LogUtil.warn(getClass().getName(), "DataList filter ["+f.getName()+"] is not instance of ["+DataListFilterTypeDefault.class.getName()+"], filter will be ignored");
+                })
                 .filter(f -> Objects.nonNull(requestParameters.get(f.getName())) && f.getType() instanceof DataListFilterTypeDefault)
                 .forEach(f -> f.getType().setProperty("defaultValue", String.join(";", requestParameters.get(f.getName()))));
     }
