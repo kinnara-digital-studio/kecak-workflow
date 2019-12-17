@@ -56,7 +56,7 @@ These plugins are used to upload files that will be stored on the Alfresco serve
 
 9. Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/alfresco_testing.jpg" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/alfresco_testing.png" alt="" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/alfresco_result.jpg" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/alfresco_result.png" alt="" />
 
