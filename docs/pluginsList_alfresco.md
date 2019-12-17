@@ -30,8 +30,8 @@ These plugins are used to upload files that will be stored on the Alfresco serve
 
 |Field|Description|
 |-|-|
-|||
-|||
+|ID|ID for field alfresco plugins|
+|Label|Label name for field alfresco upload file|
 
 6. Authorization pages
 
@@ -40,9 +40,9 @@ These plugins are used to upload files that will be stored on the Alfresco serve
 
 |Field|Description|
 |-|-|
-|||
-|||
-|||
+|username|username account alfresco|
+|password|password account alfresco|
+|atom pub url|url alfresco server|
 
 7. Click OK
 
