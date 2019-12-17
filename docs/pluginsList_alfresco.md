@@ -56,11 +56,11 @@ These plugins are used to upload files that will be stored on the Alfresco serve
 
 9. Result
 
-Let's try to upload file with file name "hahaha.png"
+Let's try to upload file with file name "hahaha.jpg"
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/alfresco_testing.png" alt="" />
 
-File with name "hahaha.png" has saved in alfresco server
+File with name "hahaha.jpg" has saved in alfresco server
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/alfresco_result.png" alt="" />
 
