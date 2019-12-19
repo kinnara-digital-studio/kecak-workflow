@@ -1,5 +1,6 @@
 # Jasper Report
 
+Jasper Report is an open source Java reporting tool that can write to a variety of targets, such as: screen, a printer, into PDF, HTML, Microsoft Excel, RTF, ODT, comma-separated values or XML files.
 
 
 ## How to use
