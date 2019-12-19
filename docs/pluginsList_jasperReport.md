@@ -25,9 +25,6 @@ Jasper Report is an open source Java reporting tool that can write to a variety 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
 
-region : aws has many server in the world
-and chooseregion that will be used server 
-
 5. Edit Jasper Report
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
