@@ -7,22 +7,22 @@ Jasper Report is an open source Java reporting tool that can write to a variety 
 
 1. Open Apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_openApps.png" alt="" />
 
 
-2. Choose form
+2. Choose Userview
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_chooseUserview.png" alt="" />
 
 
 3. Drag and drop plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_dragDrop.png" alt="" />
 
 
 4. Edit plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_edit.png" alt="" />
 
 
 5. Edit Jasper Report
@@ -33,12 +33,12 @@ Description :
 
 |Field|Description|
 |-|-|
-|||
-|||
-|||
-|||
-|||
-|||
+|custom ID||
+|Label||
+|Default output||
+|Export Options||
+|File Name||
+|Jasper Reports Definiton (xml)||
 
 6. Jasper report authorization
 
@@ -48,8 +48,8 @@ Desccription
 
 |Field|Description|
 |-|-|
-|||
-|||
+|Name||
+|Value||
 7. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
