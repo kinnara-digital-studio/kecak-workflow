@@ -27,7 +27,7 @@ Jasper Report is an open source Java reporting tool that can write to a variety 
 
 5. Configure Jasper Report
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_configuration.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_configure.png" alt="" />
 
 Description :
 
