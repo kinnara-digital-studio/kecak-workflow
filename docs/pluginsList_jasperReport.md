@@ -25,41 +25,32 @@ Jasper Report is an open source Java reporting tool that can write to a variety 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_edit.png" alt="" />
 
 
-5. Edit Jasper Report
+5. Configure Jasper Report
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_configuration.png" alt="" />
 
 Description :
 
 |Field|Description|
 |-|-|
-|custom ID||
-|Label||
+|custom ID|ID for jasper report|
+|Label|Label for jasper report|
 |Default output||
 |Export Options||
 |File Name||
 |Jasper Reports Definiton (xml)||
 
-6. Jasper report authorization
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+6. Click OK
 
-Desccription
-
-|Field|Description|
-|-|-|
-|Name||
-|Value||
-7. Click OK
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_ok.png" alt="" />
 
 
-8. Click Save
+7. Click Save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_save.png" alt="" />
 
 
-9. Result
+8. Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/jasper_result.png" alt="" />
