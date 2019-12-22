@@ -1808,25 +1808,30 @@ public class DataJsonController {
 
     /**
      * Load element which has load binder
-     * @param form
+     * @param element
      * @param formData
      * @param jsonData
      */
-    private void loadDataForElementWithBinder(@Nonnull final Form form, @Nonnull final FormData formData, @Nonnull final JSONObject jsonData) {
-        form.getChildren().forEach(e -> {
-            FormUtil.executeLoadBinders(e, formData);
-            FormRowSet rowSet = formData.getLoadBinderData(e);
-            if(rowSet != null) {
-                String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
-                if(rowSet.isMultiRow()) {
-                    JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
-                    try { jsonData.put(elementId, jsonArray); } catch (JSONException ignored) { }
-                } else {
-                    JSONObject json = new JSONObject(rowSet.stream().findFirst().orElseGet(FormRow::new));
-                    try { jsonData.put(elementId, json); } catch (JSONException ignored) { }
-                }
-            }
-        });
+    private void loadDataForElementWithBinder(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject jsonData) {
+        Optional.ofNullable(element.getChildren())
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .forEach(e -> {
+                    FormUtil.executeLoadBinders(e, formData);
+                    FormRowSet rowSet = formData.getLoadBinderData(e);
+                    if(rowSet != null) {
+                        String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
+                        if(rowSet.isMultiRow()) {
+                            JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
+                            try { jsonData.put(elementId, jsonArray); } catch (JSONException ignored) { }
+                        } else {
+                            JSONObject json = new JSONObject(rowSet.stream().findFirst().orElseGet(FormRow::new));
+                            try { jsonData.put(elementId, json); } catch (JSONException ignored) { }
+                        }
+                    }
+
+                    loadDataForElementWithBinder(e, formData, jsonData);
+                });
     }
 
     /**
