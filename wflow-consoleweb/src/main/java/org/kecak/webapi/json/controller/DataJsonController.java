@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Controller
@@ -130,16 +131,17 @@ public class DataJsonController {
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
                 // set current data as response
-                FormRowSet rowSet = appService.loadFormData(form, result.getPrimaryKeyValue());
-                if (rowSet == null || rowSet.isEmpty()) {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    jsonResponse.put(FIELD_DATA, jsonData);
-                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                    jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
-                }
+                FormRow row = Optional.ofNullable(appService.loadFormData(form, result.getPrimaryKeyValue()))
+                        .map(Collection::stream)
+                        .orElseGet(Stream::empty)
+                        .findFirst()
+                        .orElseGet(FormRow::new);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                JSONObject jsonData = new JSONObject(row);
+                jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
             }
 
             response.getWriter().write(jsonResponse.toString());
@@ -208,17 +210,113 @@ public class DataJsonController {
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
             } else {
                 // set current data as response
-                FormRowSet rowSet = appService.loadFormData(form, result.getPrimaryKeyValue());
-                if (rowSet == null || rowSet.isEmpty()) {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    jsonResponse.put(FIELD_DATA, jsonData);
-                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                    jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
-                }
+                FormRow row = Optional.ofNullable(appService.loadFormData(form, result.getPrimaryKeyValue()))
+                        .map(Collection::stream)
+                        .orElseGet(Stream::empty)
+                        .findFirst()
+                        .orElseGet(FormRow::new);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                JSONObject jsonData = new JSONObject(row);
+                jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
             }
+
+            response.getWriter().write(jsonResponse.toString());
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    /**
+     * Get Element Data
+     * Execute element's load binder
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @param elementId
+     * @param primaryKey
+     * @param digest
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/element/(*:elementId)/(*:primaryKey)", method = RequestMethod.GET)
+    public void getElementData(final HttpServletRequest request, final HttpServletResponse response,
+                               @RequestParam("appId") final String appId,
+                               @RequestParam("appVersion") final String appVersion,
+                               @RequestParam("formDefId") final String formDefId,
+                               @RequestParam("elementId") final String elementId,
+                               @RequestParam("primaryKey") final String primaryKey,
+                               @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
+            if(form == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]");
+            }
+
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
+            Element element = FormUtil.findElement(elementId, form, formData);
+            if(element == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid element [" + elementId + "]");
+            }
+
+            formService.executeFormLoadBinders(element, formData);
+
+            @Nonnull
+            FormRowSet formRows = Optional.ofNullable(formData.getLoadBinderData(element))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .collect(Collectors.toCollection(FormRowSet::new));
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            // construct response
+
+            @Nonnull
+            JSONArray jsonArrayData = formRows.stream()
+                    .map(JSONObject::new)
+                    .collect(JSONArray::new, JSONArray::put, (arr1, arr2) -> {
+                        for(int i = 0, size = arr2.length(); i < size; i++) {
+                            try { arr1.put(arr2.get(i)); } catch (JSONException ignored) { }
+                        }
+                    });
+
+            @Nullable
+            String currentDigest = getDigest(jsonArrayData);
+
+            JSONObject jsonResponse = new JSONObject();
+
+            if (!Objects.equals(currentDigest, digest)) {
+                jsonResponse.put(FIELD_DATA, jsonArrayData);
+            }
+
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, currentDigest);
 
             response.getWriter().write(jsonResponse.toString());
 
@@ -267,27 +365,39 @@ public class DataJsonController {
             AppUtil.setCurrentAppDefinition(appDefinition);
 
             Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
-            FormRowSet rowSet = appService.loadFormData(form, primaryKey);
-            if (rowSet == null || rowSet.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            } else {
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                // construct response
-                JSONObject jsonData = new JSONObject(rowSet.get(0));
-                String currentDigest = getDigest(jsonData);
-
-                JSONObject jsonResponse = new JSONObject();
-
-                if (!Objects.equals(currentDigest, digest)) {
-                    jsonResponse.put(FIELD_DATA, jsonData);
-                }
-
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, currentDigest);
-
-                response.getWriter().write(jsonResponse.toString());
+            if(form == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]");
             }
+
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
+            // get form row
+            @Nonnull
+            FormRow formRow = Optional.ofNullable(appService.loadFormData(form, primaryKey))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .findFirst()
+                    .orElseGet(FormRow::new);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            // construct response
+            final JSONObject jsonData = new JSONObject(formRow);
+            loadDataForElementWithBinder(form, formData, jsonData);
+
+            String currentDigest = getDigest(jsonData);
+
+            JSONObject jsonResponse = new JSONObject();
+
+            if (!Objects.equals(currentDigest, digest)) {
+                jsonResponse.put(FIELD_DATA, jsonData);
+            }
+
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+            response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -538,44 +648,44 @@ public class DataJsonController {
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
-                FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
-                if (rowSet == null || rowSet.isEmpty()) {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(HttpServletResponse.SC_OK);
 
-                    // construct response
-                    FormRow row = rowSet.get(0);
-                    JSONObject jsonData = new JSONObject(row);
+                // construct response
+                FormRow row = Optional.ofNullable(appService.loadFormData(form, formData.getPrimaryKeyValue()))
+                        .map(Collection::stream)
+                        .orElseGet(Stream::empty)
+                        .findFirst()
+                        .orElseGet(FormRow::new);
 
-                    if (processResult != null) {
-                        JSONObject jsonProcess = new JSONObject();
-                        if (processResult.getProcess() != null) {
-                            WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
-                            if (nextAssignment != null) {
-                                jsonProcess.put("processId", nextAssignment.getProcessId());
-                                jsonProcess.put("activityId", nextAssignment.getActivityId());
-                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                                jsonProcess.put("priority", nextAssignment.getPriority());
+                JSONObject jsonData = new JSONObject(row);
 
-                                jsonData.put("processId", nextAssignment.getProcessId());
-                                jsonData.put("activityId", nextAssignment.getActivityId());
-                            }
+                if (processResult != null) {
+                    JSONObject jsonProcess = new JSONObject();
+                    if (processResult.getProcess() != null) {
+                        WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
+                        if (nextAssignment != null) {
+                            jsonProcess.put("processId", nextAssignment.getProcessId());
+                            jsonProcess.put("activityId", nextAssignment.getActivityId());
+                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                            jsonProcess.put("priority", nextAssignment.getPriority());
+
+                            jsonData.put("processId", nextAssignment.getProcessId());
+                            jsonData.put("activityId", nextAssignment.getActivityId());
                         }
-
-                        if (processResult.getActivities() != null && !processResult.getActivities().isEmpty()) {
-                            jsonProcess.put("activityIds", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
-                        }
-
-                        jsonResponse.put("process", jsonProcess);
                     }
 
-                    String digest = getDigest(jsonData);
-                    jsonResponse.put(FIELD_DATA, jsonData);
-                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                    jsonResponse.put(FIELD_DIGEST, digest);
+                    if (processResult.getActivities() != null && !processResult.getActivities().isEmpty()) {
+                        jsonProcess.put("activityIds", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
+                    }
+
+                    jsonResponse.put("process", jsonProcess);
                 }
+
+                String digest = getDigest(jsonData);
+                jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, digest);
             }
 
             response.getWriter().write(jsonResponse.toString());
@@ -656,26 +766,25 @@ public class DataJsonController {
                     jsonResponse.put("process", jsonProcess);
                 }
 
-                FormRowSet rowSet = appService.loadFormData(form, resultFormData.getPrimaryKeyValue());
-                if (rowSet == null || rowSet.isEmpty()) {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(HttpServletResponse.SC_OK);
 
-                    // construct response
-                    FormRow row = rowSet.get(0);
+                // construct response
+                FormRow row = Optional.ofNullable(appService.loadFormData(form, resultFormData.getPrimaryKeyValue()))
+                        .map(Collection::stream)
+                        .orElseGet(Stream::empty)
+                        .findFirst()
+                        .orElseGet(FormRow::new);
 
-                    JSONObject jsonData = new JSONObject(row);
+                JSONObject jsonData = new JSONObject(row);
 
-                    jsonData.put("activityId", nextAssignment.getActivityId());
-                    jsonData.put("processId", nextAssignment.getProcessId());
+                jsonData.put("activityId", nextAssignment.getActivityId());
+                jsonData.put("processId", nextAssignment.getProcessId());
 
-                    String digest = getDigest(jsonData);
+                String digest = getDigest(jsonData);
 
-                    jsonResponse.put(FIELD_DATA, jsonData);
-                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                    jsonResponse.put(FIELD_DIGEST, digest);
-                }
+                jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, digest);
             }
 
             response.getWriter().write(jsonResponse.toString());
@@ -726,31 +835,34 @@ public class DataJsonController {
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
-            FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());
+            Form form = packageActivityForm.getForm();
+            FormRow row = Optional.ofNullable(appService.loadFormData(form, formData.getPrimaryKeyValue()))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .findFirst()
+                    .orElseGet(FormRow::new);
 
-            if (rowSet == null || rowSet.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            } else {
-                response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_OK);
 
-                try {
-                    JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    jsonData.put("activityId", assignment.getActivityId());
-                    jsonData.put("processId", assignment.getProcessId());
+            try {
+                JSONObject jsonData = new JSONObject(row);
+                loadDataForElementWithBinder(form, formData, jsonData);
 
-                    String currentDigest = getDigest(jsonData);
+                jsonData.put("activityId", assignment.getActivityId());
+                jsonData.put("processId", assignment.getProcessId());
 
-                    JSONObject jsonResponse = new JSONObject();
-                    jsonResponse.put(FIELD_DIGEST, currentDigest);
-                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                String currentDigest = getDigest(jsonData);
 
-                    if (!Objects.equals(digest, currentDigest))
-                        jsonResponse.put(FIELD_DATA, jsonData);
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
 
-                    response.getWriter().write(jsonResponse.toString());
-                } catch (JSONException e) {
-                    throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-                }
+                if (!Objects.equals(digest, currentDigest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -796,31 +908,34 @@ public class DataJsonController {
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
-            FormRowSet rowSet = appService.loadFormData(packageActivityForm.getForm(), formData.getPrimaryKeyValue());
+            Form form = packageActivityForm.getForm();
+            FormRow row = Optional.ofNullable(appService.loadFormData(form, formData.getPrimaryKeyValue()))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .findFirst()
+                    .orElseGet(FormRow::new);
 
-            if (rowSet == null || rowSet.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            } else {
-                response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_OK);
 
-                try {
-                    JSONObject jsonData = new JSONObject(rowSet.get(0));
-                    jsonData.put("activityId", assignment.getActivityId());
-                    jsonData.put("processId", assignment.getProcessId());
+            try {
+                JSONObject jsonData = new JSONObject(row);
+                loadDataForElementWithBinder(form, formData, jsonData);
 
-                    String currentDigest = getDigest(jsonData);
+                jsonData.put("activityId", assignment.getActivityId());
+                jsonData.put("processId", assignment.getProcessId());
 
-                    JSONObject jsonResponse = new JSONObject();
-                    jsonResponse.put(FIELD_DIGEST, currentDigest);
-                    jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                String currentDigest = getDigest(jsonData);
 
-                    if (!Objects.equals(digest, currentDigest))
-                        jsonResponse.put(FIELD_DATA, jsonData);
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
 
-                    response.getWriter().write(jsonResponse.toString());
-                } catch (JSONException e) {
-                    throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-                }
+                if (!Objects.equals(digest, currentDigest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -936,11 +1051,12 @@ public class DataJsonController {
 
                             return row;
                         } else {
-                            FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
-                            if (rowSet == null || rowSet.isEmpty())
-                                return null;
+                            FormRow row = Optional.ofNullable(appService.loadFormData(form, formData.getPrimaryKeyValue()))
+                                    .map(Collection::stream)
+                                    .orElseGet(Stream::empty)
+                                    .findFirst()
+                                    .orElseGet(FormRow::new);
 
-                            FormRow row = rowSet.get(0);
                             row.setProperty("activityId", assignment.getActivityId());
                             row.setProperty("processId", assignment.getProcessId());
                             row.setProperty("assigneeId", assignment.getAssigneeId());
@@ -995,7 +1111,7 @@ public class DataJsonController {
      * @throws IOException
      * @throws JSONException
      */
-    private FormData extractBodyToFormData(final HttpServletRequest request, final Form form) throws IOException, JSONException {
+    private FormData extractBodyToFormData(final HttpServletRequest request, final Form form) throws IOException, JSONException, ApiException {
         // read request body and convert request body to json
         final JSONObject jsonBody = getRequestPayload(request);
         final FormData formData = new FormData();
@@ -1008,9 +1124,33 @@ public class DataJsonController {
         while (i.hasNext()) {
             String key = i.next();
 
-            Element element = FormUtil.findElement(key, form, new FormData());
+            Element element = FormUtil.findElement(key, form, formData);
             if(element == null) {
+                if(!key.equals(FormUtil.PROPERTY_ID)) {
+                    // element not found
+                    String formDefId = form.getPropertyString(FormUtil.PROPERTY_ID);
+                    LogUtil.warn(getClass().getName(), "Element [" + key + "] is not found in form [" + formDefId + "]");
+                }
                 continue;
+            }
+
+            FormStoreBinder storeBinder = element.getStoreBinder();
+            if(storeBinder != null) {
+                FormRowSet rowSet;
+                if(storeBinder instanceof FormStoreMultiRowElementBinder) {
+                    JSONArray values = jsonBody.optJSONArray(key);
+                    rowSet = convertJsonArrayToRowSet(values);
+                } else if (storeBinder instanceof FormStoreElementBinder) {
+                    JSONObject value = jsonBody.optJSONObject(key);
+                    rowSet = convertJsonObjectToRowSet(value);
+                } else {
+                    throw new ApiException(HttpServletResponse.SC_NOT_IMPLEMENTED,
+                            "Unknown store binder type [" + storeBinder.getClass().getName()
+                                    + "] in form ["+ form.getPropertyString(FormUtil.PROPERTY_ID)
+                                    +"] element ["+element.getPropertyString(FormUtil.PROPERTY_ID)+"] ");
+                }
+
+                formData.setStoreBinderData(storeBinder, rowSet);
             }
 
             if(element instanceof FileDownloadSecurity) {
@@ -1044,6 +1184,50 @@ public class DataJsonController {
         }
 
         return formData;
+    }
+
+    @Nonnull
+    private FormRowSet convertJsonObjectToRowSet(JSONObject json) {
+        FormRowSet result = new FormRowSet();
+
+        if(json != null) {
+            FormRow row = new FormRow();
+            Iterator iterator = json.keys();
+            while(iterator.hasNext()) {
+                String key = iterator.next().toString();
+                String value = json.optString(key);
+                row.put(key, value);
+            }
+
+            result.add(row);
+        }
+
+        return result;
+    }
+
+
+    @Nonnull
+    private FormRowSet convertJsonArrayToRowSet(final JSONArray jsonArray) {
+        FormRowSet result = IntStream.range(0, jsonArray.length())
+                .boxed()
+                .map(jsonArray::optJSONObject)
+                .map(j -> {
+                    FormRow row = new FormRow();
+
+                    Iterator iterator = j.keys();
+                    while(iterator.hasNext()) {
+                        String key = iterator.next().toString();
+                        String value = j.optString(key);
+                        row.put(key, value);
+                    }
+
+                    return row;
+                })
+                .collect(Collectors.toCollection(FormRowSet::new));
+
+        result.setMultiRow(true);
+
+        return result;
     }
 
     /**
@@ -1605,5 +1789,58 @@ public class DataJsonController {
         filterQueryObject.setValues(values.toArray(new String[0]));
         dataList.addFilterQueryObject(filterQueryObject);
         return dataList;
+    }
+
+    /**
+     * Execute element load binder
+     * @param element
+     * @param formData
+     * @return
+     */
+    @Nonnull
+    private FormRowSet getLoadBinderData(Element element, FormData formData) {
+        formService.executeFormLoadBinders(element, formData);
+        return Optional.ofNullable(formData.getLoadBinderData(element))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .collect(Collectors.toCollection(FormRowSet::new));
+    }
+
+    /**
+     * Load element which has load binder
+     * @param form
+     * @param formData
+     * @param jsonData
+     */
+    private void loadDataForElementWithBinder(@Nonnull final Form form, @Nonnull final FormData formData, @Nonnull final JSONObject jsonData) {
+        form.getChildren().forEach(e -> {
+            FormUtil.executeLoadBinders(e, formData);
+            FormRowSet rowSet = formData.getLoadBinderData(e);
+            if(rowSet != null) {
+                String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
+                if(rowSet.isMultiRow()) {
+                    JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
+                    try { jsonData.put(elementId, jsonArray); } catch (JSONException ignored) { }
+                } else {
+                    JSONObject json = new JSONObject(rowSet.stream().findFirst().orElseGet(FormRow::new));
+                    try { jsonData.put(elementId, json); } catch (JSONException ignored) { }
+                }
+            }
+        });
+    }
+
+    /**
+     * Convert {@link FormRowSet} to Json Array
+     * @param rowSet
+     * @return
+     */
+    private JSONArray convertFormRowSetToJsonArray(@Nonnull final FormRowSet rowSet) {
+        return rowSet.stream()
+                .map(JSONObject::new)
+                .collect(JSONArray::new, JSONArray::put, (result, source) -> IntStream.range(0, source.length())
+                        .boxed()
+                        .map(source::optJSONObject)
+                        .filter(Objects::nonNull)
+                        .forEach(result::put));
     }
 }
