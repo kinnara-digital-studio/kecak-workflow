@@ -405,15 +405,6 @@ public class DataJsonController {
      * @return
      */
     private FormRow loadFormData(Form form, String primaryKey) {
-//        return Optional.ofNullable(appService.loadFormData(form, primaryKey))
-//                .map(Collection::stream)
-//                .orElseGet(Stream::empty)
-//                .findFirst()
-//                .map(Hashtable::entrySet)
-//                .map(Collection::stream)
-//                .orElseGet(Stream::empty)
-//                .filter(e -> !String.valueOf(e.getKey()).isEmpty())
-//                .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
         return Optional.ofNullable(appService.loadFormData(form, primaryKey))
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
