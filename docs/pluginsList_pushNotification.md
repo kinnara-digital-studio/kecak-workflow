@@ -130,4 +130,4 @@ Description :
 
 9. Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_result.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/push_result.jpg" alt="" />
