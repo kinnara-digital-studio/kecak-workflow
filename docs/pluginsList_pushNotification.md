@@ -6,8 +6,7 @@
 
 1. Open Google Firebased
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
+You can open google firebased in this link https://console.firebase.google.com/u/0/
 
 2. Open Project
 
