@@ -6,7 +6,10 @@
 
 1. Open Google Firebased
 
-You can open google firebased in this link https://console.firebase.google.com/u/0/
+You can open google firebased in this link https://console.firebase.google.com/u/0/ and you can see this page
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/firebased_open.png" alt="" />
+
 
 2. Open Project
 
