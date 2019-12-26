@@ -55,6 +55,20 @@
 - [Plugins Pending Assign Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pendingAssignFormatter)
 - [Plugins Multi Participant](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_multiParticipant)
 - [Plugins File Upload Alfresco](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_alfresco)
+- [Plugins Push Notification](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pushNotification)
+- [Plugins Jasper Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_jasperReport)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+
 
 
 
