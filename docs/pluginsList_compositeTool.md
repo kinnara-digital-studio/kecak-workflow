@@ -24,7 +24,7 @@
 
 5. Choose tool
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compositeTool_compositeTools.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compositeTool_toolsChoosed.png" alt="" />
 
 
 6. Go to post processing tools
@@ -33,6 +33,8 @@
 
 
 7. Choose first and second tools
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compositeTool_compositeTools.png" alt="" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compositeTool_compositeToolsFill.png" alt="" />
 
