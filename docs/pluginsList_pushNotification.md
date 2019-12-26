@@ -1,5 +1,7 @@
 # Push Notification
 
+Push notification plugins are used to send notifications via the user's mobile phone.
+
 ## How to use
 
 ### Settings Firebase
