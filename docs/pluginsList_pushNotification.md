@@ -99,8 +99,8 @@ Description :
 
 |Field | Description|
 |-|-|
-|||
-|||
+|Authorization||
+|JSON Private key||
 
 7. Go to tab activity
 
@@ -110,8 +110,8 @@ Description :
 
 |Field | Description|
 |-|-|
-|||
-|||
+|Process||
+|Activity||
 
 8. Go to notification
 
@@ -121,9 +121,10 @@ Description :
 
 |Field | Description|
 |-|-|
-|||
-|||
-|||
+|Participant ID||
+|User ID||
+|Titte||
+|Content||
 
 9. Result
 
