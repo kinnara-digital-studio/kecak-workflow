@@ -38,6 +38,11 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compositeTool_compositeToolsFill.png" alt="" />
 
+|||
+|-|-|
+|||
+|||
+
 
 In this documentation, we will give an example for the first tool, email notification and the second tool is push notification.
 
