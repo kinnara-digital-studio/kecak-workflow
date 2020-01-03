@@ -1,6 +1,6 @@
 # Composite Tools
 
-Composite tool is a plugins that are used to run two or more tools at the same time.
+Composite tool is a plugin that is used to run two or more tools at the same time.
 
 
 ## How to use
@@ -43,8 +43,8 @@ Composite tool is a plugins that are used to run two or more tools at the same t
 
 |Field|Description|
 |-|-|
-|First Tool|first Tool|
-|Second Tool|Second tool|
+|First Tool|The first tool that must be selected|
+|Second Tool|The second tool that must be selected|
 
 
 In this documentation, we will give an example for the first tool, email notification and the second tool is push notification.
@@ -53,9 +53,10 @@ You can follow the filling format as on this page https://kinnara-digital-studio
 and this page https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pushNotification (for push notification)
 
 If you want to use more than two tools, you can choose the composite tool on the first tool and the second tool.
+
 8. Click Ok
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/compositeTool_ok.png" alt="" />
 
 
 9. Click Save
