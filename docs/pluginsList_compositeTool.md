@@ -1,5 +1,8 @@
 # Composite Tools
 
+Composite tools are plugins that are used to run two tools at the same time.
+
+
 ## How to use
 
 1. Open Apps
