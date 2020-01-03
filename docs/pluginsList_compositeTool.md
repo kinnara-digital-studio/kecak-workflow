@@ -1,6 +1,6 @@
 # Composite Tools
 
-Composite tools are plugins that are used to run two tools at the same time.
+Composite tools are plugins that are used to run two or more tools at the same time.
 
 
 ## How to use
