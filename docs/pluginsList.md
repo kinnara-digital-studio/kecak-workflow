@@ -58,7 +58,7 @@
 - [Plugins Push Notification](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pushNotification)
 - [Plugins Jasper Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_jasperReport)
 - [Plugins Composite Tool](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_compositeTool)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins String Tool Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
