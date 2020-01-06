@@ -61,4 +61,3 @@ in this example, we use an example that later if the field is filled with zero "
 9. Result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringTool_result.png" alt="" />
-
