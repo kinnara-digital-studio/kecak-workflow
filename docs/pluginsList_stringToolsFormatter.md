@@ -46,6 +46,9 @@ Description
 |Reg Ex|character sequence that determines the search pattern|
 |Replace With|wWll be changed as the regex has been determined|
 
+in this example, we use an example that later if the field is filled with zero "0", it will be replaced by number 1 in the datalist.
+
+
 7. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringTool_ok.png" alt="" />
@@ -54,3 +57,8 @@ Description
 8. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringTool_save.png" alt="" />
+
+9. Result
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/stringTool_result.png" alt="" />
+
