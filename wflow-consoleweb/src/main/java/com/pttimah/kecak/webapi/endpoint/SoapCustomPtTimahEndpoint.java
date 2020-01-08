@@ -21,8 +21,14 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @author aristo
+ *
+ * Endpoint for PT. Timah Project
+ */
 @Endpoint
 public class SoapCustomPtTimahEndpoint {
     private static final String NAMESPACE_URI = "http://kecak.org/soap/custom/schemas";
@@ -56,6 +62,8 @@ public class SoapCustomPtTimahEndpoint {
     private XPathExpression<Element> vendor_NumberExpression;
     private XPathExpression<Element> vendor_NameExpression;
     private XPathExpression<Element> attachmentExpression;
+    private XPathExpression<Element> documentNumberExpression;
+    private XPathExpression<Element> sapDocumentNumberExpression;
 
     @Autowired
     private SoapCustomPtTimahService soapCustomPtTimahService;
@@ -218,6 +226,24 @@ public class SoapCustomPtTimahEndpoint {
         } catch (NullPointerException e) {
             attachmentExpression = null;
         }
+
+        try {
+            processIdExpression = xpathFactory.compile("//xs:processId", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            processIdExpression = null;
+        }
+
+        try {
+            documentNumberExpression = xpathFactory.compile("//xs:documentNumber", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            documentNumberExpression = null;
+        }
+
+        try {
+            sapDocumentNumberExpression = xpathFactory.compile("//xs:sapDocumentNumber", Filters.element(), null, namespace);
+        } catch (NullPointerException e) {
+            sapDocumentNumberExpression = null;
+        }
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "StartSlipRequest")
@@ -306,6 +332,33 @@ public class SoapCustomPtTimahEndpoint {
                 .collect(Collectors.toList()));
 
         ReturnMessage returnMessage = soapCustomPtTimahService.submitVendorMasterData(appId, appVersion, vendorMaster);
+
+        Element returnElement = new Element("VendorMasterResponse", namespace);
+        returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
+        returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
+        returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
+        returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
+        returnElement.addContent(new Element("message4", namespace).setText(returnMessage.getMessage4()));
+        returnElement.addContent(new Element("message5", namespace).setText(returnMessage.getMessage5()));
+
+        return returnElement;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "SpdSijDocumentNumberRequest")
+    public @ResponsePayload Element handleUpdateSapDocumentNumberRequest(@RequestPayload Element updateSapDocumentNumberElement) {
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + updateSapDocumentNumberElement.getName() + "]");
+
+        String appId = appIdExpression.evaluateFirst(updateSapDocumentNumberElement).getValue();
+        @Nonnull long appVersion = Optional.ofNullable(appVersionExpression)
+                .map(x -> x.evaluateFirst(updateSapDocumentNumberElement))
+                .map(Element::getValue)
+                .map(Long::parseLong)
+                .orElse(0L);
+
+        String documentNumber = documentNumberExpression.evaluateFirst(updateSapDocumentNumberElement).getValue();
+        String sapDocumentNumber = sapDocumentNumberExpression.evaluateFirst(updateSapDocumentNumberElement).getValue();
+
+        ReturnMessage returnMessage = soapCustomPtTimahService.submitUpdateSapDocumentNumber(appId, appVersion, documentNumber, sapDocumentNumber);
 
         Element returnElement = new Element("VendorMasterResponse", namespace);
         returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));

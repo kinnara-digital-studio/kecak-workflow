@@ -61,4 +61,14 @@ public interface SoapCustomPtTimahService {
      * @param vendor
      */
     ReturnMessage submitVendorMasterData(@Nonnull String appId, @Nonnull Long appVersion, @Nonnull VendorMaster vendor);
+
+    /**
+     *
+     * @param appId
+     * @param appVersion
+     * @param spdSijDocumentNumber
+     * @param sapDocumentNumber
+     * @return
+     */
+    ReturnMessage submitUpdateSapDocumentNumber(@Nonnull String appId, long appVersion, @Nonnull String spdSijDocumentNumber, @Nonnull String sapDocumentNumber);
 }

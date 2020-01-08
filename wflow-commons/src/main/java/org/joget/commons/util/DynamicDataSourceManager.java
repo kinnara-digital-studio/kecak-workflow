@@ -235,33 +235,33 @@ public class DynamicDataSourceManager {
         }
     }
 
-    protected static void createDefaultProfile() {
-        try {
-            String defaultDataSourceFilename = determineDefaultDataSourceFilename();
-            //create datasource properties file
-            File file = new File(defaultDataSourceFilename);
-            new File(FILE_PATH).mkdirs();
-            file.createNewFile();
-
-            Properties properties = new Properties();
-            properties.setProperty(CURRENT_PROFILE_KEY, DEFAULT_PROFILE);
-            try(FileOutputStream fos = new FileOutputStream(file)) {
-                properties.store(fos, "");
-            }
-
-
-
-            //create default datasource properties file
-            createProfile(DEFAULT_PROFILE);
-            changeProfile(DEFAULT_PROFILE);
-
-            writeProperty("workflowUser", "root");
-            writeProperty("workflowPassword", "");
-            writeProperty("workflowDriver", "com.mysql.jdbc.Driver");
-            writeProperty("workflowUrl", "jdbc:mysql://localhost:3306/jwdb?characterEncoding=UTF-8");
-            writeProperty("profileName", "");
-        } catch (Exception e) {
-            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "Error creating default profile");
-        }
-    }
+//    protected static void createDefaultProfile() {
+//        try {
+//            String defaultDataSourceFilename = determineDefaultDataSourceFilename();
+//            //create datasource properties file
+//            File file = new File(defaultDataSourceFilename);
+//            new File(FILE_PATH).mkdirs();
+//            file.createNewFile();
+//
+//            Properties properties = new Properties();
+//            properties.setProperty(CURRENT_PROFILE_KEY, DEFAULT_PROFILE);
+//            try(FileOutputStream fos = new FileOutputStream(file)) {
+//                properties.store(fos, "");
+//            }
+//
+//
+//
+//            //create default datasource properties file
+//            createProfile(DEFAULT_PROFILE);
+//            changeProfile(DEFAULT_PROFILE);
+//
+//            writeProperty("workflowUser", "root");
+//            writeProperty("workflowPassword", "");
+//            writeProperty("workflowDriver", "com.mysql.jdbc.Driver");
+//            writeProperty("workflowUrl", "jdbc:mysql://localhost:3306/jwdb?characterEncoding=UTF-8");
+//            writeProperty("profileName", "");
+//        } catch (Exception e) {
+//            LogUtil.error(DynamicDataSourceManager.class.getName(), e, "Error creating default profile");
+//        }
+//    }
 }

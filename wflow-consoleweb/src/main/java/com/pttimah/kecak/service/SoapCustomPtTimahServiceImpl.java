@@ -8,10 +8,7 @@ import org.joget.apps.app.model.PackageActivityForm;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.dao.FormDataDao;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.service.UserviewService;
@@ -19,6 +16,8 @@ import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.FileManager;
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.PluginManager;
+import org.joget.workflow.model.WorkflowActivity;
+import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcessResult;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
@@ -33,11 +32,19 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service("soapCustomService")
 public class SoapCustomPtTimahServiceImpl implements SoapCustomPtTimahService {
+
+    private final static String FIELD_SAP_DOCUMENT_NUMBER = "nomor_dokumen_sap";
+    private final static String FORM_SPD = "np_spd_wizard_form";
+    private final static String FORM_SIJ = "np_spd_wizard_form";
+
+
     @Autowired
     FormService formService;
     @Autowired
@@ -83,7 +90,7 @@ public class SoapCustomPtTimahServiceImpl implements SoapCustomPtTimahService {
         } else {
             returnMessage.setStatus(ReturnMessage.MessageStatus.SUCCESS);
             returnMessage.setMessage1(result.getProcess().getInstanceId());
-            returnMessage.setMessage2(result.getActivities().stream().map(a -> a.getId()).collect(Collectors.joining(";")));
+            returnMessage.setMessage2(result.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.joining(";")));
         }
 
         return returnMessage;
@@ -199,26 +206,27 @@ public class SoapCustomPtTimahServiceImpl implements SoapCustomPtTimahService {
             if (formData.getFormErrors() != null && !formData.getFormErrors().isEmpty()) {
                 // show error message
                 throw new SoapException(formData.getFormErrors().entrySet().stream()
-                        .map(e -> "Field ["+e.getKey()+"] Error ["+e.getValue()+"]")
+                        .map(e -> "Field [" + e.getKey() + "] Error [" + e.getValue() + "]")
                         .collect(Collectors.joining("; ")));
-            } else {
-                ReturnMessage returnMessage = new ReturnMessage();
-
-                FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
-                if(rowSet == null || rowSet.isEmpty()) {
-                    returnMessage.setStatus(ReturnMessage.MessageStatus.WARNING);
-                    returnMessage.setMessage1(formData.getPrimaryKeyValue());
-                    returnMessage.setMessage2("No content");
-                } else {
-                    returnMessage.setStatus(ReturnMessage.MessageStatus.SUCCESS);
-                    returnMessage.setMessage1("New process has been generated");
-                    returnMessage.setMessage2("Process ID");
-                    returnMessage.setMessage3(formData.getPrimaryKeyValue());
-                }
-                return returnMessage;
             }
+
+            ReturnMessage returnMessage = new ReturnMessage();
+
+            FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
+            if(rowSet == null || rowSet.isEmpty()) {
+                returnMessage.setStatus(ReturnMessage.MessageStatus.WARNING);
+                returnMessage.setMessage1(formData.getPrimaryKeyValue());
+                returnMessage.setMessage2("No content");
+            } else {
+                returnMessage.setStatus(ReturnMessage.MessageStatus.SUCCESS);
+                returnMessage.setMessage1("New process has been generated");
+                returnMessage.setMessage2("Process ID");
+                returnMessage.setMessage3(formData.getPrimaryKeyValue());
+            }
+            return returnMessage;
+
         } catch (SoapException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             ReturnMessage returnMessage = new ReturnMessage();
             returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
             returnMessage.setMessage1(e.getMessage());
@@ -302,6 +310,98 @@ public class SoapCustomPtTimahServiceImpl implements SoapCustomPtTimahService {
         }
 
         return returnMessage;
+    }
+
+    @Override
+    public ReturnMessage submitUpdateSapDocumentNumber(@Nonnull String appId, long appVersion, @Nonnull String spdSijDocumentNumber, @Nonnull String sapDocumentNumber) {
+        ReturnMessage returnMessage = new ReturnMessage();
+
+        try {
+            AppDefinition appDef = appDefinitionDao.loadVersion(appId, (appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion));
+            AppUtil.setCurrentAppDefinition(appDef);
+
+            String processId = getProcessIdFormDocumentNumber(appId, appVersion, spdSijDocumentNumber);
+            @Nonnull WorkflowAssignment workflowAssignment = Optional.ofNullable(workflowManager.getAssignmentByProcess(processId))
+                    .orElseThrow(() -> new SoapException("Invalid processId [" + processId + "]"));
+
+
+            @Nonnull AppDefinition appDefinition = Optional.ofNullable(workflowAssignment.getProcessId())
+                    .map(s -> appService.getAppDefinitionForWorkflowProcess(s))
+                    .orElseThrow(() -> new SoapException("Invalid application definition for assignment [" + workflowAssignment.getActivityId() + "] process [" + workflowAssignment.getProcessId() + "]"));
+
+            // get assignment form
+            @Nonnull Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, workflowAssignment, null, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new SoapException("Invalid form assignment [" + workflowAssignment.getActivityId() + "]"));
+
+            String primaryKey = appService.getOriginProcessId(workflowAssignment.getProcessId());
+
+            final FormData formData = new FormData();
+            formData.setDoValidation(true);
+            formData.setPrimaryKeyValue(primaryKey);
+            formData.addRequestParameterValues("id", new String[] {primaryKey});
+
+            @Nonnull Element  element = Optional.ofNullable(FormUtil.findElement(FIELD_SAP_DOCUMENT_NUMBER, form, formData, true))
+                    .orElseThrow(() -> new SoapException("Invalid form element [" + FIELD_SAP_DOCUMENT_NUMBER + "] in form [" + form.getPropertyString("id") + "]"));
+
+            String parameterName = FormUtil.getElementParameterName(element);
+            formData.addRequestParameterValues(parameterName, new String[] {sapDocumentNumber});
+
+            final Map<String, String> workflowVariableMap = new HashMap<>();
+            Optional.of(element)
+                    .map(e -> e.getPropertyString("workflowVariable"))
+                    .ifPresent(s -> workflowVariableMap.put(element.getPropertyString("workflowVariable"), sapDocumentNumber));
+
+            FormData resultFormData = appService.completeAssignmentForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), workflowAssignment.getActivityId(), formData, workflowVariableMap);
+            Map<String, String> formErrors = resultFormData.getFormErrors();
+            if(!Optional.ofNullable(formErrors).map(Map::isEmpty).orElse(true)) {
+                // show error message
+                throw new SoapException(formErrors.entrySet().stream()
+                        .map(e -> "Field [" + e.getKey() + "] Error [" + e.getValue() + "]")
+                        .collect(Collectors.joining("; ")));
+            }
+
+            returnMessage.setStatus(ReturnMessage.MessageStatus.SUCCESS);
+            returnMessage.setMessage1("Form data ["+resultFormData.getPrimaryKeyValue()+"] has been updated");
+            returnMessage.setMessage2("Process ["+resultFormData.getPrimaryKeyValue()+"] has been updated");
+
+        } catch (SoapException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+
+            returnMessage.setStatus(ReturnMessage.MessageStatus.ERROR);
+            returnMessage.setMessage1(e.getMessage());
+        }
+
+        return returnMessage;
+    }
+
+    /**
+     * Get Process ID from current SPD / SIJ Document Number
+     *
+     * @param spdSijDocumentNumber
+     * @return
+     */
+    @Nullable
+    protected String getProcessIdFormDocumentNumber(String appId, Long appVersion, String spdSijDocumentNumber) {
+        Form formSpd = loadFormByFormDefId(appId, appVersion, FORM_SPD);
+        Form formSij = loadFormByFormDefId(appId, appVersion, FORM_SIJ);
+
+        FormRow formRow = Optional
+                .ofNullable(getDocument(formSpd, spdSijDocumentNumber))
+                .orElse(getDocument(formSij, spdSijDocumentNumber));
+
+        return Optional.ofNullable(formRow)
+                .map(r -> r.getProperty("id"))
+                .orElse(null);
+    }
+
+    protected FormRow getDocument(Form formSij, String spdSijDocumentNumber) {
+        return Optional.ofNullable(formSij)
+                .map(f -> formDataDao.find(f, "WHERE e.customProperties.nomor_spd", new String[] {spdSijDocumentNumber}, null, null, null, 1))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .findFirst()
+                .orElse(null);
     }
 
     protected Form loadFormByFormDefId(String appId, Long version, String formDefId) {

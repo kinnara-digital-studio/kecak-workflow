@@ -82,4 +82,18 @@
          <xs:element name = "message5" type="xs:string"/>
       </xs:sequence>
    </xs:complexType>
+
+
+    <!-- SAP Integration - Update Document Numbner -->
+    <xs:element name = "SpdSijDocumentNumberRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name = "appId" type="xs:string" />
+                <xs:element name = "appVersion" type = "xs:long" minOccurs="0"/>
+                <xs:element name = "documentNumber" type="xs:string" />
+                <xs:element name = "sapDocumentNumber" type="xs:string" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name = "SpdSijDocumentNumberResponse" type="xcs:SapReturn" />
 </xs:schema>
