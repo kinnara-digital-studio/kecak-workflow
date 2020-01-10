@@ -51,4 +51,3 @@ CRUD menu is a plugin in the form of a datalist and has the ability to create, r
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crudMenu_result1.png" alt="" />
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/crudMenu_result2.png" alt="" />
-
