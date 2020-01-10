@@ -98,7 +98,7 @@ public class ConsoleWebPlugin extends ExtDefaultPlugin implements PluginWebSuppo
      * @return 
      */
     public String getFooter(String path) {
-        return "&copy;Copyright Kecak Workflow 2018";
+        return "&copy;Copyright Kecak Workflow 2020";
     }
     
     /**
