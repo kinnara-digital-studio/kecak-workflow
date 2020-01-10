@@ -1896,6 +1896,7 @@ public class DataJsonController {
     @Nullable
     private WorkflowAssignment getAssignmentFromProcessIdMap(final Map<String, Collection<String>> mapPrimaryKeyToProcessId, Object primaryKey) {
         return Optional.ofNullable(primaryKey)
+                .map(Objects::toString)
                 .map(mapPrimaryKeyToProcessId::get)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
