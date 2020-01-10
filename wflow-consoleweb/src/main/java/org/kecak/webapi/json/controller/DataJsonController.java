@@ -1672,7 +1672,7 @@ public class DataJsonController {
             }
         }
 
-        return String.valueOf(row.get(field));
+        return Optional.ofNullable(row.get(field)).map(String::valueOf).orElse("");
     }
 
     @Nonnull
