@@ -16,6 +16,7 @@ import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowActivity;
@@ -666,15 +667,12 @@ public class DataJsonController {
             }
 
             // get process form
-            PackageActivityForm packageActivityForm = appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, "");
-            if (packageActivityForm == null || packageActivityForm.getForm() == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form");
-            }
-
-            Form form = packageActivityForm.getForm();
+            Form form = Optional.ofNullable(appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form"));
 
             // read request body and convert request body to json
-            final FormData formData = extractBodyToFormData(request, form);
+            final FormData formData = extractBodyToFormData(request, form, true);
 
             JSONObject jsonResponse = new JSONObject();
 
@@ -701,30 +699,31 @@ public class DataJsonController {
                 // construct response
                 FormRow row = loadFormData(form, formData.getPrimaryKeyValue());
 
-                JSONObject jsonData = new JSONObject(row);
+                final JSONObject jsonData = new JSONObject(row);
 
-                if (processResult != null) {
-                    JSONObject jsonProcess = new JSONObject();
-                    if (processResult.getProcess() != null) {
-                        WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(processResult.getProcess().getInstanceId());
-                        if (nextAssignment != null) {
-                            jsonProcess.put("processId", nextAssignment.getProcessId());
-                            jsonProcess.put("activityId", nextAssignment.getActivityId());
-                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                            jsonProcess.put("priority", nextAssignment.getPriority());
+                Optional.ofNullable(processResult)
+                        .map(WorkflowProcessResult::getProcess)
+                        .map(WorkflowProcess::getInstanceId)
+                        .map(workflowManager::getAssignmentByProcess)
+                        .ifPresent(nextAssignment -> {
+                            try {
+                                JSONObject jsonProcess = new JSONObject();
+                                jsonProcess.put("processId", nextAssignment.getProcessId());
+                                jsonProcess.put("activityId", nextAssignment.getActivityId());
+                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                                jsonProcess.put("priority", nextAssignment.getPriority());
 
-                            jsonData.put("processId", nextAssignment.getProcessId());
-                            jsonData.put("activityId", nextAssignment.getActivityId());
-                        }
-                    }
+                                Collection<WorkflowActivity> processActivities = processResult.getActivities();
+                                if (processActivities != null && !processActivities.isEmpty()) {
+                                    jsonProcess.put("activityIds", new JSONArray(processActivities.stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
+                                }
 
-                    if (processResult.getActivities() != null && !processResult.getActivities().isEmpty()) {
-                        jsonProcess.put("activityIds", new JSONArray(processResult.getActivities().stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
-                    }
-
-                    jsonResponse.put("process", jsonProcess);
-                }
+                                jsonResponse.put("process", jsonProcess);
+                            } catch (JSONException e) {
+                                LogUtil.error(getClass().getName(), e, e.getMessage());
+                            }
+                        });
 
                 String digest = getDigest(jsonData);
                 jsonResponse.put(FIELD_DATA, jsonData);
@@ -773,11 +772,12 @@ public class DataJsonController {
             AppUtil.setCurrentAppDefinition(appDefinition);
 
             // get assignment form
-            PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, null, "");
-            final Form form = packageActivityForm.getForm();
+            final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
             // read request body and convert request body to json
-            final FormData formData = extractBodyToFormData(request, form);
+            final FormData formData = extractBodyToFormData(request, form, true);
 
             Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
 
@@ -1135,18 +1135,36 @@ public class DataJsonController {
     /**
      * Convert request body to form data
      *
+     * @param request
+     * @param form
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     * @throws ApiException
+     */
+    private FormData extractBodyToFormData(final HttpServletRequest request, final Form form) throws IOException, JSONException, ApiException {
+        return extractBodyToFormData(request, form, false);
+    }
+
+    /**
+     * Convert request body to form data
+     *
      * @param request HTTP Request
      * @return form data
      * @throws IOException
      * @throws JSONException
      */
-    private FormData extractBodyToFormData(final HttpServletRequest request, final Form form) throws IOException, JSONException, ApiException {
+    private FormData extractBodyToFormData(final HttpServletRequest request, final Form form, final boolean isAssignment) throws IOException, JSONException, ApiException {
         // read request body and convert request body to json
         final JSONObject jsonBody = getRequestPayload(request);
         final FormData formData = new FormData();
 
-        @Nonnull final String primaryKey = jsonBody.optString(FormUtil.PROPERTY_ID);
-        formData.setPrimaryKeyValue(primaryKey.isEmpty() ? UuidGenerator.getInstance().getUuid() : primaryKey);
+        if(isAssignment) {
+            formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[] {AssignmentCompleteButton.DEFAULT_ID});
+        } else {
+            @Nonnull final String primaryKey = jsonBody.optString(FormUtil.PROPERTY_ID);
+            formData.setPrimaryKeyValue(primaryKey.isEmpty() ? UuidGenerator.getInstance().getUuid() : primaryKey);
+        }
 
         Iterator<String> i = jsonBody.keys();
         while (i.hasNext()) {
