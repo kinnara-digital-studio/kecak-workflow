@@ -275,7 +275,7 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            Element element = FormUtil.findElement(elementId, form, formData);
+            Element element = FormUtil.findElement(elementId, form, formData, true);
             if (element == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid element [" + elementId + "]");
             }
@@ -596,10 +596,7 @@ public class DataJsonController {
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
                             for (int i = 0, size = a2.length(); i < size; i++) {
-                                try {
-                                    a1.put(a2.get(i));
-                                } catch (JSONException ignored) {
-                                }
+                                try { a1.put(a2.get(i)); } catch (JSONException ignored) { }
                             }
                         });
 
@@ -1170,7 +1167,7 @@ public class DataJsonController {
         while (i.hasNext()) {
             String key = i.next();
 
-            Element element = FormUtil.findElement(key, form, formData);
+            Element element = FormUtil.findElement(key, form, formData, true);
             if (element == null) {
                 if (!key.equals(FormUtil.PROPERTY_ID)) {
                     // element not found
@@ -1650,7 +1647,9 @@ public class DataJsonController {
     @Nonnull
     private String formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
         if (dataList.getColumns() == null) {
-            return String.valueOf(row.get(field));
+            return Optional.ofNullable(row.get(field))
+                    .map(String::valueOf)
+                    .orElse("");
         }
 
         for (DataListColumn column : dataList.getColumns()) {
@@ -1658,7 +1657,10 @@ public class DataJsonController {
                 continue;
             }
 
-            String value = String.valueOf(row.get(field));
+            String value = Optional.ofNullable(row.get(field))
+                    .map(String::valueOf)
+                    .orElse("");
+
             if (column.getFormats() == null) {
                 return value;
             }
