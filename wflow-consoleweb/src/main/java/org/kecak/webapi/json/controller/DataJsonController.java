@@ -410,7 +410,7 @@ public class DataJsonController {
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
                 .findFirst()
-                .map(Hashtable::entrySet)
+                .map(FormRow::entrySet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
                 .filter(e -> !String.valueOf(e.getKey()).isEmpty())
@@ -1798,34 +1798,48 @@ public class DataJsonController {
      *
      * @param element
      * @param formData
-     * @param jsonData
+     * @param parentJson
      */
-    private void loadDataForElementWithBinder(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject jsonData) {
-        Optional.ofNullable(element.getChildren())
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .forEach(e -> {
-                    FormUtil.executeLoadBinders(e, formData);
-                    FormRowSet rowSet = formData.getLoadBinderData(e);
-                    if (rowSet != null) {
-                        String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
-                        if (rowSet.isMultiRow()) {
-                            JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
-                            try {
-                                jsonData.put(elementId, jsonArray);
-                            } catch (JSONException ignored) {
-                            }
-                        } else {
-                            JSONObject json = new JSONObject(rowSet.stream().findFirst().orElseGet(FormRow::new));
-                            try {
-                                jsonData.put(elementId, json);
-                            } catch (JSONException ignored) {
-                            }
-                        }
-                    }
+    private void loadDataForElementWithBinder(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject parentJson) {
+        for(Element childElement : element.getChildren()) {
+            if(childElement == null) {
+                continue;
+            }
 
-                    loadDataForElementWithBinder(e, formData, jsonData);
-                });
+            boolean hasChildren = !Optional.of(childElement).map(Element::getChildren).map(Collection::isEmpty).orElse(true);
+            boolean hasLoadBinder = childElement.getLoadBinder() instanceof FormLoadBinder;
+
+            if(childElement instanceof FormContainer && hasChildren) {
+                // do not need to load Section and Column
+                loadDataForElementWithBinder(childElement, formData, parentJson);
+
+            } else if(hasChildren) {
+                JSONObject jsonChildren = new JSONObject();
+                loadDataForElementWithBinder(childElement, formData, jsonChildren);
+                try {
+                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonChildren);
+                } catch (JSONException ignored) { }
+
+            } else if(hasLoadBinder) {
+                // execute load binder
+                FormUtil.executeLoadBinders(childElement, formData);
+                FormRowSet rowSet = formData.getLoadBinderData(childElement);
+                if (rowSet != null) {
+                    String elementId = childElement.getPropertyString(FormUtil.PROPERTY_ID);
+                    if (rowSet.isMultiRow()) {
+                        JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
+                        try {
+                            parentJson.put(elementId, jsonArray);
+                        } catch (JSONException ignored) { }
+                    } else {
+                        JSONObject json = new JSONObject(rowSet.stream().findFirst().orElseGet(FormRow::new));
+                        try {
+                            parentJson.put(elementId, json);
+                        } catch (JSONException ignored) { }
+                    }
+                }
+            }
+        }
     }
 
     /**
