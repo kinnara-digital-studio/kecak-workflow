@@ -1807,13 +1807,14 @@ public class DataJsonController {
             }
 
             boolean hasChildren = !Optional.of(childElement).map(Element::getChildren).map(Collection::isEmpty).orElse(true);
-            boolean hasLoadBinder = childElement.getLoadBinder() instanceof FormLoadBinder;
+            boolean hasLoadBinder = childElement.getLoadBinder() != null;
 
             if(childElement instanceof FormContainer && hasChildren) {
                 // do not need to load Section and Column
                 loadDataForElementWithBinder(childElement, formData, parentJson);
 
             } else if(hasChildren) {
+                // iterate children
                 JSONObject jsonChildren = new JSONObject();
                 loadDataForElementWithBinder(childElement, formData, jsonChildren);
                 try {
