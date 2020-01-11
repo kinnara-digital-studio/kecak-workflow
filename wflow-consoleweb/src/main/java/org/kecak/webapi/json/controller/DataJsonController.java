@@ -1824,7 +1824,7 @@ public class DataJsonController {
                 // execute load binder
                 FormUtil.executeLoadBinders(childElement, formData);
                 FormRowSet rowSet = formData.getLoadBinderData(childElement);
-                if (rowSet != null) {
+                if (rowSet != null  && !rowSet.isEmpty()) {
                     String elementId = childElement.getPropertyString(FormUtil.PROPERTY_ID);
                     if (rowSet.isMultiRow()) {
                         JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
