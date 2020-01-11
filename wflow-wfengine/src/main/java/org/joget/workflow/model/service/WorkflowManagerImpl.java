@@ -143,7 +143,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 if (this.dataSource != null) {
                     // set Spring datasource, hardcoded to Shark's JNDI binding
                     ic = new InitialContext();
-                    String jndiName = "lookup://jwdb";
+                    String jndiName = "jwdb";
                     try {
                         ic.rebind(jndiName, this.dataSource);
                     } catch(Exception ne) {
@@ -152,7 +152,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                             jndiName = "java:comp/jwdb";
                             ic.rebind(jndiName, this.dataSource);
                         } catch(Exception nee) {
-                            jndiName = "lookup://jwdb";
+                            jndiName = "jwdb";
                         }
                     }
                     // set shark datasource name

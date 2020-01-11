@@ -27,7 +27,7 @@
         name : 'jdbcUrl',
         label : '@@datalist.jdbcDataListBinder.url@@',
         type : 'textfield',
-        value : 'jdbc:mysql://db/jwdb?characterEncoding=UTF8',
+        value : 'jdbc:mysql://localhost/jwdb?characterEncoding=UTF8',
         control_field: 'jdbcDatasource',
         control_value: 'custom',
         control_use_regex: 'false',
