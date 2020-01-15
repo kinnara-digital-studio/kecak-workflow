@@ -106,4 +106,3 @@ c. ID from the row
 4. result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
