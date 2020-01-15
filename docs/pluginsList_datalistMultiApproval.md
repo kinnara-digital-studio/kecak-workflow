@@ -7,7 +7,7 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 
 1. Open Apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistMultiApproval_openApps.png" alt="" />
 
 
 2. Go to process
@@ -92,3 +92,4 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 4. result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+
