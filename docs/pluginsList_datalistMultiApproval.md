@@ -62,6 +62,20 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 |Control Variable|workflow variable name that Will be empty if the approval looping process has finished|
 |Starting Point|Any process component (activity/tool/route) that will be used as starting point of approval looping process|
 
+**nama** in field "Field ID" is from ID in datalist master data approver that will be sending approval.
+
+1. Choose Datalist in apps
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/from_listMd.png" alt="" />
+
+2. Edit properties for know ID row
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/from_properties.png" alt="" />
+
+3. ID from the row
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/from_id.png" alt="" />
+
 
 2. Go to tab datalist binder
 
