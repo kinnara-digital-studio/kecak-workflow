@@ -56,11 +56,11 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 
 |Field|Description|
 |-|-|
-|Datalist Binder||
-|Field ID||
-|Sequenced Approval Type||
-|Control Variable||
-|Starting Point||
+|Datalist Binder|Where will you take the datalist binder form|
+|Field ID|Field which contains username. Leave empty if you want to use dataList ID as username|
+|Sequenced Approval Type|Parallel : sending approval in parallel; Sequential : sending approval in sequence|
+|Control Variable|workflow variable name that Will be empty if the approval looping process has finished|
+|Starting Point|Any process component (activity/tool/route) that will be used as starting point of approval looping process|
 
 
 2. Go to tab datalist binder
@@ -69,8 +69,8 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 
 |Field|Description|
 |-|-|
-|Form||
-|Extra Filter Condition||
+|Form|Choose the form for the datalist binder|
+|Extra Filter Condition|Additional filters if needed|
 
 
 3. Choose form datalist binder
