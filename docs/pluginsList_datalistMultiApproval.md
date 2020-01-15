@@ -53,9 +53,25 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistMultiApproval_settings2.png" alt="" />
 
+
+|Field|Description|
+|-|-|
+|Datalist Binder||
+|Field ID||
+|Sequenced Approval Type||
+|Control Variable||
+|Starting Point||
+
+
 2. Go to tab datalist binder
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistMultiApproval_datalistBinder.png" alt="" />
+
+|Field|Description|
+|-|-|
+|Form||
+|Extra Filter Condition||
+
 
 3. Choose form datalist binder
 
