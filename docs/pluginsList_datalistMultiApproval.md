@@ -64,15 +64,15 @@ This multi-approval catalyst is a plugin that functions as a plugin that can sen
 
 **nama** in field "Field ID" is from ID in datalist master data approver that will be sending approval.
 
-1. Choose Datalist in apps
+a. Choose Datalist in apps
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/from_listMd.png" alt="" />
 
-2. Edit properties for know ID row
+b. Edit properties for know ID row
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/from_properties.png" alt="" />
 
-3. ID from the row
+c. ID from the row
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/from_id.png" alt="" />
 
