@@ -796,17 +796,23 @@ public class DataJsonController {
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
 
             } else {
-                WorkflowAssignment nextAssignment = workflowManager.getAssignmentByProcess(resultFormData.getProcessId());
-                if (nextAssignment != null) {
-                    JSONObject jsonProcess = new JSONObject();
-                    jsonProcess.put("processId", nextAssignment.getProcessId());
-                    jsonProcess.put("activityId", nextAssignment.getActivityId());
-                    jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                    jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                    jsonProcess.put("priority", nextAssignment.getPriority());
+                Optional.ofNullable(resultFormData)
+                        .map(FormData::getProcessId)
+                        .map(workflowManager::getAssignmentByProcess)
+                        .ifPresent(nextAssignment -> {
+                            try {
+                                JSONObject jsonProcess = new JSONObject();
+                                jsonProcess.put("processId", nextAssignment.getProcessId());
+                                jsonProcess.put("activityId", nextAssignment.getActivityId());
+                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                                jsonProcess.put("priority", nextAssignment.getPriority());
 
-                    jsonResponse.put("process", jsonProcess);
-                }
+                                jsonResponse.put("process", jsonProcess);
+                            } catch (JSONException e) {
+                                LogUtil.error(getClass().getName(), e, e.getMessage());
+                            }
+                        });
 
                 response.setStatus(HttpServletResponse.SC_OK);
 
@@ -814,9 +820,6 @@ public class DataJsonController {
                 FormRow row = loadFormData(form, resultFormData.getPrimaryKeyValue());
 
                 JSONObject jsonData = new JSONObject(row);
-
-                jsonData.put("activityId", nextAssignment.getActivityId());
-                jsonData.put("processId", nextAssignment.getProcessId());
 
                 String digest = getDigest(jsonData);
 
