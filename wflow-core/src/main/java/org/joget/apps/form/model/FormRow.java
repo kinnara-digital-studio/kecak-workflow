@@ -149,8 +149,8 @@ public class FormRow extends Properties {
 	}
 
 	public void setDeleted(Boolean deleted) {
-		if (Boolean.TRUE.equals(deleted)) {
-		    put(FormUtil.PROPERTY_DELETED, true);
+		if (deleted != null) {
+		    put(FormUtil.PROPERTY_DELETED, String.valueOf(deleted));
         } else {
             remove(FormUtil.PROPERTY_DELETED);
         }
