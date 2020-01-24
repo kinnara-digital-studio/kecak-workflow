@@ -247,5 +247,10 @@
             <version>0.9.0</version>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+			<groupId>com.fasterxml.woodstox</groupId>
+			<artifactId>woodstox-core</artifactId>
+			<version>5.0.3</version>
+		</dependency>
     </dependencies>
 </project>
