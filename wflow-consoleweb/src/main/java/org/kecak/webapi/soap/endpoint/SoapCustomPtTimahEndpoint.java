@@ -1,9 +1,9 @@
 package org.kecak.webapi.soap.endpoint;
 
-import org.joget.apps.app.model.BankAccountMaster;
-import org.joget.apps.app.model.ReturnMessage;
-import org.joget.apps.app.model.VendorMaster;
-import org.joget.apps.app.service.SoapCustomPtTimahService;
+import org.kecak.webapi.model.BankAccountMaster;
+import org.kecak.webapi.model.ReturnMessage;
+import org.kecak.webapi.model.VendorMaster;
+import org.kecak.webapi.service.SoapCustomPtTimahService;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
@@ -333,6 +333,29 @@ public class SoapCustomPtTimahEndpoint {
         ReturnMessage returnMessage = soapCustomPtTimahService.submitVendorMasterData(appId, appVersion, vendorMaster);
 
         Element returnElement = new Element("VendorMasterResponse", namespace);
+        returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
+        returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
+        returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
+        returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
+        returnElement.addContent(new Element("message4", namespace).setText(returnMessage.getMessage4()));
+        returnElement.addContent(new Element("message5", namespace).setText(returnMessage.getMessage5()));
+
+        return returnElement;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "MockSapRequest")
+    public @ResponsePayload Element handleMockSapRequest(@RequestPayload Element updateSapDocumentNumberElement) {
+        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + updateSapDocumentNumberElement.getName() + "]");
+
+        ReturnMessage returnMessage = new ReturnMessage();
+
+        returnMessage.setStatus(ReturnMessage.MessageStatus.SUCCESS);
+        returnMessage.setMessage1("Message1");
+        returnMessage.setMessage2("Message2");
+        returnMessage.setMessage3("Message3");
+        returnMessage.setMessage4("Message4");
+
+        Element returnElement = new Element("MockSapResponse", namespace);
         returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
         returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
         returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));

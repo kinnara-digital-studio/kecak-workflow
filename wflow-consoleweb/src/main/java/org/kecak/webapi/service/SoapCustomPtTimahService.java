@@ -1,7 +1,7 @@
-package org.joget.apps.app.service;
+package org.kecak.webapi.service;
 
-import org.joget.apps.app.model.ReturnMessage;
-import org.joget.apps.app.model.VendorMaster;
+import org.kecak.webapi.model.ReturnMessage;
+import org.kecak.webapi.model.VendorMaster;
 
 import javax.annotation.Nonnull;
 import java.util.Map;

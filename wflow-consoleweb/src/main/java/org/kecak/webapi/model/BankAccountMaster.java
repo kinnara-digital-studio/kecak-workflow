@@ -1,4 +1,4 @@
-package org.joget.apps.app.model;
+package org.kecak.webapi.model;
 
 public class BankAccountMaster {
     public final static String FORM_DEF_ID = "master_bank_account";

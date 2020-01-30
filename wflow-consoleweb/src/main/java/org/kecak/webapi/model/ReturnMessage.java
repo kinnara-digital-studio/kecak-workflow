@@ -1,4 +1,4 @@
-package org.joget.apps.app.model;
+package org.kecak.webapi.model;
 
 import javax.annotation.Nonnull;
 

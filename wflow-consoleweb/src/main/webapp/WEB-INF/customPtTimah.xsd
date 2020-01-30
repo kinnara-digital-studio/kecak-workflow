@@ -68,8 +68,44 @@
       </xs:complexType>
    </xs:element>
 
-
    <xs:element name = "VendorMasterResponse" type="xcs:SapReturn" />
+
+    <!-- Mock SAP -->
+    <xs:element name="MockSapRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="nik" type="xs:string" />
+                <xs:element name="total" type="xs:string" />
+                <xs:element name="dateCreated" type="xs:string" />
+                <xs:element name="spd_currency" type="xs:string" />
+                <xs:element name="nama_karyawan" type="xs:string" />
+                <xs:element name="tanggal_berangkat" type="xs:string" />
+                <xs:element name="company" type="xs:string" />
+                <xs:element name="nama_bank" type="xs:string" />
+                <xs:element name="tipe_dokumen" type="xs:string" />
+                <xs:element name="gl_account" type="xs:string" />
+                <xs:element name="divisi_tu_pengaju" type="xs:string" />
+                <xs:element name="bank_account" type="xs:string" />
+                <xs:element name="spd_id" type="xs:string" />
+                <xs:element name="rekening_atas_nama" type="xs:string" />
+                <xs:element name="nomor_rekening" type="xs:string" />
+                <xs:element name="rescent" type="xs:string" />
+                <xs:element name="dateModified" type="xs:string" />
+                <xs:element name="grup_divisi" type="xs:string" />
+                <xs:element name="nomor_dokumen_sap" type="xs:string" />
+                <xs:element name="tanggal_kembali" type="xs:string" />
+                <xs:element name="nomor_spd" type="xs:string" />
+                <xs:element name="row_id" type="xs:string" />
+                <xs:element name="jabatan_karyawan" type="xs:string" />
+                <xs:element name="satuan_kerja" type="xs:string" />
+                <xs:element name="status" type="xs:string" />
+                <xs:element name="document_refernce_number" type="xs:string" />
+                <xs:element name="text" type="xs:string" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MockSapResponse" type="xcs:SapReturn"/>
 
    <!-- SAP Return Type -->
    <xs:complexType name = "SapReturn">
