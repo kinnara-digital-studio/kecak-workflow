@@ -15,6 +15,15 @@
       </xs:complexType>
    </xs:element>
 
+   <xs:element name = "FormSubmitResponse">
+      <xs:complexType>
+         <xs:all>
+            <xs:element name = "id" type = "xs:string"/>
+         </xs:all>
+      </xs:complexType>
+   </xs:element>
+
+
    <!-- Form Assignment Complete  -->
    <xs:element name = "FormAssignmentCompleteRequest">
       <xs:complexType>

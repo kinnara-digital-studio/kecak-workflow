@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletResponse;
@@ -93,9 +94,10 @@ public class SoapFormEndpoint {
      * @param formSubmitElement
      */
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "FormSubmitRequest")
-    public void handleFormSubmitRequest(@RequestPayload Element formSubmitElement) {
+    public @ResponsePayload Element handleFormSubmitRequest(@RequestPayload Element formSubmitElement) {
         LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + formSubmitElement.getName() + "]");
 
+        Element response = new Element("FormSubmitResponse");
         try {
             @Nonnull final String appId = appIdExpression.evaluate(formSubmitElement).get(0).getValue();
             @Nonnull final Long appVersion = appVersionExpression == null
@@ -131,10 +133,14 @@ public class SoapFormEndpoint {
                     }, (fd1, fd2) -> fd2.getRequestParams().forEach(fd1::addRequestParameterValues));
 
             appService.submitForm(appId, appVersion.toString(), formDefId, formData, false);
+
+            response.addContent(new Element("id", namespace).setText(String.valueOf(formData.getPrimaryKeyValue())));
         } catch (Exception e) {
 //            LogUtil.warn(getClass().getName(), e.getMessage());
             LogUtil.error(getClass().getName(), e, e.getMessage());
         }
+
+        return response;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "FormAssignmentCompleteRequest")

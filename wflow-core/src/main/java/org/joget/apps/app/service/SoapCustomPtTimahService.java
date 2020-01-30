@@ -1,7 +1,7 @@
-package com.pttimah.kecak.service;
+package org.joget.apps.app.service;
 
-import com.pttimah.kecak.model.ReturnMessage;
-import com.pttimah.kecak.model.VendorMaster;
+import org.joget.apps.app.model.ReturnMessage;
+import org.joget.apps.app.model.VendorMaster;
 
 import javax.annotation.Nonnull;
 import java.util.Map;

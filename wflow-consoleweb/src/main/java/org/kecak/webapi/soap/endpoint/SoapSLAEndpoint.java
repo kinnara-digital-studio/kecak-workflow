@@ -19,7 +19,7 @@ import java.util.*;
 
 @Endpoint
 public class SoapSLAEndpoint {
-    private static final String NAMESPACE_URI = "http://kecak.org/soap/process/schemas";
+    private static final String NAMESPACE_URI = "http://kecak.org/soap/sla/schemas";
     private final Namespace namespace = Namespace.getNamespace("xps", NAMESPACE_URI);
 
     private XPathExpression<Element> appIdExpression;

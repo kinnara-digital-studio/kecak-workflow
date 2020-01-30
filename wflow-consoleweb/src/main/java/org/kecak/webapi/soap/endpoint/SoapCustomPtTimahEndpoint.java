@@ -1,7 +1,9 @@
-package com.pttimah.kecak.webapi.endpoint;
+package org.kecak.webapi.soap.endpoint;
 
-import com.pttimah.kecak.model.BankAccountMaster;
-import com.pttimah.kecak.service.SoapCustomPtTimahService;
+import org.joget.apps.app.model.BankAccountMaster;
+import org.joget.apps.app.model.ReturnMessage;
+import org.joget.apps.app.model.VendorMaster;
+import org.joget.apps.app.service.SoapCustomPtTimahService;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.Filters;
@@ -9,8 +11,6 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.joget.commons.util.LogUtil;
 import org.joget.workflow.util.WorkflowUtil;
-import com.pttimah.kecak.model.ReturnMessage;
-import com.pttimah.kecak.model.VendorMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 public class SoapCustomPtTimahEndpoint {
     private static final String NAMESPACE_URI = "http://kecak.org/soap/custom/schemas";
 
-    private final Namespace namespace = Namespace.getNamespace("xs", NAMESPACE_URI);
+    private final Namespace namespace = Namespace.getNamespace("xcs", NAMESPACE_URI);
 
     private XPathExpression<Element> appIdExpression;
     private XPathExpression<Element> appVersionExpression;
@@ -62,8 +61,8 @@ public class SoapCustomPtTimahEndpoint {
     private XPathExpression<Element> vendor_NumberExpression;
     private XPathExpression<Element> vendor_NameExpression;
     private XPathExpression<Element> attachmentExpression;
-    private XPathExpression<Element> documentNumberExpression;
-    private XPathExpression<Element> sapDocumentNumberExpression;
+    private XPathExpression<Element> nomorSpdExpression;
+    private XPathExpression<Element> nikExpression;
 
     @Autowired
     private SoapCustomPtTimahService soapCustomPtTimahService;
@@ -72,177 +71,177 @@ public class SoapCustomPtTimahEndpoint {
         XPathFactory xpathFactory = XPathFactory.instance();
 
         try {
-            appIdExpression = xpathFactory.compile("//xs:appId", Filters.element(), null, namespace);
+            appIdExpression = xpathFactory.compile("//xcs:appId", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             appIdExpression = null;
         }
 
         try {
-            appVersionExpression = xpathFactory.compile("//xs:appVersion", Filters.element(), null, namespace);
+            appVersionExpression = xpathFactory.compile("//xcs:appVersion", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             appVersionExpression = null;
         }
 
         try {
-            vendorDataExpression = xpathFactory.compile("//xs:vendorData", Filters.element(), null, namespace);
+            vendorDataExpression = xpathFactory.compile("//xcs:vendorData", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             vendorDataExpression = null;
         }
 
         try {
-            vendorNumberExpression = xpathFactory.compile("//xs:vendorNumber", Filters.element(), null, namespace);
+            vendorNumberExpression = xpathFactory.compile("//xcs:vendorNumber", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             vendorNumberExpression = null;
         }
 
         try {
-            vendorNameExpression = xpathFactory.compile("//xs:vendorName", Filters.element(), null, namespace);
+            vendorNameExpression = xpathFactory.compile("//xcs:vendorName", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             vendorNameExpression = null;
         }
 
         try {
-            accountNumberExpression = xpathFactory.compile("//xs:accountNumber", Filters.element(), null, namespace);
+            accountNumberExpression = xpathFactory.compile("//xcs:accountNumber", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             accountNumberExpression = null;
         }
 
         try {
-            processIdExpression = xpathFactory.compile("//xs:processId", Filters.element(), null, namespace);
+            processIdExpression = xpathFactory.compile("//xcs:processId", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             processIdExpression = null;
         }
 
         try {
-            workflowVariableExpression = xpathFactory.compile("//xs:variables", Filters.element(), null, namespace);
+            workflowVariableExpression = xpathFactory.compile("//xcs:variables", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             workflowVariableExpression = null;
         }
 
         try {
-            inputByExpression = xpathFactory.compile("//xs:Input_By", Filters.element(), null, namespace);
+            inputByExpression = xpathFactory.compile("//xcs:Input_By", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             inputByExpression = null;
         }
 
         try {
-            inputDateExpression = xpathFactory.compile("//xs:Input_Date", Filters.element(), null, namespace);
+            inputDateExpression = xpathFactory.compile("//xcs:Input_Date", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             inputDateExpression = null;
         }
 
         try {
-            poNumberExpression = xpathFactory.compile("//xs:PO_Number", Filters.element(), null, namespace);
+            poNumberExpression = xpathFactory.compile("//xcs:PO_Number", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             poNumberExpression = null;
         }
 
         try {
-            invoiceNumberExpression = xpathFactory.compile("//xs:Invoice_Number", Filters.element(), null, namespace);
+            invoiceNumberExpression = xpathFactory.compile("//xcs:Invoice_Number", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             invoiceNumberExpression = null;
         }
 
         try {
-            invoiceDateExpression = xpathFactory.compile("//xs:Invoice_Date", Filters.element(), null, namespace);
+            invoiceDateExpression = xpathFactory.compile("//xcs:Invoice_Date", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             invoiceDateExpression = null;
         }
 
         try {
-            bankNameExpression = xpathFactory.compile("//xs:Bank_Name", Filters.element(), null, namespace);
+            bankNameExpression = xpathFactory.compile("//xcs:Bank_Name", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             bankNameExpression = null;
         }
 
         try {
-            jumlahTagihanExpression = xpathFactory.compile("//xs:Jumlah_Tagihan", Filters.element(), null, namespace);
+            jumlahTagihanExpression = xpathFactory.compile("//xcs:Jumlah_Tagihan", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             jumlahTagihanExpression = null;
         }
 
         try {
-            ppnMasukanExpression = xpathFactory.compile("//xs:PPN_Masukan", Filters.element(), null, namespace);
+            ppnMasukanExpression = xpathFactory.compile("//xcs:PPN_Masukan", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             ppnMasukanExpression = null;
         }
 
         try {
-            ppnWapuExpression = xpathFactory.compile("//xs:PPN_WAPU", Filters.element(), null, namespace);
+            ppnWapuExpression = xpathFactory.compile("//xcs:PPN_WAPU", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             ppnWapuExpression = null;
         }
 
         try {
-            hutangWapuExpression = xpathFactory.compile("//xs:Hutang_WAPU", Filters.element(), null, namespace);
+            hutangWapuExpression = xpathFactory.compile("//xcs:Hutang_WAPU", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             hutangWapuExpression = null;
         }
 
         try {
-            uangMukaExpression = xpathFactory.compile("//xs:Uang_Muka", Filters.element(), null, namespace);
+            uangMukaExpression = xpathFactory.compile("//xcs:Uang_Muka", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             uangMukaExpression = null;
         }
 
         try {
-            pph22Expression = xpathFactory.compile("//xs:PPH22", Filters.element(), null, namespace);
+            pph22Expression = xpathFactory.compile("//xcs:PPH22", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             pph22Expression = null;
         }
 
         try {
-            pph23Expression = xpathFactory.compile("//xs:PPH23", Filters.element(), null, namespace);
+            pph23Expression = xpathFactory.compile("//xcs:PPH23", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             pph23Expression = null;
         }
 
         try {
-            pph21Expression = xpathFactory.compile("//xs:PPH21", Filters.element(), null, namespace);
+            pph21Expression = xpathFactory.compile("//xcs:PPH21", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             pph21Expression = null;
         }
 
         try {
-            jumlahDibayarExpression = xpathFactory.compile("//xs:Jumlah_Dibayar", Filters.element(), null, namespace);
+            jumlahDibayarExpression = xpathFactory.compile("//xcs:Jumlah_Dibayar", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             jumlahDibayarExpression = null;
         }
 
         try {
-            vendor_NumberExpression = xpathFactory.compile("//xs:Vendor_Number", Filters.element(), null, namespace);
+            vendor_NumberExpression = xpathFactory.compile("//xcs:Vendor_Number", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             vendor_NumberExpression = null;
         }
 
         try {
-            vendor_NameExpression = xpathFactory.compile("//xs:Vendor_Name", Filters.element(), null, namespace);
+            vendor_NameExpression = xpathFactory.compile("//xcs:Vendor_Name", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             vendor_NameExpression = null;
         }
 
         try {
-            attachmentExpression = xpathFactory.compile("//xs:Attachment", Filters.element(), null, namespace);
+            attachmentExpression = xpathFactory.compile("//xcs:Attachment", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             attachmentExpression = null;
         }
 
         try {
-            processIdExpression = xpathFactory.compile("//xs:processId", Filters.element(), null, namespace);
+            processIdExpression = xpathFactory.compile("//xcs:processId", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
             processIdExpression = null;
         }
 
         try {
-            documentNumberExpression = xpathFactory.compile("//xs:documentNumber", Filters.element(), null, namespace);
+            nomorSpdExpression = xpathFactory.compile("//xcs:nomor_spd", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            documentNumberExpression = null;
+            nomorSpdExpression = null;
         }
 
         try {
-            sapDocumentNumberExpression = xpathFactory.compile("//xs:sapDocumentNumber", Filters.element(), null, namespace);
+            nikExpression = xpathFactory.compile("//xcs:nik", Filters.element(), null, namespace);
         } catch (NullPointerException e) {
-            sapDocumentNumberExpression = null;
+            nikExpression = null;
         }
     }
 
@@ -332,33 +331,6 @@ public class SoapCustomPtTimahEndpoint {
                 .collect(Collectors.toList()));
 
         ReturnMessage returnMessage = soapCustomPtTimahService.submitVendorMasterData(appId, appVersion, vendorMaster);
-
-        Element returnElement = new Element("VendorMasterResponse", namespace);
-        returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));
-        returnElement.addContent(new Element("message1", namespace).setText(returnMessage.getMessage1()));
-        returnElement.addContent(new Element("message2", namespace).setText(returnMessage.getMessage2()));
-        returnElement.addContent(new Element("message3", namespace).setText(returnMessage.getMessage3()));
-        returnElement.addContent(new Element("message4", namespace).setText(returnMessage.getMessage4()));
-        returnElement.addContent(new Element("message5", namespace).setText(returnMessage.getMessage5()));
-
-        return returnElement;
-    }
-
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "SpdSijDocumentNumberRequest")
-    public @ResponsePayload Element handleUpdateSapDocumentNumberRequest(@RequestPayload Element updateSapDocumentNumberElement) {
-        LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + updateSapDocumentNumberElement.getName() + "]");
-
-        String appId = appIdExpression.evaluateFirst(updateSapDocumentNumberElement).getValue();
-        @Nonnull long appVersion = Optional.ofNullable(appVersionExpression)
-                .map(x -> x.evaluateFirst(updateSapDocumentNumberElement))
-                .map(Element::getValue)
-                .map(Long::parseLong)
-                .orElse(0L);
-
-        String documentNumber = documentNumberExpression.evaluateFirst(updateSapDocumentNumberElement).getValue();
-        String sapDocumentNumber = sapDocumentNumberExpression.evaluateFirst(updateSapDocumentNumberElement).getValue();
-
-        ReturnMessage returnMessage = soapCustomPtTimahService.submitUpdateSapDocumentNumber(appId, appVersion, documentNumber, sapDocumentNumber);
 
         Element returnElement = new Element("VendorMasterResponse", namespace);
         returnElement.addContent(new Element("status", namespace).setText(String.valueOf(returnMessage.getStatus())));

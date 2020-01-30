@@ -1,7 +1,7 @@
 <xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
-           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           xmlns:xps = "http://kecak.org/soap/sla/schemas"
            elementFormDefault = "qualified"
-           targetNamespace = "http://kecak.org/soap/process/schemas">
+           targetNamespace = "http://kecak.org/soap/sla/schemas">
 
     <xs:element name = "SLAListRequest">
         <xs:complexType>

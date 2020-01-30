@@ -1,4 +1,4 @@
-package com.pttimah.kecak.model;
+package org.joget.apps.app.model;
 
 import java.util.List;
 

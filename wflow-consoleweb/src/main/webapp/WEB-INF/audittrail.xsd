@@ -1,7 +1,7 @@
 <xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema"
-           xmlns:xps = "http://kecak.org/soap/process/schemas"
+           xmlns:xps = "http://kecak.org/soap/audittrail/schemas"
            elementFormDefault = "qualified"
-           targetNamespace = "http://kecak.org/soap/process/schemas">
+           targetNamespace = "http://kecak.org/soap/audittrail/schemas">
 
     <xs:element name = "AuditTrailListRequest">
         <xs:complexType>
