@@ -60,7 +60,7 @@
 - [Plugins Composite Tool](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_compositeTool)
 - [Plugins String Tool Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringToolsFormatter)
 - [Plugins Datalist Multi Approval](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistMultiApproval)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins Option Value Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_optionValueFormatter)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
