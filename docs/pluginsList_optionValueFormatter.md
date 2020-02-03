@@ -56,7 +56,7 @@ Option value formatter is a plugin to retrieve data "value" from an existing dat
 
 11. Go to "User Option Binder" tab
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/optionValueFormatter_fillOprionBinder2.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/optionValueFormatter_fillOptionBinder2.png" alt="" />
 
 12. Fill Organization Field
 
