@@ -15,7 +15,7 @@ Option value formatter is a plugin to retrieve data "value" from an existing dat
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
 
-3. Choose Row
+3. Choose Column
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
