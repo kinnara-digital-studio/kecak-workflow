@@ -1439,7 +1439,9 @@ public class DataJsonController {
                             WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + primaryKeyColumn));
                             if (workflowAssignment != null) {
                                 row.put("activityId", workflowAssignment.getActivityId());
+                                row.put("activityDefId", workflowAssignment.getActivityDefId());
                                 row.put("processId", workflowAssignment.getProcessId());
+                                row.put("processDefId", workflowAssignment.getProcessDefId());
                                 row.put("assigneeId", workflowAssignment.getAssigneeId());
 
                                 AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(workflowAssignment.getProcessId());

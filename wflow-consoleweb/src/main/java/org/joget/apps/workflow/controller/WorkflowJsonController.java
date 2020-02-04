@@ -610,7 +610,9 @@ public class WorkflowJsonController {
             @SuppressWarnings("rawtypes")
 			Map data = new HashMap();
             data.put("processId", assignment.getProcessId());
+            data.put("processDefId", assignment.getProcessDefId());
             data.put("activityId", assignment.getActivityId());
+            data.put("activityDefId", assignment.getActivityDefId());
             data.put("processName", assignment.getProcessName());
             data.put("activityName", assignment.getActivityName());
             data.put("processVersion", assignment.getProcessVersion());
