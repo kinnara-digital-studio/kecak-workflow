@@ -612,7 +612,6 @@ public class WorkflowJsonController {
             data.put("processId", assignment.getProcessId());
             data.put("processDefId", assignment.getProcessDefId());
             data.put("activityId", assignment.getActivityId());
-            data.put("activityDefId", assignment.getActivityDefId());
             data.put("processName", assignment.getProcessName());
             data.put("activityName", assignment.getActivityName());
             data.put("processVersion", assignment.getProcessVersion());
@@ -627,6 +626,11 @@ public class WorkflowJsonController {
             data.put("id", assignment.getActivityId());
             data.put("label", assignment.getActivityName());
             data.put("description", assignment.getDescription());
+
+            WorkflowActivity activity = workflowManager.getActivityById(assignment.getActivityId());
+            if(activity != null) {
+                data.put("activityDefId", activity.getActivityDefId());
+            }
 
             jsonData.put(data);
         }
@@ -667,6 +671,11 @@ public class WorkflowJsonController {
             data.put("label", assignment.getActivityName());
             data.put("description", assignment.getDescription());
 
+            WorkflowActivity activity = workflowManager.getActivityById(assignment.getActivityId());
+            if(activity != null) {
+                data.put("activityDefId", activity.getActivityDefId());
+            }
+
             jsonObject.accumulate("data", data);
         }
 
@@ -704,6 +713,11 @@ public class WorkflowJsonController {
             data.put("id", assignment.getActivityId());
             data.put("label", assignment.getActivityName());
             data.put("description", assignment.getDescription());
+
+            WorkflowActivity activity = workflowManager.getActivityById(assignment.getActivityId());
+            if(activity != null) {
+                data.put("activityDefId", activity.getActivityDefId());
+            }
 
             jsonObject.accumulate("data", data);
         }
