@@ -248,6 +248,7 @@ public class DataJsonController {
                                @RequestParam("formDefId") final String formDefId,
                                @RequestParam("elementId") final String elementId,
                                @RequestParam("primaryKey") final String primaryKey,
+                               @RequestParam(value = "includeSubForm", required = false, defaultValue = "false") final Boolean includeSubForm,
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
@@ -275,7 +276,7 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            Element element = FormUtil.findElement(elementId, form, formData, true);
+            Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
             if (element == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid element [" + elementId + "]");
             }
@@ -286,6 +287,96 @@ public class DataJsonController {
             FormRowSet formRows = Optional.ofNullable(formData.getLoadBinderData(element))
                     .map(Collection::stream)
                     .orElseGet(Stream::empty)
+                    .collect(Collectors.toCollection(FormRowSet::new));
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            // construct response
+
+            @Nonnull
+            JSONArray jsonArrayData = formRows.stream()
+                    .map(JSONObject::new)
+                    .collect(JSONArray::new, JSONArray::put, (arr1, arr2) -> {
+                        for (int i = 0, size = arr2.length(); i < size; i++) {
+                            try {
+                                arr1.put(arr2.get(i));
+                            } catch (JSONException ignored) {
+                            }
+                        }
+                    });
+
+            @Nullable
+            String currentDigest = getDigest(jsonArrayData);
+
+            JSONObject jsonResponse = new JSONObject();
+
+            if (!Objects.equals(currentDigest, digest)) {
+                jsonResponse.put(FIELD_DATA, jsonArrayData);
+            }
+
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+            response.getWriter().write(jsonResponse.toString());
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/elementOptions/(*:elementId)", method = RequestMethod.GET)
+    public void getElementOptionsData(final HttpServletRequest request, final HttpServletResponse response,
+                                      @RequestParam("appId") final String appId,
+                                      @RequestParam("appVersion") final String appVersion,
+                                      @RequestParam("formDefId") final String formDefId,
+                                      @RequestParam("elementId") final String elementId,
+                                      @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                      @RequestParam(value = "start", required = false, defaultValue = "0") final Integer start,
+                                      @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
+                                      @RequestParam(value = "includeSubForm", required = false, defaultValue = "false") final Boolean includeSubForm,
+                                      @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
+            if (form == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]");
+            }
+
+            final FormData formData = new FormData();
+
+            Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
+            if (element == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid element [" + elementId + "]");
+            }
+
+            FormUtil.executeOptionBinders(element, formData);
+
+            long pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
+            long rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
+
+            @Nonnull
+            FormRowSet formRows = Optional.ofNullable(formData.getOptionsBinderData(element, null))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .skip(rowStart)
+                    .limit(pageSize)
                     .collect(Collectors.toCollection(FormRowSet::new));
 
             response.setStatus(HttpServletResponse.SC_OK);
