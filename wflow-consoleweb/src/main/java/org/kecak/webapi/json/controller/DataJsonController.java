@@ -85,7 +85,7 @@ public class DataJsonController {
      * @param appVersion put 0 for current published app
      * @param formDefId  Form ID
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/submit", method = RequestMethod.POST)
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
                                @RequestParam("appVersion") final String appVersion,
@@ -161,7 +161,7 @@ public class DataJsonController {
      * @throws IOException
      * @throws JSONException
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
     public void putFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
                             @RequestParam("appVersion") final String appVersion,
@@ -241,7 +241,7 @@ public class DataJsonController {
      * @throws IOException
      * @throws JSONException
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/element/(*:elementId)/(*:primaryKey)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/element/(*:elementId)/(*:primaryKey)", method = RequestMethod.GET)
     public void getElementData(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
                                @RequestParam("appVersion") final String appVersion,
@@ -337,7 +337,7 @@ public class DataJsonController {
      * @throws IOException
      * @throws JSONException
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
     public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
                             @RequestParam("appVersion") final String appVersion,
@@ -461,7 +461,7 @@ public class DataJsonController {
      * @param dataListId DataList ID
      * @throws IOException
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)/count", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/list/(*:dataListId)/count", method = RequestMethod.GET)
     public void getListCount(final HttpServletRequest request, final HttpServletResponse response,
                              @RequestParam("appId") final String appId,
                              @RequestParam("appVersion") final String appVersion,
@@ -528,7 +528,7 @@ public class DataJsonController {
      * @param digest     hash calculation of data json
      * @throws IOException
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/list/(*:dataListId)", method = RequestMethod.GET)
     public void getList(final HttpServletRequest request, final HttpServletResponse response,
                         @RequestParam("appId") final String appId,
                         @RequestParam("appVersion") final String appVersion,
@@ -632,7 +632,7 @@ public class DataJsonController {
      * @param appVersion put 0 for current published app
      * @param processId  Process ID
      */
-    @RequestMapping(value = "/json/app/(*:appId)/(~:appVersion)/data/process/(*:processId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST)
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
                                  @RequestParam("appId") String appId,
                                  @RequestParam("appVersion") String appVersion,

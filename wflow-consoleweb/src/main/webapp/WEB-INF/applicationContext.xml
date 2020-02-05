@@ -152,7 +152,7 @@
         <property name="directoryManager" ref="directoryManager"/>
     </bean>
 
-    <bean id="oauth2Handler" class="org.kecak.oauth2.Oauth2Handler"></bean>
+    <bean id="oauth2Handler" class="org.kecak.oauth2.Oauth2Handler"/>
 
     <bean id="workflowJwtAuthFilter" class="org.kecak.webapi.security.WorkflowJwtAuthProcessingFilter">
         <constructor-arg ref="authenticationManager" />
