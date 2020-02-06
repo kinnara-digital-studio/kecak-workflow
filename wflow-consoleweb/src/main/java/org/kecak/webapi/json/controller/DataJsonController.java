@@ -119,16 +119,7 @@ public class DataJsonController {
             // construct response
             final JSONObject jsonResponse = new JSONObject();
             if (result.getFormErrors() != null && !result.getFormErrors().isEmpty()) {
-                final JSONObject jsonError = new JSONObject();
-
-                // show error message
-                result.getFormErrors().forEach((key, value) -> {
-                    try {
-                        jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
-                });
-
+                final JSONObject jsonError = createErrorObject(result.getFormErrors());
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
@@ -147,6 +138,22 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+    }
+
+    /**
+     * Construct JSON Object from Form Errors
+     * @param formErrors
+     * @return
+     */
+    private JSONObject createErrorObject(Map<String, String> formErrors) {
+        final JSONObject result = new JSONObject();
+
+        // show error message
+        formErrors.forEach((key, value) -> {
+            try { result.put(key, value); } catch (JSONException ignored) { }
+        });
+
+        return result;
     }
 
     /**
@@ -197,14 +204,7 @@ public class DataJsonController {
             // construct response
             final JSONObject jsonResponse = new JSONObject();
             if (result.getFormErrors() != null && !result.getFormErrors().isEmpty()) {
-                final JSONObject jsonError = new JSONObject();
-                // show error message
-                result.getFormErrors().forEach((key, value) -> {
-                    try {
-                        jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
-                });
+                final JSONObject jsonError = createErrorObject(result.getFormErrors());
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
             } else {
