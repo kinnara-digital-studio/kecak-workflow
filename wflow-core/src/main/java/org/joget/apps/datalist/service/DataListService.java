@@ -1,12 +1,13 @@
 package org.joget.apps.datalist.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.datalist.model.DataList;
-import org.joget.apps.datalist.model.DataListAction;
-import org.joget.apps.datalist.model.DataListBinder;
-import org.joget.apps.datalist.model.DataListColumnFormat;
+import org.joget.apps.datalist.model.*;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.plugin.base.Plugin;
@@ -32,6 +33,19 @@ public class DataListService {
         json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
 
         DataList dataList = JsonUtil.fromJson(json, DataList.class);
+
+        // check form permisison
+        if(dataList != null) {
+            DataListColumn[] columns = Optional.of(dataList)
+                    .map(DataList::getColumns)
+                    .map(Arrays::stream)
+                    .orElseGet(Stream::empty)
+                    .filter(DataListColumn::isPermitted)
+                    .toArray(DataListColumn[]::new);
+
+            dataList.setColumns(columns);
+        }
+
         return dataList;
     }
 
