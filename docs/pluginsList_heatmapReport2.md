@@ -28,6 +28,13 @@ Heatmap Report Menu is userview menu plugin to display Heatmap Report. Heatmap R
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap_fillField.png" alt="" />
 
+|Field|Description|
+|-|-|
+|Custom ID|ID of the heatmap report that will be created|
+|Label|The label of the heatmap that will be displayed|
+|Process|Which process will be displayed on the heatmap report|
+|Type|Which type will be used in displaying the heatmap report|
+
 
 6. Click OK
 
