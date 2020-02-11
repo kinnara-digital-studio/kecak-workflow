@@ -49,3 +49,4 @@ Heatmap Report Menu is userview menu plugin to display Heatmap Report. Heatmap R
 8. Result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/heatmap_result.png" alt="" />
+
