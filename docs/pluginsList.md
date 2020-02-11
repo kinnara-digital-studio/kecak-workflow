@@ -26,7 +26,7 @@
 - [Plugins To Do List](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginslist_todolist)
 - [Plugins Dashboard To Do List](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dashboardTodolist)
 - [Plugins Email Broker](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_emailBroker)
-- [Plugins Heatmap Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_heatmapReport)
+- [Plugins Heatmap Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_heatmapReport2)
 - [Plugins Date Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_dateFormatter)
 - [Plugins Form Attachment Grid](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_formAttachmentGrid)
 - [Plugins CRUD Selectbox](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_crudSelectbox)
