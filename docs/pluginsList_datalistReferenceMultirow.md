@@ -26,6 +26,13 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_fillField.png" alt="" />
 
+|Field|Description|
+|-|-|
+|ID|ID dari field yang akan dibuat|
+|Label|Penamaan untuk field yang akan dibuat|
+|Form|Memilih dari form mana data akan diambil|
+|Column|Mencantumkan kolom dari form yang telah dipilih|
+
 
 6. Go to Validator
 
@@ -75,3 +82,14 @@
 15. Result
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result2.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result3.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result4.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result5.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result6.png" alt="" />
+
