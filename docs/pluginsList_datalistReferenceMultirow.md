@@ -28,10 +28,10 @@
 
 |Field|Description|
 |-|-|
-|ID|ID dari field yang akan dibuat|
-|Label|Penamaan untuk field yang akan dibuat|
-|Form|Memilih dari form mana data akan diambil|
-|Column|Mencantumkan kolom dari form yang telah dipilih|
+|ID|ID of the field to be created|
+|Label|Naming for the field to be created|
+|Form|Choose from which form the data will be retrieved|
+|Column|List the columns of the selected form|
 
 
 6. Go to Validator
@@ -83,7 +83,11 @@
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result.png" alt="" />
 
+- Click This Icon for Add Reference
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result2.png" alt="" />
+
+- 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/dataRefMultirow_result3.png" alt="" />
 
