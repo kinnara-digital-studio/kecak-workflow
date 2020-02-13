@@ -27,7 +27,6 @@ Numeric text field is a plugin that intended for numeric data types. In addition
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/numer_editField.png" alt="" />
 
-
 Description :
 
 |Field |Description|
