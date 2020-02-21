@@ -1,6 +1,6 @@
 # Permission - Is Admin - 
 
-Plugins that are used to create reports that can be printed in PDF format and display reports based on datalist.
+This plugin is used as a form access permission for admin. In a sense, only from certain admin can access the forms that have been set.
 
 ## How to use
 
