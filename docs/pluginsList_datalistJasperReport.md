@@ -6,47 +6,118 @@ Plugins that are used to create reports that can be printed in PDF format and di
 
 1. Open Apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_openApps.png" alt="Captcha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_openApps.png" alt="" />
 
 
 2. Choose userview
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_chooseUserview.png" alt="Captcha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_chooseUserview.png" alt="" />
 
 
 3. Drag and drop plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_dragDrop.png" alt="Captcha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_dragDrop.png" alt="" />
 
 
 4. Go to properties page
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+
+
 5. Fill field
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+
+
 6. Configure datalist
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+
+
 Fill field
-Configure Jasper report
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
 
-how to get JRXML
-Open Jasper report studio
+## Configure Jasper report in Jasper Report Studio
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="Captcha" />
+### How to get JRXML
 
-settings
+we can get JRXML from Jasper Report Studio
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="Captcha" />
+Let's check this step for get JRXML :
 
+- Open Jasper report studio
 
-set project
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="Captcha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
 
-connecting data
+- Settings Jasper Studio
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="Captcha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting1.png" alt="" />
+
+|1.|
+|2.|
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting2.png" alt="" />
+
+|1.|
+|2.|
 
 
-Result
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting3.png" alt="" />
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="Captcha" />
+|1.|
+|2.|
+|3.|
+
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting4.png" alt="" />
+
+Add HTTP Headers with
+
+|**Referer** | Fill with URL |
+|**Authorization**| Fill with value url basic from datalist |
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting5.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting6.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting7.png" alt="" />
+
+
+- Set project in Jasper Studio
+
+|1.|
+|2.|
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject1.png" alt="" />
+
+
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject2.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject3.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject4.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject5.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject6.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject7.png" alt="" />
+
+
+- Connecting data from datalist Kecak to Jasper Studio
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_connectingData.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_connectingData2.png" alt="" />
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_connectingData3.png" alt="" />
+
+
+- Result
+
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
