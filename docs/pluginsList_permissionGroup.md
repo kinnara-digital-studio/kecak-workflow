@@ -62,4 +62,3 @@ In a sense, only from certain groups can access the forms that have been set.
 12. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionGroup_save.png" alt="" />
-
