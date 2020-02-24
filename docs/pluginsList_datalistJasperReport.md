@@ -21,23 +21,26 @@ Plugins that are used to create reports that can be printed in PDF format and di
 
 4. Go to properties page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_properties.png" alt="" />
 
 
-5. Fill field
+5. Go to configure datalist page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
-
-
-6. Configure datalist
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_.png" alt="" />
 
 
-Fill field
+6. Go to configure jasper
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_configureDatalist.png" alt="" />
 
+Description :
+
+|Feld|Description|
+|-|-|
+|Default Output||
+|Export Option||
+|File Name ||
+|Jasper Report Definition (JRXML) ||
 
 ## Configure Jasper report in Jasper Report Studio
 
@@ -49,24 +52,30 @@ Let's check this step for get JRXML :
 
 - Open Jasper report studio
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_openJasper.png" alt="" />
 
 
 - Settings Jasper Studio
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting1.png" alt="" />
 
+|No|Information|
+|-|-|
 |1.| Choose Data Adapter |
 |2.| Choose Create Data Adapter |
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting2.png" alt="" />
 
+|No|Information|
+|-|-|
 |1.| Choose JSON File |
 |2.| Choose Next button |
 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting3.png" alt="" />
 
+|No|Information|
+|-|-|
 |1.| Name | Name of JSON file that will be created |
 |2.| File Url | URL from plugins datalist in application (you can follow picture part in "**Get File URL**") |
 |3.| Click Option and will be shown like Fill HTTP Connection Options picture |
@@ -77,6 +86,8 @@ Let's check this step for get JRXML :
 
 Add HTTP Headers with
 
+|No|Information|
+|-|-|
 |**Referer** | Fill with URL |
 |**Authorization**| Fill with value url basic from datalist |
 
@@ -101,6 +112,7 @@ after that, paste the URL in File URL Jasper studio
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject1.png" alt="" />
 
+|No|Information|
 |1.|Go to project Explore|
 |2.|Click File|
 
