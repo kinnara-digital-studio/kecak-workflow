@@ -119,5 +119,5 @@ Add HTTP Headers with
 
 - Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_result.png" alt="" />
 
