@@ -1,6 +1,6 @@
-# Permission Everyone
+# Permission Anonymous
 
-This plugin is used as a form access permission for everyone that they are already logged in.
+This plugin is used as a form access permission for anonymous. i.e., users who do not enter the application will be given access.
 
 # How to use
 
