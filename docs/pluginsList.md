@@ -56,7 +56,7 @@
 - [Plugins Multi Participant](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_multiParticipant)
 - [Plugins File Upload Alfresco](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_alfresco)
 - [Plugins Push Notification](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_pushNotification)
-- [Plugins Jasper Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_jasperReport)
+- [Plugins Datalist Jasper Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistJasperReport)
 - [Plugins Composite Tool](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_compositeTool)
 - [Plugins String Tool Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_stringToolsFormatter)
 - [Plugins Datalist Multi Approval](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistMultiApproval)
