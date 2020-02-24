@@ -56,21 +56,22 @@ Let's check this step for get JRXML :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting1.png" alt="" />
 
-|1.|
-|2.|
+|1.| Choose Data Adapter |
+|2.| Choose Create Data Adapter |
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting2.png" alt="" />
 
-|1.|
-|2.|
+|1.| Choose JSON File |
+|2.| Choose Next button |
 
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting3.png" alt="" />
 
-|1.|
-|2.|
-|3.|
+|1.| Name | Name of JSON file that will be created |
+|2.| File Url | URL from plugins datalist in application (you can follow picture part in "**Get File URL**") |
+|3.| Click Option and will be shown like Fill HTTP Connection Options picture |
 
+**Fill HTTP Connection Options
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting4.png" alt="" />
 
@@ -79,21 +80,29 @@ Add HTTP Headers with
 |**Referer** | Fill with URL |
 |**Authorization**| Fill with value url basic from datalist |
 
+**Get File URL 
+
+- Go to kecak application
+in Kecak application you are in datalist properties, and go to **Configure Datalist** like this picture:
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting5.png" alt="" />
+
+- Get JSON Url
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting6.png" alt="" />
 
+- Copy JSON Url
+
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperSetting7.png" alt="" />
 
+after that, paste the URL in File URL Jasper studio
 
-- Set project in Jasper Studio
-
-|1.|
-|2.|
+**- Set project in Jasper Studio**
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject1.png" alt="" />
 
-
+|1.|Go to project Explore|
+|2.|Click File|
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_jasperProject2.png" alt="" />
 
