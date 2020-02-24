@@ -63,7 +63,7 @@
 - [Plugins Option Value Formatter](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_optionValueFormatter)
 - [Plugins Datalist Reference Multirow](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistReferenceMultirow)
 - [Plugins Group Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionGroup)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins Is Admin Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionIsAdmin)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
 - [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
