@@ -1,7 +1,7 @@
 # Permission Department
 
-This plugin is used as a form access permission for the group.
-In a sense, only from certain groups can access the forms that have been set.
+This plugin is used as a form access permission for the department.
+In a sense, only from certain department(s) can access the forms that have been set.
 
 ## How to use
 
