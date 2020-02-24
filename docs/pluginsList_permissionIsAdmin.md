@@ -16,12 +16,12 @@ This plugin is used as a form access permission for admin. In a sense, only from
 
 3. Go to properties tab
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionIsAdmin_.png" alt="Captha" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionIsAdmin_properties.png" alt="" />
 
 
 4. Go to advanced page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionIsAdmin_.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionIsAdmin_advanced.png" alt="" />
 
 
 5. Choose permission
