@@ -26,12 +26,12 @@ Plugins that are used to create reports that can be printed in PDF format and di
 
 5. Go to configure datalist page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_configureDatalist.png" alt="" />
 
 
 6. Go to configure jasper
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_configureDatalist.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/datalistJasper_configureJasper.png" alt="" />
 
 Description :
 
