@@ -37,7 +37,7 @@ In a sense, only from certain department(s) can access the forms that have been 
 
 7. Go to permission page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionDepartment_.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionDepartment_permissionConfiguration.png" alt="" />
 
 
 8. Select organization
@@ -48,6 +48,7 @@ In a sense, only from certain department(s) can access the forms that have been 
 9. Select department
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionDepartment_chooseDept.png" alt="" />
+
 
 10. Organization and Department choosed
 
