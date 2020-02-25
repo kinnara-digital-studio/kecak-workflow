@@ -34,16 +34,11 @@ This plugin is used as a form access permission for everyone that they are alrea
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionEveryone_permissionChoosed.png" alt="" />
 
 
-7. Go to permission page
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionEveryone_.png" alt="" />
-
-
-11. Click OK
+7. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionEveryone_ok.png" alt="" />
 
 
-12. Click Save
+8. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionEveryone_save.png" alt="" />
