@@ -65,9 +65,10 @@
 - [Plugins Group Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionGroup)
 - [Plugins Is Admin Permission](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionIsAdmin)
 - [Plugins Datalist Jasper Report](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_datalistJasperReport)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
-- [Plugins ](https://kinnara-digital-studio.github.io/kecak-workflow/#/)
+- [Plugins Permission -Everyone-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionEveryone)
+- [Plugins Permission -Anonymous-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionAnonymous)
+- [Plugins Permission -Department-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionDepartment)
+- [Plugins Permission -Role Management-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionRoleManagement)
 
 
 
