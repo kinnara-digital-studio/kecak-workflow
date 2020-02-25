@@ -34,16 +34,11 @@ This plugin is used as a form access permission for anonymous. i.e., users who d
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionAnonymous_permissionChoosed.png" alt="" />
 
 
-7. Go to permission page
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionAnonymous_.png" alt="" />
-
-
-11. Click OK
+7. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionAnonymous_ok.png" alt="" />
 
 
-12. Click Save
+8. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionAnonymouse_save.png" alt="" />
