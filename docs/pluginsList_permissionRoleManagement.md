@@ -32,7 +32,7 @@ In a sense, only from certain role management can access the forms that have bee
 
 6. Permission choosed
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionRoleManagement.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionRoleManagement_choosed.png" alt="" />
 
 
 7. Go to permission role management page
@@ -45,16 +45,11 @@ In a sense, only from certain role management can access the forms that have bee
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionRoleManagement_authObj.png" alt="" />
 
 
-9. Authorization Object Choosed
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionRoleManagement_authObjChoosed.png" alt="" />
-
-
-10. Click OK
+9. Click OK
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionRoleManagement_ok.png" alt="" />
 
 
-11. Click Save
+10. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionRoleManagement_save.png" alt="" />
