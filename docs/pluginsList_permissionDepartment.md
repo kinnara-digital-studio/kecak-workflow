@@ -63,3 +63,4 @@ In a sense, only from certain department(s) can access the forms that have been 
 12. Click Save
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionDepartment_save.png" alt="" />
+
