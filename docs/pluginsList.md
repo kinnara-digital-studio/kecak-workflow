@@ -68,6 +68,18 @@
 - [Plugins Permission -Anonymous-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionAnonymous)
 - [Plugins Permission -Department-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionDepartment)
 - [Plugins Permission -Role Management-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionRoleManagement)
-
-
-
+- [Plugins Permission -Organization-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionOrganization)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
