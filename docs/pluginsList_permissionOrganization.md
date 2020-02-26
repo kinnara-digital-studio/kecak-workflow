@@ -37,7 +37,7 @@ In a sense, only from certain organization(s) can access the forms that have bee
 
 7. Go to permission page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionOrganization_.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionOrganization_configureUserview.png" alt="" />
 
 
 8. Select organization
@@ -47,16 +47,14 @@ In a sense, only from certain organization(s) can access the forms that have bee
 
 9. Organization and Choosed
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionOrganization_chooseOrganization.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionOrganization_choosed.png" alt="" />
 
 
 10. Click OK
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionGroup_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionOrganization_ok.png" alt="" />
 
 
 11. Click Save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionGroup_save.png" alt="" />
-
-
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionOrganization_save.png" alt="" />
