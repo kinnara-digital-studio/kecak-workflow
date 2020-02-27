@@ -69,7 +69,7 @@
 - [Plugins Permission -Department-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionDepartment)
 - [Plugins Permission -Role Management-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionRoleManagement)
 - [Plugins Permission -Organization-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionOrganization)
-- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins Permission -Logged User-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionLoggedUser)
 - [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 - [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 - [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
