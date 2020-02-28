@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.joget.apps.app.controller.TokenAuthenticationService;
+import org.kecak.apps.directory.service.TokenAuthenticationService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.workflow.security.WorkflowUserDetails;
 import org.joget.commons.util.LogUtil;
@@ -843,11 +843,14 @@ public class DirectoryJsonController {
     @SuppressWarnings("unchecked")
     @RequestMapping("/api/user.identity")
     public void getUserIdentity(Writer writer, HttpServletRequest httpRequest, HttpServletResponse httpResponse, @RequestParam(value = "callback", required = false) String callback, @RequestParam(value = "token", required = false) String token) throws Exception {
-
-        User user = TokenAuthenticationService.getAuthentication(httpRequest);
+        String bearerToken = Optional.of(httpRequest)
+                .map(r -> r.getHeader("Authorization"))
+                .map(s -> s.replace("Bearer ", ""))
+                .orElse("");
+        User user = TokenAuthenticationService.getAuthentication(bearerToken);
         JSONObject jsonObject = new JSONObject();
         if (user != null) {
-            Map data = new HashMap();
+            JSONObject data = new JSONObject();
             data.put("id", user.getId());
             data.put("username", user.getUsername());
             data.put("firstName", user.getFirstName());
