@@ -85,7 +85,7 @@ public class DataJsonController {
      * @param appVersion put 0 for current published app
      * @param formDefId  Form ID
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
                                @RequestParam("appVersion") final String appVersion,
@@ -108,10 +108,17 @@ public class DataJsonController {
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not available"));
 
             // read request body and convert request body to json
             final FormData formData = extractBodyToFormData(request, form);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
 
             // submit form
             final FormData result = appService.submitForm(form, formData, false);
@@ -192,11 +199,18 @@ public class DataJsonController {
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not found"));
 
             // read request body and convert request body to json
             final FormData formData = extractBodyToFormData(request, form);
             formData.setPrimaryKeyValue(primaryKey);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
 
             // submit form
             final FormData result = appService.submitForm(form, formData, false);
@@ -220,6 +234,84 @@ public class DataJsonController {
 
             response.getWriter().write(jsonResponse.toString());
 
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    /**
+     * Get Form Data
+     *
+     * @param request    HTTP Request
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param formDefId  Form Definition ID
+     * @param primaryKey Primary Key
+     * @param digest     Digest
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
+    public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
+                            @RequestParam("appId") final String appId,
+                            @RequestParam("appVersion") final String appVersion,
+                            @RequestParam("formDefId") final String formDefId,
+                            @RequestParam("primaryKey") final String primaryKey,
+                            @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
+
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            // get form row
+            @Nonnull
+            FormRow formRow = loadFormData(form, primaryKey);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            // construct response
+            final JSONObject jsonData = new JSONObject(formRow);
+            loadDataForElementWithBinder(form, formData, jsonData);
+
+            String currentDigest = getDigest(jsonData);
+
+            JSONObject jsonResponse = new JSONObject();
+
+            if (!Objects.equals(currentDigest, digest)) {
+                jsonResponse.put(FIELD_DATA, jsonData);
+            }
+
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+            response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -268,13 +360,17 @@ public class DataJsonController {
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
-            if (form == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]");
-            }
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
 
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
 
             Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
             if (element == null) {
@@ -354,12 +450,16 @@ public class DataJsonController {
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
-            if (form == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]");
-            }
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
 
             final FormData formData = new FormData();
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
 
             Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
             if (element == null) {
@@ -416,87 +516,13 @@ public class DataJsonController {
     }
 
     /**
-     * Get Form Data
-     *
-     * @param request    HTTP Request
-     * @param response   HTTP Response
-     * @param appId      Application ID
-     * @param appVersion Application version
-     * @param formDefId  Form Definition ID
-     * @param primaryKey Primary Key
-     * @param digest     Digest
-     * @throws IOException
-     * @throws JSONException
-     */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
-    public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
-                            @RequestParam("appId") final String appId,
-                            @RequestParam("appVersion") final String appVersion,
-                            @RequestParam("formDefId") final String formDefId,
-                            @RequestParam("primaryKey") final String primaryKey,
-                            @RequestParam(value = "digest", required = false) final String digest)
-            throws IOException, JSONException {
-
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
-            // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            Form form = appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null);
-            if (form == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]");
-            }
-
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
-
-            // get form row
-            @Nonnull
-            FormRow formRow = loadFormData(form, primaryKey);
-
-            response.setStatus(HttpServletResponse.SC_OK);
-
-            // construct response
-            final JSONObject jsonData = new JSONObject(formRow);
-            loadDataForElementWithBinder(form, formData, jsonData);
-
-            String currentDigest = getDigest(jsonData);
-
-            JSONObject jsonResponse = new JSONObject();
-
-            if (!Objects.equals(currentDigest, digest)) {
-                jsonResponse.put(FIELD_DATA, jsonData);
-            }
-
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-            jsonResponse.put(FIELD_DIGEST, currentDigest);
-
-            response.getWriter().write(jsonResponse.toString());
-        } catch (ApiException e) {
-            response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
-        }
-    }
-
-    /**
      * Load form data using form service as {@link FormRow}
      *
      * @param form
      * @param primaryKey
      * @return
      */
-    private FormRow loadFormData(Form form, String primaryKey) {
+    private FormRow loadFormData(@Nonnull Form form, String primaryKey) {
         return Optional.ofNullable(appService.loadFormData(form, primaryKey))
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
@@ -755,12 +781,18 @@ public class DataJsonController {
             }
 
             // get process form
+            @Nonnull
             Form form = Optional.ofNullable(appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form"));
 
             // read request body and convert request body to json
             final FormData formData = extractBodyToFormData(request, form, true);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
 
             JSONObject jsonResponse = new JSONObject();
 
@@ -860,12 +892,18 @@ public class DataJsonController {
             AppUtil.setCurrentAppDefinition(appDefinition);
 
             // get assignment form
+            @Nonnull
             final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
             // read request body and convert request body to json
             final FormData formData = extractBodyToFormData(request, form, true);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
 
             Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
 
@@ -967,7 +1005,17 @@ public class DataJsonController {
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
             PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
-            Form form = packageActivityForm.getForm();
+
+            @Nonnull
+            Form form = Optional.of(packageActivityForm)
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form for assignment [" + assignment.getActivityId() + " not found]"));
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
             FormRow row = loadFormData(form, formData.getPrimaryKeyValue());
 
             response.setStatus(HttpServletResponse.SC_OK);
@@ -1016,6 +1064,7 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            @Nonnull
             WorkflowAssignment assignment = workflowManager.getAssignmentByProcess(processId);
             if (assignment == null) {
                 // check if assignment available
@@ -1035,8 +1084,17 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
-            Form form = packageActivityForm.getForm();
+
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form not available for assignment [" + assignment.getActivityId() + "]"));
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
             FormRow row = loadFormData(form, formData.getPrimaryKeyValue());
 
             response.setStatus(HttpServletResponse.SC_OK);
@@ -1158,7 +1216,17 @@ public class DataJsonController {
 
                         final FormData formData = new FormData();
                         final PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
-                        Form form = packageActivityForm.getForm();
+
+                        @Nonnull
+                        Form form = Optional.ofNullable(packageActivityForm)
+                                .map(PackageActivityForm::getForm)
+                                .orElse(null);
+
+                        // check form permission
+                        if(!Optional.ofNullable(form).map(f -> f.isAuthorize(formData)).orElse(false)) {
+                            return null;
+                        }
+
                         if ("assignmentForm".equals(form.getPropertyString("id"))) {
                             // form not found, get workflow variable as form set
                             FormRow row = workflowManager.getActivityVariableList(assignment.getActivityId()).stream()
@@ -1539,8 +1607,9 @@ public class DataJsonController {
                                 if (appDef != null) {
                                     row.put("appId", appDef.getAppId());
                                     row.put("appVersion", appDef.getVersion());
+
                                     Form form = getAssignmentForm(appDef, workflowAssignment);
-                                    if (form != null) {
+                                    if (form != null && form.isAuthorize(new FormData())) {
                                         row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
                                     }
                                 }

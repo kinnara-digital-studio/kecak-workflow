@@ -64,7 +64,13 @@ public class LoginApiController {
             if (invalidLogin)
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Username or Password");
 
-            final JSONObject requestPayload = new JSONObject(request.getReader().lines().collect(Collectors.joining()));
+            JSONObject requestPayload;
+            try {
+                requestPayload = new JSONObject(request.getReader().lines().collect(Collectors.joining()));
+            } catch (JSONException e) {
+                requestPayload = new JSONObject();
+            }
+
             Map<String, Object> claim = parseClaimFromRequestPayload(requestPayload);
             String jwtToken = authTokenService.generateToken(username, claim);
 
