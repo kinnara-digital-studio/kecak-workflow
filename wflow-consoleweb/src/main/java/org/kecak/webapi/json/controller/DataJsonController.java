@@ -578,7 +578,7 @@ public class DataJsonController {
      * @param dataListId DataList ID
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/list/(*:dataListId)/count", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void getListCount(final HttpServletRequest request, final HttpServletResponse response,
                              @RequestParam("appId") final String appId,
                              @RequestParam("appVersion") final String appVersion,
@@ -645,7 +645,7 @@ public class DataJsonController {
      * @param digest     hash calculation of data json
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/list/(*:dataListId)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)", method = RequestMethod.GET)
     public void getList(final HttpServletRequest request, final HttpServletResponse response,
                         @RequestParam("appId") final String appId,
                         @RequestParam("appVersion") final String appVersion,
@@ -1508,7 +1508,7 @@ public class DataJsonController {
      * @param digest
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/list/(*:dataListId)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
     public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("appId") final String appId,
                                        @RequestParam("appVersion") final String appVersion,
@@ -1648,7 +1648,7 @@ public class DataJsonController {
         }
     }
 
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/list/(*:dataListId)/count", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
                                             @RequestParam("appId") final String appId,
                                             @RequestParam("appVersion") final String appVersion,
