@@ -7,22 +7,22 @@ In a sense, only from certain groups or users can access the forms that have bee
 
 1. Open apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionNotPermission_openApps.png" alt="" />
 
 
 2. Choose form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionNotPermission_chooseForm.png" alt="" />
 
 
 3. Go to properties tab
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionNotPermission_properties.png" alt="" />
 
 
 4. Go to advanced page
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionNotPermission_advanced.png" alt="" />
 
 
 5. Choose permission
