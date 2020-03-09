@@ -36,7 +36,7 @@ This plugin is used as a form access permission for any user(s). In a sense, onl
 
 7. Click OK
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionIsAdmin_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionLoggedUser_ok.png" alt="" />
 
 
 8. Click Save
