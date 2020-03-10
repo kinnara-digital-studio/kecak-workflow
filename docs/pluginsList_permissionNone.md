@@ -40,6 +40,6 @@ This plugin is used as a form access permission because no one can access this f
 
 8. Click Save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionNoone_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/permissionNoone_save.png" alt="" />
 
 
