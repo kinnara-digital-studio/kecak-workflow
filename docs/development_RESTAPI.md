@@ -148,6 +148,7 @@ RequestMethod.GET
 
 API to retrieve datalist data 
 
+
 #### Value 
 
 `/json/app/(*:appId)/(~:appVersion)/data/list/(*:dataListId)`
