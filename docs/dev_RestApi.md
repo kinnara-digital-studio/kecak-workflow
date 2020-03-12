@@ -23,9 +23,9 @@ Submit Form into table, can be used to save master data or other data(s).
 describe :
 |No|Description|
 |-|-|
-|1||
-|2||
-|3||
+|1|Method :|
+|2|URL|
+|3|Authorization|
 |4||
 |5||
 |6||
@@ -64,4 +64,7 @@ id from each field
 
 ## 2. POST Form Update
 
+in a body you only added ID from field that you will update, like this example :
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_result.png" alt="" />
 
