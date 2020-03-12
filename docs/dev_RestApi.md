@@ -66,5 +66,16 @@ id from each field
 
 in a body you only added ID from field that you will update, like this example :
 
-<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_result.png" alt="" />
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiUpdate_body.png" alt="" />
+
+
+describe :
+|No|Description|
+|-|-|
+|1||
+|2||
+|3||
+
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiUpdate_result.png" alt="" />
 
