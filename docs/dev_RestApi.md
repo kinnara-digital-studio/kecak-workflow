@@ -20,18 +20,44 @@ Submit Form into table, can be used to save master data or other data(s).
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_authorization.png" alt="" />
 
+describe :
+|No|Description|
+|-|-|
+|1||
+|2||
+|3||
+|4||
+|5||
+|6||
+
 
 3. Body
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_body.png" alt="" />
+
+describe :
+|No|Description|
+|-|-|
+|1||
+|2||
+|3||
+|4||
+|5||
 
 
 4. Parameter Form in Kecak
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_bodyFrom.png" alt="" />
 
+id from each field
 
-5. Result in Kecak (data has been added in datalist)
+
+5. Body response after run
+
+<img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_bodyResponse.png" alt="" />
+
+
+6. Result in Kecak (data has been added in datalist)
 
 <img src = "https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/restApiPost_result.png" alt="" />
 
