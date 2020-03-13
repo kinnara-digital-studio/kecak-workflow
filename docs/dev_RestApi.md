@@ -145,8 +145,7 @@ describe :
 
 **Value**
 
-`/json/data/app/(*:appId)/(~:appVersion)/list/(*:dataListId)/count`
-https://kecak.kinnarastudio.com/web/json/data/app/pengajuanCuti/1/form/masterDataEmployee/ID-066
+`/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/count`
 
 
 **Example**
