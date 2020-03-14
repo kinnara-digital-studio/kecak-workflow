@@ -38,32 +38,13 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.*;
 
 public class WorkflowAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
-
-    transient
-    @Autowired
-    @Qualifier("main")
     private DirectoryManager directoryManager;
-
-    @Autowired
     private PluginManager pluginManager;
-
-    @Autowired
-    private UserDao userDao;
-    @Autowired
     private UserTokenDao userTokenDao;
-    @Autowired
-    private RoleDao roleDao;
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public DirectoryManager getDirectoryManager() {
-        return directoryManager;
-    }
-
-    public void setDirectoryManager(DirectoryManager directoryManager) {
-        this.directoryManager = directoryManager;
-    }
-
+    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // reset profile and set hostname
         HostManager.initHost();
@@ -121,7 +102,7 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
 
         // get authorities
         Collection<Role> roles = directoryManager.getUserRoles(username);
-        List<GrantedAuthority> gaList = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> gaList = new ArrayList<>();
         if (roles != null && !roles.isEmpty()) {
             for (Role role : roles) {
                 GrantedAuthority ga = new SimpleGrantedAuthority(role.getId());
@@ -137,6 +118,7 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         return result;
     }
 
+    @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
@@ -150,5 +132,17 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         SecretKeySpec secret_key = new SecretKeySpec(key, "HmacSHA256");
         sha256_HMAC.init(secret_key);
         return Hex.encodeHexString(sha256_HMAC.doFinal(data.getBytes()));
+    }
+
+    public void setDirectoryManager(DirectoryManager directoryManager) {
+        this.directoryManager = directoryManager;
+    }
+
+    public void setPluginManager(PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
+    public void setUserTokenDao(UserTokenDao userTokenDao) {
+        this.userTokenDao = userTokenDao;
     }
 }

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Controller
-public class LoginApiController {
+public class AuthenticationJsonController {
     private final String loginHeader = "Authorization";
     private final String refreshHeader = "REF_TOKEN";
     public final static String NEW_TOKEN = "NEW_TOKEN";
@@ -40,9 +40,9 @@ public class LoginApiController {
     @Autowired
     AuthTokenService authTokenService;
 
-    @RequestMapping(value = "/oauth/login", method = RequestMethod.POST)
-    public void postBasicLogin(final HttpServletRequest request,
-                               final HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/json/authentication/login", method = RequestMethod.POST)
+    public void postBasicAuthentication(final HttpServletRequest request,
+                                        final HttpServletResponse response) throws IOException {
         final JSONObject jsonResponse = new JSONObject();
         String header = request.getHeader(loginHeader);
 
@@ -99,7 +99,7 @@ public class LoginApiController {
                 }, Map::putAll);
     }
 
-    @RequestMapping(value = "oauth/refresh", method = RequestMethod.POST)
+    @RequestMapping(value = "json/authentication/refresh", method = RequestMethod.POST)
     public void refreshToken(final HttpServletRequest request,
                              final HttpServletResponse response) throws IOException {
         final JSONObject jsonResponse = new JSONObject();

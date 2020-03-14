@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-@Service("authTokenService")
 public class AuthTokenService implements Serializable {
     transient
     private static final long serialVersionUID = -3301605591108950415L;

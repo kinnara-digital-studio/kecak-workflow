@@ -1,6 +1,7 @@
 package org.kecak.webapi.json.controller;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.eclipse.jgit.annotations.NonNull;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
@@ -44,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -300,6 +302,10 @@ public class DataJsonController {
             final JSONObject jsonData = new JSONObject(formRow);
             loadDataForElementWithBinder(form, formData, jsonData);
 
+            final JSONObject completeJsonData = getCompleteFormData(form, formData);
+            iterateChildren(form, formData, completeJsonData);
+            LogUtil.info(getClass().getName(), "completeJsonData ["+completeJsonData.toString()+"]");
+
             String currentDigest = getDigest(jsonData);
 
             JSONObject jsonResponse = new JSONObject();
@@ -316,6 +322,83 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+    }
+
+    private JSONObject getCompleteFormData(@Nonnull Form form, @Nonnull FormData formData) {
+        final JSONObject result = new JSONObject();
+
+        FormUtil.executeLoadBinders(form, formData);
+
+        return result;
+    }
+
+    private void iterateChildren(@Nonnull final Element parent, @NonNull final FormData formData, @Nonnull final JSONObject result) {
+        Optional.of(parent)
+                .map(Element::getChildren)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .forEach(e -> {
+                    FormLoadBinder loadBinder = FormUtil.findLoadBinder(e);
+                    if(loadBinder != null) {
+                        String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
+
+                        try {
+                            if (loadBinder instanceof FormLoadElementBinder) {
+                                JSONObject jsonForElement = getLoadBinderDataAsJson(formData, e);
+                                iterateChildren(e, formData, jsonForElement);
+                                result.put(elementId, jsonForElement);
+                            } else if (loadBinder instanceof FormLoadMultiRowElementBinder) {
+                                result.put(elementId, getMultiRowLoadBinderDataAsJson(formData, e));
+                            }
+                        }catch (JSONException ex) {
+                            LogUtil.error(getClass().getName(), ex, ex.getMessage());
+                        }
+                    }
+                });
+    }
+
+    private JSONObject getLoadBinderDataAsJson(final FormData formData, final Element element) {
+        return Optional.of(formData)
+                .map(fd -> fd.getLoadBinderData(element))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .findFirst()
+                .map(JSONObject::new)
+                .orElseGet(JSONObject::new);
+    }
+
+    private JSONArray getMultiRowLoadBinderDataAsJson(final FormData formData, final Element element) {
+        return Optional.of(formData)
+                .map(fd -> fd.getLoadBinderData(element))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .map(r -> {
+                    final JSONObject jsonForElement = new JSONObject(r);
+                    iterateChildren(element, formData, jsonForElement);
+                    return jsonForElement;
+                })
+                .collect(JSONArray::new, JSONArray::put, (arr1, arr2) -> {
+                    for (int i = 0, size = arr2.length(); i < size; i++) {
+                        try {
+                            arr1.put(arr2.get(i));
+                        } catch (JSONException ignored) {}
+                    }
+                });
+    }
+
+    private void getChildren(@Nonnull Element parent, final BiConsumer<Element, Element> onElementFound) {
+        Optional.of(parent)
+                .map(Element::getChildren)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .forEach(e -> {
+                    FormLoadBinder loadBinder = FormUtil.findLoadBinder(e);
+                    if(loadBinder != null) {
+                        onElementFound.accept(parent, e);
+                    }
+
+                    getChildren(e, onElementFound);
+                });
     }
 
     /**
@@ -1595,7 +1678,7 @@ public class DataJsonController {
                             String primaryKeyColumn = getPrimaryKeyColumn(dataList);
 
                             // put process detail
-                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + primaryKeyColumn));
+                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + FormUtil.PROPERTY_ID));
                             if (workflowAssignment != null) {
                                 row.put("activityId", workflowAssignment.getActivityId());
                                 row.put("activityDefId", workflowAssignment.getActivityDefId());
@@ -1849,7 +1932,7 @@ public class DataJsonController {
         }
 
         String primaryKeyColumn = getPrimaryKeyColumn(dataList);
-        formatterRow.put("_" + primaryKeyColumn, row.get(primaryKeyColumn));
+        formatterRow.put("_" + FormUtil.PROPERTY_ID, row.get(primaryKeyColumn));
 
         return formatterRow;
     }
@@ -1966,22 +2049,31 @@ public class DataJsonController {
      * @param parentJson
      */
     private void loadDataForElementWithBinder(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject parentJson) {
+        FormUtil.executeLoadBinders(element, formData);
+        loadDataForElementWithBinderRecursive(element, formData, parentJson);
+    }
+
+    private void loadDataForElementWithBinderRecursive(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject parentJson) {
         for(Element childElement : element.getChildren()) {
             if(childElement == null) {
                 continue;
             }
 
-            boolean hasChildren = !Optional.of(childElement).map(Element::getChildren).map(Collection::isEmpty).orElse(true);
+            boolean hasChildren = Optional.of(childElement)
+                    .map(Element::getChildren)
+                    .map(Collection::isEmpty)
+                    .map(isEmpty -> !isEmpty)
+                    .orElse(false);
             boolean hasLoadBinder = childElement.getLoadBinder() != null;
 
             if(childElement instanceof FormContainer && hasChildren) {
                 // do not need to load Section and Column
-                loadDataForElementWithBinder(childElement, formData, parentJson);
+                loadDataForElementWithBinderRecursive(childElement, formData, parentJson);
 
             } else if(hasChildren) {
                 // iterate children
                 JSONObject jsonChildren = new JSONObject();
-                loadDataForElementWithBinder(childElement, formData, jsonChildren);
+                loadDataForElementWithBinderRecursive(childElement, formData, jsonChildren);
                 try {
                     parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonChildren);
                 } catch (JSONException ignored) { }
