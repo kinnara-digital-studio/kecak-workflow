@@ -75,8 +75,6 @@ public class DataJsonController {
     private FormService formService;
     @Autowired
     private WorkflowProcessLinkDao workflowProcessLinkDao;
-    @Autowired
-    AuthTokenService authTokenService;
 
     /**
      * Submit form into table, can be used to save master data

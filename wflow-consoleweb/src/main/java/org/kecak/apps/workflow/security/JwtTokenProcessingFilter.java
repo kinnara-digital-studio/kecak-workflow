@@ -25,9 +25,9 @@ import java.io.IOException;
 
 public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFilter {
     private WorkflowUserManager workflowUserManager;
-    private DirectoryManager directoryManager;
     private AuditTrailManager auditTrailManager;
     private LocalLocaleResolver localeResolver;
+    private DirectoryManager directoryManager;
 
     protected JwtTokenProcessingFilter() {
         super("/**");
@@ -116,15 +116,15 @@ public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFi
         this.workflowUserManager = workflowUserManager;
     }
 
-    public void setDirectoryManager(DirectoryManager directoryManager) {
-        this.directoryManager = directoryManager;
-    }
-
     public void setAuditTrailManager(AuditTrailManager auditTrailManager) {
         this.auditTrailManager = auditTrailManager;
     }
 
     public void setLocaleResolver(LocalLocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
+    }
+
+    public void setDirectoryManager(DirectoryManager directoryManager) {
+        this.directoryManager = directoryManager;
     }
 }
