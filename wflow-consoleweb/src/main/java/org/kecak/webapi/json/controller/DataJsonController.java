@@ -2056,37 +2056,47 @@ public class DataJsonController {
         if(element instanceof Form) {
             FormRowSet rowSet = Optional.ofNullable(formData.getLoadBinderData(element))
                     .orElseGet(FormRowSet::new);
-
-            JSONObject jsonObject = convertFormRowSetToJsonObject(rowSet);
-            parentJson.keys().forEachRemaining(k -> {
-                try {
-                    parentJson.put(k.toString(), jsonObject.optString(k.toString()));
-                } catch (JSONException e) { }
-            });
+            Optional.ofNullable(rowSet)
+                    .map(Collection::stream)
+                    .orElse(Stream.empty())
+                    .findFirst()
+                    .map(Hashtable::entrySet)
+                    .map(Collection::stream)
+                    .orElse(Stream.empty())
+                    .forEach(e -> {
+                        try {
+                            parentJson.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+                        } catch (JSONException ignored) {
+                        }
+                    });
 
             for(Element childElement : element.getChildren()) {
                 loadDataForElementWithBinderRecursive(childElement, formData, parentJson);
             }
         } else if(element instanceof AbstractSubForm) {
-            Optional.ofNullable(element.getChildren())
-                    .map(Collection::stream)
-                    .orElseGet(Stream::empty)
-                    .findFirst()
-                    .ifPresent(child -> {
-                        JSONObject jsonObject = new JSONObject();
-                        loadDataForElementWithBinderRecursive(child, formData, jsonObject);
-                        try {
-                            parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonObject);
-                        } catch (JSONException ignored) { }
-                    });
+            try {
+                JSONObject jsonObject = new JSONObject();
+                for(Element child : element.getChildren()) {
+                    loadDataForElementWithBinderRecursive(child, formData, jsonObject);
+                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonObject);
+                }
+            } catch (JSONException ignored) {
+            }
         } else if(element instanceof Section && hasLoadBinder) {
             FormRowSet rowSet = formData.getLoadBinderData(element);
-            JSONObject jsonObject = convertFormRowSetToJsonObject(rowSet);
-            parentJson.keys().forEachRemaining(k -> {
-                try {
-                    parentJson.put(k.toString(), jsonObject.optString(k.toString()));
-                } catch (JSONException e) { }
-            });
+            Optional.ofNullable(rowSet)
+                    .map(Collection::stream)
+                    .orElse(Stream.empty())
+                    .findFirst()
+                    .map(Hashtable::entrySet)
+                    .map(Collection::stream)
+                    .orElse(Stream.empty())
+                    .forEach(e -> {
+                        try {
+                            parentJson.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+                        } catch (JSONException ignored) {
+                        }
+                    });
 
             for(Element childElement : element.getChildren()) {
                 loadDataForElementWithBinderRecursive(childElement, formData, parentJson);
