@@ -47,6 +47,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * @author aristo
+ */
 @Controller
 public class DataJsonController {
     private final static String FIELD_MESSAGE = "message";
@@ -2141,7 +2144,7 @@ public class DataJsonController {
         return Optional.ofNullable(rowSet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
-                .map(JSONObject::new)
+                .map(this::convertFromRowToJsonObject)
                 .collect(JSONArray::new, JSONArray::put, (result, source) -> IntStream.range(0, source.length())
                         .boxed()
                         .map(source::optJSONObject)
@@ -2160,7 +2163,6 @@ public class DataJsonController {
                 .map(JSONObject::new)
                 .orElseGet(JSONObject::new);
     }
-
 
     /**
      *
