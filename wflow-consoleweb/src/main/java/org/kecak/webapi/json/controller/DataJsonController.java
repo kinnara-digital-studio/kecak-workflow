@@ -669,7 +669,7 @@ public class DataJsonController {
             }
 
             // paging
-            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? dataList.getPageSize() : DataList.MAXIMUM_PAGE_SIZE;
             int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
 
             getCollectFilters(request.getParameterMap(), dataList);
@@ -1648,7 +1648,7 @@ public class DataJsonController {
             }
 
             // paging
-            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? dataList.getPageSize() : DataList.MAXIMUM_PAGE_SIZE;
             int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
 
             getCollectFilters(request.getParameterMap(), dataList);
