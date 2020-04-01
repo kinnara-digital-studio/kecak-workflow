@@ -14,14 +14,14 @@ import org.joget.commons.util.LogUtil;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class GridFormBinder
+public class GridElementBinder
         extends FormBinder
         implements FormLoadBinder,
         FormStoreBinder,
         FormLoadMultiRowElementBinder,
         FormStoreMultiRowElementBinder {
 
-    private final static String LABEL = "Grid Form Binder";
+    private final static String LABEL = "Grid Element Binder";
 
     @Override
     public String getName() {

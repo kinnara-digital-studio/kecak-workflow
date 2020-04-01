@@ -294,8 +294,7 @@ public class DataJsonController {
             }
 
             // construct response
-            final JSONObject jsonData = new JSONObject();
-            loadDataForElementWithBinder(form, formData);
+            JSONObject jsonData = loadDataForElementWithBinder(form, formData);
 
             String currentDigest = getDigest(jsonData);
 
@@ -852,17 +851,14 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = workflowManager.getAssignment(assignmentId);
-            if (assignment == null) {
-                // check if assignment available
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignmentId + "] not available");
-            }
+            WorkflowAssignment assignment = Optional.of(assignmentId)
+                    .map(workflowManager::getAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignmentId + "] not available"));
 
-            AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + assignment.getProcessId() + "]");
-            }
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(WorkflowAssignment::getProcessId)
+                    .map(appService::getAppDefinitionForWorkflowProcess)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + assignment.getProcessId() + "]"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
