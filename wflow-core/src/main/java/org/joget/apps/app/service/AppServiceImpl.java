@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -499,6 +500,74 @@ public class AppServiceImpl implements AppService {
 
                         // set next activity if configured
                         boolean autoContinue = (startFormDef != null) && startFormDef.isAutoContinue();
+                        if (!autoContinue) {
+                            // clear next activities
+                            result.setActivities(new ArrayList<WorkflowActivity>());
+                        }
+                    } else {
+                        workflowManager.removeProcessInstance(processId);
+                        result = null;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     *
+     * @param packageActivityForm
+     * @param formData
+     * @param workflowVariableMap
+     * @param originProcessId
+     * @return
+     */
+    public WorkflowProcessResult submitFormToStartProcess(@Nonnull PackageActivityForm packageActivityForm, FormData formData, Map<String, String> workflowVariableMap, String originProcessId) {
+        WorkflowProcessResult result = null;
+        if (formData == null) {
+            formData = new FormData();
+        }
+
+        PackageDefinition packageDef = packageActivityForm.getPackageDefinition();
+        String processDefIdWithVersion = AppUtil.getProcessDefIdWithVersion(packageDef.getId(), packageDef.getVersion().toString(), packageActivityForm.getProcessDefId());
+
+        // get form
+        if (packageActivityForm.getForm() != null) {
+            Form startForm = packageActivityForm.getForm();
+
+            FormData formResult = formService.executeFormActions(startForm, formData);
+            if (formResult.getFormResult(AssignmentCompleteButton.DEFAULT_ID) != null) {
+                // validate form
+                formData = FormUtil.executeElementFormatDataForValidation(startForm, formData);
+                formResult = formService.validateFormData(startForm, formData);
+
+                Map<String, String> errors = formResult.getFormErrors();
+                if (!formResult.getStay() && (errors == null || errors.isEmpty())) {
+                    if (originProcessId == null && formResult.getRequestParameter(FormUtil.FORM_META_ORIGINAL_ID) != null && !formResult.getRequestParameter(FormUtil.FORM_META_ORIGINAL_ID).isEmpty()) {
+                        originProcessId = formResult.getRequestParameter(FormUtil.FORM_META_ORIGINAL_ID);
+                    } else if (startForm.getPrimaryKeyValue(formResult) != null) {
+                        originProcessId = startForm.getPrimaryKeyValue(formResult);
+                    }
+
+                    // start process
+                    result = workflowManager.processStart(processDefIdWithVersion, null, workflowVariableMap, null, originProcessId, true);
+                    String processId = result.getProcess().getInstanceId();
+                    String originId = (originProcessId != null && originProcessId.trim().length() > 0) ? originProcessId : processId;
+                    originId = getOriginProcessId(originId);
+
+                    // set primary key
+                    formResult.setPrimaryKeyValue(originId);
+                    formResult.setProcessId(processId);
+
+                    // submit form
+                    formResult = submitForm(startForm, formResult, true);
+                    errors = formResult.getFormErrors();
+                    if (!formResult.getStay() && (errors == null || errors.isEmpty())) {
+                        result = workflowManager.processStartWithInstanceId(processDefIdWithVersion, processId, workflowVariableMap);
+
+                        // set next activity if configured
+                        boolean autoContinue = (packageActivityForm != null) && packageActivityForm.isAutoContinue();
                         if (!autoContinue) {
                             // clear next activities
                             result.setActivities(new ArrayList<WorkflowActivity>());
