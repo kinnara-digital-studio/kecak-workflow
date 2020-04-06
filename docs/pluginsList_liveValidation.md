@@ -1,6 +1,6 @@
 # Live Validation
 
-
+live validation are plugins that are used to validate data directly without having to press the submit button
 
 ## How to use
 
