@@ -58,9 +58,9 @@ Description :
 
 |FIELD|DESCRIPTION|
 |--|--|
+|Validate against element(s) |The data type of the text field that must be entered|
 |Mandatory|Settings for the text field to be created must be filled|
-|Validate|The data type of the text field that must be entered|
-|Custom Regular Expression|Make regular expressions as desired for the text field to be created|
+|Custom Message|Make regular expressions as desired for the text field to be created|
 
 8. Click ok
 
@@ -74,11 +74,11 @@ Description :
 
 10. Result
 
-- When input correct data
+- When input different data
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
 
 
-- When input incorrect data
+- When input same data
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/.png" alt="" />
