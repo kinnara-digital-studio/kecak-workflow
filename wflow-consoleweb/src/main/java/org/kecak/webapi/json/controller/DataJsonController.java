@@ -11,6 +11,7 @@ import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
+import org.joget.apps.form.dao.FormDataDao;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
@@ -75,6 +76,8 @@ public class DataJsonController {
     private FormService formService;
     @Autowired
     private WorkflowProcessLinkDao workflowProcessLinkDao;
+    @Autowired
+    private FormDataDao formDataDao;
 
     /**
      * Submit form into table, can be used to save master data
@@ -304,6 +307,76 @@ public class DataJsonController {
                 jsonResponse.put(FIELD_DATA, jsonData);
             }
 
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(jsonResponse.toString());
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    /**
+     * Delete Form Data
+     *
+     * @param request    HTTP Request
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param formDefId  Form Definition ID
+     * @param primaryKey Primary Key
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.DELETE)
+    public void deleteFormData(final HttpServletRequest request, final HttpServletResponse response,
+                               @RequestParam("appId") final String appId,
+                               @RequestParam("appVersion") final String appVersion,
+                               @RequestParam("formDefId") final String formDefId,
+                               @RequestParam("primaryKey") final String primaryKey)
+            throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
+            if (appDefinition == null) {
+                // check if app valid
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
+            }
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
+
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            // construct response
+            JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+            Optional.of(jsonData)
+                    .map(j -> j.optString("id"))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form ["+formDefId+"] not found"));
+
+            String currentDigest = getDigest(jsonData);
+
+            JSONObject jsonResponse = new JSONObject();
+
+            jsonResponse.put(FIELD_DATA, jsonData);
             jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
             jsonResponse.put(FIELD_DIGEST, currentDigest);
 
