@@ -4,9 +4,8 @@ CKeditor Richtext is a plugins for input text based on ckeditor version 4.
 
 you can check ckeditor 4 documentation with open this link :
 
-```
 https://ckeditor.com/docs/ckeditor4/latest/index.html
-```
+
 
 ## How to use
 
