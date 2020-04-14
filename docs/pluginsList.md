@@ -74,7 +74,7 @@
 - [Plugins Permission -User-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionUser)
 - [Plugins Permission -Composite-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionComposite)
 - [Plugins Permission -Noone (Always False)-](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_permissionNone)
-- [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
+- [Plugins Richtext editor](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_richTextValidator)
 - [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 - [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
 - [](https://kinnara-digital-studio.github.io/kecak-workflow/#/pluginsList_)
