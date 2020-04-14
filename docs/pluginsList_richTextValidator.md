@@ -1,31 +1,31 @@
 # CKeditor Richtext
 
-Richtext Validator is a plugins for 
+CKeditor Richtext is a plugins for 
 
 ## How to use
 
 1. Open apps
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_openApps.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_openApps.png" alt="" />
 
 
 2. Choose form
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_chooseForm.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_chooseForm.png" alt="" />
 
 
 3. Drag and drop plugins
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_dragDrop.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_dragDrop.png" alt="" />
 
 4. Edit 
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_edit.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_edit.png" alt="" />
 
 
-5. Edit live validation
+5. Fill Field
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_editTextArea.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_fillField.png" alt="" />
 
 Description :
 
@@ -34,40 +34,17 @@ Description :
 |ID|ID for the text field to be created|
 |Label|The name of the text field to be created|
 
-6. Edit advance options
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_editAdvanced.png" alt="" />
+6. Click ok
 
-Description :
-
-|FIELD|DESCRIPTION|
-|--|--|
-|Value|The value of the form to be entered. can display the default value or leave it blank|
-|Validator|Further settings for the text field to be made, can be seen in step 7|
-
-7. Edit validator
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_editConfigureValidation.png" alt="" />
-
-Description :
-
-|FIELD|DESCRIPTION|
-|--|--|
-|Mandatory|Settings for the text field to be created must be filled|
-|Type|The data type of the text field that must be entered|
-|Custom Regular Expression|Make regular expressions as desired for the text field to be created|
-|Custom Error Message to show when Validation Fail|Error message when a user enters incorrect data|
-
-8. Click ok
-
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_ok.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_ok.png" alt="" />
 
 
-9. Click save
+7. Click save
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/_save.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_save.png" alt="" />
 
 
-10. Result
+8. Result
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/liveValidation_result.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/richtext_result.png" alt="" />
