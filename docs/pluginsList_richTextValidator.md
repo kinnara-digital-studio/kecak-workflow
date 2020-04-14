@@ -1,6 +1,6 @@
-# Richtext Validation
+# CKeditor Richtext
 
-Richtext Validator is a plugins ffor 
+Richtext Validator is a plugins for 
 
 ## How to use
 
