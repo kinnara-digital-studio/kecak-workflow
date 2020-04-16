@@ -44,6 +44,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -101,19 +103,12 @@ public class DataJsonController {
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
-            // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            // get current App Definition
+            @Nonnull
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             @Nonnull
-            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not available"));
+            Form form = viewDataForm(appDefinition, formDefId);
 
             // read request body and convert request body to json
             final FormData formData = new FormData();
@@ -130,8 +125,9 @@ public class DataJsonController {
 
             // construct response
             final JSONObject jsonResponse = new JSONObject();
-            if (result.getFormErrors() != null && !result.getFormErrors().isEmpty()) {
-                final JSONObject jsonError = createErrorObject(result.getFormErrors());
+            Map<String, String> formErrors = getFormErrors(result);
+            if (!formErrors.isEmpty()) {
+                final JSONObject jsonError = createErrorObject(formErrors);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
@@ -149,6 +145,45 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+    }
+
+    @Nonnull
+    private AppDefinition loadAppDefinition(String appId, long version) throws ApiException {
+        return Optional.ofNullable(appDefinitionDao.loadVersion(appId, version))
+
+                // set current app definition
+                .map(peekMap(AppUtil::setCurrentAppDefinition))
+
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]"));
+    }
+
+    /**
+     * Helper peek for {@link Optional}
+     *
+     * @param consumer
+     * @param <T>
+     * @return
+     */
+    @Nonnull
+    private <T> Function<T, T> peekMap(@Nonnull final Consumer<T> consumer) {
+        return t -> {
+            consumer.accept(t);
+            return t;
+        };
+    }
+
+    /**
+     * Null-safe way to retrieve {@link AppService#viewDataForm(String, String, String, String, String, String, FormData, String, String)}
+     *
+     * @param appDefinition
+     * @param formDefId
+     * @return
+     * @throws ApiException
+     */
+    @Nonnull
+    private Form viewDataForm(AppDefinition appDefinition, String formDefId) throws ApiException {
+        return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not available"));
     }
 
     /**
@@ -194,18 +229,9 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            @Nonnull
-            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not found"));
+            Form form = viewDataForm(appDefinition, formDefId);
 
             // read request body and convert request body to json
             final FormData formData = new FormData();
@@ -224,8 +250,9 @@ public class DataJsonController {
 
             // construct response
             final JSONObject jsonResponse = new JSONObject();
-            if (result.getFormErrors() != null && !result.getFormErrors().isEmpty()) {
-                final JSONObject jsonError = createErrorObject(result.getFormErrors());
+            Map<String, String> formErrors = getFormErrors(result);
+            if (!formErrors.isEmpty()) {
+                final JSONObject jsonError = createErrorObject(formErrors);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
             } else {
@@ -275,18 +302,9 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            @Nonnull
-            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
+            Form form = viewDataForm(appDefinition, formDefId);
 
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
@@ -345,18 +363,10 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             @Nonnull
-            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
+            Form form = viewDataForm(appDefinition, formDefId);
 
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
@@ -421,18 +431,9 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            @Nonnull
-            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
+            Form form = viewDataForm(appDefinition, formDefId);
 
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
@@ -496,18 +497,9 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            @Nonnull
-            Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid form [" + formDefId + "]"));
+            Form form = viewDataForm(appDefinition, formDefId);
 
             final FormData formData = new FormData();
 
@@ -638,14 +630,7 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -711,14 +696,7 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -809,14 +787,7 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             // get processDefId
             String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
@@ -853,10 +824,11 @@ public class DataJsonController {
             // trigger run process
             WorkflowProcessResult processResult = appService.submitFormToStartProcess(packageActivityForm, formData, workflowVariables, null);
 
-            if (formData.getFormErrors() != null && !formData.getFormErrors().isEmpty()) {
+            Map<String, String> formErrors = getFormErrors(formData);
+            if (!formErrors.isEmpty()) {
                 JSONObject jsonError = new JSONObject();
                 // show error message
-                formData.getFormErrors().forEach((key, value) -> {
+                formErrors.forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
                     } catch (JSONException ignored) {
@@ -968,10 +940,12 @@ public class DataJsonController {
 
             // return processResult
             JSONObject jsonResponse = new JSONObject();
-            if (resultFormData.getFormErrors() != null && !resultFormData.getFormErrors().isEmpty()) {
+            Map<String, String> formErrors = getFormErrors(formData);;
+            if (!formErrors.isEmpty()) {
                 JSONObject jsonError = new JSONObject();
+
                 // show error message
-                resultFormData.getFormErrors().forEach((key, value) -> {
+                formErrors.forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
                     } catch (JSONException ignored) {
@@ -1030,11 +1004,9 @@ public class DataJsonController {
      * @param processId    Assingment Process ID
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.POST)
-    public void postAssignmentCompleteByProcess(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            @RequestParam("processId") String processId,
-            @RequestParam(value = "activityDefId", required = false) String activityDefId)
+    public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
+                                                @RequestParam("processId") String processId,
+                                                @RequestParam(value = "activityDefId", required = false) String activityDefId)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1092,10 +1064,11 @@ public class DataJsonController {
 
             // return processResult
             JSONObject jsonResponse = new JSONObject();
-            if (resultFormData.getFormErrors() != null && !resultFormData.getFormErrors().isEmpty()) {
+            Map<String, String> formErrors = getFormErrors(resultFormData);
+            if (!formErrors.isEmpty()) {
                 JSONObject jsonError = new JSONObject();
                 // show error message
-                resultFormData.getFormErrors().forEach((key, value) -> {
+                formErrors.forEach((key, value) -> {
                     try {
                         jsonError.put(key, value);
                     } catch (JSONException ignored) {
@@ -1376,6 +1349,7 @@ public class DataJsonController {
             FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(appId, processDefId, null, sort, desc, rowStart, pageSize).stream()
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
+                    .filter(Objects::nonNull)
                     .map(assignment -> {
                         final AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
                         if (appDefinition == null) {
@@ -1796,14 +1770,7 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -1930,14 +1897,7 @@ public class DataJsonController {
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, version);
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]");
-            }
-
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2411,7 +2371,20 @@ public class DataJsonController {
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
                 .map(workflowManager::getAssignmentByProcess)
+                .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Null-safe way to retrieve {@link FormData#getFormErrors()}
+     * @param formData
+     * @return
+     */
+    @Nonnull
+    private Map<String, String> getFormErrors(FormData formData) {
+        return Optional.ofNullable(formData)
+                .map(FormData::getFormErrors)
+                .orElseGet(HashMap::new);
     }
 }
