@@ -12,6 +12,7 @@
 		<property name="directoryManager" ref="directoryManager"/>
 		<property name="appDefinitionDao" ref="appDefinitionDao"/>
 		<property name="pluginManager" ref="pluginManager"/>
+		<property name="workflowHelper" ref="workflowHelper" />
 	</bean>
 	
 	<bean id="camelRouteManager" class="org.kecak.apps.route.CamelRouteManager"/>

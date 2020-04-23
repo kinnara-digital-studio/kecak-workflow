@@ -100,6 +100,12 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            // read request body and convert request body to json
+            final JSONObject jsonBody = getRequestPayload(request);
+
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
+
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
@@ -108,11 +114,8 @@ public class DataJsonController {
             AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             @Nonnull
-            Form form = viewDataForm(appDefinition, formDefId);
+            Form form = viewDataForm(appDefinition, formDefId, formData);
 
-            // read request body and convert request body to json
-            final FormData formData = new FormData();
-            final JSONObject jsonBody = getRequestPayload(request);
             extractBodyToFormData(jsonBody, form, formData);
 
             // check form permission
@@ -134,7 +137,9 @@ public class DataJsonController {
                 // set current data as response
                 response.setStatus(HttpServletResponse.SC_OK);
 
+                FormUtil.executeLoadBinders(form, result);
                 JSONObject jsonData = loadDataForElementWithBinder(form, result);
+
                 jsonResponse.put(FIELD_DATA, jsonData);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
                 jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
@@ -181,8 +186,8 @@ public class DataJsonController {
      * @throws ApiException
      */
     @Nonnull
-    private Form viewDataForm(AppDefinition appDefinition, String formDefId) throws ApiException {
-        return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, null, null, null))
+    private Form viewDataForm(AppDefinition appDefinition, String formDefId, FormData formData) throws ApiException {
+        return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not available"));
     }
 
@@ -225,17 +230,18 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            Form form = viewDataForm(appDefinition, formDefId);
+            Form form = viewDataForm(appDefinition, formDefId, formData);
 
             // read request body and convert request body to json
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
 
             JSONObject jsonBody = getRequestPayload(request);
             extractBodyToFormData(jsonBody, form, formData);
@@ -258,6 +264,7 @@ public class DataJsonController {
             } else {
                 // set current data as response
                 response.setStatus(HttpServletResponse.SC_OK);
+
 
                 JSONObject jsonData = loadDataForElementWithBinder(form, result);
                 jsonResponse.put(FIELD_DATA, jsonData);
@@ -298,16 +305,16 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            Form form = viewDataForm(appDefinition, formDefId);
-
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
+            Form form = viewDataForm(appDefinition, formDefId, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -359,6 +366,9 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
@@ -366,10 +376,7 @@ public class DataJsonController {
             AppDefinition appDefinition = loadAppDefinition(appId, version);
 
             @Nonnull
-            Form form = viewDataForm(appDefinition, formDefId);
-
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
+            Form form = viewDataForm(appDefinition, formDefId, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -427,16 +434,16 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            final FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            Form form = viewDataForm(appDefinition, formDefId);
-
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
+            Form form = viewDataForm(appDefinition, formDefId, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -493,15 +500,15 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            final FormData formData = new FormData();
+
             // get version, version 0 indicates published version
             long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
 
             // get current App
             AppDefinition appDefinition = loadAppDefinition(appId, version);
 
-            Form form = viewDataForm(appDefinition, formDefId);
-
-            final FormData formData = new FormData();
+            Form form = viewDataForm(appDefinition, formDefId, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -840,7 +847,9 @@ public class DataJsonController {
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
 
+                FormUtil.executeLoadBinders(form, formData);
                 JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+
                 jsonResponse.put(FIELD_DATA, jsonData);
 
                 // construct response
@@ -977,6 +986,7 @@ public class DataJsonController {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 // construct response
+                FormUtil.executeLoadBinders(form, resultFormData);
                 JSONObject jsonData = loadDataForElementWithBinder(form, resultFormData);
 
                 String digest = getDigest(jsonData);
@@ -1100,6 +1110,7 @@ public class DataJsonController {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 // construct response
+                FormUtil.executeLoadBinders(form, resultFormData);
                 JSONObject jsonData = loadDataForElementWithBinder(form, resultFormData);
 
                 String digest = getDigest(jsonData);
@@ -2192,13 +2203,43 @@ public class DataJsonController {
      */
     @Nonnull
     private JSONObject loadDataForElementWithBinder(@Nonnull final Element element, @Nonnull final FormData formData) {
-        FormUtil.executeLoadBinders(element, formData);
         JSONObject parentJson = new JSONObject();
         loadDataForElementWithBinderRecursive(element, formData, parentJson);
         return parentJson;
     }
 
     private void loadDataForElementWithBinderRecursive(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject parentJson) {
+//        LogUtil.info(getClass().getName(), "loadDataForElementWithBinderRecursive element ["+element.getPropertyString("id")+"]");
+//
+//        FormRowSet formRowSet = formData.getLoadBinderData(element);
+//        if(formRowSet != null) {
+//            if(element instanceof Form){
+//                Optional.of(formRowSet)
+//                        .map(Collection::stream)
+//                        .orElse(Stream.empty())
+//                        .findFirst()
+//                        .map(Hashtable::entrySet)
+//                        .map(Collection::stream)
+//                        .orElse(Stream.empty())
+//                        .forEach(e -> {
+//                            try {
+//                                parentJson.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+//                            } catch (JSONException ignored) {
+//                            }
+//                        });
+//            } else if(formRowSet.isMultiRow()) {
+//                JSONArray jsonArray = convertFormRowSetToJsonArray(formRowSet);
+//                try {
+//                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonArray);
+//                } catch (JSONException ignored) { }
+//            } else {
+//                JSONObject jsonObject = convertFormRowSetToJsonObject(formRowSet);
+//                try {
+//                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonObject);
+//                } catch (JSONException ignored) { }
+//            }
+//        }
+
         boolean hasLoadBinder = element.getLoadBinder() != null;
 
         if(element instanceof Form) {
@@ -2269,6 +2310,11 @@ public class DataJsonController {
                 } catch (JSONException ignored) { }
             }
         }
+
+
+//        for(Element child : element.getChildren()) {
+//            loadDataForElementWithBinderRecursive(child, formData, parentJson);
+//        }
     }
 
     /**
