@@ -1570,23 +1570,6 @@ public class DataJsonController {
         }
     }
 
-    /**
-     * Get Child Form from Subform
-     *
-     * @param element
-     * @return
-     */
-    @Nullable
-    private Form getChildForm(@Nullable AbstractSubForm element) {
-        return (Form) Optional.ofNullable(element)
-                .map(AbstractSubForm::getChildren)
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .findFirst()
-                .filter(e -> e instanceof Form)
-                .orElse(null);
-    }
-
     @Nonnull
     private FormRowSet convertJsonObjectToRowSet(JSONObject json) {
         FormRowSet result = new FormRowSet();
