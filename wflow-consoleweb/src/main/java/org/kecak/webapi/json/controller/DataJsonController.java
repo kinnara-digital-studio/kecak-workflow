@@ -1450,7 +1450,7 @@ public class DataJsonController {
 
         // use field "ID" as primary key if possible
         if (isEmpty(formData.getPrimaryKeyValue())) {
-            formData.setPrimaryKeyValue(jsonBody.getString(FormUtil.PROPERTY_ID));
+            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
         }
 
         return formData;
@@ -1571,7 +1571,7 @@ public class DataJsonController {
     }
 
     @Nonnull
-    private FormRowSet convertJsonObjectToRowSet(JSONObject json) {
+    private FormRowSet convertJsonObjectToRowSet(@Nullable JSONObject json) {
         FormRowSet result = new FormRowSet();
 
         if (json != null) {
@@ -1589,11 +1589,11 @@ public class DataJsonController {
         return result;
     }
 
-
     @Nonnull
-    private FormRowSet convertJsonArrayToRowSet(final JSONArray jsonArray) {
-        FormRowSet result = IntStream.range(0, jsonArray.length())
-                .boxed()
+    private FormRowSet convertJsonArrayToRowSet(@Nullable JSONArray jsonArray) {
+        FormRowSet result = Optional.ofNullable(jsonArray)
+                .map(a -> IntStream.range(0, a.length()).boxed())
+                .orElseGet(Stream::empty)
                 .map(jsonArray::optJSONObject)
                 .map(j -> {
                     FormRow row = new FormRow();
