@@ -44,10 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -740,6 +737,123 @@ public class DataJsonController {
 
                         // reformat content value
                         .map(row -> formatRow(dataList, row))
+
+                        // collect as JSON
+                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
+                            for (int i = 0, size = a2.length(); i < size; i++) {
+                                try { a1.put(a2.get(i)); } catch (JSONException ignored) { }
+                            }
+                        });
+
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+
+                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
+
+                if (!Objects.equals(digest, currentDigest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
+
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieve dataList data
+     *
+     * @param request    HTTP Request
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param dataListId DataList ID
+     * @param page       paging every 10 rows, page = 0 will show all data without paging
+     * @param start      from row index (index starts from 0)
+     * @param sort       order list by specified field name
+     * @param desc       optional true/false
+     * @param digest     hash calculation of data json
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/form/(*:formDefId)", method = RequestMethod.GET)
+    public void getListForm(final HttpServletRequest request, final HttpServletResponse response,
+                        @RequestParam("appId") final String appId,
+                        @RequestParam("appVersion") final String appVersion,
+                        @RequestParam("dataListId") final String dataListId,
+                        @RequestParam("formDefId") final String formDefId,
+                        @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                        @RequestParam(value = "start", required = false) final Integer start,
+                        @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
+                        @RequestParam(value = "sort", required = false) final String sort,
+                        @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
+                        @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get version, version 0 indicates published version
+            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
+
+            // get current App
+            AppDefinition appDefinition = loadAppDefinition(appId, version);
+
+            // get dataList definition
+            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
+            if (datalistDefinition == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+            }
+
+            // get dataList
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            if (dataList == null) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // configure sorting
+            if (sort != null) {
+                dataList.setDefaultSortColumn(sort);
+
+                // order ASC / DESC
+                dataList.setDefaultOrder(desc ? DataList.ORDER_DESCENDING_VALUE : DataList.ORDER_ASCENDING_VALUE);
+            }
+
+            // paging
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? dataList.getPageSize() : DataList.MAXIMUM_PAGE_SIZE;
+            int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
+
+            getCollectFilters(request.getParameterMap(), dataList);
+
+            try {
+                JSONArray jsonData = Optional.of(dataList)
+                        .map(d -> d.getRows(pageSize, rowStart))
+                        .map(collection -> (DataListCollection<Map<String, Object>>) collection)
+                        .orElse(new DataListCollection<>())
+                        .stream()
+                        .map(row -> row.get(dataList.getBinder().getPrimaryKeyColumnName()))
+                        .map(String::valueOf)
+
+                        //load form
+                        .map(throwable(s -> {
+                            final FormData formData = new FormData();
+                            formData.setPrimaryKeyValue(s);
+
+                            return Optional.of(viewDataForm(appDefinition, formDefId, formData))
+                                    .filter(f -> f.isAuthorize(formData))
+                                    .map(f -> loadFormData(f, formData))
+                                    .orElse(null);
+
+                        }))
+
+                        .filter(Objects::nonNull)
 
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
@@ -2107,8 +2221,6 @@ public class DataJsonController {
     private JSONObject loadFormData(@Nonnull final Form form, @Nullable FormData formData) {
         JSONObject parentJson = new JSONObject();
         if(formData != null) {
-//            loadDataForElementWithBinderRecursive(form, formData, parentJson);
-
             elementStream(form)
                     .filter(e -> e.getLoadBinder() != null)
                     .forEach(throwable(e -> {
@@ -2339,12 +2451,13 @@ public class DataJsonController {
         return throwableBiConsumer;
     }
 
-    private <T, E extends Exception> Predicate<T> throwable(ThrowablePredicate<T, E> throwableConsumer){
-        return throwableConsumer;
+    private <T, E extends Exception> Predicate<T> throwableTest(ThrowablePredicate<T, E> throwablePredicate){
+        return throwablePredicate;
     }
 
     /**
-     * Throwable version of {@link Function}
+     * Throwable version of {@link Function}.
+     * Returns null then exception is raised
      *
      * @param <T>
      * @param <R>
@@ -2357,9 +2470,13 @@ public class DataJsonController {
             try {
                 return applyThrowable(t);
             } catch (Exception e) {
-                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
-                return null;
+                return onException((E)e);
             }
+        }
+
+        default R onException(E e) {
+            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+            return null;
         }
 
         R applyThrowable(T t) throws E;
@@ -2378,8 +2495,12 @@ public class DataJsonController {
             try {
                 acceptThrowable(t);
             } catch (Exception e) {
-                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                onException((E) e);
             }
+        }
+
+        default void onException(E e) {
+            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
         }
 
         void acceptThrowable(T t) throws E;
@@ -2398,9 +2519,13 @@ public class DataJsonController {
             try {
                 return testThrowable(t);
             } catch (Exception e) {
-                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
-                return false;
+                return onException((E) e);
             }
+        }
+
+        default boolean onException(E e) {
+            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+            return false;
         }
 
         boolean testThrowable(T t) throws E;
@@ -2419,8 +2544,12 @@ public class DataJsonController {
             try {
                 acceptThrowable(t, u);
             } catch (Exception e) {
-                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                onException((E) e);
             }
+        }
+
+        default void onException(E e) {
+            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
         }
 
         void acceptThrowable(T t, U u) throws E;
