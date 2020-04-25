@@ -44,8 +44,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -138,7 +140,7 @@ public class DataJsonController {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 FormUtil.executeLoadBinders(form, result);
-                JSONObject jsonData = loadDataForElementWithBinder(form, result);
+                JSONObject jsonData = loadFormData(form, result);
 
                 jsonResponse.put(FIELD_DATA, jsonData);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
@@ -200,9 +202,7 @@ public class DataJsonController {
         final JSONObject result = new JSONObject();
 
         // show error message
-        formErrors.forEach((key, value) -> {
-            try { result.put(key, value); } catch (JSONException ignored) { }
-        });
+        formErrors.forEach(throwable(result::put));
 
         return result;
     }
@@ -266,7 +266,7 @@ public class DataJsonController {
                 response.setStatus(HttpServletResponse.SC_OK);
 
 
-                JSONObject jsonData = loadDataForElementWithBinder(form, result);
+                JSONObject jsonData = loadFormData(form, result);
                 jsonResponse.put(FIELD_DATA, jsonData);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
                 jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
@@ -322,7 +322,7 @@ public class DataJsonController {
             }
 
             // construct response
-            JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+            JSONObject jsonData = loadFormData(form, formData);
 
             String currentDigest = getDigest(jsonData);
 
@@ -384,7 +384,7 @@ public class DataJsonController {
             }
 
             // construct response
-            JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+            JSONObject jsonData = loadFormData(form, formData);
             Optional.of(jsonData)
                     .map(j -> j.optString("id"))
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form ["+formDefId+"] not found"));
@@ -575,7 +575,7 @@ public class DataJsonController {
                 .map(FormRow::entrySet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
-                .filter(e -> !String.valueOf(e.getKey()).isEmpty())
+                .filter(this::isNotEmpty)
                 .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
     }
 
@@ -833,22 +833,14 @@ public class DataJsonController {
 
             Map<String, String> formErrors = getFormErrors(formData);
             if (!formErrors.isEmpty()) {
-                JSONObject jsonError = new JSONObject();
-                // show error message
-                formErrors.forEach((key, value) -> {
-                    try {
-                        jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
-                });
-
+                JSONObject jsonError = new JSONObject(formErrors);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 FormUtil.executeLoadBinders(form, formData);
-                JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+                JSONObject jsonData = loadFormData(form, formData);
 
                 jsonResponse.put(FIELD_DATA, jsonData);
 
@@ -871,7 +863,7 @@ public class DataJsonController {
                                 jsonProcess.put("priority", nextAssignment.getPriority());
 
                                 Collection<WorkflowActivity> processActivities = processResult.getActivities();
-                                if (processActivities != null && !processActivities.isEmpty()) {
+                                if (isNotEmpty(processActivities)) {
                                     jsonProcess.put("activityIds", new JSONArray(processActivities.stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
                                 }
 
@@ -951,16 +943,7 @@ public class DataJsonController {
             JSONObject jsonResponse = new JSONObject();
             Map<String, String> formErrors = getFormErrors(formData);;
             if (!formErrors.isEmpty()) {
-                JSONObject jsonError = new JSONObject();
-
-                // show error message
-                formErrors.forEach((key, value) -> {
-                    try {
-                        jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
-                });
-
+                JSONObject jsonError = new JSONObject(formErrors);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
 
@@ -968,26 +951,22 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(nextAssignment -> {
-                            try {
-                                JSONObject jsonProcess = new JSONObject();
-                                jsonProcess.put("processId", nextAssignment.getProcessId());
-                                jsonProcess.put("activityId", nextAssignment.getActivityId());
-                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                                jsonProcess.put("priority", nextAssignment.getPriority());
+                        .ifPresent(throwable(nextAssignment -> {
+                            JSONObject jsonProcess = new JSONObject();
+                            jsonProcess.put("processId", nextAssignment.getProcessId());
+                            jsonProcess.put("activityId", nextAssignment.getActivityId());
+                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                            jsonProcess.put("priority", nextAssignment.getPriority());
 
-                                jsonResponse.put("process", jsonProcess);
-                            } catch (JSONException e) {
-                                LogUtil.error(getClass().getName(), e, e.getMessage());
-                            }
-                        });
+                            jsonResponse.put("process", jsonProcess);
+                        }));
 
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 // construct response
                 FormUtil.executeLoadBinders(form, resultFormData);
-                JSONObject jsonData = loadDataForElementWithBinder(form, resultFormData);
+                JSONObject jsonData = loadFormData(form, resultFormData);
 
                 String digest = getDigest(jsonData);
 
@@ -1076,15 +1055,7 @@ public class DataJsonController {
             JSONObject jsonResponse = new JSONObject();
             Map<String, String> formErrors = getFormErrors(resultFormData);
             if (!formErrors.isEmpty()) {
-                JSONObject jsonError = new JSONObject();
-                // show error message
-                formErrors.forEach((key, value) -> {
-                    try {
-                        jsonError.put(key, value);
-                    } catch (JSONException ignored) {
-                    }
-                });
-
+                JSONObject jsonError = new JSONObject(formErrors);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
 
@@ -1092,26 +1063,23 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(nextAssignment -> {
-                            try {
-                                JSONObject jsonProcess = new JSONObject();
-                                jsonProcess.put("processId", nextAssignment.getProcessId());
-                                jsonProcess.put("activityId", nextAssignment.getActivityId());
-                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                                jsonProcess.put("priority", nextAssignment.getPriority());
 
-                                jsonResponse.put("process", jsonProcess);
-                            } catch (JSONException e) {
-                                LogUtil.error(getClass().getName(), e, e.getMessage());
-                            }
-                        });
+                        .ifPresent(throwable(nextAssignment -> {
+                            JSONObject jsonProcess = new JSONObject();
+                            jsonProcess.put("processId", nextAssignment.getProcessId());
+                            jsonProcess.put("activityId", nextAssignment.getActivityId());
+                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                            jsonProcess.put("priority", nextAssignment.getPriority());
+
+                            jsonResponse.put("process", jsonProcess);
+                        }));
 
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 // construct response
                 FormUtil.executeLoadBinders(form, resultFormData);
-                JSONObject jsonData = loadDataForElementWithBinder(form, resultFormData);
+                JSONObject jsonData = loadFormData(form, resultFormData);
 
                 String digest = getDigest(jsonData);
 
@@ -1182,7 +1150,7 @@ public class DataJsonController {
             response.setStatus(HttpServletResponse.SC_OK);
 
             try {
-                JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+                JSONObject jsonData = loadFormData(form, formData);
 
                 jsonData.put("activityId", assignment.getActivityId());
                 jsonData.put("processId", assignment.getProcessId());
@@ -1258,7 +1226,7 @@ public class DataJsonController {
             response.setStatus(HttpServletResponse.SC_OK);
 
             try {
-                JSONObject jsonData = loadDataForElementWithBinder(form, formData);
+                JSONObject jsonData = loadFormData(form, formData);
 
                 jsonData.put("activityId", assignment.getActivityId());
                 jsonData.put("processId", assignment.getProcessId());
@@ -1444,14 +1412,20 @@ public class DataJsonController {
         return extractBodyToFormData(jsonPayload, form, formData, false);
     }
 
+
     /**
      * Convert request body to form data
      *
-     * @param jsonBody HTTP Request
-     * @return form data
+     * @param jsonBody
+     * @param form
+     * @param formData
+     * @param isAssignment
+     * @return
      * @throws IOException
      * @throws JSONException
+     * @throws ApiException
      */
+    @Nonnull
     private FormData extractBodyToFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
         if(form == null) {
             return formData;
@@ -1460,36 +1434,22 @@ public class DataJsonController {
         String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
         formData.setPrimaryKeyValue(primaryKey);
 
-        Iterator<String> i = jsonBody.keys();
-        while (i.hasNext()) {
-            String key = i.next();
+        elementStream(form)
+                .filter(e -> !(e instanceof Section || e instanceof Column))
+                .forEach(throwable(element -> {
+                    // handle store binder
+                    processStoreBinder(jsonBody, element, formData);
 
-            Element element = FormUtil.findElement(key, form, formData, false);
-            if (element == null) {
-                if (!key.equals(FormUtil.PROPERTY_ID)) {
-                    // element not found
-                    String formDefId = form.getPropertyString(FormUtil.PROPERTY_ID);
-                    LogUtil.warn(getClass().getName(), "Element [" + key + "] is not found in form [" + formDefId + "]");
-                }
-                continue;
-            }
-
-            // handle subform
-            processDeepElement(jsonBody, element, isAssignment, formData);
-
-            // handle store binder
-            processStoreBinder(jsonBody, element, formData);
-
-            // handle request parameters
-            processRequestParameters(jsonBody, element, formData);
-        }
+                    // handle request parameters
+                    processRequestParameters(jsonBody, element, formData);
+                }));
 
         formData.setDoValidation(true);
         formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
         formData.addRequestParameterValues("_action", new String[]{"submit"});
 
         // use field "ID" as primary key if possible
-        if (jsonBody.has(FormUtil.PROPERTY_ID)) {
+        if (isEmpty(formData.getPrimaryKeyValue())) {
             formData.setPrimaryKeyValue(jsonBody.getString(FormUtil.PROPERTY_ID));
         }
 
@@ -1504,7 +1464,7 @@ public class DataJsonController {
      * @param formData
      * @throws JSONException
      */
-    private void processRequestParameters(JSONObject jsonBody, Element element, @Nonnull final FormData formData) throws JSONException {
+    private void processRequestParameters(@Nonnull JSONObject jsonBody, @Nonnull Element element, @Nonnull final FormData formData) throws JSONException {
         String key = element.getPropertyString(FormUtil.PROPERTY_ID);
         if (element instanceof FileDownloadSecurity) {
             JSONArray jsonValues = jsonBody.optJSONArray(key);
@@ -1521,33 +1481,16 @@ public class DataJsonController {
             }
         } else {
             String value = jsonBody.optString(key, null);
+            if(isEmpty(value)) {
+                String defaultValue = element.getPropertyString(FormUtil.PROPERTY_VALUE);
+                if(isNotEmpty(defaultValue)) {
+                    WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+                    value = AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
+                }
+            }
+
             if (value != null) {
                 formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
-            }
-        }
-    }
-
-    /**
-     * Handle Subform
-     *
-     * @param jsonBody
-     * @param element
-     * @param isAssignment
-     * @param formData
-     * @throws IOException
-     * @throws ApiException
-     */
-    private void processDeepElement(JSONObject jsonBody, Element element, boolean isAssignment, @Nonnull final FormData formData) throws IOException, ApiException {
-        String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
-
-        if(element instanceof AbstractSubForm) {
-            Form childForm = getChildForm((AbstractSubForm) element);
-            if(childForm != null) {
-                try {
-                    extractBodyToFormData(jsonBody.getJSONObject(elementId), childForm, formData, isAssignment);
-                } catch (JSONException e) {
-                    LogUtil.error(getClass().getName(), e, e.getMessage());
-                }
             }
         }
     }
@@ -1560,7 +1503,7 @@ public class DataJsonController {
      * @param formData
      * @throws ApiException
      */
-    private void processStoreBinder(JSONObject jsonBody, Element element, @Nonnull final FormData formData) throws ApiException {
+    private void processStoreBinder(@Nonnull JSONObject jsonBody, @Nonnull Element element, @Nonnull final FormData formData) throws ApiException {
         Form form = FormUtil.findRootForm(element);
         String key = element.getPropertyString(FormUtil.PROPERTY_ID);
 
@@ -1601,6 +1544,7 @@ public class DataJsonController {
      * @param isAssignment
      * @return
      */
+    @Nullable
     private String determinePrimaryKey(@Nonnull JSONObject jsonBody, @Nonnull FormData formData, boolean isAssignment) {
         // handle start process or assingment complete process
         if(isAssignment) {
@@ -1613,10 +1557,10 @@ public class DataJsonController {
         }
 
         // if not assingment and primary is not assigned
-        else if(!Optional.of(formData).map(FormData::getPrimaryKeyValue).filter(s -> !s.isEmpty()).isPresent()) {
+        else if(!Optional.of(formData).map(FormData::getPrimaryKeyValue).filter(this::isNotEmpty).isPresent()) {
             return Optional.of(jsonBody)
                     .map(j -> j.optString(FormUtil.PROPERTY_ID))
-                    .filter(s -> !s.isEmpty())
+                    .filter(this::isNotEmpty)
                     .orElse(UuidGenerator.getInstance().getUuid());
         }
 
@@ -1628,6 +1572,7 @@ public class DataJsonController {
 
     /**
      * Get Child Form from Subform
+     *
      * @param element
      * @return
      */
@@ -1717,13 +1662,6 @@ public class DataJsonController {
             // determine file path
             byte[] data = Base64.getDecoder().decode(encodedFile);
             FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
-
-            //                        File uploadFile = FileUtil.getFile(filename, element, primaryKey);
-            //                        try(FileOutputStream fos = new FileOutputStream(uploadFile)) {
-            //                            fos.write(data);
-            //                        }
-            //
-            //                        FileUtil.storeFile(uploadFile, element, primaryKey);
         }
 
         String paramName = FormUtil.getElementParameterName(element);
@@ -1982,19 +1920,17 @@ public class DataJsonController {
         @Nonnull final PackageDefinition packageDef = appDef.getPackageDefinition();
 
         return processIds.stream()
-                .filter(Objects::nonNull)
+                .filter(this::isNotEmpty)
                 .map(s -> {
-                    if (s.isEmpty()) {
-                        return "";
-                    } else {
-                        WorkflowProcess p = appService.getWorkflowProcessForApp(appDef.getId(), appDef.getVersion().toString(), s);
-                        if (p == null) {
-                            LogUtil.warn(getClass().getName(), "Process [" + s + "] is not defined for this app");
-                            return "";
-                        }
-                        return p.getId();
+                    WorkflowProcess p = appService.getWorkflowProcessForApp(appDef.getId(), appDef.getVersion().toString(), s);
+                    if (p == null) {
+                        LogUtil.warn(getClass().getName(), "Process [" + s + "] is not defined for this app");
+                        return null;
                     }
+                    return p.getId();
                 })
+
+                .filter(Objects::nonNull)
 
                 // get assignments
                 .flatMap(pid -> activityDefIds.stream()
@@ -2092,23 +2028,6 @@ public class DataJsonController {
     }
 
     /**
-     * Standard column includes id, dateModified, dateCreated
-     *
-     * @param columnName
-     * @return
-     */
-    private boolean isStandardColumns(@Nonnull String columnName) {
-        String[] standardColumns = new String[]{
-                FormUtil.PROPERTY_ID,
-                FormUtil.PROPERTY_DATE_CREATED,
-                FormUtil.PROPERTY_DATE_MODIFIED
-        };
-
-        String matcher = Arrays.stream(standardColumns).collect(Collectors.joining("|", "\\b", "\\b"));
-        return columnName.matches(matcher);
-    }
-
-    /**
      * Validate and Determine Process ID
      *
      * @param appId      Application ID
@@ -2159,7 +2078,7 @@ public class DataJsonController {
 
             String workflowVariable = element.getPropertyString("workflowVariable");
 
-            if (Objects.isNull(workflowVariable) || workflowVariable.isEmpty())
+            if (isEmpty(workflowVariable))
                 return;
 
             m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
@@ -2183,7 +2102,7 @@ public class DataJsonController {
         String sql = originalPids
                 .stream()
                 .map(String::trim)
-                .filter(s -> !s.isEmpty())
+                .filter(this::isNotEmpty)
                 .map(s -> {
                     values.add(s);
                     return "?";
@@ -2196,125 +2115,40 @@ public class DataJsonController {
     }
 
     /**
-     * Load element which has load binder
+     * Load form
      *
-     * @param element
+     * @param form
      * @param formData
      */
     @Nonnull
-    private JSONObject loadDataForElementWithBinder(@Nonnull final Element element, @Nonnull final FormData formData) {
+    private JSONObject loadFormData(@Nonnull final Form form, @Nullable FormData formData) {
         JSONObject parentJson = new JSONObject();
-        loadDataForElementWithBinderRecursive(element, formData, parentJson);
-        return parentJson;
-    }
+        if(formData != null) {
+//            loadDataForElementWithBinderRecursive(form, formData, parentJson);
 
-    private void loadDataForElementWithBinderRecursive(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final JSONObject parentJson) {
-//        LogUtil.info(getClass().getName(), "loadDataForElementWithBinderRecursive element ["+element.getPropertyString("id")+"]");
-//
-//        FormRowSet formRowSet = formData.getLoadBinderData(element);
-//        if(formRowSet != null) {
-//            if(element instanceof Form){
-//                Optional.of(formRowSet)
-//                        .map(Collection::stream)
-//                        .orElse(Stream.empty())
-//                        .findFirst()
-//                        .map(Hashtable::entrySet)
-//                        .map(Collection::stream)
-//                        .orElse(Stream.empty())
-//                        .forEach(e -> {
-//                            try {
-//                                parentJson.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
-//                            } catch (JSONException ignored) {
-//                            }
-//                        });
-//            } else if(formRowSet.isMultiRow()) {
-//                JSONArray jsonArray = convertFormRowSetToJsonArray(formRowSet);
-//                try {
-//                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonArray);
-//                } catch (JSONException ignored) { }
-//            } else {
-//                JSONObject jsonObject = convertFormRowSetToJsonObject(formRowSet);
-//                try {
-//                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonObject);
-//                } catch (JSONException ignored) { }
-//            }
-//        }
+            elementStream(form)
+                    .filter(e -> e.getLoadBinder() != null)
+                    .forEach(throwable(e -> {
+                        FormRowSet rowSet = formData.getLoadBinderData(e);
+                        if(isNotEmpty(rowSet)) {
+                            String elementId = e.getPropertyString("id");
 
-        boolean hasLoadBinder = element.getLoadBinder() != null;
-
-        if(element instanceof Form) {
-            FormRowSet rowSet = Optional.ofNullable(formData.getLoadBinderData(element))
-                    .orElseGet(FormRowSet::new);
-            Optional.ofNullable(rowSet)
-                    .map(Collection::stream)
-                    .orElse(Stream.empty())
-                    .findFirst()
-                    .map(Hashtable::entrySet)
-                    .map(Collection::stream)
-                    .orElse(Stream.empty())
-                    .forEach(e -> {
-                        try {
-                            parentJson.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
-                        } catch (JSONException ignored) {
+                            if (rowSet.isMultiRow()) {
+                                JSONArray data = convertFormRowSetToJsonArray(rowSet);
+                                parentJson.put(elementId, data);
+                            } else if (e instanceof FormContainer) {
+                                JSONObject data = convertFormRowSetToJsonObject(rowSet);
+                                data.sortedKeys().forEachRemaining(throwable(key -> {
+                                    parentJson.put(key.toString(), data.get(key.toString()));
+                                }));
+                            } else {
+                                JSONObject data = convertFormRowSetToJsonObject(rowSet);
+                                parentJson.put(elementId, data);
+                            }
                         }
-                    });
-
-            for(Element childElement : element.getChildren()) {
-                loadDataForElementWithBinderRecursive(childElement, formData, parentJson);
-            }
-        } else if(element instanceof AbstractSubForm) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                for(Element child : element.getChildren()) {
-                    loadDataForElementWithBinderRecursive(child, formData, jsonObject);
-                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonObject);
-                }
-            } catch (JSONException ignored) {
-            }
-        } else if(element instanceof Section && hasLoadBinder) {
-            FormRowSet rowSet = formData.getLoadBinderData(element);
-            Optional.ofNullable(rowSet)
-                    .map(Collection::stream)
-                    .orElse(Stream.empty())
-                    .findFirst()
-                    .map(Hashtable::entrySet)
-                    .map(Collection::stream)
-                    .orElse(Stream.empty())
-                    .forEach(e -> {
-                        try {
-                            parentJson.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
-                        } catch (JSONException ignored) {
-                        }
-                    });
-
-            for(Element childElement : element.getChildren()) {
-                loadDataForElementWithBinderRecursive(childElement, formData, parentJson);
-            }
-        } else if(element instanceof FormContainer) {
-            for(Element childElement : element.getChildren()) {
-                loadDataForElementWithBinderRecursive(childElement, formData, parentJson);
-            }
-        } else if(hasLoadBinder) {
-            FormRowSet rowSet = Optional.ofNullable(formData.getLoadBinderData(element))
-                    .orElseGet(FormRowSet::new);
-
-            if(rowSet.isMultiRow()) {
-                JSONArray jsonArray = convertFormRowSetToJsonArray(rowSet);
-                try {
-                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonArray);
-                } catch (JSONException ignored) { }
-            } else {
-                JSONObject jsonObject = convertFormRowSetToJsonObject(rowSet);
-                try {
-                    parentJson.put(element.getPropertyString(FormUtil.PROPERTY_ID), jsonObject);
-                } catch (JSONException ignored) { }
-            }
+                    }));
         }
-
-
-//        for(Element child : element.getChildren()) {
-//            loadDataForElementWithBinderRecursive(child, formData, parentJson);
-//        }
+        return parentJson;
     }
 
     /**
@@ -2338,6 +2172,7 @@ public class DataJsonController {
 
     /**
      * Convert {@link FormRow} to {@link JSONObject}
+     *
      * @param row
      * @return
      */
@@ -2432,5 +2267,179 @@ public class DataJsonController {
         return Optional.ofNullable(formData)
                 .map(FormData::getFormErrors)
                 .orElseGet(HashMap::new);
+    }
+
+    /**
+     * Nullsafe. If string is null or empty
+     *
+     * @param value
+     * @return
+     */
+    private boolean isEmpty(@Nullable Object value) {
+        return Optional.ofNullable(value)
+                .map(String::valueOf)
+                .map(String::isEmpty)
+                .orElse(true);
+    }
+
+    /**
+     * Nullsafe. If object is not null and not empty
+     *
+     * @param value
+     * @return
+     */
+    private boolean isNotEmpty(@Nullable Object value) {
+        return !isEmpty(value);
+    }
+
+    /**
+     * Nullsafe. If collection is null or empty
+     *
+     * @param collection
+     * @param <T>
+     * @return
+     */
+    private <T> boolean isEmpty (@Nullable Collection<T> collection) {
+        return Optional.ofNullable(collection)
+                .map(Collection::isEmpty)
+                .orElse(true);
+    }
+
+    /**
+     * Nullsafe. If collection is not null and not empty
+     *
+     * @param collection
+     * @param <T>
+     * @return
+     */
+    private <T> boolean isNotEmpty(@Nullable Collection<T> collection) {
+        return !isEmpty(collection);
+    }
+
+
+    /**
+     * Stream element children
+     * @param element
+     * @return
+     */
+    @Nonnull
+    private Stream<Element> elementStream(@Nonnull Element element) {
+        Stream<Element> stream = Stream.of(element);
+        for (Element child : element.getChildren()) {
+            stream = Stream.concat(stream, elementStream(child));
+        }
+        return stream;
+    }
+
+    /*
+     *
+     *   DARN, THIS IS NEAT !!!!!!!
+     *
+     *       * * *   * * *
+     *     *       *       *
+     *      *             *
+     *        *         *
+     *          *     *
+     *            ***
+     *
+     */
+
+    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction) {
+        return throwableFunction;
+    }
+
+    private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer) {
+        return throwableConsumer;
+    }
+
+    private <T, U, E extends Exception> BiConsumer<T, U> throwable(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
+        return throwableBiConsumer;
+    }
+
+    private <T, E extends Exception> Predicate<T> throwable(ThrowablePredicate<T, E> throwableConsumer){
+        return throwableConsumer;
+    }
+
+    /**
+     * Throwable version of {@link Function}
+     *
+     * @param <T>
+     * @param <R>
+     * @param <E>
+     */
+    @FunctionalInterface
+    interface ThrowableFunction<T, R, E extends Exception> extends Function<T, R> {
+        @Override
+        default R apply(T t) {
+            try {
+                return applyThrowable(t);
+            } catch (Exception e) {
+                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                return null;
+            }
+        }
+
+        R applyThrowable(T t) throws E;
+    }
+
+    /**
+     * Throwable version of {@link Consumer}
+     *
+     * @param <T>
+     * @param <E>
+     */
+    @FunctionalInterface
+    interface ThrowableConsumer<T, E extends Exception> extends Consumer<T> {
+        @Override
+        default void accept(T t) {
+            try {
+                acceptThrowable(t);
+            } catch (Exception e) {
+                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+            }
+        }
+
+        void acceptThrowable(T t) throws E;
+    }
+
+    /**
+     * Throwable version of {@link Predicate}
+     *
+     * @param <T>
+     * @param <E>
+     */
+    @FunctionalInterface
+    interface ThrowablePredicate<T, E extends Exception> extends Predicate<T> {
+        @Override
+        default boolean test(T t) {
+            try {
+                return testThrowable(t);
+            } catch (Exception e) {
+                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                return false;
+            }
+        }
+
+        boolean testThrowable(T t) throws E;
+    }
+
+    /**
+     * Throwable version of {@link BiConsumer}
+     *
+     * @param <T>
+     * @param <U>
+     * @param <E>
+     */
+    @FunctionalInterface
+    interface ThrowableBiConsumer<T, U, E extends Exception> extends BiConsumer<T, U> {
+        default void accept(T t, U u) {
+            try {
+                acceptThrowable(t, u);
+            } catch (Exception e) {
+                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+            }
+        }
+
+        void acceptThrowable(T t, U u) throws E;
     }
 }
