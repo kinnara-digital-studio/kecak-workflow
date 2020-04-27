@@ -2244,7 +2244,8 @@ public class DataJsonController {
                     .filter(e -> e.getLoadBinder() != null)
                     .forEach(throwable(e -> {
                         FormRowSet rowSet = formData.getLoadBinderData(e);
-                        if(isNotEmpty(rowSet)) {
+
+                        if(rowSet != null) {
                             String elementId = e.getPropertyString("id");
 
                             if (rowSet.isMultiRow()) {
