@@ -12,6 +12,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.dao.FormDataDao;
+import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
@@ -44,7 +45,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -1594,12 +1598,13 @@ public class DataJsonController {
                 addFileRequestParameter(value, element, formData);
             }
         } else {
-            String value = jsonBody.optString(key, null);
-            if(isEmpty(value)) {
-                String defaultValue = element.getPropertyString(FormUtil.PROPERTY_VALUE);
-                if(isNotEmpty(defaultValue)) {
-                    WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
-                    value = AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
+            String value;
+            if(element instanceof HiddenField) {
+                value = getDefaultValue(element, formData);
+            } else {
+                value = jsonBody.optString(key, null);
+                if (isEmpty(value)) {
+                    value = getDefaultValue(element, formData);
                 }
             }
 
@@ -1607,6 +1612,15 @@ public class DataJsonController {
                 formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
             }
         }
+    }
+
+    private String getDefaultValue(@Nonnull Element element, @Nonnull FormData formData) {
+        String defaultValue = element.getPropertyString(FormUtil.PROPERTY_VALUE);
+        if(isNotEmpty(defaultValue)) {
+            WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+            return AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
+        }
+        return null;
     }
 
     /**
@@ -2017,13 +2031,17 @@ public class DataJsonController {
         @Nonnull final PackageDefinition packageDef = appDef.getPackageDefinition();
 
         return processIds.stream()
-                .filter(this::isNotEmpty)
                 .map(s -> {
+                    if(isEmpty(s)) {
+                        return "";
+                    }
+
                     WorkflowProcess p = appService.getWorkflowProcessForApp(appDef.getId(), appDef.getVersion().toString(), s);
                     if (p == null) {
                         LogUtil.warn(getClass().getName(), "Process [" + s + "] is not defined for this app");
                         return null;
                     }
+
                     return p.getId();
                 })
 
@@ -2031,9 +2049,10 @@ public class DataJsonController {
 
                 // get assignments
                 .flatMap(pid -> activityDefIds.stream()
-                        .map(aid -> workflowManager.getAssignmentListLite(packageDef.getId(), pid, null, aid, sort, desc, start, size))
+                        .map(s -> workflowManager.getAssignmentListLite(packageDef.getId(), pid, null, nullIfEmpty(s), sort, desc, start, size))
                         .filter(Objects::nonNull)
                         .flatMap(Collection::stream))
+
                 .collect(Collectors.toList());
     }
 
@@ -2309,7 +2328,8 @@ public class DataJsonController {
      * @param parameter request parameter values
      * @return sorted list
      */
-    private List<String> convertMultiValueParameterToList(String[] parameter) {
+    @Nonnull
+    private List<String> convertMultiValueParameterToList(@Nullable String[] parameter) {
         return Optional.ofNullable(parameter)
                 .map(Arrays::stream)
                 .orElse(Stream.of(""))
@@ -2426,24 +2446,35 @@ public class DataJsonController {
         return stream;
     }
 
+    /**
+     * Return null if string empty
+     *
+     * @param s
+     * @return
+     */
+    private String nullIfEmpty(String s) {
+        return s.isEmpty() ? null : s;
+    }
+
     /*
      *
      *   DARN, THIS IS NEAT !!!!!!!
+     *
      *
      *       * * *   * * *
      *     *       *       *
      *      *             *
      *        *         *
      *          *     *
-     *            ***
-     *
+     *            * *
+     *             *
      */
 
     private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction) {
         return throwableFunction;
     }
 
-    private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer) {
+    private <T, E extends Exception> ThrowableConsumer<T, E> throwable(ThrowableConsumer<T, E> throwableConsumer) {
         return throwableConsumer;
     }
 
@@ -2465,18 +2496,15 @@ public class DataJsonController {
      */
     @FunctionalInterface
     interface ThrowableFunction<T, R, E extends Exception> extends Function<T, R> {
+
         @Override
         default R apply(T t) {
             try {
                 return applyThrowable(t);
             } catch (Exception e) {
-                return onException((E)e);
+                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                return null;
             }
-        }
-
-        default R onException(E e) {
-            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
-            return null;
         }
 
         R applyThrowable(T t) throws E;
@@ -2495,12 +2523,19 @@ public class DataJsonController {
             try {
                 acceptThrowable(t);
             } catch (Exception e) {
-                onException((E) e);
+                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
             }
         }
 
-        default void onException(E e) {
-            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+        default ThrowableConsumer<T, E> onException(final Consumer<E> c) {
+            Objects.requireNonNull(c);
+            return (T t) -> {
+                try {
+                    acceptThrowable(t);
+                } catch (Exception e) {
+                    c.accept((E) e);
+                }
+            };
         }
 
         void acceptThrowable(T t) throws E;
