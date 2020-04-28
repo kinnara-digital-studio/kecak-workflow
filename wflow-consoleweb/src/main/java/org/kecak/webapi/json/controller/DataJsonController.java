@@ -1027,8 +1027,7 @@ public class DataJsonController {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignmentId + "] not available"));
 
             AppDefinition appDefinition = Optional.of(assignment)
-                    .map(WorkflowAssignment::getActivityId)
-                    .map(appService::getAppDefinitionForWorkflowActivity)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process form [" + assignment.getProcessId() + "]"));
 
             // set current app definition
@@ -1132,16 +1131,15 @@ public class DataJsonController {
                 // get first assignment of process
                 assignment = workflowManager.getAssignmentByProcess(processId);
             }
+
             if (assignment == null) {
                 // check if assignment available
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment form process [" + processId + "] not available");
             }
 
-            AppDefinition appDefinition = appService.getAppDefinitionForWorkflowActivity(assignment.getActivityId());
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for process [" + assignment.getProcessId() + "] not available");
-            }
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for process [" + assignment.getProcessId() + "] not available"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
@@ -1240,11 +1238,9 @@ public class DataJsonController {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid assignment [" + assignmentId + "]");
             }
 
-            AppDefinition appDefinition = appService.getAppDefinitionForWorkflowActivity(assignment.getActivityId());
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
-            }
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
@@ -1293,6 +1289,23 @@ public class DataJsonController {
     }
 
     /**
+     * Attempt to get app definition using activity ID or process ID
+     *
+     * @param assignment
+     * @return
+     */
+    @Nullable
+    private AppDefinition getAppDefinitionForWorkflowAssignment(@Nonnull WorkflowAssignment assignment) {
+        return Optional.of(assignment)
+                .map(WorkflowAssignment::getActivityId)
+                .map(appService::getAppDefinitionForWorkflowActivity)
+                .orElseGet(() -> Optional.of(assignment)
+                        .map(WorkflowAssignment::getProcessId)
+                        .map(appService::getAppDefinitionForWorkflowProcess)
+                        .orElse(null));
+    }
+
+    /**
      * Get Assignment by Process ID
      *
      * @param request
@@ -1317,11 +1330,9 @@ public class DataJsonController {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid assignment process [" + processId + "]");
             }
 
-            AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
-            if (appDefinition == null) {
-                // check if app valid
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
-            }
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
@@ -1448,7 +1459,10 @@ public class DataJsonController {
                     .map(workflowManager::getAssignment)
                     .filter(Objects::nonNull)
                     .map(assignment -> {
-                        final AppDefinition appDefinition = appService.getAppDefinitionForWorkflowProcess(assignment.getProcessId());
+                        final AppDefinition appDefinition = Optional.of(assignment)
+                                .map(this::getAppDefinitionForWorkflowAssignment)
+                                .orElse(null);
+
                         if (appDefinition == null) {
                             LogUtil.warn(getClass().getName(), "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
                             FormRow emptyRow = new FormRow();
@@ -1895,16 +1909,12 @@ public class DataJsonController {
                                 row.put("processId", workflowAssignment.getProcessId());
                                 row.put("processDefId", workflowAssignment.getProcessDefId());
                                 row.put("assigneeId", workflowAssignment.getAssigneeId());
+                                row.put("appId", appDefinition.getAppId());
+                                row.put("appVersion", appDefinition.getVersion());
 
-                                AppDefinition appDef = appService.getAppDefinitionForWorkflowProcess(workflowAssignment.getProcessId());
-                                if (appDef != null) {
-                                    row.put("appId", appDef.getAppId());
-                                    row.put("appVersion", appDef.getVersion());
-
-                                    Form form = getAssignmentForm(appDef, workflowAssignment);
-                                    if (form != null && form.isAuthorize(new FormData())) {
-                                        row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
-                                    }
+                                Form form = getAssignmentForm(appDefinition, workflowAssignment);
+                                if (form != null && form.isAuthorize(new FormData())) {
+                                    row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
                                 }
                             }
 
