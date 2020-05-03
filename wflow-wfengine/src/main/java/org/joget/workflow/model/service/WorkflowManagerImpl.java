@@ -5379,4 +5379,97 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     list.add(0, activity);
                 }, List::addAll);
     }
+
+    /**
+     * 
+     * @param packageId
+     * @param processId
+     * @param processName
+     * @param version
+     * @param state
+     * @param sort
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    public Collection<WorkflowProcess> getProcessList(String packageId, String processId, String processName, String version, String state, String sort, Boolean desc, Integer start, Integer rows) {
+        SharkConnection sc = null;
+        Collection<WorkflowProcess> runningProcessList = new ArrayList<WorkflowProcess>();
+        try {
+
+            sc = connect();
+
+            WfProcessIterator pi = sc.get_iterator_process();
+
+            String sharkExpression = "stateequals.(\"" + state + "\")";
+            String sqlExpression = "State = (SELECT  oid  FROM SHKProcessStates WHERE  Name  = '" + state + "')";
+
+            if (packageId != null && packageId.trim().length() > 0) {
+                sharkExpression += " && packageIdequals.(\"" + packageId + "\")";
+                sqlExpression += " AND ProcessDefinition IN (SELECT  oid  FROM SHKProcessDefinitions WHERE  PackageId  = '" + packageId + "')";
+            }
+            if (processId != null && processId.trim().length() > 0) {
+                sharkExpression += " && key.indexOf(\"" + processId + "\") != -1)";
+                sqlExpression += " AND Id LIKE '%" + processId + "%'";
+            }
+            if (processName != null && processName.trim().length() > 0) {
+                sharkExpression += " && name.indexOf(\"" + processName + "\") != -1)";
+                sqlExpression += " AND Name LIKE '%" + processName + "%'";
+            }
+            if (version != null && version.trim().length() > 0) {
+                sharkExpression += " && versionequals.(\"" + version + "\")";
+                sqlExpression += " AND ProcessDefinition IN (SELECT oid FROM SHKProcessDefinitions WHERE ProcessDefinitionVersion = '" + version + "')";
+            }
+
+            if (start == null) {
+                start = 0;
+            }
+            String queryExpression = "/*startAt " + start + " startAt*/";
+            if (rows != null && rows > 0) {
+                queryExpression += "/*limit " + rows + " limit*/";
+            }
+
+            String sortStr = "";
+            if (sort != null && sort.trim().length() > 0) {
+                sortStr += " ORDER BY " + sort;
+                sortStr += (desc != null && desc.booleanValue()) ? " DESC" : "";
+            }
+            String query_expression = "(" + sharkExpression + ")" + " /*sql (" + sqlExpression + ") " + sortStr + " sql*/ " + queryExpression;
+            pi.set_query_expression(query_expression);
+
+            WfProcess[] wfRunningProcessList = pi.get_next_n_sequence(0);
+
+            for (int i = 0; i < wfRunningProcessList.length; ++i) {
+                WfProcess wfProcess = wfRunningProcessList[i];
+                WfProcessMgr manager = wfProcess.manager();
+
+                WorkflowProcess workflowProcess = new WorkflowProcess();
+                workflowProcess.setId(manager.name());
+                workflowProcess.setInstanceId(wfProcess.key());
+                workflowProcess.setName(wfProcess.name());
+                workflowProcess.setState(wfProcess.state());
+                workflowProcess.setPackageId(MiscUtilities.getProcessMgrPkgId(manager.name()));
+                workflowProcess.setVersion(manager.version());
+                workflowProcess.setRequesterId(getUserByProcessIdAndActivityDefId(workflowProcess.getId(), workflowProcess.getInstanceId(), WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS));
+
+                WorkflowProcess trackWflowProcess = getRunningProcessInfo(wfProcess.key());
+                workflowProcess.setStartedTime(trackWflowProcess.getStartedTime());
+                workflowProcess.setDue(trackWflowProcess.getDue());
+
+                runningProcessList.add(workflowProcess);
+            }
+
+
+        } catch (Exception ex) {
+            LogUtil.error(getClass().getName(), ex, "");
+        } finally {
+            try {
+                disconnect(sc);
+            } catch (Exception e) {
+                LogUtil.error(getClass().getName(), e, "");
+            }
+        }
+        return runningProcessList;
+    }
 }

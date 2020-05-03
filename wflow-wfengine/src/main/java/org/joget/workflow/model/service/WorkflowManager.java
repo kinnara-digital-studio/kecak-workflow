@@ -887,4 +887,20 @@ public interface WorkflowManager {
      * @return 
      */
     double getServiceLevelValue(Date startedDate, Date finishDate, Date dueDate);
+
+    /**
+     * Get process list
+     *
+     * @param packageId
+     * @param processId
+     * @param processName
+     * @param version
+     * @param state
+     * @param sort
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    Collection<WorkflowProcess> getProcessList(String packageId, String processId, String processName, String version, String state, String sort, Boolean desc, Integer start, Integer rows);
 }
