@@ -73,7 +73,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         // get value
         String id = getPropertyString(FormUtil.PROPERTY_ID);
         if (id != null) {
-            String[] values = FormUtil.getElementPropertyValues(this, formData);
+            String[] values = getElementValues(formData);
             if (values != null && values.length > 0) {
                 // check for empty submission via parameter
                 String[] paramValues = FormUtil.getRequestParameterValues(this, formData);
@@ -121,7 +121,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         dynamicOptions(formData);
 
         // set value
-        String[] valueArray = FormUtil.getElementPropertyValues(this, formData);
+        String[] valueArray = getElementValues(formData);
         List<String> values = Arrays.asList(valueArray);
         dataModel.put("values", values);
 

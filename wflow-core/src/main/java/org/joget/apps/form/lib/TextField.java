@@ -34,11 +34,18 @@ public class TextField extends Element implements FormBuilderPaletteElement, Ace
         return renderTemplate(template,formData,dataModel);
     }
 
-    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
-        // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
+    @Override
+    public String getElementValue(FormData formData) {
+        String value = FormUtil.getElementPropertyValue(this, formData);;
 
         value = SecurityUtil.decrypt(value);
+
+        return value;
+    }
+
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+        // set value
+        String value = getElementValue(formData);
 
         dataModel.put("value", value);
 

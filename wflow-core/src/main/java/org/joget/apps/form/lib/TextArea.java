@@ -28,7 +28,7 @@ public class TextArea extends Element implements FormBuilderPaletteElement, AceF
 
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
+        String value = getElementValue(formData);
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);

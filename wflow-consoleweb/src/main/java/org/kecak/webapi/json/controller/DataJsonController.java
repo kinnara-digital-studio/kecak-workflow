@@ -45,10 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -461,7 +458,7 @@ public class DataJsonController {
             // construct response
 
             @Nonnull
-            JSONArray jsonArrayData = convertFormRowSetToJsonArray(formData.getLoadBinderData(element));
+            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formData.getLoadBinderData(element));
 
             @Nullable
             String currentDigest = getDigest(jsonArrayData);
@@ -537,7 +534,7 @@ public class DataJsonController {
             // construct response
 
             @Nonnull
-            JSONArray jsonArrayData = convertFormRowSetToJsonArray(formRows);
+            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formRows);
 
             @Nullable
             String currentDigest = getDigest(jsonArrayData);
@@ -1566,7 +1563,7 @@ public class DataJsonController {
         String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
         formData.setPrimaryKeyValue(primaryKey);
 
-        elementStream(form)
+        elementStream(form, formData)
                 .filter(e -> !(e instanceof Section || e instanceof Column))
                 .forEach(throwable(element -> {
                     // handle store binder
@@ -2250,26 +2247,28 @@ public class DataJsonController {
     private JSONObject loadFormData(@Nonnull final Form form, @Nullable FormData formData) {
         JSONObject parentJson = new JSONObject();
         if(formData != null) {
-            elementStream(form)
+            elementStream(form, formData)
                     .filter(e -> e.getLoadBinder() != null)
                     .forEach(throwable(e -> {
                         FormRowSet rowSet = formData.getLoadBinderData(e);
 
-                        if(rowSet != null) {
-                            String elementId = e.getPropertyString("id");
+                        if(rowSet == null) {
+                            return;
+                        }
 
-                            if (rowSet.isMultiRow()) {
-                                JSONArray data = convertFormRowSetToJsonArray(rowSet);
-                                parentJson.put(elementId, data);
-                            } else if (e instanceof FormContainer) {
-                                JSONObject data = convertFormRowSetToJsonObject(rowSet);
-                                data.sortedKeys().forEachRemaining(throwable(key -> {
-                                    parentJson.put(key.toString(), data.get(key.toString()));
-                                }));
-                            } else {
-                                JSONObject data = convertFormRowSetToJsonObject(rowSet);
-                                parentJson.put(elementId, data);
-                            }
+                        String elementId = e.getPropertyString("id");
+
+                        if (rowSet.isMultiRow()) {
+                            JSONArray data = convertFormRowSetToJsonArray(e, formData, rowSet);
+                            parentJson.put(elementId, data);
+                        } else if (e instanceof FormContainer) {
+                            JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
+                            data.sortedKeys().forEachRemaining(throwable(key -> {
+                                parentJson.put(key.toString(), data.get(key.toString()));
+                            }));
+                        } else {
+                            JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
+                            parentJson.put(elementId, data);
                         }
                     }));
         }
@@ -2283,11 +2282,11 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private JSONArray convertFormRowSetToJsonArray(@Nullable final FormRowSet rowSet) {
+    private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
         return Optional.ofNullable(rowSet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
-                .map(this::convertFromRowToJsonObject)
+                .map(r -> convertFromRowToJsonObject(element, formData, r))
                 .collect(JSONArray::new, JSONArray::put, (result, source) -> IntStream.range(0, source.length())
                         .boxed()
                         .map(source::optJSONObject)
@@ -2302,8 +2301,23 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private JSONObject convertFromRowToJsonObject(@Nullable final FormRow row) {
+    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRow row) {
         return Optional.ofNullable(row)
+                .map(peekMap(r -> r.forEach((o, o2) -> {
+                    String elementId = String.valueOf(o);
+
+                    Element childElement = FormUtil.findElement(elementId, element, null);
+                    if(childElement == null) {
+                        return;
+                    }
+
+                    String value = childElement.getElementValue(formData);
+                    if(value == null) {
+                        return;
+                    }
+
+                    r.setProperty(elementId, value);
+                })))
                 .map(JSONObject::new)
                 .orElseGet(JSONObject::new);
     }
@@ -2314,8 +2328,8 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private JSONObject convertFormRowSetToJsonObject(@Nullable final FormRowSet rowSet) {
-        return Optional.of(convertFormRowSetToJsonArray(rowSet))
+    private JSONObject convertFormRowSetToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
+        return Optional.of(convertFormRowSetToJsonArray(element, formData, rowSet))
                 .map(r -> r.optJSONObject(0))
                 .orElseGet(JSONObject::new);
     }
@@ -2445,14 +2459,19 @@ public class DataJsonController {
 
     /**
      * Stream element children
+     *
      * @param element
      * @return
      */
     @Nonnull
-    private Stream<Element> elementStream(@Nonnull Element element) {
+    private Stream<Element> elementStream(@Nonnull Element element, FormData formData) {
+        if(!element.isAuthorize(formData)) {
+            return Stream.empty();
+        }
+
         Stream<Element> stream = Stream.of(element);
         for (Element child : element.getChildren()) {
-            stream = Stream.concat(stream, elementStream(child));
+            stream = Stream.concat(stream, elementStream(child, formData));
         }
         return stream;
     }
@@ -2483,6 +2502,14 @@ public class DataJsonController {
 
     private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction) {
         return throwableFunction;
+    }
+
+    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> onException) {
+        return throwableFunction.onException(onException);
+    }
+
+    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, BiFunction<T, E, R> onException) {
+        return throwableFunction.onException(onException);
     }
 
     private <T, E extends Exception> ThrowableConsumer<T, E> throwable(ThrowableConsumer<T, E> throwableConsumer) {
@@ -2519,6 +2546,26 @@ public class DataJsonController {
         }
 
         R applyThrowable(T t) throws E;
+
+        default ThrowableFunction<T, R, E> onException(Function<? super E, ? extends R> f) {
+            return (T a) -> {
+                try {
+                    return (R) apply(a);
+                } catch (Exception e) {
+                    return f.apply((E) e);
+                }
+            };
+        }
+
+        default ThrowableFunction<T, R, E> onException(BiFunction<? super T, ? super E, ? extends R> f) {
+            return (T a) -> {
+                try {
+                    return (R) apply(a);
+                } catch (Exception e) {
+                    return f.apply(a, (E) e);
+                }
+            };
+        }
     }
 
     /**

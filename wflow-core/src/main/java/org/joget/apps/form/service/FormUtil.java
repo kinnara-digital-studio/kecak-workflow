@@ -1899,11 +1899,15 @@ public class FormUtil implements ApplicationContextAware {
     }
 
 
+    /**
+     * Utility methods to execute tool before form load
+     * @param form
+     * @param formData
+     */
     public static void executePreFormLoadProccessor(Form form, FormData formData) {
         try {
             Object proccessor = form.getProperty(FormUtil.PROPERTY_PRE_PROCESSOR);
-            if (proccessor != null && proccessor instanceof Map) {
-
+            if (proccessor instanceof Map) {
                 String primaryKey = form.getPrimaryKeyValue(formData);
                 PluginManager pluginManager = (PluginManager) FormUtil.getApplicationContext().getBean("pluginManager");
                 Map temp = (Map) proccessor;

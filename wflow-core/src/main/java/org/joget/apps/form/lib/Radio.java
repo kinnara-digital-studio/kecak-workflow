@@ -30,7 +30,7 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFo
         // get value
         String id = getPropertyString(FormUtil.PROPERTY_ID);
         if (id != null) {
-            String[] values = FormUtil.getElementPropertyValues(this, formData);
+            String[] values = getElementValues(formData);
             if (values != null && values.length > 0) {
                 // check for empty submission via parameter
                 String[] paramValues = FormUtil.getRequestParameterValues(this, formData);
