@@ -209,7 +209,7 @@ public class DataJsonController {
         final JSONObject result = new JSONObject();
 
         // show error message
-        formErrors.forEach(Throws.consumer(result::put));
+        formErrors.forEach(throwableConsumer(result::put));
 
         return result;
     }
@@ -852,7 +852,7 @@ public class DataJsonController {
                         .map(String::valueOf)
 
                         //load form
-                        .map(Throws.function(s -> {
+                        .map(throwableFunction(s -> {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
 
@@ -1073,7 +1073,7 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(Throws.consumer(nextAssignment -> {
+                        .ifPresent(throwableConsumer(nextAssignment -> {
                             JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -1184,7 +1184,7 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(Throws.consumer(nextAssignment -> {
+                        .ifPresent(throwableConsumer(nextAssignment -> {
                             JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -1572,7 +1572,7 @@ public class DataJsonController {
 
         elementStream(form, formData)
                 .filter(e -> !(e instanceof Section || e instanceof Column))
-                .forEach(Throws.consumer(element -> {
+                .forEach(throwableConsumer(element -> {
                     // handle store binder
                     processStoreBinder(jsonBody, element, formData);
 
@@ -2258,7 +2258,7 @@ public class DataJsonController {
         if(formData != null) {
             elementStream(form, formData)
                     .filter(e -> e.getLoadBinder() != null)
-                    .forEach(Throws.consumer(e -> {
+                    .forEach(throwableConsumer(e -> {
                         FormRowSet rowSet = formData.getLoadBinderData(e);
 
                         if(rowSet == null) {
@@ -2278,7 +2278,7 @@ public class DataJsonController {
                             parentJson.put(elementId, data);
                         } else if (e instanceof FormContainer) {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
-                            data.sortedKeys().forEachRemaining(Throws.consumer(key -> {
+                            data.sortedKeys().forEachRemaining(throwableConsumer(key -> {
                                 parentJson.put(key.toString(), data.get(key.toString()));
                             }));
                         } else {
@@ -2522,6 +2522,57 @@ public class DataJsonController {
      *             *
      */
 
+    // Throwable methods
+
+    /**
+     *
+     * @param throwableConsumer
+     * @param <T>
+     * @param <E>
+     * @return
+     */
+    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer) {
+        return throwableConsumer;
+    }
+
+    /**
+     *
+     * @param throwableBiConsumer
+     * @param <T>
+     * @param <U>
+     * @param <E>
+     * @return
+     */
+    private <T, U, E extends Exception> BiConsumer<T, U> throwableConsumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
+        return throwableBiConsumer;
+    }
+
+    /**
+     *
+     * @param throwableFunction
+     * @param <T>
+     * @param <R>
+     * @param <E>
+     * @return
+     */
+    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction) {
+        return throwableFunction;
+    }
+
+    /**
+     *
+     * @param throwableFunction
+     * @param <T>
+     * @param <R>
+     * @param <E>
+     * @return
+     */
+    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
+        return throwableFunction.onException(failoverFunction);
+    }
+
+    // Extension for functional interfaces
+
     /**
      * Throwable version of {@link Function}.
      * Returns null then exception is raised
@@ -2545,20 +2596,31 @@ public class DataJsonController {
 
         R applyThrowable(T t) throws E;
 
-        default ThrowableFunction<T, R, E> onException(Function<? super E, ? extends R> f) {
+        /**
+         *
+         * @param f
+         * @return
+         */
+        default Function<T, R> onException(Function<? super E, ? extends R> f) {
             return (T a) -> {
                 try {
-                    return (R) apply(a);
+                    return (R) applyThrowable(a);
                 } catch (Exception e) {
                     return f.apply((E) e);
                 }
             };
         }
 
-        default ThrowableFunction<T, R, E> onException(BiFunction<? super T, ? super E, ? extends R> f) {
+        /**
+         *
+         *
+         * @param f
+         * @return
+         */
+        default Function<T, R> onException(BiFunction<? super T, ? super E, ? extends R> f) {
             return (T a) -> {
                 try {
-                    return (R) apply(a);
+                    return (R) applyThrowable(a);
                 } catch (Exception e) {
                     return f.apply(a, (E) e);
                 }
@@ -2644,20 +2706,5 @@ public class DataJsonController {
         }
 
         void acceptThrowable(T t, U u) throws E;
-    }
-
-
-    interface Throws {
-        static <T, E extends Exception> Consumer<T> consumer(ThrowableConsumer<T, E> throwableConsumer) {
-            return throwableConsumer;
-        }
-
-        static <T, U, E extends Exception> BiConsumer<T, U> consumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
-            return throwableBiConsumer;
-        }
-
-        static <T, R, E extends Exception> Function<T, R> function(ThrowableFunction<T, R, E> throwableFunction) {
-            return throwableFunction;
-        }
     }
 }
