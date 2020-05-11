@@ -106,8 +106,6 @@ public class DataJsonController {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
-        auditTrailManager.addAuditTrail(getClass().getName(), "postFormSubmit", "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
         try {
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
@@ -1253,10 +1251,9 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            PackageActivityForm packageActivityForm = appService.viewAssignmentForm(appDefinition, assignment, formData, "");
 
-            @Nonnull
-            Form form = Optional.of(packageActivityForm)
+            // generate form
+            Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form for assignment [" + assignment.getActivityId() + " not found]"));
 
@@ -2200,6 +2197,7 @@ public class DataJsonController {
      * @param formData Form Data
      * @return
      */
+    @Nonnull
     private Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
         return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
             Element element = FormUtil.findElement(e.getKey(), form, formData, true);
@@ -2324,7 +2322,7 @@ public class DataJsonController {
                     String elementId = String.valueOf(k);
 
                     if(container instanceof GridElement) {
-                        Arrays.stream(((GridElement) container).getPropertyGrid())
+                        Arrays.stream(((GridElement) container).getColumnProperties())
                                 .filter(m -> k.equals(m.get("value")))
                                 .findFirst()
 
