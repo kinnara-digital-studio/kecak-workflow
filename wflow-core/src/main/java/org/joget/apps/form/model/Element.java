@@ -211,17 +211,6 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
     }
 
     /**
-     * Method to retrieve element value from form data ready to be shown to UI.
-     * You can override this to use your own value formatting.
-     *
-     * @param formData
-     * @return
-     */
-    public String[] getElementValues(FormData formData) {
-        return FormUtil.getElementPropertyValues(this, formData);
-    }
-
-    /**
      * Method that retrieves loaded or submitted form data, and formats it for a store binder.
      * The formatted data is to be stored and returned in a FormRowSet.
      * @param formData

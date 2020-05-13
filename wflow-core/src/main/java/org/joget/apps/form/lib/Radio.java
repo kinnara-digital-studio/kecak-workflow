@@ -30,7 +30,7 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFo
         // get value
         String id = getPropertyString(FormUtil.PROPERTY_ID);
         if (id != null) {
-            String[] values = getElementValues(formData);
+            String[] values = FormUtil.getElementPropertyValues(this, formData);
             if (values != null && values.length > 0) {
                 // check for empty submission via parameter
                 String[] paramValues = FormUtil.getRequestParameterValues(this, formData);
@@ -68,7 +68,7 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFo
 
         // set options
         @SuppressWarnings("rawtypes")
-        Collection<Map> optionMap = getOptionMap(formData);
+        FormRowSet optionMap = getOptionMap(formData);
         dataModel.put("options", optionMap);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);

@@ -43,7 +43,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     private String renderTemplate(String template,FormData formData,@SuppressWarnings("rawtypes")  Map dataModel){
 
         // set value
-        String[] values = getElementValues(formData);
+        String[] values = FormUtil.getElementPropertyValues(this, formData);
 
         //check is there a stored value
         String storedValue = formData.getStoreBinderDataProperty(this);

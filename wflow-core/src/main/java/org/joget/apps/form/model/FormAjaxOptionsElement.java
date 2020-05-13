@@ -15,4 +15,14 @@ public interface FormAjaxOptionsElement extends FormOptionsElement {
      * @return 
      */
     public Element getControlElement(FormData formData);
+
+
+    /**
+     * Method to retrieve element value from form data ready to be shown to UI.
+     * You can override this to use your own value formatting.
+     *
+     * @param formData
+     * @return
+     */
+    String[] getElementValues(FormData formData);
 }

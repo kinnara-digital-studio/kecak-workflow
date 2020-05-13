@@ -12,8 +12,8 @@ public interface GridElement {
     /**
      * Value formatting when displaying to grid element
      *
-     * @param name
-     * @param properties
+     * @param columnName
+     * @param properties property for current columnName
      * @param recordId
      * @param value
      * @param appId
@@ -21,10 +21,10 @@ public interface GridElement {
      * @param contextPath
      * @return
      */
-    String formatColumn(String name, Map<String, Object> properties, String recordId, String value, String appId, Long appVersion, String contextPath);
+    String formatColumn(String columnName, Map<String, Object> properties, String recordId, String value, String appId, Long appVersion, String contextPath);
 
     /**
-     * Get properties of grid column
+     * Get properties of grid columns
      *
      * @return
      */

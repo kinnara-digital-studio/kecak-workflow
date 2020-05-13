@@ -439,7 +439,6 @@ public class FormUtil implements ApplicationContextAware {
      * Utility method to recursively find and invoke the formatData method starting from an element.
      * @param element
      * @param formData
-     * @param binderRowSetMap
      * @return A Map mapping a binder to FormRowSets containing formatted values from all elements.
      */
     public static FormData executeElementFormatData(Element element, FormData formData) {
@@ -743,7 +742,6 @@ public class FormUtil implements ApplicationContextAware {
      * Overrides the binder/default value when value from request parameter is available.
      * @param element
      * @param formData
-     * @param property
      * @return
      */
     public static String getElementPropertyValue(Element element, FormData formData) {
@@ -803,12 +801,10 @@ public class FormUtil implements ApplicationContextAware {
      * This method supports multiple values for a property.
      * @param element
      * @param formData
-     * @param property
-     * @param nullToEmpty Set to true to default value to "" when there the request parameter value is null
      * @return
      */
     public static String[] getElementPropertyValues(Element element, FormData formData) {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
 
         // get value
         String id = element.getPropertyString(FormUtil.PROPERTY_ID);
@@ -930,8 +926,8 @@ public class FormUtil implements ApplicationContextAware {
      * @return
      */
     @SuppressWarnings("rawtypes")
-	public static Collection<Map> getElementPropertyOptionsMap(Element element, FormData formData) {
-        Collection<Map> optionsMap = new ArrayList<Map>();
+	public static FormRowSet getElementPropertyOptionsMap(Element element, FormData formData) {
+        FormRowSet optionsMap = new FormRowSet();
 
         if (isAjaxOptionsSupported(element, formData)) {
             FormAjaxOptionsElement ajaxElement = (FormAjaxOptionsElement) element;
@@ -943,18 +939,13 @@ public class FormUtil implements ApplicationContextAware {
             FormRowSet rowSet = binder.loadAjaxOptions(controlValues);
             
             if (rowSet != null) {
-                optionsMap = new ArrayList<Map>();
-                for (Map row : rowSet) {
-                    optionsMap.add(row);
-                }
+                optionsMap.addAll(rowSet);
             }
         } else {
             // load from "options" property
             Object optionProperty = element.getProperty(FormUtil.PROPERTY_OPTIONS);
-            if (optionProperty != null && optionProperty instanceof Collection) {
-                for (Map opt : (FormRowSet) optionProperty) {
-                    optionsMap.add(opt);
-                }
+            if (optionProperty instanceof Collection) {
+                optionsMap.addAll((FormRowSet) optionProperty);
             }
 
             // load from binder if available
@@ -962,10 +953,7 @@ public class FormUtil implements ApplicationContextAware {
                 String id = element.getPropertyString(FormUtil.PROPERTY_ID);
                 FormRowSet rowSet = formData.getOptionsBinderData(element, id);
                 if (rowSet != null) {
-                    optionsMap = new ArrayList<Map>();
-                    for (Map row : rowSet) {
-                        optionsMap.add(row);
-                    }
+                    optionsMap.addAll(rowSet);
                 }
             }
         }
@@ -1575,10 +1563,10 @@ public class FormUtil implements ApplicationContextAware {
                     // other binder type is used, so just load available options
                     Map<String, String> optionMap = new HashMap<String, String>();
                     @SuppressWarnings("rawtypes")
-					Collection<Map> options = FormUtil.getElementPropertyOptionsMap(e, formData);
-                    for (Map<String, String> opt: options) {
-                        String key = opt.get(FormUtil.PROPERTY_VALUE);
-                        String label = opt.get(FormUtil.PROPERTY_LABEL);
+					FormRowSet options = FormUtil.getElementPropertyOptionsMap(e, formData);
+                    for (FormRow opt: options) {
+                        String key = opt.getProperty(FormUtil.PROPERTY_VALUE);
+                        String label = opt.getProperty(FormUtil.PROPERTY_LABEL);
                         optionMap.put(key, label);
                     }
 
@@ -1586,7 +1574,7 @@ public class FormUtil implements ApplicationContextAware {
                     String[] values = FormUtil.getElementPropertyValues(e, formData);
                     for (String value: values) {
                         String label = optionMap.get(value);
-                        Map<String, Object> optionRow = new HashMap<String, Object>();
+                        Map<String, Object> optionRow = new HashMap<>();
                         if (value != null && label != null) {
                             optionRow.put(value, label);
                             subResults.add(optionRow);

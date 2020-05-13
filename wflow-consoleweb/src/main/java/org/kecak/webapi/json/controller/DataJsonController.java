@@ -21,7 +21,6 @@ import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.UuidGenerator;
-import org.kecak.apps.form.model.GridElement;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcess;
@@ -33,6 +32,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.form.model.GridElement;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -113,12 +113,9 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
 
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App Definition
             @Nonnull
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
@@ -159,12 +156,79 @@ public class DataJsonController {
         }
     }
 
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/validate", method = RequestMethod.POST)
+    public void postFormValidation(final HttpServletRequest request, final HttpServletResponse response,
+                                   @RequestParam("appId") final String appId,
+                                   @RequestParam("appVersion") final String appVersion,
+                                   @RequestParam("formDefId") final String formDefId,
+                                   @RequestParam("elementId") final String elementId) throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // read request body and convert request body to json
+            JSONObject jsonBody = getRequestPayload(request);
+
+            FormData formData = new FormData();
+            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
+
+            // get current App Definition
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
+
+            Form form = getForm(appDefinition, formDefId, formData);
+
+            extractBodyToFormData(jsonBody, form, formData);
+
+            // check form permission
+            if(!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            // validate form
+            FormData result = formService.validateFormData(form, formData);
+
+            // construct response
+            JSONObject jsonResponse = new JSONObject();
+            Map<String, String> formErrors = getFormErrors(result);
+            if (!formErrors.isEmpty()) {
+                JSONObject jsonError = createErrorObject(formErrors);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(jsonResponse.toString());
+//                String errorMessage = Optional.of(form)
+//                        .map(f -> FormUtil.findElement(elementId, form, result))
+//                        .map(e -> FormUtil.getElementParameterName(e))
+//                        .map(formErrors::get)
+//                        .orElse(MESSAGE_VALIDATION_ERROR);
+//
+//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
+            } else {
+                // set current data as response
+                response.setStatus(HttpServletResponse.SC_OK);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                response.getWriter().write(jsonResponse.toString());
+            }
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param appId
+     * @param version 0 for published version
+     * @return
+     * @throws ApiException
+     */
     @Nonnull
     private AppDefinition loadAppDefinition(String appId, long version) throws ApiException {
-        return Optional.ofNullable(appDefinitionDao.loadVersion(appId, version))
+        return Optional.of(version == 0 ? appDefinitionDao.getPublishedVersion(appId) : version)
+                .map(l -> appDefinitionDao.loadVersion(appId, l))
 
                 // set current app definition
-                .map(mapPeek(AppUtil::setCurrentAppDefinition))
+                .map(peek(AppUtil::setCurrentAppDefinition))
 
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]"));
     }
@@ -177,7 +241,7 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private <T> UnaryOperator<T> mapPeek(@Nonnull final Consumer<T> consumer) {
+    private <T> UnaryOperator<T> peek(@Nonnull final Consumer<T> consumer) {
         return t -> {
             consumer.accept(t);
             return t;
@@ -207,7 +271,7 @@ public class DataJsonController {
         final JSONObject result = new JSONObject();
 
         // show error message
-        formErrors.forEach(throwableConsumer(result::put));
+        formErrors.forEach(throwable(result::put));
 
         return result;
     }
@@ -238,11 +302,8 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -304,6 +365,7 @@ public class DataJsonController {
                             @RequestParam("appVersion") final String appVersion,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam("primaryKey") final String primaryKey,
+                            @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
@@ -313,13 +375,14 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
+
+            if(asLabel) {
+                FormUtil.setReadOnlyProperty(form, true, true);
+            }
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -374,11 +437,8 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
@@ -410,86 +470,83 @@ public class DataJsonController {
         }
     }
 
-    /**
-     * Get Element Data
-     * Execute element's load binder
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
-     * @param elementId
-     * @param primaryKey
-     * @param digest
-     * @throws IOException
-     * @throws JSONException
-     */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/element/(*:elementId)/(*:primaryKey)", method = RequestMethod.GET)
-    public void getElementData(final HttpServletRequest request, final HttpServletResponse response,
-                               @RequestParam("appId") final String appId,
-                               @RequestParam("appVersion") final String appVersion,
-                               @RequestParam("formDefId") final String formDefId,
-                               @RequestParam("elementId") final String elementId,
-                               @RequestParam("primaryKey") final String primaryKey,
-                               @RequestParam(value = "includeSubForm", required = false, defaultValue = "false") final Boolean includeSubForm,
-                               @RequestParam(value = "digest", required = false) final String digest)
-            throws IOException, JSONException {
+//    /**
+//     * Get Element Data
+//     * Execute element's load binder
+//     *
+//     * @param request
+//     * @param response
+//     * @param appId
+//     * @param appVersion
+//     * @param formDefId
+//     * @param elementId
+//     * @param primaryKey
+//     * @param digest
+//     * @throws IOException
+//     * @throws JSONException
+//     */
+//    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/(*:primaryKey)", method = RequestMethod.GET)
+//    public void getElementData(final HttpServletRequest request, final HttpServletResponse response,
+//                               @RequestParam("appId") final String appId,
+//                               @RequestParam("appVersion") final String appVersion,
+//                               @RequestParam("formDefId") final String formDefId,
+//                               @RequestParam("elementId") final String elementId,
+//                               @RequestParam("primaryKey") final String primaryKey,
+//                               @RequestParam(value = "includeSubForm", required = false, defaultValue = "false") final Boolean includeSubForm,
+//                               @RequestParam(value = "digest", required = false) final String digest)
+//            throws IOException, JSONException {
+//
+//        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+//
+//        try {
+//            final FormData formData = new FormData();
+//            formData.setPrimaryKeyValue(primaryKey);
+//
+//            // get current App
+//            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
+//
+//            Form form = getForm(appDefinition, formDefId, formData);
+//
+//            // check form permission
+//            if(!form.isAuthorize(formData)) {
+//                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+//            }
+//
+//            Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
+//            if (element == null) {
+//                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid element [" + elementId + "]");
+//            }
+//
+//            formService.executeFormLoadBinders(element, formData);
+//
+//            // construct response
+//
+//            @Nonnull
+//            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formData.getLoadBinderData(element));
+//
+//            @Nullable
+//            String currentDigest = getDigest(jsonArrayData);
+//
+//            JSONObject jsonResponse = new JSONObject();
+//
+//            if (!Objects.equals(currentDigest, digest)) {
+//                jsonResponse.put(FIELD_DATA, jsonArrayData);
+//            }
+//
+//            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+//            jsonResponse.put(FIELD_DIGEST, currentDigest);
+//
+//            response.setStatus(HttpServletResponse.SC_OK);
+//
+//            response.getWriter().write(jsonResponse.toString());
+//
+//        } catch (ApiException e) {
+//            response.sendError(e.getErrorCode(), e.getMessage());
+//            LogUtil.warn(getClass().getName(), e.getMessage());
+//        }
+//    }
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
-
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
-            // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
-
-            Form form = getForm(appDefinition, formDefId, formData);
-
-            // check form permission
-            if(!form.isAuthorize(formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
-            Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
-            if (element == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid element [" + elementId + "]");
-            }
-
-            formService.executeFormLoadBinders(element, formData);
-
-            // construct response
-
-            @Nonnull
-            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formData.getLoadBinderData(element));
-
-            @Nullable
-            String currentDigest = getDigest(jsonArrayData);
-
-            JSONObject jsonResponse = new JSONObject();
-
-            if (!Objects.equals(currentDigest, digest)) {
-                jsonResponse.put(FIELD_DATA, jsonArrayData);
-            }
-
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-            jsonResponse.put(FIELD_DIGEST, currentDigest);
-
-            response.setStatus(HttpServletResponse.SC_OK);
-
-            response.getWriter().write(jsonResponse.toString());
-
-        } catch (ApiException e) {
-            response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
-        }
-    }
-
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/elementOptions/(*:elementId)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/options", method = RequestMethod.GET)
     public void getElementOptionsData(final HttpServletRequest request, final HttpServletResponse response,
                                       @RequestParam("appId") final String appId,
                                       @RequestParam("appVersion") final String appVersion,
@@ -507,11 +564,8 @@ public class DataJsonController {
         try {
             final FormData formData = new FormData();
 
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -584,40 +638,6 @@ public class DataJsonController {
                 .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
     }
 
-    @Nonnull
-    private Object assignValue(@Nonnull Object value) {
-        String stringValue = value.toString();
-        try {
-            return new JSONArray(stringValue);
-        } catch (JSONException e1) {
-            try {
-                return new JSONObject(stringValue);
-            } catch (JSONException e2) {
-                return stringValue;
-            }
-        }
-    }
-
-    private void assignValueToJson(Map.Entry<Object, Object> e, JSONObject j) {
-        String key = e.toString();
-        String value = e.getValue().toString();
-
-        try {
-            JSONArray ifJsonArray = new JSONArray(value);
-            j.put(key, ifJsonArray);
-        } catch (JSONException e1) {
-            try {
-                JSONObject ifJsonObject = new JSONObject(value);
-                j.put(key, ifJsonObject);
-            } catch (JSONException e2) {
-                try {
-                    j.put(key, value);
-                } catch (JSONException ignored) {
-                }
-            }
-        }
-    }
-
     /**
      * Get List Count
      *
@@ -638,11 +658,8 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -704,11 +721,8 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -808,11 +822,8 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -850,7 +861,7 @@ public class DataJsonController {
                         .map(String::valueOf)
 
                         //load form
-                        .map(throwableFunction(s -> {
+                        .map(throwable(s -> {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
 
@@ -911,11 +922,8 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get processDefId
             String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
@@ -928,10 +936,10 @@ public class DataJsonController {
             }
 
             // get process form
-            @Nonnull PackageActivityForm packageActivityForm = Optional.ofNullable(appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, ""))
+            PackageActivityForm packageActivityForm = Optional.ofNullable(appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, ""))
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form"));
 
-            @Nonnull Form form = Optional.of(packageActivityForm)
+            Form form = Optional.of(packageActivityForm)
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for ["+packageActivityForm.getActivityDefId()+"]"));
 
@@ -1071,7 +1079,7 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(throwableConsumer(nextAssignment -> {
+                        .ifPresent(throwable(nextAssignment -> {
                             JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -1182,7 +1190,7 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(throwableConsumer(nextAssignment -> {
+                        .ifPresent(throwable(nextAssignment -> {
                             JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -1541,6 +1549,7 @@ public class DataJsonController {
      * @throws JSONException
      * @throws ApiException
      */
+    @Nonnull
     private FormData extractBodyToFormData(final JSONObject jsonPayload, final Form form, final FormData formData) throws IOException, JSONException, ApiException {
         return extractBodyToFormData(jsonPayload, form, formData, false);
     }
@@ -1569,7 +1578,7 @@ public class DataJsonController {
 
         elementStream(form, formData)
                 .filter(e -> !(e instanceof Section || e instanceof Column))
-                .forEach(throwableConsumer(element -> {
+                .forEach(throwable(element -> {
                     // handle store binder
                     processStoreBinder(jsonBody, element, formData);
 
@@ -1763,6 +1772,7 @@ public class DataJsonController {
      * @param request
      * @return
      */
+    @Nonnull
     private JSONObject getRequestPayload(HttpServletRequest request) {
         try {
             String payload = request.getReader().lines().collect(Collectors.joining());
@@ -1841,11 +1851,8 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -1964,11 +1971,8 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            // get version, version 0 indicates published version
-            long version = Long.parseLong(appVersion) == 0 ? appDefinitionDao.getPublishedVersion(appId) : Long.parseLong(appVersion);
-
             // get current App
-            AppDefinition appDefinition = loadAppDefinition(appId, version);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2243,20 +2247,18 @@ public class DataJsonController {
     }
 
     /**
-     * Load form
+     * Load form data
      *
      * @param form
      * @param formData
      */
     @Nonnull
     private JSONObject getData(@Nonnull final Form form, @Nullable FormData formData) {
-        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-
         JSONObject parentJson = new JSONObject();
         if(formData != null) {
             elementStream(form, formData)
                     .filter(e -> e.getLoadBinder() != null)
-                    .forEach(throwableConsumer(e -> {
+                    .forEach(throwable(e -> {
                         FormRowSet rowSet = formData.getLoadBinderData(e);
 
                         if(rowSet == null) {
@@ -2264,11 +2266,6 @@ public class DataJsonController {
                         }
 
                         String elementId = e.getPropertyString("id");
-//                        Element container = Optional.of(e.getPropertyString(FormUtil.PROPERTY_FORM_DEF_ID))
-//                                .filter(s -> !s.isEmpty())
-//                                .map(throwableFunction(s -> getForm(appDefinition, s, formData)))
-//                                .map(f -> (Element) f)
-//                                .orElse(e);
                         Element container = e;
 
                         if (rowSet.isMultiRow()) {
@@ -2276,7 +2273,7 @@ public class DataJsonController {
                             parentJson.put(elementId, data);
                         } else if (e instanceof FormContainer) {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
-                            data.sortedKeys().forEachRemaining(throwableConsumer(key -> {
+                            data.sortedKeys().forEachRemaining(throwable(key -> {
                                 parentJson.put(key.toString(), data.get(key.toString()));
                             }));
                         } else {
@@ -2318,7 +2315,7 @@ public class DataJsonController {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
 
         return Optional.ofNullable(row)
-                .map(mapPeek(r -> r.forEach((k, v) -> {
+                .map(peek(r -> r.forEach((k, v) -> {
                     String elementId = String.valueOf(k);
 
                     if(container instanceof GridElement) {
@@ -2497,6 +2494,26 @@ public class DataJsonController {
     }
 
     /**
+     * Assign value to JSON
+     *
+     * @param value
+     * @return
+     */
+    @Nonnull
+    private Object assignValue(@Nonnull Object value) {
+        String stringValue = value.toString();
+        try {
+            return new JSONArray(stringValue);
+        } catch (JSONException e1) {
+            try {
+                return new JSONObject(stringValue);
+            } catch (JSONException e2) {
+                return stringValue;
+            }
+        }
+    }
+
+    /**
      * Return null if string empty
      *
      * @param s
@@ -2529,7 +2546,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer) {
+    private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer) {
         return throwableConsumer;
     }
 
@@ -2541,7 +2558,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, U, E extends Exception> BiConsumer<T, U> throwableConsumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
+    private <T, U, E extends Exception> BiConsumer<T, U> throwable(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
         return throwableBiConsumer;
     }
 
@@ -2553,7 +2570,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction) {
+    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction) {
         return throwableFunction;
     }
 
@@ -2565,7 +2582,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
+    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
         return throwableFunction.onException(failoverFunction);
     }
 
@@ -2587,7 +2604,7 @@ public class DataJsonController {
             try {
                 return applyThrowable(t);
             } catch (Exception e) {
-                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                LogUtil.error(getClass().getName(), e, e.getMessage());
                 return null;
             }
         }
@@ -2639,7 +2656,7 @@ public class DataJsonController {
             try {
                 acceptThrowable(t);
             } catch (Exception e) {
-                LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+                LogUtil.error(getClass().getName(), e, e.getMessage());
             }
         }
 
@@ -2675,7 +2692,7 @@ public class DataJsonController {
         }
 
         default boolean onException(E e) {
-            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             return false;
         }
 
@@ -2700,7 +2717,7 @@ public class DataJsonController {
         }
 
         default void onException(E e) {
-            LogUtil.error(ThrowableFunction.class.getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
 
         void acceptThrowable(T t, U u) throws E;
