@@ -816,6 +816,7 @@ public class DataJsonController {
                         @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
                         @RequestParam(value = "sort", required = false) final String sort,
                         @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
+                        @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                         @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
@@ -851,6 +852,12 @@ public class DataJsonController {
 
             getCollectFilters(request.getParameterMap(), dataList);
 
+            Form form = getForm(appDefinition, formDefId, null);
+
+            if(asLabel) {
+                FormUtil.setReadOnlyProperty(form, true, true);
+            }
+
             try {
                 JSONArray jsonData = Optional.of(dataList)
                         .map(d -> d.getRows(pageSize, rowStart))
@@ -865,9 +872,9 @@ public class DataJsonController {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
 
-                            return Optional.of(DataJsonController.this.getForm(appDefinition, formDefId, formData))
+                            return Optional.of(form)
                                     .filter(f -> f.isAuthorize(formData))
-                                    .map(f -> DataJsonController.this.getData(f, formData))
+                                    .map(f -> getData(f, formData))
                                     .orElse(null);
                         }))
 
@@ -1236,6 +1243,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.GET)
     public void getAssignment(final HttpServletRequest request, final HttpServletResponse response,
                               @RequestParam("assignmentId") final String assignmentId,
+                              @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                               @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
@@ -1264,6 +1272,10 @@ public class DataJsonController {
             Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form for assignment [" + assignment.getActivityId() + " not found]"));
+
+            if(asLabel) {
+                FormUtil.setReadOnlyProperty(form, true, true);
+            }
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -1326,6 +1338,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.GET)
     public void getAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("processId") final String processId,
+                                       @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                                        @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
@@ -1355,6 +1368,10 @@ public class DataJsonController {
             Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form not available for assignment [" + assignment.getActivityId() + "]"));
+
+            if(asLabel) {
+                FormUtil.setReadOnlyProperty(form, true, true);
+            }
 
             // check form permission
             if(!form.isAuthorize(formData)) {
