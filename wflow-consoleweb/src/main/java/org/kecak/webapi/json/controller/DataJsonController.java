@@ -112,9 +112,7 @@ public class DataJsonController {
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
-//            final FormData formData = new FormData();
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-//            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
 
             // get current App Definition
             AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
@@ -300,17 +298,15 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(primaryKey);
+            // read request body and convert request body to json
+            JSONObject jsonBody = getRequestPayload(request);
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App
             AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            // read request body and convert request body to json
-
-            JSONObject jsonBody = getRequestPayload(request);
             fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
@@ -952,8 +948,8 @@ public class DataJsonController {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for ["+packageActivityForm.getActivityDefId()+"]"));
 
             // read request body and convert request body to json
-            final FormData formData = new FormData();
             JSONObject jsonBody = getRequestPayload(request);
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
@@ -1059,11 +1055,12 @@ public class DataJsonController {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
             // read request body and convert request body to json
-            final FormData formData = new FormData();
+            final JSONObject jsonBody = getRequestPayload(request);
+
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
 
-            final JSONObject jsonBody = getRequestPayload(request);
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
@@ -1170,11 +1167,12 @@ public class DataJsonController {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
             // read request body and convert request body to json
-            final FormData formData = new FormData();
+            final JSONObject jsonBody = getRequestPayload(request);
+
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
 
-            final JSONObject jsonBody = getRequestPayload(request);
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
@@ -1579,6 +1577,7 @@ public class DataJsonController {
      * @param jsonBody
      * @param form
      * @param formData
+     * @param update Update or Overwrite ?
      * @param isAssignment
      * @return
      * @throws IOException
@@ -1604,24 +1603,31 @@ public class DataJsonController {
                 }));
 
 
-        // handle files
+        // handle files; no need to reupload the file if you still need to keep the old one,
+        // simply don't send the field
+        // unfortunately this only works for FileUpload, other fields still need to be re-uploaded
+        // TODO : apply this kind of logic for the rests of the fields
+
         String uploadPath = getUploadFilePath();
         elementStream(form, formData)
                 .filter(e -> e instanceof FileDownloadSecurity)
                 .forEach(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
-                    String[] filePaths = Optional.of(parameterName)
+                    String parameterValue = Optional.of(parameterName)
                             .map(formData::getRequestParameter)
-                            .map(this::handleEncodedFile)
-                            .map(Arrays::stream)
-                            .orElseGet(Stream::empty)
-                            .map(throwable((String s) -> decodeFile(s)))
-                            .filter(Objects::nonNull)
-                            .map(f -> FileManager.storeFile(f, uploadPath))
-                            .toArray(String[]::new);
+                            .orElse(null);
 
-                    if(filePaths.length > 0) {
-                        formData.addRequestParameterValues(parameterName, filePaths);
+                    if(parameterValue != null) {
+                        String[] filePaths = Optional.ofNullable(parameterValue)
+                                .map(this::handleEncodedFile)
+                                .map(Arrays::stream)
+                                .orElseGet(Stream::empty)
+                                .map(throwable((String s) -> decodeFile(s)))
+                                .filter(Objects::nonNull)
+                                .map(f -> FileManager.storeFile(f, uploadPath))
+                                .toArray(String[]::new);
+
+                        formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
                     }
                 });;
 
@@ -1940,6 +1946,9 @@ public class DataJsonController {
      */
     @Nullable
     private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException{
+        if(bse64EncodedFile.isEmpty())
+            return null;
+
         byte[] data = Base64.getDecoder().decode(bse64EncodedFile);
         return new MockMultipartFile(filename, filename, null, data);
     }
@@ -1953,10 +1962,13 @@ public class DataJsonController {
     @Nullable
     private MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
         String[] split = value.split(";");
-        if(split.length > 1) {
+        if(split.length > 0) {
             String fileName = split[0];
-            String encodedFile = split[1];
-            return decodeFile(fileName, encodedFile);
+            if(split.length > 1) {
+                String encodedFile = split[1];
+                return decodeFile(fileName, encodedFile);
+            }
+            return null;
         } else {
             return null;
         }
