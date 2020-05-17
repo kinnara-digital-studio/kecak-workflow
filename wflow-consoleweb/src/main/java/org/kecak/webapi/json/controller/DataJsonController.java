@@ -19,8 +19,7 @@ import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.UuidGenerator;
+import org.joget.commons.util.*;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcess;
@@ -41,6 +40,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -87,6 +87,8 @@ public class DataJsonController {
     AuditTrailManager auditTrailManager;
     @Autowired
     WorkflowHelper workflowHelper;
+    @Autowired
+    SetupManager setupManager;
 
     /**
      * Submit form into table, can be used to save master data
@@ -110,17 +112,16 @@ public class DataJsonController {
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
-            final FormData formData = new FormData();
-            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
+//            final FormData formData = new FormData();
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
+//            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
 
             // get current App Definition
-            @Nonnull
             AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
-            @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
 
-            extractBodyToFormData(jsonBody, form, formData);
+            fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -177,7 +178,7 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            extractBodyToFormData(jsonBody, form, formData);
+            fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -310,7 +311,7 @@ public class DataJsonController {
             // read request body and convert request body to json
 
             JSONObject jsonBody = getRequestPayload(request);
-            extractBodyToFormData(jsonBody, form, formData);
+            fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -953,7 +954,7 @@ public class DataJsonController {
             // read request body and convert request body to json
             final FormData formData = new FormData();
             JSONObject jsonBody = getRequestPayload(request);
-            extractBodyToFormData(jsonBody, form, formData, true);
+            fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -1063,7 +1064,7 @@ public class DataJsonController {
             formData.setProcessId(assignment.getProcessId());
 
             final JSONObject jsonBody = getRequestPayload(request);
-            extractBodyToFormData(jsonBody, form, formData, true);
+            fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -1174,7 +1175,7 @@ public class DataJsonController {
             formData.setProcessId(assignment.getProcessId());
 
             final JSONObject jsonBody = getRequestPayload(request);
-            extractBodyToFormData(jsonBody, form, formData, true);
+            fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
             if(!form.isAuthorize(formData)) {
@@ -1567,8 +1568,8 @@ public class DataJsonController {
      * @throws ApiException
      */
     @Nonnull
-    private FormData extractBodyToFormData(final JSONObject jsonPayload, final Form form, final FormData formData) throws IOException, JSONException, ApiException {
-        return extractBodyToFormData(jsonPayload, form, formData, false);
+    private FormData fillStoreBinderInFormData(final JSONObject jsonPayload, final Form form, final FormData formData) throws IOException, JSONException, ApiException {
+        return fillStoreBinderInFormData(jsonPayload, form, formData, false);
     }
 
 
@@ -1585,34 +1586,91 @@ public class DataJsonController {
      * @throws ApiException
      */
     @Nonnull
-    private FormData extractBodyToFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
+    private FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
         if(form == null) {
             return formData;
         }
 
+        // handle store binder
         String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
         formData.setPrimaryKeyValue(primaryKey);
 
         elementStream(form, formData)
-                .filter(e -> !(e instanceof Section || e instanceof Column))
+                .filter(e -> !(e instanceof Form || e instanceof Section || e instanceof Column))
+                .filter(e -> e.getStoreBinder() != null)
                 .forEach(throwable(element -> {
                     // handle store binder
-                    processStoreBinder(jsonBody, element, formData);
-
-                    // handle request parameters
-                    processRequestParameters(jsonBody, element, formData);
+                    processStoreBinder(element, formData);
                 }));
 
-        formData.setDoValidation(true);
-        formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
-        formData.addRequestParameterValues("_action", new String[]{"submit"});
+
+        // handle files
+        String uploadPath = getUploadFilePath();
+        elementStream(form, formData)
+                .filter(e -> e instanceof FileDownloadSecurity)
+                .forEach(e -> {
+                    String parameterName = FormUtil.getElementParameterName(e);
+                    String[] filePaths = Optional.of(parameterName)
+                            .map(formData::getRequestParameter)
+                            .map(this::handleEncodedFile)
+                            .map(Arrays::stream)
+                            .orElseGet(Stream::empty)
+                            .map(throwable((String s) -> decodeFile(s)))
+                            .filter(Objects::nonNull)
+                            .map(f -> FileManager.storeFile(f, uploadPath))
+                            .toArray(String[]::new);
+
+                    if(filePaths.length > 0) {
+                        formData.addRequestParameterValues(parameterName, filePaths);
+                    }
+                });;
+
+//        // handle request parameters
+//        processRequestParameters(jsonBody, element, formData);
+
+//        formData.setDoValidation(true);
+//        formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
+//        formData.addRequestParameterValues("_action", new String[]{"submit"});
 
         // use field "ID" as primary key if possible
-        if (isEmpty(formData.getPrimaryKeyValue())) {
-            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
-        }
+//        if (isEmpty(formData.getPrimaryKeyValue())) {
+//            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
+//        }
 
         return formData;
+    }
+
+    /**
+     * Get Upload File Path
+     *
+     * @return
+     */
+    private String getUploadFilePath() {
+        String basePath = SetupManager.getBaseDirectory();
+        String dataFileBasePath = setupManager.getSettingValue("dataFileBasePath");
+        if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
+            basePath = dataFileBasePath;
+        }
+        return basePath;
+    }
+
+    /**
+     * DAMN IM TOO CONFUSED TO THINK ABOUT A BETTER NAME
+     *
+     * @param value
+     * @return
+     */
+    private String[] handleEncodedFile(String value) {
+        try {
+            JSONArray jsonArray = new JSONArray(value);
+            return IntStream.iterate(0, i -> i + 1).limit(jsonArray.length()).boxed()
+                    .map(throwable(jsonArray::getString))
+                    .filter(Objects::nonNull)
+                    .toArray(String[]::new);
+
+        } catch (JSONException e) {
+            return new String[] { value };
+        }
     }
 
     /**
@@ -1627,16 +1685,31 @@ public class DataJsonController {
         String key = element.getPropertyString(FormUtil.PROPERTY_ID);
         if (element instanceof FileDownloadSecurity) {
             JSONArray jsonValues = jsonBody.optJSONArray(key);
+
+            // multiple file, values are in JSONArray
             if (jsonValues != null) {
-                // multiple file, values are in JSONArray
-                for (int j = 0; j < jsonValues.length(); j++) {
-                    String value = jsonValues.getString(j);
-                    addFileRequestParameter(value, element, formData);
+                MultipartFile[] files = IntStream.iterate(0, i -> i + 1).limit(jsonBody.length()).boxed()
+                        .map(throwable(jsonValues::getString))
+                        .map(value -> addFileRequestParameter(value, element, formData))
+                        .filter(Objects::nonNull)
+                        .toArray(MultipartFile[]::new);
+
+                if(files.length > 0) {
+//                    FileStore.getFileMap().put(key, files);
+                    for (MultipartFile file : files) {
+                        FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
+                    }
                 }
-            } else {
-                // single file, value is in string
+            }
+
+            // single file, value is in string
+            else {
                 String value = jsonBody.getString(key);
-                addFileRequestParameter(value, element, formData);
+                MultipartFile file = addFileRequestParameter(value, element, formData);
+                if(file != null) {
+//                    FileStore.getFileMap().put(key, new MultipartFile[] { file });
+                    FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
+                }
             }
         } else {
             String value;
@@ -1667,29 +1740,30 @@ public class DataJsonController {
     /**
      * Prepare formData with store binder
      *
-     * @param jsonBody
-     * @param element
+     * @param element element with store binder
      * @param formData
      * @throws ApiException
      */
-    private void processStoreBinder(@Nonnull JSONObject jsonBody, @Nonnull Element element, @Nonnull final FormData formData) throws ApiException {
-        Form form = FormUtil.findRootForm(element);
-        String key = element.getPropertyString(FormUtil.PROPERTY_ID);
-
+    private void processStoreBinder(@Nonnull Element element, @Nonnull final FormData formData) throws ApiException {
         FormStoreBinder storeBinder = element.getStoreBinder();
-        if (storeBinder != null) {
+        assert storeBinder != null;
+
+        Form form = FormUtil.findRootForm(element);
+        String parameterName = FormUtil.getElementParameterName(element);
+
+        try {
             FormRowSet rowSet;
 
-            // Multirow
+            // Multi row
             if (storeBinder instanceof FormStoreMultiRowElementBinder) {
-                JSONArray values = jsonBody.optJSONArray(key);
-                rowSet = convertJsonArrayToRowSet(values);
+                JSONArray values = new JSONArray(formData.getRequestParameter(parameterName));
+                rowSet = convertJsonArrayToRowSet(form, values);
             }
 
             // Single row
             else if (storeBinder instanceof FormStoreElementBinder) {
-                JSONObject value = jsonBody.optJSONObject(key);
-                rowSet = convertJsonObjectToRowSet(value);
+                JSONObject value = new JSONObject(formData.getRequestParameter(parameterName));
+                rowSet = convertJsonObjectToRowSet(form, value);
             }
 
             // Undefined store binder
@@ -1702,6 +1776,9 @@ public class DataJsonController {
 
             // store binder data to be stored
             formData.setStoreBinderData(storeBinder, rowSet);
+
+        } catch (JSONException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1739,48 +1816,65 @@ public class DataJsonController {
         }
     }
 
+    @Nullable
+    private FormRow convertJsonObjectToFormRow(@Nullable Form form, @Nullable JSONObject json) {
+        FormRow row = new FormRow();
+        Iterator iterator = json.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next().toString();
+            try {
+                String value = extractStringValue(form, json, key);
+                row.put(key, value);
+            } catch (JSONException e) {
+                LogUtil.error(getClass().getName(), e, e.getMessage());
+            }
+        }
+
+        return row;
+    }
+
     @Nonnull
-    private FormRowSet convertJsonObjectToRowSet(@Nullable JSONObject json) {
+    private FormRowSet convertJsonObjectToRowSet(@Nullable Form form, @Nullable JSONObject json) {
         FormRowSet result = new FormRowSet();
 
         if (json != null) {
-            FormRow row = new FormRow();
-            Iterator iterator = json.keys();
-            while (iterator.hasNext()) {
-                String key = iterator.next().toString();
-                String value = json.optString(key);
-                row.put(key, value);
+            FormRow row = convertJsonObjectToFormRow(form, json);
+            if(row != null) {
+                result.add(row);
             }
-
-            result.add(row);
         }
 
         return result;
     }
 
     @Nonnull
-    private FormRowSet convertJsonArrayToRowSet(@Nullable JSONArray jsonArray) {
-        FormRowSet result = Optional.ofNullable(jsonArray)
+    private FormRowSet convertJsonArrayToRowSet(@Nullable Form form, @Nonnull JSONArray jsonArray) {
+        FormRowSet result = Optional.of(jsonArray)
                 .map(a -> IntStream.range(0, a.length()).boxed())
                 .orElseGet(Stream::empty)
+                .filter(Objects::nonNull)
                 .map(jsonArray::optJSONObject)
-                .map(j -> {
-                    FormRow row = new FormRow();
-
-                    Iterator iterator = j.keys();
-                    while (iterator.hasNext()) {
-                        String key = iterator.next().toString();
-                        String value = j.optString(key);
-                        row.put(key, value);
-                    }
-
-                    return row;
-                })
+                .map(j -> convertJsonObjectToFormRow(form, j))
                 .collect(Collectors.toCollection(FormRowSet::new));
 
         result.setMultiRow(true);
 
         return result;
+    }
+
+    @Nonnull
+    private String extractStringValue(@Nullable Form form, JSONObject json, String fieldName) throws JSONException {
+        if(form == null) {
+            return json.getString(fieldName);
+        }
+
+        Element element = FormUtil.findElement(fieldName, form, null, true);
+        if(element instanceof FileDownloadSecurity) {
+            // TODO : handle file here
+            return json.getString(fieldName);
+        } else {
+            return json.getString(fieldName);
+        }
     }
 
     /**
@@ -1805,30 +1899,68 @@ public class DataJsonController {
      * @param element
      * @param formData
      */
-    private void addFileRequestParameter(String value, Element element, FormData formData) {
+    @Nullable
+    private MultipartFile addFileRequestParameter(@Nullable String value, Element element, FormData formData) {
+        if(value == null) {
+            return null;
+        }
+
         String[] fileParts = value.split(";");
         String filename = fileParts[0];
 
         if (fileParts.length > 1) {
             String encodedFile = fileParts[1];
 
+            String paramName = FormUtil.getElementParameterName(element);
+            List<String> values = Optional.ofNullable(formData.getRequestParameterValues(paramName))
+                    .map(Arrays::stream)
+                    .orElseGet(Stream::empty)
+                    .map(v -> v.split(";"))
+                    .flatMap(Arrays::stream)
+                    .collect(Collectors.toList());
+            values.add(filename);
+
+            formData.addRequestParameterValues(paramName, new String[]{String.join(";", values)});
+
             // determine file path
-            byte[] data = Base64.getDecoder().decode(encodedFile);
-            FileUtil.storeFile(new MockMultipartFile(filename, filename, null, data), element, element.getPrimaryKeyValue(formData));
+            MultipartFile file = decodeFile(filename, encodedFile);
+//            FileUtil.storeFile(file, element, element.getPrimaryKeyValue(formData));
+            return file;
         }
 
-        String paramName = FormUtil.getElementParameterName(element);
-        List<String> values = Optional.ofNullable(formData.getRequestParameterValues(paramName))
-                .map(Arrays::stream)
-                .orElseGet(Stream::empty)
-                .map(v -> v.split(";"))
-                .flatMap(Arrays::stream)
-                .collect(Collectors.toList());
-        values.add(filename);
-
-        formData.addRequestParameterValues(paramName, new String[]{String.join(";", values)});
+        return null;
     }
 
+    /**
+     * Decode base64 to file
+     *
+     * @param filename
+     * @param bse64EncodedFile
+     * @return
+     */
+    @Nullable
+    private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException{
+        byte[] data = Base64.getDecoder().decode(bse64EncodedFile);
+        return new MockMultipartFile(filename, filename, null, data);
+    }
+
+    /**
+     * Decode base64 to file
+     *
+     * @param value
+     * @return
+     */
+    @Nullable
+    private MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
+        String[] split = value.split(";");
+        if(split.length > 1) {
+            String fileName = split[0];
+            String encodedFile = split[1];
+            return decodeFile(fileName, encodedFile);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Get DataList Assignments
@@ -2587,7 +2719,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction) {
+    private <T, R, E extends Exception> ThrowableFunction<T, R, E> throwable(ThrowableFunction<T, R, E> throwableFunction) {
         return throwableFunction;
     }
 

@@ -1,13 +1,5 @@
 package org.joget.apps.form.lib;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
@@ -19,6 +11,12 @@ import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
@@ -35,12 +33,12 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     }
 
     @SuppressWarnings("unchecked")
-	public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
+    public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "fileUpload.ftl";
-        return renderTemplate(template,formData,dataModel);
+        return renderTemplate(template, formData, dataModel);
     }
 
-    private String renderTemplate(String template,FormData formData,@SuppressWarnings("rawtypes")  Map dataModel){
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
 
         // set value
         String[] values = FormUtil.getElementPropertyValues(this, formData);
@@ -117,7 +115,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         if (id != null) {
             String[] tempFilenames = formData.getRequestParameterValues(id);
             String[] tempExisting = formData.getRequestParameterValues(id + filePathPostfix);
-            
+
             if ((tempFilenames != null && tempFilenames.length > 0) || (tempExisting != null && tempExisting.length > 0)) {
                 List<String> filenames = new ArrayList<String>();
                 if (tempFilenames != null && tempFilenames.length > 0) {
@@ -128,7 +126,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                 if (tempRemove != null && tempRemove.length > 0) {
                     removalFlag.addAll(Arrays.asList(tempRemove));
                 }
-                
+
                 List<String> existingFilePath = new ArrayList<String>();
                 if (tempExisting != null && tempExisting.length > 0) {
                     existingFilePath.addAll(Arrays.asList(tempExisting));
@@ -151,7 +149,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         }
         return formData;
     }
-    
+
     @Override
     public FormRowSet formatData(FormData formData) {
         FormRowSet rowSet = null;
@@ -165,7 +163,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                 FormRow result = new FormRow();
                 List<String> resultedValue = new ArrayList<String>();
                 List<String> filePaths = new ArrayList<String>();
-                
+
                 for (String value : values) {
                     // check if the file is in temp file
                     File file = FileManager.getFileByPath(value);
@@ -177,16 +175,16 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                         resultedValue.add(value);
                     }
                 }
-                
+
                 if (!filePaths.isEmpty()) {
                     result.putTempFilePath(id, filePaths.toArray(new String[]{}));
                 }
-                
+
                 // formulate values
                 String delimitedValue = FormUtil.generateElementPropertyValues(resultedValue.toArray(new String[]{}));
                 String paramName = FormUtil.getElementParameterName(this);
                 formData.addRequestParameterValues(paramName, resultedValue.toArray(new String[]{}));
-                        
+
                 // set value into Properties and FormRowSet object
                 result.setProperty(id, delimitedValue);
                 rowSet = new FormRowSet();
@@ -195,6 +193,49 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         }
 
         return rowSet;
+    }
+
+    @Override
+    public String getElementValue(FormData formData) {
+        if (isReadOnlyLabel()) {
+            return getFileDownloadLink(formData);
+        } else {
+            return super.getElementValue(formData);
+        }
+    }
+
+    private String getFileDownloadLink(FormData formData) {
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        // set value
+        String[] values = FormUtil.getElementPropertyValues(this, formData);
+        return Arrays.stream(values)
+                .filter(Objects::nonNull)
+                .map(fileName -> {
+                    // determine actual path for the file uploads
+                    String appId = appDefinition.getAppId();
+                    long appVersion = appDefinition.getVersion();
+                    String formDefId = Optional.ofNullable(FormUtil.findRootForm(this)).map(f -> f.getPropertyString(FormUtil.PROPERTY_ID)).orElse("");
+                    String encodedFileName = fileName;
+                    String primaryKeyValue = formData.getPrimaryKeyValue();
+                    try {
+                        encodedFileName = URLEncoder.encode(fileName, "UTF8").replaceAll("\\+", "%20");
+                    } catch (UnsupportedEncodingException ex) {
+                        // ignore
+                    }
+
+                    String filePath = "/web/client/app/" + appId + "/" + appVersion + "/form/download/" + formDefId + "/" + primaryKeyValue + "/" + encodedFileName + ".";
+                    if (Boolean.parseBoolean(getPropertyString("attachment"))) {
+                        filePath += "?attachment=true";
+                    }
+
+                    return filePath;
+                })
+                .collect(Collectors.joining(";"));
+    }
+
+    private boolean isReadOnlyLabel() {
+        return "true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY))
+                && "true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY_LABEL));
     }
 
     public String getClassName() {
