@@ -175,15 +175,13 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            fillStoreBinderInFormData(jsonBody, form, formData);
-
             // check form permission
             if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
             // validate form
-            FormData result = formService.validateFormData(form, formData);
+            FormData result = validateFormData(form, formData);
 
             // construct response
             JSONObject jsonResponse = new JSONObject();
@@ -211,6 +209,25 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+    }
+
+    /**
+     * Validate Form Data
+     *
+     * @param form
+     * @param formData
+     */
+    private FormData validateFormData(Form form, FormData formData) {
+        Optional.of(formData)
+                .map(FormData::getRequestParams)
+                .map(Map::entrySet)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .map(e -> FormUtil.findElement(e.getKey(), form, formData))
+                .forEach(e -> FormUtil.executeValidators(e, formData));
+
+        return formData;
+
     }
 
     /**
@@ -1576,7 +1593,6 @@ public class DataJsonController {
      * @param jsonBody
      * @param form
      * @param formData
-     * @param update Update or Overwrite ?
      * @param isAssignment
      * @return
      * @throws IOException
