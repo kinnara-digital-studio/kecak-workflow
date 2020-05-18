@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
@@ -214,7 +215,14 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                     // determine actual path for the file uploads
                     String appId = appDefinition.getAppId();
                     long appVersion = appDefinition.getVersion();
-                    String formDefId = Optional.ofNullable(FormUtil.findRootForm(this)).map(f -> f.getPropertyString(FormUtil.PROPERTY_ID)).orElse("");
+                    String formDefId = Optional.ofNullable( FormUtil.findRootForm(this))
+                            .map(new Function<Form, String>() {
+                                @Override
+                                public String apply(Form f) {
+                                    return f.getPropertyString(FormUtil.PROPERTY_ID);
+                                }
+                            })
+                            .orElse("");
                     String encodedFileName = fileName;
                     String primaryKeyValue = formData.getPrimaryKeyValue();
                     try {
