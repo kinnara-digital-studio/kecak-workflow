@@ -379,6 +379,7 @@ public class DataJsonController {
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam("primaryKey") final String primaryKey,
                             @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                            @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
@@ -387,6 +388,10 @@ public class DataJsonController {
         try {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
+
+            if(asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] {"true"});
+            }
 
             // get current App
             AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
@@ -830,6 +835,7 @@ public class DataJsonController {
                         @RequestParam(value = "sort", required = false) final String sort,
                         @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
                         @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                        @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                         @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
@@ -884,6 +890,10 @@ public class DataJsonController {
                         .map(throwable(s -> {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
+
+                            if(asAttachmentUrl) {
+                                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] {"true"});
+                            }
 
                             return Optional.of(form)
                                     .filter(f -> f.isAuthorize(formData))
@@ -1259,6 +1269,7 @@ public class DataJsonController {
     public void getAssignment(final HttpServletRequest request, final HttpServletResponse response,
                               @RequestParam("assignmentId") final String assignmentId,
                               @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                              @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                               @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
@@ -1282,6 +1293,9 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
+            if(asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] { "true" });
+            }
 
             // generate form
             Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
@@ -1354,6 +1368,7 @@ public class DataJsonController {
     public void getAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("processId") final String processId,
                                        @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                                       @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                                        @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
@@ -1378,7 +1393,9 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-
+            if(asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] { "true" });
+            }
             @Nonnull
             Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                     .map(PackageActivityForm::getForm)

@@ -198,7 +198,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
 
     @Override
     public String getElementValue(FormData formData) {
-        if (isReadOnlyLabel()) {
+        if (isReadOnlyLabel() || "true".equalsIgnoreCase(formData.getRequestParameter(PARAMETER_AS_LINK))) {
             return getFileDownloadLink(formData);
         } else {
             return super.getElementValue(formData);
