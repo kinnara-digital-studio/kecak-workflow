@@ -168,8 +168,7 @@ public class DataJsonController {
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
 
-            FormData formData = new FormData();
-            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
             AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
