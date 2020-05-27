@@ -154,7 +154,6 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/json/formUtil.js?build=<fmt:message key="build.number"/>"></script>
     </head>
     <body class="ui-mobile-viewport">
-
         <div id="userview" data-role="page" data-url="userview" tabindex="0" style="min-height: 377px; ">
             <c:if test="${!embed}">
                 <div data-role="header" data-position="fixed" role="banner" style="top: 0px; ">
