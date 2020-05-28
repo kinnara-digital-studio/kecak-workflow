@@ -162,7 +162,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(id, appDef);
 
             if (datalistDefinition != null) {
-                cacheDataList = dataListService.fromJson(datalistDefinition.getJson());
+                cacheDataList = dataListService.fromJson(datalistDefinition.getJson(), false);
 
                 if (getPropertyString(Userview.USERVIEW_KEY_NAME) != null && getPropertyString(Userview.USERVIEW_KEY_NAME).trim().length() > 0) {
                     cacheDataList.addBinderProperty(Userview.USERVIEW_KEY_NAME, getPropertyString(Userview.USERVIEW_KEY_NAME));

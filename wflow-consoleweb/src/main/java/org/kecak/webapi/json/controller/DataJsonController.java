@@ -735,7 +735,7 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }
@@ -803,7 +803,7 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }
@@ -914,7 +914,7 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }
@@ -2124,7 +2124,7 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }
@@ -2249,7 +2249,7 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
             }

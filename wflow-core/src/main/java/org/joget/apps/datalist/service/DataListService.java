@@ -17,6 +17,7 @@ import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -40,25 +41,21 @@ public class DataListService {
     /**
      * Create a DataList object from JSON definition
      * @param json
-     * @param ignorePermission
+     * @param ignoreColumnPermission
      * @return
      */
-    public DataList fromJson(String json, boolean ignorePermission) {
+    public DataList fromJson(String json, boolean ignoreColumnPermission) {
         json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
 
         DataList dataList = JsonUtil.fromJson(json, DataList.class);
 
         // check column permission
         if(dataList != null) {
-            if (!ignorePermission && !isAuthorize(dataList)) {
-                return null;
-            }
-
             DataListColumn[] columns = Optional.of(dataList)
                     .map(DataList::getColumns)
                     .map(Arrays::stream)
                     .orElseGet(Stream::empty)
-                    .filter(dataListColumn -> ignorePermission || dataListColumn.isPermitted())
+                    .filter(dataListColumn -> ignoreColumnPermission || dataListColumn.isPermitted())
                     .toArray(DataListColumn[]::new);
 
             dataList.setColumns(columns);
@@ -73,7 +70,7 @@ public class DataListService {
      * @return
      */
     public DataList fromJson(String json) {
-        return fromJson(json, false);
+        return fromJson(json, true);
     }
 
     /**

@@ -194,7 +194,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
 			AppService appService = (AppService) ac.getBean("appService");
             DataListService dataListService = (DataListService) ac.getBean("dataListService");
             String json = AppUtil.readPluginResource(getClass().getName(), "/properties/userview/inboxMenuListJson.json", null, true, "message/userview/inboxMenu");
-            cacheDataList = dataListService.fromJson(json);
+            cacheDataList = dataListService.fromJson(json, false);
         }
         return cacheDataList;
     }
