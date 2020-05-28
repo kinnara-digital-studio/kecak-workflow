@@ -4,6 +4,7 @@
 <c:set var="isVirtualHostEnabled" value="<%= HostManager.isVirtualHostEnabled() %>"/>
 
 <commons:header />
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery/blockui/jquery.blockUI.js"></script>
 
 <div id="nav">
     <div id="nav-title">
@@ -21,9 +22,8 @@
     <div id="main-action">
         <ul id="main-action-buttons">
             <li><button onclick="reload()"><fmt:message key="console.setting.plugin.common.label.reloadPlugin"/></button></li>
+            <li><button onclick="pull()"><fmt:message key="console.setting.plugin.sync.label"/></button></li>
             <li><button onclick="upload()"><fmt:message key="console.setting.plugin.upload.label"/></button></li>
-            <%-- Aristo : preparation for next release --%>
-            <%-- <li><button onclick="pull()"><fmt:message key="console.setting.plugin.sync.label"/></button></li> --%>
         </ul>
     </div>
     <div id="main-body">
@@ -95,6 +95,16 @@
     }
 
     function pull(dummy){
+        $.blockUI({ css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff'
+        } });
+
         var callback = {
             success : function() {
                 document.location = '${pageContext.request.contextPath}/web/console/setting/plugin';

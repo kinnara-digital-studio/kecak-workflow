@@ -4104,3 +4104,11 @@ body.skin-3 {
     display: none;
   }
 }
+
+.oauth2_login_container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    margin: -2.5px;
+    margin-bottom: 15px;
+}

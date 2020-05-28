@@ -1,12 +1,6 @@
 package org.joget.plugin.property.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.joget.commons.util.LogUtil;
@@ -32,7 +26,7 @@ public class PropertyUtil {
      */
     public static String getDefaultPropertyValues(String json) {
         try {
-            JSONArray pages = new JSONArray(json);
+            JSONArray pages = new JSONArray(Optional.ofNullable(json).orElse(""));
             JSONObject values = new JSONObject();
             
             //loop page

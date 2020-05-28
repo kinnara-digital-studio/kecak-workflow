@@ -160,7 +160,11 @@ public class JsonUtil {
             Collection<DataListFilter> filters = parseFiltersFromJsonObject(obj);
             DataListFilter[] temp4 = (DataListFilter[]) filters.toArray(new DataListFilter[filters.size()]);
             object.setFilters(temp4);
-            
+
+
+            // set permission
+            UserviewPermission permission = parsePermissionFromJsonObject(obj);
+            object.setPermission(permission);
         }
         
         return object;

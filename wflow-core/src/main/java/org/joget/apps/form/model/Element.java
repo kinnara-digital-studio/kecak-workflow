@@ -17,6 +17,7 @@ import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -196,6 +197,17 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
     public Boolean selfValidate(FormData formData) {
         //do nothing
         return true;
+    }
+
+    /**
+     * Method to retrieve element value from form data ready to be shown to UI.
+     * You can override this to use your own value formatting.
+     *
+     * @param formData
+     * @return
+     */
+    public String getElementValue(FormData formData) {
+        return FormUtil.getElementPropertyValue(this, formData);
     }
 
     /**

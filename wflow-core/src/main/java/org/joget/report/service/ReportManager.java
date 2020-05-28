@@ -1,9 +1,9 @@
 package org.joget.report.service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import org.joget.report.dao.ReportAppDao;
 import org.joget.report.dao.ReportWorkflowActivityDao;
 import org.joget.report.dao.ReportWorkflowActivityInstanceDao;
@@ -162,6 +162,78 @@ public class ReportManager {
      */
     public long getReportWorkflowActivityInstanceListSize(String appId, String appVersion, String processDefId, String activityDefId) {
         return reportWorkflowActivityInstanceDao.getReportWorkflowActivityInstanceListSize(appId, appVersion, processDefId, activityDefId);
+    }
+
+    /**
+     *
+     * @param appId
+     * @param appVersion
+     * @param processDefId
+     * @param state
+     * @param fromDate
+     * @param toDate
+     * @param sort
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    public Collection<ReportWorkflowActivityInstance> getReportWorkflowActivityInstanceList(String appId, String appVersion, String processDefId, String state, Date fromDate, Date toDate, String sort, Boolean desc, Integer start, Integer rows) {
+        StringBuilder condition = new StringBuilder(" WHERE 1 = 1");
+        List<Object> arguments = new ArrayList<>();
+
+        if(state != null) {
+            condition.append(" AND e.state = ?");
+            arguments.add(state);
+        }
+
+        if(fromDate != null) {
+            condition.append(" AND e.startedTime >= ?");
+            arguments.add(fromDate);
+        }
+
+        if(toDate != null) {
+            condition.append(" AND e.finishTime <= ?");
+            arguments.add(toDate);
+        }
+
+        return reportWorkflowActivityInstanceDao.getReportWorkflowActivityInstanceList(appId, appVersion, processDefId, condition.toString(), arguments.toArray(new Object[0]), sort, desc, start, rows);
+    }
+
+    /**
+     *
+     * @param appId
+     * @param appVersion
+     * @param processDefId
+     * @param state
+     * @param fromDate
+     * @param toDate
+     * @param sort
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    public long getReportWorkflowActivityInstanceListSize(String appId, String appVersion, String processDefId, String state, Date fromDate, Date toDate, String sort, Boolean desc, Integer start, Integer rows) {
+        StringBuilder condition = new StringBuilder(" WHERE 1 = 1");
+        List<Object> arguments = new ArrayList<>();
+
+        if(state != null) {
+            condition.append(" AND e.state = ?");
+            arguments.add(state);
+        }
+
+        if(fromDate != null) {
+            condition.append(" AND e.startedTime >= ?");
+            arguments.add(fromDate);
+        }
+
+        if(toDate != null) {
+            condition.append(" AND e.finishTime <= ?");
+            arguments.add(toDate);
+        }
+
+        return reportWorkflowActivityInstanceDao.getReportWorkflowActivityInstanceListSize(appId, appVersion, processDefId, condition.toString(), arguments.toArray(new Object[0]));
     }
 
     /**

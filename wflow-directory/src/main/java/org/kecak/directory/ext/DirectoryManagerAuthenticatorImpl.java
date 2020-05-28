@@ -1,6 +1,6 @@
-package org.joget.directory.ext;
+package org.kecak.directory.ext;
 
-import org.joget.directory.model.service.DirectoryManagerAuthenticator;
+import org.kecak.directory.model.service.DirectoryManagerAuthenticator;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.plugin.base.ExtDefaultPlugin;
 

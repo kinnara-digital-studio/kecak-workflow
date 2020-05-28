@@ -4,6 +4,7 @@
 <%@ page import="org.joget.apps.userview.model.Userview"%>
 <%@ page import="org.joget.directory.model.service.DirectoryUtil"%>
 <%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@ page import="org.joget.commons.util.SetupManager"%>
 
 <%
     String rightToLeft = WorkflowUtil.getSystemSetupValue("rightToLeft");
@@ -61,15 +62,12 @@
             UI.base = "${pageContext.request.contextPath}";
             UI.userview_app_id = '${appId}';
             UI.userview_id = '${userview.properties.id}';
-            ${userview.setting.theme.javascript}
         </script>
-
+        ${userview.setting.theme.javascript}
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/bower_components/font-awesome/css/font-awesome.min.css">
-        <style type="text/css">
-            ${userview.setting.theme.css}
-        </style>
+        ${userview.setting.theme.css}
     </head>
 
     <body id="login" class="login-layout <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
@@ -147,6 +145,9 @@
                                                     <div class="space-4"></div>
                                                 </fieldset>
                                             </form>
+                                            <div class="oauth2_login_container">
+                                                ${oauth2PluginButton}
+                                            </div>
                                         </div><!-- /.widget-main -->
                                     </div><!-- /.widget-body -->
                                 </div><!-- /.login-box -->

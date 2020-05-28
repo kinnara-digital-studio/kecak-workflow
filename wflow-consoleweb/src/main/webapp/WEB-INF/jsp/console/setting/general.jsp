@@ -238,6 +238,18 @@
                 </span>
             </div>
             </c:if>
+            <c:forEach items="${oauthSetting}" var="oauthSettingId">
+                <div class="main-body-row">
+                    <span class="row-content">
+                        <div class="form-row">
+                            <label for="${oauthSettingId.key}">${oauthSettingId.value}</label>
+                            <span class="form-input">
+                                <input id="${oauthSettingId.key}" type="text" name="${oauthSettingId.key}" value="<c:out value="${settingMap[oauthSettingId.key]}"/>"/>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+            </c:forEach>
             <c:if test="${!isVirtualHostEnabled}">
             <div class="main-body-row">
                 <span class="row-content">

@@ -8,14 +8,10 @@ import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.Role;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
-import org.joget.workflow.model.service.WorkflowUserManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -39,34 +34,27 @@ import java.util.List;
 public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final String tokenHeader = "Authorization";
+    private final String TOKEN_HEADER = "Authorization";
 
-    @Autowired
     private AuthTokenService authTokenService;
-
-    @Autowired
-    @Qualifier("main")
     private DirectoryManager directoryManager;
-
-    @Autowired
-    private WorkflowUserManager workflowUserManager;
-
     private AuthenticationEntryPoint authenticationEntryPoint;
-    private AuthenticationManager authenticationManager;
 
-    public WorkflowJwtAuthProcessingFilter(AuthenticationManager authenticationManager) {
-        Assert.notNull(authenticationManager, "authenticationManager cannot be null");
-        this.authenticationManager = authenticationManager;
-    }
-
-    public WorkflowJwtAuthProcessingFilter(AuthenticationManager authenticationManager,
-                                           AuthenticationEntryPoint authenticationEntryPoint) {
-        Assert.notNull(authenticationManager, "authenticationManager cannot be null");
-        Assert.notNull(authenticationEntryPoint,
-                "authenticationEntryPoint cannot be null");
-        this.authenticationManager = authenticationManager;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-    }
+//    private AuthenticationManager authenticationManager;
+//
+//    public WorkflowJwtAuthProcessingFilter(AuthenticationManager authenticationManager) {
+//        Assert.notNull(authenticationManager, "authenticationManager cannot be null");
+//        this.authenticationManager = authenticationManager;
+//    }
+//
+//    public WorkflowJwtAuthProcessingFilter(AuthenticationManager authenticationManager,
+//                                           AuthenticationEntryPoint authenticationEntryPoint) {
+//        Assert.notNull(authenticationManager, "authenticationManager cannot be null");
+//        Assert.notNull(authenticationEntryPoint,
+//                "authenticationEntryPoint cannot be null");
+//        this.authenticationManager = authenticationManager;
+//        this.authenticationEntryPoint = authenticationEntryPoint;
+//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -74,7 +62,7 @@ public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
                                     ServletException {
         final boolean debug = logger.isDebugEnabled();
 
-        String header = request.getHeader(this.tokenHeader);
+        String header = request.getHeader(this.TOKEN_HEADER);
         if ( header!=null && header.startsWith("Bearer ") ) {
             String authToken = header.substring(7);
 
@@ -121,4 +109,20 @@ public class WorkflowJwtAuthProcessingFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         }
     }
+
+    public void setAuthTokenService(AuthTokenService authTokenService) {
+        this.authTokenService = authTokenService;
+    }
+
+    public void setDirectoryManager(DirectoryManager directoryManager) {
+        this.directoryManager = directoryManager;
+    }
+
+    public void setAuthenticationEntryPoint(AuthenticationEntryPoint authenticationEntryPoint) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
+//
+//    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+//        this.authenticationManager = authenticationManager;
+//    }
 }

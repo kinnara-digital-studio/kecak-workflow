@@ -227,3 +227,10 @@ body .ui-widget-overlay {
 input[type="button"], input[type="submit"], input[type="reset"] {
   -webkit-appearance: button;
 }
+.oauth2_login_container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    margin: -2.5px;
+    margin-bottom: 15px;
+}

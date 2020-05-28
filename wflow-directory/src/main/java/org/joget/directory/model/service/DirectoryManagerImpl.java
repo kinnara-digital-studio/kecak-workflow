@@ -23,6 +23,7 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
     private GradeDao gradeDao;
     private RoleDao roleDao;
     private UserSaltDao userSaltDao;
+    private UserTokenDao userTokenDao;
 
     public DepartmentDao getDepartmentDao() {
         return departmentDao;
@@ -88,7 +89,15 @@ public class DirectoryManagerImpl implements ExtDirectoryManager {
 		this.userSaltDao = userSaltDao;
 	}
 
-	public Collection<Group> getGroupsByOrganizationId(String filterString, String organizationId, String sort, Boolean desc, Integer start, Integer rows) {
+    public UserTokenDao getUserTokenDao() {
+        return userTokenDao;
+    }
+
+    public void setUserTokenDao(UserTokenDao userTokenDao) {
+        this.userTokenDao = userTokenDao;
+    }
+
+    public Collection<Group> getGroupsByOrganizationId(String filterString, String organizationId, String sort, Boolean desc, Integer start, Integer rows) {
         return getGroupDao().getGroupsByOrganizationId(filterString, organizationId, sort, desc, start, rows);
     }
 

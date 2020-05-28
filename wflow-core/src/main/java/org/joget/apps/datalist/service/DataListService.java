@@ -1,17 +1,25 @@
 package org.joget.apps.datalist.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.datalist.model.DataList;
-import org.joget.apps.datalist.model.DataListAction;
-import org.joget.apps.datalist.model.DataListBinder;
-import org.joget.apps.datalist.model.DataListColumnFormat;
+import org.joget.apps.datalist.model.*;
+import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.model.User;
+import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
+import org.joget.workflow.model.service.WorkflowUserManager;
+import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,16 +31,46 @@ public class DataListService {
     @Autowired
     PluginManager pluginManager;
 
+    @Autowired
+    WorkflowUserManager workflowUserManager;
+
+    @Autowired
+    @Qualifier("main")
+    ExtDirectoryManager directoryManager;
+
+    /**
+     * Create a DataList object from JSON definition
+     * @param json
+     * @param ignoreColumnPermission
+     * @return
+     */
+    public DataList fromJson(String json, boolean ignoreColumnPermission) {
+        json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
+
+        DataList dataList = JsonUtil.fromJson(json, DataList.class);
+
+        // check column permission
+        if(dataList != null) {
+            DataListColumn[] columns = Optional.of(dataList)
+                    .map(DataList::getColumns)
+                    .map(Arrays::stream)
+                    .orElseGet(Stream::empty)
+                    .filter(dataListColumn -> ignoreColumnPermission || dataListColumn.isPermitted())
+                    .toArray(DataListColumn[]::new);
+
+            dataList.setColumns(columns);
+        }
+
+        return dataList;
+    }
+
     /**
      * Create a DataList object from JSON definition
      * @param json
      * @return
      */
     public DataList fromJson(String json) {
-        json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
-
-        DataList dataList = JsonUtil.fromJson(json, DataList.class);
-        return dataList;
+        return fromJson(json, true);
     }
 
     /**
@@ -112,5 +150,26 @@ public class DataListService {
         }
         DataListColumnFormat[] result = (DataListColumnFormat[]) list.toArray(new DataListColumnFormat[0]);
         return result;
+    }
+
+
+    /**
+     * Check authorization using permission
+     *
+     * @param dataList
+     * @return
+     */
+    public boolean isAuthorize(DataList dataList) {
+        return Optional.ofNullable(dataList)
+                .map(DataList::getPermission)
+                .map(userviewPermission -> {
+                    User user = Optional.of(workflowUserManager.getCurrentUsername())
+                            .map(directoryManager::getUserByUsername)
+                            .orElse(null);
+
+                    userviewPermission.setCurrentUser(user);
+                    return userviewPermission.isAuthorize();
+                })
+                .orElse(true);
     }
 }

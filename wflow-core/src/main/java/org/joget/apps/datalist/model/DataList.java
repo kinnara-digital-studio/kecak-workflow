@@ -4,6 +4,7 @@ import org.displaytag.tags.TableTagParameters;
 import org.displaytag.util.ParamEncoder;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.service.DataListDecorator;
+import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.StringUtil;
@@ -72,6 +73,7 @@ public class DataList {
     private String selectionType = SELECTION_TYPE_MULTIPLE;
     private Collection<DataListFilterQueryObject> dataListFilterQueryObjectList = new ArrayList<DataListFilterQueryObject>();
     private boolean filterQueryBuild = false;
+    private UserviewPermission permission = null;
 
     //Required when using session
     public void init() {
@@ -678,5 +680,23 @@ public class DataList {
 
         template += "</select>";
         return template;
+    }
+
+    /**
+     * Set permission
+     *
+     * @param permission
+     */
+    public void setPermission(UserviewPermission permission) {
+        this.permission = permission;
+    }
+
+    /**
+     * Get permission
+     *
+     * @return
+     */
+    public UserviewPermission getPermission() {
+        return permission;
     }
 }

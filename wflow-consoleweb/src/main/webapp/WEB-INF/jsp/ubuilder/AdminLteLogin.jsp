@@ -61,9 +61,8 @@
             UI.base = "${pageContext.request.contextPath}";
             UI.userview_app_id = '${appId}';
             UI.userview_id = '${userview.properties.id}';
-
-            ${userview.setting.theme.javascript}
         </script>
+        ${userview.setting.theme.javascript}
 
         <!-- Tell the browser to be responsive to screen width -->
           <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -72,9 +71,7 @@
           <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/Ionicons/css/ionicons.min.css">
           <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/bower_components//font-awesome/css/font-awesome.min.css">
           <link rel="stylesheet" href="${pageContext.request.contextPath}/css/fonts.css">
-          <style type="text/css">
-            ${userview.setting.theme.css}
-          </style>
+          ${userview.setting.theme.css}
     </head>
 
     <body id="login" class="hold-transition login-page <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
@@ -116,10 +113,17 @@
               <div class="row">
                 <div class="col-xs-12">
                   <button type="submit" class="btn btn-primary btn-block btn-flat"><fmt:message key="ubuilder.login" /></button>
+                    <label class="inline">
+                        <%= DirectoryUtil.getLoginFormFooter() %>
+                    </label>
                 </div>
                 <!-- /.col -->
               </div>
             </form>
+            <br>
+            <div class="oauth2_login_container">
+                ${oauth2PluginButton}
+            </div>
           </div>
           <!-- /.login-box-body -->
           <div class="center" style="margin-top:10px;">
@@ -138,5 +142,6 @@
               ${userview.setting.properties.loginPageBottom}
           </c:if>
         </div>
+        <%= AppUtil.getSystemAlert() %>
     </body>
 </html>

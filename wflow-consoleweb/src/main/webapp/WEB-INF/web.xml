@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
     <display-name>Kecak Workflow</display-name>
     <context-param>
         <param-name>webAppRootKey</param-name>
@@ -38,7 +41,7 @@
     </listener>
     <listener>
         <listener-class>org.joget.apps.app.web.SessionListener</listener-class>
-    </listener>    
+    </listener>
     <listener>
         <listener-class>org.owasp.csrfguard.CsrfGuardServletContextListener</listener-class>
     </listener>
@@ -91,7 +94,7 @@
     <servlet-mapping>
         <servlet-name>JavaScriptServlet</servlet-name>
         <url-pattern>/csrf</url-pattern>
-    </servlet-mapping>    
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/web/*</url-pattern>
@@ -150,6 +153,12 @@
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/j_spring_security_check</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/j_spring_security_check_2</url-pattern>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>

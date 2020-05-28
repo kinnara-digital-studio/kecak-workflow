@@ -305,7 +305,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
         }
     }
 
-    private void startProcess(String action) {
+    protected void startProcess(String action) {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -384,7 +384,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
         }
     }
 
-    private void assignmentView() {
+    protected void assignmentView() {
         String activityId = getRequestParameterString("activityId");
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
@@ -426,7 +426,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
     }
 
     @SuppressWarnings("deprecation")
-	private void assignmentSubmit() {
+	protected void assignmentSubmit() {
         ApplicationContext ac = AppUtil.getApplicationContext();
         AppService appService = (AppService) ac.getBean("appService");
         FormService formService = (FormService) ac.getBean("formService");
@@ -546,7 +546,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
         }
     }
 
-    private void processStarted(Form form, FormData formData) {
+    protected void processStarted(Form form, FormData formData) {
         setAlertMessage(getPropertyString("messageTitleShowAfterComplete"),getPropertyString("messageShowAfterComplete"));
         if (getPropertyString("redirectUrlAfterComplete") != null && !getPropertyString("redirectUrlAfterComplete").isEmpty()) {
             setProperty("view", "redirect");

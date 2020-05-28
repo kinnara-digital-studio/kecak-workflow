@@ -33,6 +33,8 @@ public class User implements Serializable, Auditable {
     private String timeZone;
     private String locale;
 	private Blob profilePicture;
+	private String telephoneNumber;
+
     //join
     @SuppressWarnings("rawtypes")
 	private Set roles;
@@ -232,4 +234,12 @@ public class User implements Serializable, Auditable {
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
+
+    public String getTelephoneNumber() {
+        return telephoneNumber;
+    }
+
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
+    }
 }

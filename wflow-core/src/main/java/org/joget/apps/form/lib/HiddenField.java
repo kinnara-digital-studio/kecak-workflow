@@ -27,7 +27,7 @@ public class HiddenField extends Element implements FormBuilderPaletteElement {
         String template = "hiddenField.ftl";
 
         // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
+        String value = getElementValue(formData);
         String priority = getPropertyString("useDefaultWhenEmpty");
         
         if (priority != null && !priority.isEmpty()) {

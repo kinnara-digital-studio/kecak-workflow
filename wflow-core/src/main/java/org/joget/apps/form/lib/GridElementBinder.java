@@ -10,19 +10,18 @@ import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
-import org.springframework.beans.BeansException;
 
 import java.util.*;
 import java.util.stream.Stream;
 
-public class MultirowFormBinder
+public class GridElementBinder
         extends FormBinder
         implements FormLoadBinder,
         FormStoreBinder,
         FormLoadMultiRowElementBinder,
         FormStoreMultiRowElementBinder {
-    
-    private final static String LABEL = "Multirow Form Binder";
+
+    private final static String LABEL = "Grid Element Binder";
 
     @Override
     public String getName() {
@@ -54,7 +53,7 @@ public class MultirowFormBinder
         AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         Object[] arguments = {appDef.getId(), appDef.getVersion()};
         return AppUtil.readPluginResource(getClass().getName(),
-                "/properties/form/multirowFormBinder.json", arguments, true);
+                "/properties/form/gridFormBinder.json", arguments, true);
     }
     
     @Override

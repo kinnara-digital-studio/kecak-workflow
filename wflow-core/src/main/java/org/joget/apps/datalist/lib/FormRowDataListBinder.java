@@ -24,6 +24,7 @@ import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.Userview;
+import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 
 public class FormRowDataListBinder extends DataListBinderDefault {
@@ -113,14 +114,13 @@ public class FormRowDataListBinder extends DataListBinderDefault {
 	public DataListCollection getData(DataList dataList, Map properties, DataListFilterQueryObject[] filterQueryObjects, String sort, Boolean desc, Integer start, Integer rows) {
         DataListCollection resultList = new DataListCollection();
 
-        String formDefId = getPropertyString("formDefId");
-        String tableName = getTableName(formDefId);
-        if (tableName != null) {
+        Form form = getSelectedForm();
+        if (form != null) {
             FormDataDao formDataDao = (FormDataDao) AppUtil.getApplicationContext().getBean("formDataDao");
 
             DataListFilterQueryObject criteria = getCriteria(properties, filterQueryObjects);
 
-            FormRowSet rowSet = formDataDao.find(formDefId, tableName, criteria.getQuery(), criteria.getValues(), sort, desc, start, rows);
+            FormRowSet rowSet = formDataDao.find(form, criteria.getQuery(), criteria.getValues(), sort, desc, start, rows);
             resultList.addAll(rowSet);
         }
 
@@ -129,14 +129,13 @@ public class FormRowDataListBinder extends DataListBinderDefault {
 
     public int getDataTotalRowCount(DataList dataList, @SuppressWarnings("rawtypes") Map properties, DataListFilterQueryObject[] filterQueryObjects) {
         int count = 0;
-        
-        String formDefId = getPropertyString("formDefId");
-        String tableName = getTableName(formDefId);
-        if (tableName != null) {
+
+        Form form = getSelectedForm();
+        if (form != null) {
             FormDataDao formDataDao = (FormDataDao) AppUtil.getApplicationContext().getBean("formDataDao");
             DataListFilterQueryObject criteria = getCriteria(properties, filterQueryObjects);
 
-            Long rowCount = formDataDao.count(formDefId, tableName, criteria.getQuery(), criteria.getValues());
+            Long rowCount = formDataDao.count(form, criteria.getQuery(), criteria.getValues());
             count = rowCount.intValue();
         }
         return count;
@@ -183,7 +182,8 @@ public class FormRowDataListBinder extends DataListBinderDefault {
     @Override
     public String getColumnName(String name) {
         if (name != null && !name.isEmpty() && !FormUtil.PROPERTY_ID.equals(name)) {
-            String formDefId = getPropertyString("formDefId");
+            Form form = getSelectedForm();
+            String formDefId = form.getPropertyString("id");
             String tableName = getTableName(formDefId);
             if (tableName != null) {
                 FormDataDao formDataDao = (FormDataDao) AppUtil.getApplicationContext().getBean("formDataDao");

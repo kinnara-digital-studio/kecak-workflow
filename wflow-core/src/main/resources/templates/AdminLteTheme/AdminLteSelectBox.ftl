@@ -1,6 +1,6 @@
 <div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <script type="text/javascript" src="${request.contextPath}/plugin/${className}/bower_components/select2/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="${request.contextPath}/plugin/${className}/bower_components/select2/dist/css/select2.min.css">
+    <script type="text/javascript" src="${request.contextPath}/bower_components/select2/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="${request.contextPath}/bower_components/select2/dist/css/select2.min.css">
     <label>${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
     <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
         <div class="form-cell-value">
@@ -16,7 +16,7 @@
         <div style="clear:both;"></div>
     <#else>
         <div class="form-cell-value">
-            <select style="width:${element.properties.size}%" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> class="form-control <#if error??>form-error-cell</#if>" <#if element.properties.readonly! == 'true'> disabled </#if>>
+            <select style="width:100%" <#if element.properties.readonly! != 'true'>id="${elementParamName!}${element.properties.elementUniqueKey!}"</#if> name="${elementParamName!}" <#if element.properties.multiple! == 'true'>multiple</#if> class="form-control <#if error??>form-error-cell</#if>" <#if element.properties.readonly! == 'true'> disabled </#if>>
                 <#if element.properties.lazyLoading! != 'true' >
                     <#list options! as option>
                         <option value="${option.value!?html}" grouping="${option.grouping!?html}" <#if values?? && values?seq_contains(option.value!)>selected</#if>>${option.label!?html}</option>

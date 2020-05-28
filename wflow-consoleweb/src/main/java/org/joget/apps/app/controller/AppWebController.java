@@ -37,6 +37,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class AppWebController {
@@ -375,7 +376,7 @@ public class AppWebController {
                                     compareValue = compareValue.replace(FileManager.THUMBNAIL_EXT, "");
                                 }
                                 
-                                String value = row.getProperty(fieldId.toString());
+                                String value = Optional.ofNullable(row.getProperty(fieldId.toString())).orElse("");
                                 
                                 if (value.equals(compareValue)
                                         || (value.contains(";") 
@@ -388,6 +389,9 @@ public class AppWebController {
                                         isAuthorize = security.isDownloadAllowed(request.getParameterMap());
                                         
                                         break;
+                                    } else {
+                                        isAuthorize = true;
+                                        break;
                                     }
                                 }
                             }
@@ -395,7 +399,9 @@ public class AppWebController {
                     }
                 }
             }
-        } catch (Exception e){}
+        } catch (Exception e){
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
         
         if (!isAuthorize) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
