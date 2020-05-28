@@ -102,34 +102,40 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
     }
 
     protected String getJspPage(String jspFile) {
+        DataListService dataListSService = (DataListService) AppUtil.getApplicationContext().getBean("dataListService");
         try {
             // get data list
             DataList dataList = getDataList();
 
             if (dataList != null) {
-                //overide datalist result to use userview result
-                DataListActionResult ac = dataList.getActionResult();
-                if (ac != null) {
-                    if (ac.getMessage() != null && !ac.getMessage().isEmpty()) {
-                        setAlertMessage(ac.getMessage());
-                    }
-                    if (ac.getType() != null && DataListActionResult.TYPE_REDIRECT.equals(ac.getType()) &&
-                            ac.getUrl() != null && !ac.getUrl().isEmpty()) {
-                        if ("REFERER".equals(ac.getUrl())) {
-                            HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
-                            if (request != null && request.getHeader("Referer") != null) {
-                                setRedirectUrl(request.getHeader("Referer"));
+                if(dataListSService.isAuthorize(dataList)) {
+                    setProperty("error", "Unauthorized access");
+                } else {
+
+                    //overide datalist result to use userview result
+                    DataListActionResult ac = dataList.getActionResult();
+                    if (ac != null) {
+                        if (ac.getMessage() != null && !ac.getMessage().isEmpty()) {
+                            setAlertMessage(ac.getMessage());
+                        }
+                        if (ac.getType() != null && DataListActionResult.TYPE_REDIRECT.equals(ac.getType()) &&
+                                ac.getUrl() != null && !ac.getUrl().isEmpty()) {
+                            if ("REFERER".equals(ac.getUrl())) {
+                                HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
+                                if (request != null && request.getHeader("Referer") != null) {
+                                    setRedirectUrl(request.getHeader("Referer"));
+                                } else {
+                                    setRedirectUrl("REFERER");
+                                }
                             } else {
-                                setRedirectUrl("REFERER");
+                                setRedirectUrl(ac.getUrl());
                             }
-                        } else {
-                            setRedirectUrl(ac.getUrl());
                         }
                     }
-                }
 
-                // set data list
-                setProperty("dataList", dataList);
+                    // set data list
+                    setProperty("dataList", dataList);
+                }
             } else {
                 setProperty("error", "Data List \"" + getPropertyString("datalistId") + "\" not exist.");
             }

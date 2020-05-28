@@ -735,9 +735,14 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // check permission
+            if(!dataListService.isAuthorize(dataList)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             getCollectFilters(request.getParameterMap(), dataList);
@@ -798,9 +803,14 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // check permission
+            if(!dataListService.isAuthorize(dataList)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             // configure sorting
@@ -904,9 +914,14 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // check permission
+            if(!dataListService.isAuthorize(dataList)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             // configure sorting
@@ -2109,9 +2124,14 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // check permission
+            if(!dataListService.isAuthorize(dataList)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             // configure sorting
@@ -2229,9 +2249,14 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), true);
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
+            }
+
+            // check permission
+            if(!dataListService.isAuthorize(dataList)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             getCollectFilters(request.getParameterMap(), dataList);

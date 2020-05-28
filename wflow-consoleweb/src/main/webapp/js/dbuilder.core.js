@@ -1172,6 +1172,19 @@ DatalistBuilder = {
                   required : 'false',
                   type : 'textarea'}
               ]
+            },
+            {
+                title: get_dbuilder_msg('dbuilder.advanceProperties'),
+                properties : [
+                    {
+                        label : get_dbuilder_msg('dbuilder.permission'),
+                        name  : 'permission',
+                        required : 'false',
+                        type : 'elementselect',
+                        options_ajax:'[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormPermission',
+                        url : '[CONTEXT_PATH]/web/property/json' + DatalistBuilder.appPath + '/getPropertyOptions'
+                    }
+                ]
             }
         ];
         
