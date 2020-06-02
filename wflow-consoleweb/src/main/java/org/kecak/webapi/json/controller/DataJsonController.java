@@ -19,7 +19,10 @@ import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
-import org.joget.commons.util.*;
+import org.joget.commons.util.FileManager;
+import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.SetupManager;
+import org.joget.commons.util.UuidGenerator;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcess;
@@ -122,7 +125,7 @@ public class DataJsonController {
             fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -176,7 +179,7 @@ public class DataJsonController {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -231,7 +234,6 @@ public class DataJsonController {
     }
 
     /**
-     *
      * @param appId
      * @param version 0 for published version
      * @return
@@ -274,11 +276,12 @@ public class DataJsonController {
     @Nonnull
     private Form getForm(AppDefinition appDefinition, String formDefId, FormData formData) throws ApiException {
         return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not available"));
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
     }
 
     /**
      * Construct JSON Object from Form Errors
+     *
      * @param formErrors
      * @return
      */
@@ -326,7 +329,7 @@ public class DataJsonController {
             fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -389,8 +392,8 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            if(asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] {"true"});
+            if (asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
             }
 
             // get current App
@@ -398,12 +401,12 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            if(asLabel) {
+            if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -462,7 +465,7 @@ public class DataJsonController {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -470,7 +473,7 @@ public class DataJsonController {
             JSONObject jsonData = getData(form, formData);
             Optional.of(jsonData)
                     .map(j -> j.optString("id"))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form ["+formDefId+"] not found"));
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form [" + formDefId + "] not found"));
 
             String currentDigest = getDigest(jsonData);
 
@@ -588,7 +591,7 @@ public class DataJsonController {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -781,7 +784,10 @@ public class DataJsonController {
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
                             for (int i = 0, size = a2.length(); i < size; i++) {
-                                try { a1.put(a2.get(i)); } catch (JSONException ignored) { }
+                                try {
+                                    a1.put(a2.get(i));
+                                } catch (JSONException ignored) {
+                                }
                             }
                         });
 
@@ -873,7 +879,7 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, null);
 
-            if(asLabel) {
+            if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
@@ -891,8 +897,8 @@ public class DataJsonController {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
 
-                            if(asAttachmentUrl) {
-                                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] {"true"});
+                            if (asAttachmentUrl) {
+                                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
                             }
 
                             return Optional.of(form)
@@ -906,7 +912,10 @@ public class DataJsonController {
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
                             for (int i = 0, size = a2.length(); i < size; i++) {
-                                try { a1.put(a2.get(i)); } catch (JSONException ignored) { }
+                                try {
+                                    a1.put(a2.get(i));
+                                } catch (JSONException ignored) {
+                                }
                             }
                         });
 
@@ -971,7 +980,7 @@ public class DataJsonController {
 
             Form form = Optional.of(packageActivityForm)
                     .map(PackageActivityForm::getForm)
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for ["+packageActivityForm.getActivityDefId()+"]"));
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
 
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
@@ -979,7 +988,7 @@ public class DataJsonController {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1075,8 +1084,7 @@ public class DataJsonController {
             AppUtil.setCurrentAppDefinition(appDefinition);
 
             // get assignment form
-            @Nonnull
-            final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
+            @Nonnull final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
@@ -1090,7 +1098,7 @@ public class DataJsonController {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1100,7 +1108,8 @@ public class DataJsonController {
 
             // return processResult
             JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(formData);;
+            Map<String, String> formErrors = getFormErrors(formData);
+            ;
             if (!formErrors.isEmpty()) {
                 JSONObject jsonError = new JSONObject(formErrors);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
@@ -1147,9 +1156,9 @@ public class DataJsonController {
      * <p>
      * Complete assignment form
      *
-     * @param request      HTTP Request, request body contains form field values
-     * @param response     HTTP Response
-     * @param processId    Assingment Process ID
+     * @param request   HTTP Request, request body contains form field values
+     * @param response  HTTP Response
+     * @param processId Assingment Process ID
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.POST)
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
@@ -1161,7 +1170,7 @@ public class DataJsonController {
 
         try {
             WorkflowAssignment assignment;
-            if(Optional.ofNullable(activityDefId).isPresent()) {
+            if (Optional.ofNullable(activityDefId).isPresent()) {
                 // by activity definition
                 assignment = Optional.ofNullable(workflowManager.getAssignmentsByProcessIds(Collections.singleton(processId), null, null, null, null))
                         .map(Collection::stream)
@@ -1187,8 +1196,7 @@ public class DataJsonController {
             AppUtil.setCurrentAppDefinition(appDefinition);
 
             // get assignment form
-            @Nonnull
-            final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
+            @Nonnull final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
@@ -1202,7 +1210,7 @@ public class DataJsonController {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1293,8 +1301,8 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            if(asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] { "true" });
+            if (asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
             }
 
             // generate form
@@ -1302,12 +1310,12 @@ public class DataJsonController {
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form for assignment [" + assignment.getActivityId() + " not found]"));
 
-            if(asLabel) {
+            if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1393,20 +1401,20 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            if(asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] { "true" });
+            if (asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
             }
             @Nonnull
             Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                     .map(PackageActivityForm::getForm)
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form not available for assignment [" + assignment.getActivityId() + "]"));
 
-            if(asLabel) {
+            if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
             // check form permission
-            if(!form.isAuthorize(formData)) {
+            if (!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1538,7 +1546,7 @@ public class DataJsonController {
                                 .orElse(null);
 
                         // check form permission
-                        if(!Optional.ofNullable(form).map(f -> f.isAuthorize(formData)).orElse(false)) {
+                        if (!Optional.ofNullable(form).map(f -> f.isAuthorize(formData)).orElse(false)) {
                             return null;
                         }
 
@@ -1618,7 +1626,7 @@ public class DataJsonController {
      */
     @Nonnull
     private FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
-        if(form == null) {
+        if (form == null) {
             return formData;
         }
 
@@ -1649,7 +1657,7 @@ public class DataJsonController {
                             .map(formData::getRequestParameter)
                             .orElse(null);
 
-                    if(parameterValue != null) {
+                    if (parameterValue != null) {
                         String[] filePaths = Optional.ofNullable(parameterValue)
                                 .map(this::handleEncodedFile)
                                 .map(Arrays::stream)
@@ -1661,7 +1669,8 @@ public class DataJsonController {
 
                         formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
                     }
-                });;
+                });
+        ;
 
 //        // handle request parameters
 //        processRequestParameters(jsonBody, element, formData);
@@ -1707,7 +1716,7 @@ public class DataJsonController {
                     .toArray(String[]::new);
 
         } catch (JSONException e) {
-            return new String[] { value };
+            return new String[]{value};
         }
     }
 
@@ -1732,7 +1741,7 @@ public class DataJsonController {
                         .filter(Objects::nonNull)
                         .toArray(MultipartFile[]::new);
 
-                if(files.length > 0) {
+                if (files.length > 0) {
 //                    FileStore.getFileMap().put(key, files);
                     for (MultipartFile file : files) {
                         FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
@@ -1744,14 +1753,14 @@ public class DataJsonController {
             else {
                 String value = jsonBody.getString(key);
                 MultipartFile file = addFileRequestParameter(value, element, formData);
-                if(file != null) {
+                if (file != null) {
 //                    FileStore.getFileMap().put(key, new MultipartFile[] { file });
                     FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
                 }
             }
         } else {
             String value;
-            if(element instanceof HiddenField) {
+            if (element instanceof HiddenField) {
                 value = getDefaultValue(element, formData);
             } else {
                 value = jsonBody.optString(key, null);
@@ -1768,7 +1777,7 @@ public class DataJsonController {
 
     private String getDefaultValue(@Nonnull Element element, @Nonnull FormData formData) {
         String defaultValue = element.getPropertyString(FormUtil.PROPERTY_VALUE);
-        if(isNotEmpty(defaultValue)) {
+        if (isNotEmpty(defaultValue)) {
             WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
             return AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
         }
@@ -1778,7 +1787,7 @@ public class DataJsonController {
     /**
      * Prepare formData with store binder
      *
-     * @param element element with store binder
+     * @param element  element with store binder
      * @param formData
      * @throws ApiException
      */
@@ -1831,8 +1840,8 @@ public class DataJsonController {
     @Nullable
     private String determinePrimaryKey(@Nonnull JSONObject jsonBody, @Nonnull FormData formData, boolean isAssignment) {
         // handle start process or assingment complete process
-        if(isAssignment) {
-            formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[] {AssignmentCompleteButton.DEFAULT_ID});
+        if (isAssignment) {
+            formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{AssignmentCompleteButton.DEFAULT_ID});
 
             return Optional.of(formData)
                     .map(FormData::getProcessId)
@@ -1841,7 +1850,7 @@ public class DataJsonController {
         }
 
         // if not assingment and primary is not assigned
-        else if(!Optional.of(formData).map(FormData::getPrimaryKeyValue).filter(this::isNotEmpty).isPresent()) {
+        else if (!Optional.of(formData).map(FormData::getPrimaryKeyValue).filter(this::isNotEmpty).isPresent()) {
             return Optional.of(jsonBody)
                     .map(j -> j.optString(FormUtil.PROPERTY_ID))
                     .filter(this::isNotEmpty)
@@ -1877,7 +1886,7 @@ public class DataJsonController {
 
         if (json != null) {
             FormRow row = convertJsonObjectToFormRow(form, json);
-            if(row != null) {
+            if (row != null) {
                 result.add(row);
             }
         }
@@ -1902,12 +1911,12 @@ public class DataJsonController {
 
     @Nonnull
     private String extractStringValue(@Nullable Form form, JSONObject json, String fieldName) throws JSONException {
-        if(form == null) {
+        if (form == null) {
             return json.getString(fieldName);
         }
 
         Element element = FormUtil.findElement(fieldName, form, null, true);
-        if(element instanceof FileDownloadSecurity) {
+        if (element instanceof FileDownloadSecurity) {
             // TODO : handle file here
             return json.getString(fieldName);
         } else {
@@ -1939,7 +1948,7 @@ public class DataJsonController {
      */
     @Nullable
     private MultipartFile addFileRequestParameter(@Nullable String value, Element element, FormData formData) {
-        if(value == null) {
+        if (value == null) {
             return null;
         }
 
@@ -1977,8 +1986,8 @@ public class DataJsonController {
      * @return
      */
     @Nullable
-    private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException{
-        if(bse64EncodedFile.isEmpty())
+    private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException {
+        if (bse64EncodedFile.isEmpty())
             return null;
 
         byte[] data = Base64.getDecoder().decode(bse64EncodedFile);
@@ -1994,9 +2003,9 @@ public class DataJsonController {
     @Nullable
     private MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
         String[] split = value.split(";");
-        if(split.length > 0) {
+        if (split.length > 0) {
             String fileName = split[0];
-            if(split.length > 1) {
+            if (split.length > 1) {
                 String encodedFile = split[1];
                 return decodeFile(fileName, encodedFile);
             }
@@ -2240,7 +2249,7 @@ public class DataJsonController {
 
         return processIds.stream()
                 .map(s -> {
-                    if(isEmpty(s)) {
+                    if (isEmpty(s)) {
                         return "";
                     }
 
@@ -2448,38 +2457,37 @@ public class DataJsonController {
     @Nonnull
     private JSONObject getData(@Nonnull final Form form, @Nullable FormData formData) {
         JSONObject parentJson = new JSONObject();
-        if(formData != null) {
+        if (formData != null) {
             elementStream(form, formData)
                     .filter(e -> e.getLoadBinder() != null)
                     .forEach(throwable(e -> {
                         FormRowSet rowSet = formData.getLoadBinderData(e);
 
-                        if(rowSet == null) {
+                        if (rowSet == null) {
                             return;
                         }
 
                         String elementId = e.getPropertyString("id");
-                        Element container = e;
-
-                        // most likely grid element
-                        if (rowSet.isMultiRow()) {
-                            JSONArray data = convertFormRowSetToJsonArray(container, formData, rowSet);
-                            parentJson.put(elementId, data);
-                        }
 
                         // Form, Section, or Subform
-                        else if (e instanceof FormContainer) {
-                            JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
+                        if (e instanceof FormContainer) {
+                            JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
                             data.sortedKeys().forEachRemaining(throwable(key -> {
                                 // check if current field is part of this container
-                                if(FormUtil.findElement(String.valueOf(key), e, formData, true) != null)
+                                if (FormUtil.findElement(String.valueOf(key), e, formData, true) != null)
                                     parentJson.put(key.toString(), data.get(key.toString()));
                             }));
                         }
 
+                        // most likely grid element
+                        else if (rowSet.isMultiRow()) {
+                            JSONArray data = convertFormRowSetToJsonArray(e, formData, rowSet);
+                            parentJson.put(elementId, data);
+                        }
+
                         // any other element with load binder
                         else {
-                            JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
+                            JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
                             parentJson.put(elementId, data);
                         }
                     }));
@@ -2520,7 +2528,7 @@ public class DataJsonController {
                 .map(peek(r -> r.forEach((k, v) -> {
                     String elementId = String.valueOf(k);
 
-                    if(container instanceof GridElement) {
+                    if (container instanceof GridElement) {
                         Arrays.stream(((GridElement) container).getColumnProperties())
                                 .filter(m -> k.equals(m.get("value")))
                                 .findFirst()
@@ -2542,7 +2550,6 @@ public class DataJsonController {
     }
 
     /**
-     *
      * @param rowSet
      * @return
      */
@@ -2618,6 +2625,7 @@ public class DataJsonController {
 
     /**
      * Null-safe way to retrieve {@link FormData#getFormErrors()}
+     *
      * @param formData
      * @return
      */
@@ -2658,7 +2666,7 @@ public class DataJsonController {
      * @param <T>
      * @return
      */
-    private <T> boolean isEmpty (@Nullable Collection<T> collection) {
+    private <T> boolean isEmpty(@Nullable Collection<T> collection) {
         return Optional.ofNullable(collection)
                 .map(Collection::isEmpty)
                 .orElse(true);
@@ -2684,7 +2692,7 @@ public class DataJsonController {
      */
     @Nonnull
     private Stream<Element> elementStream(@Nonnull Element element, FormData formData) {
-        if(!element.isAuthorize(formData)) {
+        if (!element.isAuthorize(formData)) {
             return Stream.empty();
         }
 
@@ -2742,7 +2750,6 @@ public class DataJsonController {
     // Throwable methods
 
     /**
-     *
      * @param throwableConsumer
      * @param <T>
      * @param <E>
@@ -2753,7 +2760,6 @@ public class DataJsonController {
     }
 
     /**
-     *
      * @param throwableBiConsumer
      * @param <T>
      * @param <U>
@@ -2765,7 +2771,6 @@ public class DataJsonController {
     }
 
     /**
-     *
      * @param throwableFunction
      * @param <T>
      * @param <R>
@@ -2777,7 +2782,6 @@ public class DataJsonController {
     }
 
     /**
-     *
      * @param throwableFunction
      * @param <T>
      * @param <R>
@@ -2814,7 +2818,6 @@ public class DataJsonController {
         R applyThrowable(T t) throws E;
 
         /**
-         *
          * @param f
          * @return
          */
@@ -2829,8 +2832,6 @@ public class DataJsonController {
         }
 
         /**
-         *
-         *
          * @param f
          * @return
          */
