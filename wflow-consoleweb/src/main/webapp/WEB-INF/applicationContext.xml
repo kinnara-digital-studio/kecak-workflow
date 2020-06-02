@@ -55,6 +55,7 @@
         <security:intercept-url pattern="/web/mlogin/**" access="ROLE_ADMIN, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING" />
         <security:intercept-url pattern="/web/mobile" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/mobile/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING" />
+        <security:intercept-url pattern="/web/embed/mobile/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING" />
         <security:intercept-url pattern="/web/mobilecache/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/mapp/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
 
