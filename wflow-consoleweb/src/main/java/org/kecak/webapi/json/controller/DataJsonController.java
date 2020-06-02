@@ -2471,7 +2471,8 @@ public class DataJsonController {
                         else if (e instanceof FormContainer) {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
                             data.sortedKeys().forEachRemaining(throwable(key -> {
-                                if(FormUtil.findElement(String.valueOf(key), e, formData) != null)
+                                // check if current field is part of this container
+                                if(FormUtil.findElement(String.valueOf(key), e, formData, true) != null)
                                     parentJson.put(key.toString(), data.get(key.toString()));
                             }));
                         }
