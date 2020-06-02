@@ -19,10 +19,7 @@ import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
-import org.joget.commons.util.FileManager;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.SetupManager;
-import org.joget.commons.util.UuidGenerator;
+import org.joget.commons.util.*;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.WorkflowProcess;
@@ -105,7 +102,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
-                               @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                               @RequestParam("appVersion") final String appVersion,
                                @RequestParam("formDefId") final String formDefId)
             throws IOException, JSONException {
 
@@ -118,14 +115,14 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
             fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -158,135 +155,10 @@ public class DataJsonController {
         }
     }
 
-    /**
-     * Check form permission
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
-     * @throws IOException
-     * @throws JSONException
-     */
-    @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
-    public void postCheckFormPermission(final HttpServletRequest request, final HttpServletResponse response,
-                                        @RequestParam("appId") final String appId,
-                                        @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
-                                        @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
-
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            // read request body and convert request body to json
-            JSONObject jsonBody = getRequestPayload(request);
-
-            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-
-            // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
-
-            Form form = getForm(appDefinition, formDefId, formData);
-
-            // check form permission
-            if (!form.isAuthorize(formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
-            // construct response
-            JSONObject jsonResponse = new JSONObject();
-
-            // set current data as response
-            response.setStatus(HttpServletResponse.SC_OK);
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-            response.getWriter().write(jsonResponse.toString());
-
-        } catch (ApiException e) {
-            response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
-        }
-    }
-
-    /**
-     * Check form element permission
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
-     * @param elementId
-     * @throws IOException
-     * @throws JSONException
-     */
-    @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST)
-    public void postCheckFormElementPermission(final HttpServletRequest request, final HttpServletResponse response,
-                                               @RequestParam("appId") final String appId,
-                                               @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
-                                               @RequestParam("formDefId") final String formDefId,
-                                               @RequestParam("elementId") final String elementId) throws IOException, JSONException {
-
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            // read request body and convert request body to json
-            JSONObject jsonBody = getRequestPayload(request);
-
-            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-
-            // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
-
-            Form form = getForm(appDefinition, formDefId, formData);
-
-            // check element permission
-            elementStream(form, formData)
-                    .filter(e -> elementId.equals(e.getPropertyString(FormUtil.PROPERTY_ID)))
-                    .filter(e -> e.isAuthorize(formData))
-                    .findAny()
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this element"));
-
-            // construct response
-            JSONObject jsonResponse = new JSONObject();
-
-            // set current data as response
-            response.setStatus(HttpServletResponse.SC_OK);
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-            response.getWriter().write(jsonResponse.toString());
-
-        } catch (ApiException e) {
-            response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
-        }
-    }
-
-    /**
-     * Deprecated, please use {@link DataJsonController#postFormValidation(HttpServletRequest, HttpServletResponse, String, Long, String, String)}
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
-     * @param elementId
-     * @throws IOException
-     * @throws JSONException
-     */
-    @Deprecated
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/validate", method = RequestMethod.POST)
-    public void postFormValidationDeprecated(final HttpServletRequest request, final HttpServletResponse response,
-                                             @RequestParam("appId") final String appId,
-                                             @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
-                                             @RequestParam("formDefId") final String formDefId,
-                                             @RequestParam("elementId") final String elementId) throws IOException, JSONException {
-
-        postFormValidation(request, response, appId, appVersion, formDefId, elementId);
-    }
-
-    @RequestMapping(value = "/json/data/validate/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST)
     public void postFormValidation(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
-                                   @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                   @RequestParam("appVersion") final String appVersion,
                                    @RequestParam("formDefId") final String formDefId,
                                    @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
@@ -299,12 +171,12 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -320,7 +192,6 @@ public class DataJsonController {
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
-
 //                String errorMessage = Optional.of(form)
 //                        .map(f -> FormUtil.findElement(elementId, form, result))
 //                        .map(e -> FormUtil.getElementParameterName(e))
@@ -341,6 +212,86 @@ public class DataJsonController {
     }
 
     /**
+     * Validate Form Data
+     *
+     * @param form
+     * @param formData
+     */
+    private FormData validateFormData(Form form, FormData formData) {
+        Optional.of(formData)
+                .map(FormData::getRequestParams)
+                .map(Map::entrySet)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .map(e -> FormUtil.findElement(e.getKey(), form, formData))
+                .forEach(e -> FormUtil.executeValidators(e, formData));
+
+        return formData;
+
+    }
+
+    /**
+     *
+     * @param appId
+     * @param version 0 for published version
+     * @return
+     * @throws ApiException
+     */
+    @Nonnull
+    private AppDefinition loadAppDefinition(String appId, long version) throws ApiException {
+        return Optional.of(version == 0 ? appDefinitionDao.getPublishedVersion(appId) : version)
+                .map(l -> appDefinitionDao.loadVersion(appId, l))
+
+                // set current app definition
+                .map(peek(AppUtil::setCurrentAppDefinition))
+
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]"));
+    }
+
+    /**
+     * Helper peek for {@link Optional}
+     *
+     * @param consumer
+     * @param <T>
+     * @return
+     */
+    @Nonnull
+    private <T> UnaryOperator<T> peek(@Nonnull final Consumer<T> consumer) {
+        return t -> {
+            consumer.accept(t);
+            return t;
+        };
+    }
+
+    /**
+     * Null-safe way to retrieve {@link AppService#viewDataForm(String, String, String, String, String, String, FormData, String, String)}
+     *
+     * @param appDefinition
+     * @param formDefId
+     * @return
+     * @throws ApiException
+     */
+    @Nonnull
+    private Form getForm(AppDefinition appDefinition, String formDefId, FormData formData) throws ApiException {
+        return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app ["+appDefinition.getAppId()+"] version ["+appDefinition.getVersion()+"] not available"));
+    }
+
+    /**
+     * Construct JSON Object from Form Errors
+     * @param formErrors
+     * @return
+     */
+    private JSONObject createErrorObject(Map<String, String> formErrors) {
+        final JSONObject result = new JSONObject();
+
+        // show error message
+        formErrors.forEach(throwable(result::put));
+
+        return result;
+    }
+
+    /**
      * Update data in Form
      *
      * @param request    HTTP Request
@@ -355,7 +306,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
     public void putFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                            @RequestParam("appVersion") final String appVersion,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam("primaryKey") final String primaryKey)
             throws IOException, JSONException {
@@ -368,14 +319,14 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
             fillStoreBinderInFormData(jsonBody, form, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -424,7 +375,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
     public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                            @RequestParam("appVersion") final String appVersion,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam("primaryKey") final String primaryKey,
                             @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
@@ -438,21 +389,21 @@ public class DataJsonController {
             final FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            if (asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
+            if(asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] {"true"});
             }
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            if (asLabel) {
+            if(asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -493,7 +444,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.DELETE)
     public void deleteFormData(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
-                               @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                               @RequestParam("appVersion") final String appVersion,
                                @RequestParam("formDefId") final String formDefId,
                                @RequestParam("primaryKey") final String primaryKey)
             throws IOException, JSONException {
@@ -505,13 +456,13 @@ public class DataJsonController {
             formData.setPrimaryKeyValue(primaryKey);
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -519,7 +470,7 @@ public class DataJsonController {
             JSONObject jsonData = getData(form, formData);
             Optional.of(jsonData)
                     .map(j -> j.optString("id"))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form [" + formDefId + "] not found"));
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form ["+formDefId+"] not found"));
 
             String currentDigest = getDigest(jsonData);
 
@@ -616,7 +567,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/options", method = RequestMethod.GET)
     public void getElementOptionsData(final HttpServletRequest request, final HttpServletResponse response,
                                       @RequestParam("appId") final String appId,
-                                      @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                      @RequestParam("appVersion") final String appVersion,
                                       @RequestParam("formDefId") final String formDefId,
                                       @RequestParam("elementId") final String elementId,
                                       @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
@@ -632,12 +583,12 @@ public class DataJsonController {
             final FormData formData = new FormData();
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -718,7 +669,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void getListCount(final HttpServletRequest request, final HttpServletResponse response,
                              @RequestParam("appId") final String appId,
-                             @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                             @RequestParam("appVersion") final String appVersion,
                              @RequestParam("dataListId") final String dataListId)
             throws IOException {
 
@@ -726,7 +677,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -735,14 +686,9 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             getCollectFilters(request.getParameterMap(), dataList);
@@ -780,7 +726,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)", method = RequestMethod.GET)
     public void getList(final HttpServletRequest request, final HttpServletResponse response,
                         @RequestParam("appId") final String appId,
-                        @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                        @RequestParam("appVersion") final String appVersion,
                         @RequestParam("dataListId") final String dataListId,
                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                         @RequestParam(value = "start", required = false) final Integer start,
@@ -794,7 +740,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -803,14 +749,9 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             // configure sorting
@@ -840,10 +781,7 @@ public class DataJsonController {
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
                             for (int i = 0, size = a2.length(); i < size; i++) {
-                                try {
-                                    a1.put(a2.get(i));
-                                } catch (JSONException ignored) {
-                                }
+                                try { a1.put(a2.get(i)); } catch (JSONException ignored) { }
                             }
                         });
 
@@ -888,7 +826,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/form/(*:formDefId)", method = RequestMethod.GET)
     public void getListForm(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                            @RequestParam("appVersion") final String appVersion,
                             @RequestParam("dataListId") final String dataListId,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
@@ -905,7 +843,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -914,14 +852,9 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             // configure sorting
@@ -940,7 +873,7 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, null);
 
-            if (asLabel) {
+            if(asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
@@ -958,8 +891,8 @@ public class DataJsonController {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
 
-                            if (asAttachmentUrl) {
-                                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
+                            if(asAttachmentUrl) {
+                                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] {"true"});
                             }
 
                             return Optional.of(form)
@@ -973,10 +906,7 @@ public class DataJsonController {
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
                             for (int i = 0, size = a2.length(); i < size; i++) {
-                                try {
-                                    a1.put(a2.get(i));
-                                } catch (JSONException ignored) {
-                                }
+                                try { a1.put(a2.get(i)); } catch (JSONException ignored) { }
                             }
                         });
 
@@ -1015,7 +945,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST)
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
                                  @RequestParam("appId") String appId,
-                                 @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                 @RequestParam("appVersion") String appVersion,
                                  @RequestParam("processId") String processId)
             throws IOException, JSONException {
 
@@ -1023,7 +953,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get processDefId
             String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
@@ -1041,7 +971,7 @@ public class DataJsonController {
 
             Form form = Optional.of(packageActivityForm)
                     .map(PackageActivityForm::getForm)
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for ["+packageActivityForm.getActivityDefId()+"]"));
 
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
@@ -1049,7 +979,7 @@ public class DataJsonController {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1133,24 +1063,34 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = getAssignment(assignmentId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
+            WorkflowAssignment assignment = Optional.of(assignmentId)
+                    .map(workflowManager::getAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignmentId + "] not available"));
+
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process form [" + assignment.getProcessId() + "]"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // get assignment form
+            @Nonnull
+            final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-
-            // get assignment form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            formData.setActivityId(assignment.getActivityId());
+            formData.setProcessId(assignment.getProcessId());
 
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1160,8 +1100,7 @@ public class DataJsonController {
 
             // return processResult
             JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(formData);
-            ;
+            Map<String, String> formErrors = getFormErrors(formData);;
             if (!formErrors.isEmpty()) {
                 JSONObject jsonError = new JSONObject(formErrors);
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
@@ -1208,36 +1147,62 @@ public class DataJsonController {
      * <p>
      * Complete assignment form
      *
-     * @param request   HTTP Request, request body contains form field values
-     * @param response  HTTP Response
-     * @param processId Assingment Process ID
+     * @param request      HTTP Request, request body contains form field values
+     * @param response     HTTP Response
+     * @param processId    Assingment Process ID
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.POST)
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
-                                                @RequestParam("processId") String processId)
+                                                @RequestParam("processId") String processId,
+                                                @RequestParam(value = "activityDefId", required = false) String activityDefId)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = getAssignmentByProcess(processId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
+            WorkflowAssignment assignment;
+            if(Optional.ofNullable(activityDefId).isPresent()) {
+                // by activity definition
+                assignment = Optional.ofNullable(workflowManager.getAssignmentsByProcessIds(Collections.singleton(processId), null, null, null, null))
+                        .map(Collection::stream)
+                        .orElseGet(Stream::empty)
+                        .filter(a -> activityDefId.equals(a.getActivityDefId()))
+                        .findFirst()
+                        .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Assingment for process [" + processId + "] activity definition [" + activityDefId + "] not available"));
+            } else {
+                // get first assignment of process
+                assignment = workflowManager.getAssignmentByProcess(processId);
+            }
+
+            if (assignment == null) {
+                // check if assignment available
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment form process [" + processId + "] not available");
+            }
+
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for process [" + assignment.getProcessId() + "] not available"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // get assignment form
+            @Nonnull
+            final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
 
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-
-            // get assignment form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            formData.setActivityId(assignment.getActivityId());
+            formData.setProcessId(assignment.getProcessId());
 
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1311,8 +1276,15 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = getAssignment(assignmentId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
+            WorkflowAssignment assignment = workflowManager.getAssignment(assignmentId);
+            if (assignment == null) {
+                // check if assignment available
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid assignment [" + assignmentId + "]");
+            }
+
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
@@ -1321,18 +1293,21 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            if (asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
+            if(asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] { "true" });
             }
 
             // generate form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
-            if (asLabel) {
+            Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form for assignment [" + assignment.getActivityId() + " not found]"));
+
+            if(asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1364,6 +1339,23 @@ public class DataJsonController {
     }
 
     /**
+     * Attempt to get app definition using activity ID or process ID
+     *
+     * @param assignment
+     * @return
+     */
+    @Nullable
+    private AppDefinition getAppDefinitionForWorkflowAssignment(@Nonnull WorkflowAssignment assignment) {
+        return Optional.of(assignment)
+                .map(WorkflowAssignment::getActivityId)
+                .map(appService::getAppDefinitionForWorkflowActivity)
+                .orElseGet(() -> Optional.of(assignment)
+                        .map(WorkflowAssignment::getProcessId)
+                        .map(appService::getAppDefinitionForWorkflowProcess)
+                        .orElse(null));
+    }
+
+    /**
      * Get Assignment by Process ID
      *
      * @param request
@@ -1383,8 +1375,16 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = getAssignmentByProcess(processId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
+            @Nonnull
+            WorkflowAssignment assignment = workflowManager.getAssignmentByProcess(processId);
+            if (assignment == null) {
+                // check if assignment available
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid assignment process [" + processId + "]");
+            }
+
+            AppDefinition appDefinition = Optional.of(assignment)
+                    .map(this::getAppDefinitionForWorkflowAssignment)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]"));
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
@@ -1393,18 +1393,20 @@ public class DataJsonController {
             Map<String, String> parameterMap = new HashMap<>();
             parameterMap.put("activityId", assignment.getActivityId());
             FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            if (asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
+            if(asAttachmentUrl) {
+                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[] { "true" });
             }
+            @Nonnull
+            Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form not available for assignment [" + assignment.getActivityId() + "]"));
 
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
-
-            if (asLabel) {
+            if(asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if(!form.isAuthorize(formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1454,8 +1456,7 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            AppDefinition appDefinition = getApplicationDefinition(appId, version);
-            String processDefId = validateAndDetermineProcessDefId(appDefinition, processId);
+            String processDefId = validateAndDetermineProcessDefId(appId, version, processId);
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
             try {
@@ -1474,23 +1475,23 @@ public class DataJsonController {
     /**
      * Get Assignment List
      *
-     * @param request       HTTP Request
-     * @param response      HTTP Response
-     * @param appId         Application ID
-     * @param appVersion    Application version
-     * @param processId     Process Def ID
-     * @param page          Page starts from 1
-     * @param start         From index (index starts from 0)
-     * @param rows          Page size (rows = 0 means load all data)
-     * @param sort          Sort by field
-     * @param desc          Descending (true/false)
-     * @param digest        Digest
+     * @param request   HTTP Request
+     * @param response  HTTP Response
+     * @param appId     Application ID
+     * @param version   Application version
+     * @param processId Process Def ID
+     * @param page      Page starts from 1
+     * @param start     From index (index starts from 0)
+     * @param rows      Page size (rows = 0 means load all data)
+     * @param sort      Sort by field
+     * @param desc      Descending (true/false)
+     * @param digest    Digest
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/assignments", method = RequestMethod.GET)
     public void getAssignments(final HttpServletRequest request, final HttpServletResponse response,
-                               @RequestParam(value = "appId") final String appId,
-                               @RequestParam(value = "appVersion", defaultValue = "0") final Long appVersion,
+                               @RequestParam(value = "appId", required = false) final String appId,
+                               @RequestParam(value = "version", required = false) final Long version,
                                @RequestParam(value = "processId", required = false) final String processId,
                                @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                                @RequestParam(value = "start", required = false) final Integer start,
@@ -1503,11 +1504,10 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
-            String processDefId = validateAndDetermineProcessDefId(appDefinition, processId);
-
             int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
             int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
+
+            String processDefId = validateAndDetermineProcessDefId(appId, version, processId);
 
             // get total data
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
@@ -1516,13 +1516,29 @@ public class DataJsonController {
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
                     .filter(Objects::nonNull)
-                    .map(throwable(assignment -> {
-                        AppDefinition assignmentAppDefinition = getApplicationDefinition(assignment);
-                        FormData formData = new FormData();
-                        Form form = getAssignmentForm(assignmentAppDefinition, assignment, formData);
+                    .map(assignment -> {
+                        final AppDefinition appDefinition = Optional.of(assignment)
+                                .map(this::getAppDefinitionForWorkflowAssignment)
+                                .orElse(null);
+
+                        if (appDefinition == null) {
+                            LogUtil.warn(getClass().getName(), "Application not found for assignment [" + assignment.getActivityId() + "] process [" + assignment.getProcessId() + "]");
+                            FormRow emptyRow = new FormRow();
+                            emptyRow.setProperty("processId", assignment.getProcessId());
+                            emptyRow.setProperty("activityId", assignment.getActivityId());
+                            emptyRow.setProperty("assigneeId", assignment.getAssigneeId());
+                            return emptyRow;
+                        }
+
+                        final FormData formData = new FormData();
+
+                        @Nullable
+                        Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
+                                .map(PackageActivityForm::getForm)
+                                .orElse(null);
 
                         // check form permission
-                        if (!form.isAuthorize(formData)) {
+                        if(!Optional.ofNullable(form).map(f -> f.isAuthorize(formData)).orElse(false)) {
                             return null;
                         }
 
@@ -1532,7 +1548,7 @@ public class DataJsonController {
                         row.setProperty("assigneeId", assignment.getAssigneeId());
 
                         return row;
-                    }))
+                    })
                     .filter(Objects::nonNull)
                     .collect(FormRowSet::new, FormRowSet::add, FormRowSet::addAll);
 
@@ -1602,7 +1618,7 @@ public class DataJsonController {
      */
     @Nonnull
     private FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
-        if (form == null) {
+        if(form == null) {
             return formData;
         }
 
@@ -1633,7 +1649,7 @@ public class DataJsonController {
                             .map(formData::getRequestParameter)
                             .orElse(null);
 
-                    if (parameterValue != null) {
+                    if(parameterValue != null) {
                         String[] filePaths = Optional.ofNullable(parameterValue)
                                 .map(this::handleEncodedFile)
                                 .map(Arrays::stream)
@@ -1645,8 +1661,7 @@ public class DataJsonController {
 
                         formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
                     }
-                });
-        ;
+                });;
 
 //        // handle request parameters
 //        processRequestParameters(jsonBody, element, formData);
@@ -1692,7 +1707,7 @@ public class DataJsonController {
                     .toArray(String[]::new);
 
         } catch (JSONException e) {
-            return new String[]{value};
+            return new String[] { value };
         }
     }
 
@@ -1717,7 +1732,7 @@ public class DataJsonController {
                         .filter(Objects::nonNull)
                         .toArray(MultipartFile[]::new);
 
-                if (files.length > 0) {
+                if(files.length > 0) {
 //                    FileStore.getFileMap().put(key, files);
                     for (MultipartFile file : files) {
                         FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
@@ -1729,14 +1744,14 @@ public class DataJsonController {
             else {
                 String value = jsonBody.getString(key);
                 MultipartFile file = addFileRequestParameter(value, element, formData);
-                if (file != null) {
+                if(file != null) {
 //                    FileStore.getFileMap().put(key, new MultipartFile[] { file });
                     FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
                 }
             }
         } else {
             String value;
-            if (element instanceof HiddenField) {
+            if(element instanceof HiddenField) {
                 value = getDefaultValue(element, formData);
             } else {
                 value = jsonBody.optString(key, null);
@@ -1751,22 +1766,11 @@ public class DataJsonController {
         }
     }
 
-    /**
-     * Get default value
-     *
-     * @param element
-     * @param formData
-     * @return
-     */
     private String getDefaultValue(@Nonnull Element element, @Nonnull FormData formData) {
         String defaultValue = element.getPropertyString(FormUtil.PROPERTY_VALUE);
-        if (isNotEmpty(defaultValue)) {
-            try {
-                WorkflowAssignment workflowAssignment = getAssignment(formData.getActivityId());
-                return AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
-            } catch (ApiException e) {
-                LogUtil.warn(getClass().getName(), e.getMessage());
-            }
+        if(isNotEmpty(defaultValue)) {
+            WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+            return AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
         }
         return null;
     }
@@ -1774,7 +1778,7 @@ public class DataJsonController {
     /**
      * Prepare formData with store binder
      *
-     * @param element  element with store binder
+     * @param element element with store binder
      * @param formData
      * @throws ApiException
      */
@@ -1827,8 +1831,8 @@ public class DataJsonController {
     @Nullable
     private String determinePrimaryKey(@Nonnull JSONObject jsonBody, @Nonnull FormData formData, boolean isAssignment) {
         // handle start process or assingment complete process
-        if (isAssignment) {
-            formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{AssignmentCompleteButton.DEFAULT_ID});
+        if(isAssignment) {
+            formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[] {AssignmentCompleteButton.DEFAULT_ID});
 
             return Optional.of(formData)
                     .map(FormData::getProcessId)
@@ -1837,7 +1841,7 @@ public class DataJsonController {
         }
 
         // if not assingment and primary is not assigned
-        else if (!Optional.of(formData).map(FormData::getPrimaryKeyValue).filter(this::isNotEmpty).isPresent()) {
+        else if(!Optional.of(formData).map(FormData::getPrimaryKeyValue).filter(this::isNotEmpty).isPresent()) {
             return Optional.of(jsonBody)
                     .map(j -> j.optString(FormUtil.PROPERTY_ID))
                     .filter(this::isNotEmpty)
@@ -1873,7 +1877,7 @@ public class DataJsonController {
 
         if (json != null) {
             FormRow row = convertJsonObjectToFormRow(form, json);
-            if (row != null) {
+            if(row != null) {
                 result.add(row);
             }
         }
@@ -1898,12 +1902,12 @@ public class DataJsonController {
 
     @Nonnull
     private String extractStringValue(@Nullable Form form, JSONObject json, String fieldName) throws JSONException {
-        if (form == null) {
+        if(form == null) {
             return json.getString(fieldName);
         }
 
         Element element = FormUtil.findElement(fieldName, form, null, true);
-        if (element instanceof FileDownloadSecurity) {
+        if(element instanceof FileDownloadSecurity) {
             // TODO : handle file here
             return json.getString(fieldName);
         } else {
@@ -1935,7 +1939,7 @@ public class DataJsonController {
      */
     @Nullable
     private MultipartFile addFileRequestParameter(@Nullable String value, Element element, FormData formData) {
-        if (value == null) {
+        if(value == null) {
             return null;
         }
 
@@ -1973,8 +1977,8 @@ public class DataJsonController {
      * @return
      */
     @Nullable
-    private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException {
-        if (bse64EncodedFile.isEmpty())
+    private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException{
+        if(bse64EncodedFile.isEmpty())
             return null;
 
         byte[] data = Base64.getDecoder().decode(bse64EncodedFile);
@@ -1990,9 +1994,9 @@ public class DataJsonController {
     @Nullable
     private MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
         String[] split = value.split(";");
-        if (split.length > 0) {
+        if(split.length > 0) {
             String fileName = split[0];
-            if (split.length > 1) {
+            if(split.length > 1) {
                 String encodedFile = split[1];
                 return decodeFile(fileName, encodedFile);
             }
@@ -2025,7 +2029,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
     public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("appId") final String appId,
-                                       @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                       @RequestParam("appVersion") final String appVersion,
                                        @RequestParam("dataListId") final String dataListId,
                                        @RequestParam(value = "processId", required = false) final String[] processId,
                                        @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
@@ -2041,7 +2045,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2050,14 +2054,9 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             // configure sorting
@@ -2099,9 +2098,9 @@ public class DataJsonController {
                         .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
-                        .collect(JSONArray::new, throwable((jsonArray, row) -> {
+                        .collect(JSONArray::new, (jsonArray, row) -> {
+
                             String primaryKeyColumn = getPrimaryKeyColumn(dataList);
-                            String primaryKey = String.valueOf(row.get(primaryKeyColumn));
 
                             // put process detail
                             WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + FormUtil.PROPERTY_ID));
@@ -2114,17 +2113,14 @@ public class DataJsonController {
                                 row.put("appId", appDefinition.getAppId());
                                 row.put("appVersion", appDefinition.getVersion());
 
-                                FormData formData = new FormData();
-                                formData.setPrimaryKeyValue(primaryKey);
-                                Form form = getAssignmentForm(appDefinition, workflowAssignment, formData);
-
-                                if (form.isAuthorize(formData)) {
+                                Form form = getAssignmentForm(appDefinition, workflowAssignment);
+                                if (form != null && form.isAuthorize(new FormData())) {
                                     row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
                                 }
                             }
 
                             jsonArray.put(row);
-                        }), (a1, a2) -> {
+                        }, (a1, a2) -> {
                             for (int i = 0, size = a2.length(); i < size; i++) {
                                 try {
                                     a1.put(a2.get(i));
@@ -2159,7 +2155,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
                                             @RequestParam("appId") final String appId,
-                                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                            @RequestParam("appVersion") final String appVersion,
                                             @RequestParam("dataListId") final String dataListId,
                                             @RequestParam(value = "processId", required = false) final String[] processId,
                                             @RequestParam(value = "activityId", required = false) final String[] activityId)
@@ -2169,7 +2165,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = loadAppDefinition(appId, Long.parseLong(appVersion));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2178,14 +2174,9 @@ public class DataJsonController {
             }
 
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
+            DataList dataList = dataListService.fromJson(datalistDefinition.getJson());
             if (dataList == null) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
             }
 
             getCollectFilters(request.getParameterMap(), dataList);
@@ -2249,7 +2240,7 @@ public class DataJsonController {
 
         return processIds.stream()
                 .map(s -> {
-                    if (isEmpty(s)) {
+                    if(isEmpty(s)) {
                         return "";
                     }
 
@@ -2271,22 +2262,6 @@ public class DataJsonController {
                         .flatMap(Collection::stream))
 
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Get form from assignment
-     *
-     * @param appDefinition
-     * @param assignment
-     * @param formData input/output parameter
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    private Form getAssignmentForm(AppDefinition appDefinition, WorkflowAssignment assignment, final FormData formData) throws ApiException {
-        return Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
-                .map(PackageActivityForm::getForm)
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
     }
 
     /**
@@ -2379,17 +2354,37 @@ public class DataJsonController {
     /**
      * Validate and Determine Process ID
      *
-     * @param appDefinition Application definition
+     * @param appId      Application ID
+     * @param appVersion Application version
      * @param processId  Process ID
      * @return
      * @throws ApiException
      */
-    @Nonnull
-    private String validateAndDetermineProcessDefId(@Nonnull AppDefinition appDefinition, @Nonnull String processId) throws ApiException {
-        return Optional.of(processId)
-                .map(s -> appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), s))
-                .map(WorkflowProcess::getId)
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] for Application ID [" + appDefinition.getAppId() + "] is not available"));
+    private String validateAndDetermineProcessDefId(String appId, Long appVersion, String processId) throws ApiException {
+        if (processId == null) {
+            return null;
+        }
+
+        if (appId == null) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter [appId] and [version] is required for filtering by [processId]");
+        }
+
+        AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, appVersion == null || appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion);
+        if (appDefinition == null) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application ID [" + appId + "] is not available");
+        }
+
+        WorkflowProcess workflowProcess = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId);
+        if (workflowProcess == null) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] for Application ID [" + appId + "] is not available");
+        }
+
+        WorkflowProcess process = appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId);
+        if (process == null) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + processId + "] for application [" + appId + "] version [" + appVersion + "]");
+        }
+
+        return process.getId();
     }
 
     /**
@@ -2445,59 +2440,6 @@ public class DataJsonController {
     }
 
     /**
-     * Get assignment object
-     *
-     * @param activityId
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    private WorkflowAssignment getAssignment(@Nonnull String activityId) throws ApiException {
-        return Optional.of(activityId)
-                .map(workflowManager::getAssignment)
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + activityId + "] not available"));
-    }
-
-    /**
-     * Get assignment object by process ID
-     *
-     * @param processId
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    private WorkflowAssignment getAssignmentByProcess(@Nonnull String processId) throws ApiException {
-        return Optional.of(processId)
-                .map(workflowManager::getAssignmentByProcess)
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
-    }
-
-
-    /**
-     * Attempt to get app definition using activity ID or process ID
-     *
-     * @param assignment
-     * @return
-     */
-    @Nonnull
-    private AppDefinition getApplicationDefinition(@Nonnull WorkflowAssignment assignment) throws ApiException {
-//        return Optional.ofNullable(Optional.of(assignment)
-//                .map(WorkflowAssignment::getActivityId)
-//                .map(appService::getAppDefinitionForWorkflowActivity)
-//                .orElseGet(() -> Optional.of(assignment)
-//                        .map(WorkflowAssignment::getProcessId)
-//                        .map(appService::getAppDefinitionForWorkflowProcess)
-//                        .orElse(null)))
-//                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for assingment ["+assignment.getActivityId()+"] not found"));
-
-        return Optional.of(assignment)
-                .map(WorkflowAssignment::getActivityId)
-                .map(appService::getAppDefinitionForWorkflowActivity)
-//                .map(peek(AppUtil::setCurrentAppDefinition))
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for assingment ["+assignment.getActivityId()+"] not found"));
-    }
-
-    /**
      * Load form data
      *
      * @param form
@@ -2506,117 +2448,42 @@ public class DataJsonController {
     @Nonnull
     private JSONObject getData(@Nonnull final Form form, @Nullable FormData formData) {
         JSONObject parentJson = new JSONObject();
-        if (formData != null) {
+        if(formData != null) {
             elementStream(form, formData)
                     .filter(e -> e.getLoadBinder() != null)
                     .forEach(throwable(e -> {
                         FormRowSet rowSet = formData.getLoadBinderData(e);
 
-                        if (rowSet == null) {
+                        if(rowSet == null) {
                             return;
                         }
 
                         String elementId = e.getPropertyString("id");
                         Element container = e;
 
+                        // most likely grid element
                         if (rowSet.isMultiRow()) {
                             JSONArray data = convertFormRowSetToJsonArray(container, formData, rowSet);
                             parentJson.put(elementId, data);
-                        } else if (e instanceof FormContainer) {
+                        }
+
+                        // Form, Section, or Subform
+                        else if (e instanceof FormContainer) {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
                             data.sortedKeys().forEachRemaining(throwable(key -> {
-                                parentJson.put(key.toString(), data.get(key.toString()));
+                                if(FormUtil.findElement(String.valueOf(key), e, formData) != null)
+                                    parentJson.put(key.toString(), data.get(key.toString()));
                             }));
-                        } else {
+                        }
+
+                        // any other element with load binder
+                        else {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
                             parentJson.put(elementId, data);
                         }
                     }));
         }
         return parentJson;
-    }
-
-
-    /**
-     * Validate Form Data
-     *
-     * @param form
-     * @param formData
-     */
-    private FormData validateFormData(Form form, FormData formData) {
-        Optional.of(formData)
-                .map(FormData::getRequestParams)
-                .map(Map::entrySet)
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .map(e -> FormUtil.findElement(e.getKey(), form, formData))
-                .forEach(e -> FormUtil.executeValidators(e, formData));
-
-        return formData;
-
-    }
-
-    /**
-     * Get application definition and set default application definition
-     *
-     * @param appId
-     * @param version 0 for published version
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    private AppDefinition getApplicationDefinition(String appId, long version) throws ApiException {
-        return Optional.of(version == 0 ? appDefinitionDao.getPublishedVersion(appId) : version)
-                .map(l -> appDefinitionDao.loadVersion(appId, l))
-
-                // set current app definition
-                .map(peek(AppUtil::setCurrentAppDefinition))
-
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]"));
-    }
-
-    /**
-     * Helper peek for {@link Optional}
-     *
-     * @param consumer
-     * @param <T>
-     * @return
-     */
-    @Nonnull
-    private <T> UnaryOperator<T> peek(@Nonnull final Consumer<T> consumer) {
-        return t -> {
-            consumer.accept(t);
-            return t;
-        };
-    }
-
-    /**
-     * Null-safe way to retrieve {@link AppService#viewDataForm(String, String, String, String, String, String, FormData, String, String)}
-     *
-     * @param appDefinition
-     * @param formDefId
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    private Form getForm(AppDefinition appDefinition, String formDefId, FormData formData) throws ApiException {
-        return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
-    }
-
-    /**
-     * Construct JSON Object from Form Errors
-     *
-     * @param formErrors
-     * @return
-     */
-    private JSONObject createErrorObject(Map<String, String> formErrors) {
-        final JSONObject result = new JSONObject();
-
-        // show error message
-        formErrors.forEach(throwable(result::put));
-
-        return result;
     }
 
     /**
@@ -2652,7 +2519,7 @@ public class DataJsonController {
                 .map(peek(r -> r.forEach((k, v) -> {
                     String elementId = String.valueOf(k);
 
-                    if (container instanceof GridElement) {
+                    if(container instanceof GridElement) {
                         Arrays.stream(((GridElement) container).getColumnProperties())
                                 .filter(m -> k.equals(m.get("value")))
                                 .findFirst()
@@ -2674,6 +2541,7 @@ public class DataJsonController {
     }
 
     /**
+     *
      * @param rowSet
      * @return
      */
@@ -2682,6 +2550,19 @@ public class DataJsonController {
         return Optional.of(convertFormRowSetToJsonArray(element, formData, rowSet))
                 .map(r -> r.optJSONObject(0))
                 .orElseGet(JSONObject::new);
+    }
+
+    /**
+     * Get Form for assignment
+     *
+     * @param assignment
+     * @return
+     */
+    private Form getAssignmentForm(AppDefinition appDef, WorkflowAssignment assignment) {
+        FormData formData = new FormData();
+        PackageActivityForm activityForm = appService.viewAssignmentForm(appDef.getAppId(), String.valueOf(appDef.getVersion()), assignment.getActivityId(), formData, null);
+        Form form = activityForm.getForm();
+        return form;
     }
 
     /**
@@ -2711,10 +2592,7 @@ public class DataJsonController {
      */
     @Nonnull
     private String getPrimaryKeyColumn(@Nonnull final DataList dataList) {
-        return Optional.of(dataList)
-                .map(DataList::getBinder)
-                .map(DataListBinder::getPrimaryKeyColumnName)
-                .orElse("id");
+        return Optional.of(dataList).map(DataList::getBinder).map(DataListBinder::getPrimaryKeyColumnName).orElse("id");
     }
 
     /**
@@ -2739,7 +2617,6 @@ public class DataJsonController {
 
     /**
      * Null-safe way to retrieve {@link FormData#getFormErrors()}
-     *
      * @param formData
      * @return
      */
@@ -2780,7 +2657,7 @@ public class DataJsonController {
      * @param <T>
      * @return
      */
-    private <T> boolean isEmpty(@Nullable Collection<T> collection) {
+    private <T> boolean isEmpty (@Nullable Collection<T> collection) {
         return Optional.ofNullable(collection)
                 .map(Collection::isEmpty)
                 .orElse(true);
@@ -2806,7 +2683,7 @@ public class DataJsonController {
      */
     @Nonnull
     private Stream<Element> elementStream(@Nonnull Element element, FormData formData) {
-        if (!element.isAuthorize(formData)) {
+        if(!element.isAuthorize(formData)) {
             return Stream.empty();
         }
 
@@ -2864,6 +2741,7 @@ public class DataJsonController {
     // Throwable methods
 
     /**
+     *
      * @param throwableConsumer
      * @param <T>
      * @param <E>
@@ -2874,6 +2752,7 @@ public class DataJsonController {
     }
 
     /**
+     *
      * @param throwableBiConsumer
      * @param <T>
      * @param <U>
@@ -2885,6 +2764,7 @@ public class DataJsonController {
     }
 
     /**
+     *
      * @param throwableFunction
      * @param <T>
      * @param <R>
@@ -2896,6 +2776,7 @@ public class DataJsonController {
     }
 
     /**
+     *
      * @param throwableFunction
      * @param <T>
      * @param <R>
@@ -2932,6 +2813,7 @@ public class DataJsonController {
         R applyThrowable(T t) throws E;
 
         /**
+         *
          * @param f
          * @return
          */
@@ -2946,6 +2828,8 @@ public class DataJsonController {
         }
 
         /**
+         *
+         *
          * @param f
          * @return
          */
