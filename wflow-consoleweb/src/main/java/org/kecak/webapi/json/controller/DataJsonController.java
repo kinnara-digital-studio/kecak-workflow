@@ -1139,14 +1139,13 @@ public class DataJsonController {
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            // get assignment form
-            @Nonnull final Form form = getAssignmentForm(assignment);
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-            formData.setActivityId(assignment.getActivityId());
-            formData.setProcessId(assignment.getProcessId());
+
+            // get assignment form
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
 
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
@@ -1221,41 +1220,19 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-//            if (Optional.ofNullable(activityDefId).isPresent()) {
-//                // by activity definition
-//                assignment = Optional.ofNullable(workflowManager.getAssignmentsByProcessIds(Collections.singleton(processId), null, null, null, null))
-//                        .map(Collection::stream)
-//                        .orElseGet(Stream::empty)
-//                        .filter(a -> activityDefId.equals(a.getActivityDefId()))
-//                        .findFirst()
-//                        .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Assingment for process [" + processId + "] activity definition [" + activityDefId + "] not available"));
-//            } else {
-//                // get first assignment of process
-//                assignment = workflowManager.getAssignmentByProcess(processId);
-//            }
-
-//            if (assignment == null) {
-//                // check if assignment available
-//                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment form process [" + processId + "] not available");
-//            }
-
             WorkflowAssignment assignment = getAssignmentByProcess(processId);
             AppDefinition appDefinition = getApplicationDefinition(assignment);
 
             // set current app definition
             AppUtil.setCurrentAppDefinition(appDefinition);
 
-            // get assignment form
-            @Nonnull final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
-                    .map(PackageActivityForm::getForm)
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
-
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
-            formData.setActivityId(assignment.getActivityId());
-            formData.setProcessId(assignment.getProcessId());
+
+            // get assignment form
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
 
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
@@ -1349,10 +1326,7 @@ public class DataJsonController {
             }
 
             // generate form
-            Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
-                    .map(PackageActivityForm::getForm)
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form for assignment [" + assignment.getActivityId() + " not found]"));
-
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
@@ -1422,10 +1396,8 @@ public class DataJsonController {
             if (asAttachmentUrl) {
                 formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
             }
-            @Nonnull
-            Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
-                    .map(PackageActivityForm::getForm)
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form not available for assignment [" + assignment.getActivityId() + "]"));
+
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
@@ -1547,14 +1519,10 @@ public class DataJsonController {
                     .map(throwable(assignment -> {
                         AppDefinition assignmentAppDefinition = getApplicationDefinition(assignment);
                         FormData formData = new FormData();
-
-                        @Nullable
-                        Form form = Optional.ofNullable(appService.viewAssignmentForm(assignmentAppDefinition, assignment, formData, ""))
-                                .map(PackageActivityForm::getForm)
-                                .orElse(null);
+                        Form form = getAssignmentForm(assignmentAppDefinition, assignment, formData);
 
                         // check form permission
-                        if (!Optional.ofNullable(form).map(f -> f.isAuthorize(formData)).orElse(false)) {
+                        if (!form.isAuthorize(formData)) {
                             return null;
                         }
 
@@ -2135,9 +2103,6 @@ public class DataJsonController {
                             String primaryKeyColumn = getPrimaryKeyColumn(dataList);
                             String primaryKey = String.valueOf(row.get(primaryKeyColumn));
 
-                            FormData formData = new FormData();
-                            formData.setPrimaryKeyValue(primaryKey);
-
                             // put process detail
                             WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + FormUtil.PROPERTY_ID));
                             if (workflowAssignment != null) {
@@ -2149,10 +2114,9 @@ public class DataJsonController {
                                 row.put("appId", appDefinition.getAppId());
                                 row.put("appVersion", appDefinition.getVersion());
 
-                                Form form = getAssignmentForm(appDefinition, workflowAssignment);
-
-                                formData.setProcessId(workflowAssignment.getProcessId());
-                                formData.setActivityId(workflowAssignment.getActivityId());
+                                FormData formData = new FormData();
+                                formData.setPrimaryKeyValue(primaryKey);
+                                Form form = getAssignmentForm(appDefinition, workflowAssignment, formData);
 
                                 if (form.isAuthorize(formData)) {
                                     row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
@@ -2312,27 +2276,15 @@ public class DataJsonController {
     /**
      * Get form from assignment
      *
-     * @param assignment
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    private Form getAssignmentForm(WorkflowAssignment assignment) throws ApiException {
-        AppDefinition appDefinition = getApplicationDefinition(assignment);
-        return getAssignmentForm(appDefinition, assignment);
-    }
-
-    /**
-     * Get form from assignment
-     *
      * @param appDefinition
      * @param assignment
+     * @param formData input/output parameter
      * @return
      * @throws ApiException
      */
     @Nonnull
-    private Form getAssignmentForm(AppDefinition appDefinition, WorkflowAssignment assignment) throws ApiException {
-        return Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, null, ""))
+    private Form getAssignmentForm(AppDefinition appDefinition, WorkflowAssignment assignment, final FormData formData) throws ApiException {
+        return Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
     }
