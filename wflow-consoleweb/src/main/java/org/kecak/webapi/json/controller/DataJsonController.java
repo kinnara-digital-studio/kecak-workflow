@@ -2525,7 +2525,8 @@ public class DataJsonController {
                         } else if (e instanceof FormContainer) {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
                             data.sortedKeys().forEachRemaining(throwable(key -> {
-                                parentJson.put(key.toString(), data.get(key.toString()));
+                                if(FormUtil.findElement(key.toString(), container, formData, true) != null)
+                                    parentJson.put(key.toString(), data.get(key.toString()));
                             }));
                         } else {
                             JSONObject data = convertFormRowSetToJsonObject(container, formData, rowSet);
