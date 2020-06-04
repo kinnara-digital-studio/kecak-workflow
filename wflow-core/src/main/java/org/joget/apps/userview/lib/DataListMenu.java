@@ -108,7 +108,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
             DataList dataList = getDataList();
 
             if (dataList != null) {
-                if(dataListSService.isAuthorize(dataList)) {
+                if(!dataListSService.isAuthorize(dataList)) {
                     setProperty("error", "Unauthorized access");
                 } else {
 
