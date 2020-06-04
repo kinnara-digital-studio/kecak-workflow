@@ -2488,13 +2488,45 @@ public class DataJsonController {
         final String processId = assignment.getProcessId();
 
         AppDefinition appDefinition =  Optional.of(activityId)
-                .map(appService::getAppDefinitionForWorkflowActivity)
+                .map(this::getAppDefinitionForWorkflowActivity)
                 .orElseGet(() -> Optional.of(processId)
                         .map(this::getAppDefinitionForWorkflowProcess)
                         .orElse(null));
 
         return Optional.ofNullable(appDefinition)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for assignment [" + activityId + "] process [" + processId + "] not found"));
+    }
+
+    /**
+     * Copy from {@link org.joget.apps.app.service.AppServiceImpl#getAppDefinitionForWorkflowActivity(String)}
+     * with small changes
+     *
+     * @param activityId
+     * @return
+     */
+    private AppDefinition getAppDefinitionForWorkflowActivity(String activityId) {
+        AppDefinition appDef = null;
+
+        WorkflowActivity activity = workflowManager.getActivityById(activityId);
+        if (activity != null) {
+            String processDefId = activity.getProcessDefId();
+            WorkflowProcess process = workflowManager.getProcess(processDefId);
+            if (process != null) {
+                String packageId = process.getPackageId();
+                Long packageVersion = Long.parseLong(process.getVersion());
+                PackageDefinition packageDef = packageDefinitionDao.loadPackageDefinition(packageId, packageVersion);
+                if (packageDef != null) {
+                    appDef = packageDef.getAppDefinition();
+                } else {
+                    LogUtil.warn(getClass().getName(), "Undefined package [" + packageId + "] ["+packageVersion+"] for process ["+ processDefId + "]");
+                }
+            } else {
+                LogUtil.warn(getClass().getName(), "Undefined process definition [" + processDefId + "]");
+            }
+        } else {
+            LogUtil.warn(getClass().getName(), "Undefined assignment activity [" + activityId + "]");
+        }
+        return appDef;
     }
 
     /**
@@ -2519,7 +2551,7 @@ public class DataJsonController {
                 LogUtil.warn(getClass().getName(), "Undefined package [" + packageId + "] ["+packageVersion+"] for process ["+ processId + "]");
             }
         } else {
-            LogUtil.warn(getClass().getName(), "Undefined process [" + process + "]");
+            LogUtil.warn(getClass().getName(), "Undefined process [" + processId + "]");
         }
         return appDef;
     }
