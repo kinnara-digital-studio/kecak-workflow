@@ -108,7 +108,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
-                               @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                               @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                @RequestParam("formDefId") final String formDefId)
             throws IOException, JSONException {
 
@@ -121,7 +121,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -175,7 +175,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
     public void postCheckFormPermission(final HttpServletRequest request, final HttpServletResponse response,
                                         @RequestParam("appId") final String appId,
-                                        @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                        @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                         @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -187,7 +187,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -225,7 +225,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST)
     public void postCheckFormElementPermission(final HttpServletRequest request, final HttpServletResponse response,
                                                @RequestParam("appId") final String appId,
-                                               @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                               @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                                @RequestParam("formDefId") final String formDefId,
                                                @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
@@ -238,7 +238,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -279,7 +279,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/validate", method = RequestMethod.POST)
     public void postFormValidationDeprecated(final HttpServletRequest request, final HttpServletResponse response,
                                              @RequestParam("appId") final String appId,
-                                             @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                              @RequestParam("formDefId") final String formDefId,
                                              @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
@@ -289,7 +289,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/validate/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST)
     public void postFormValidation(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
-                                   @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                   @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                    @RequestParam("formDefId") final String formDefId,
                                    @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
@@ -302,7 +302,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -358,7 +358,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
     public void putFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam("primaryKey") final String primaryKey)
             throws IOException, JSONException {
@@ -371,7 +371,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -427,7 +427,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.GET)
     public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam("primaryKey") final String primaryKey,
                             @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
@@ -446,7 +446,7 @@ public class DataJsonController {
             }
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -496,7 +496,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.DELETE)
     public void deleteFormData(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
-                               @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                               @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                @RequestParam("formDefId") final String formDefId,
                                @RequestParam("primaryKey") final String primaryKey)
             throws IOException, JSONException {
@@ -508,7 +508,7 @@ public class DataJsonController {
             formData.setPrimaryKeyValue(primaryKey);
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
@@ -619,7 +619,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/options", method = RequestMethod.GET)
     public void getElementOptionsData(final HttpServletRequest request, final HttpServletResponse response,
                                       @RequestParam("appId") final String appId,
-                                      @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                      @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                       @RequestParam("formDefId") final String formDefId,
                                       @RequestParam("elementId") final String elementId,
                                       @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
@@ -635,7 +635,7 @@ public class DataJsonController {
             final FormData formData = new FormData();
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -721,7 +721,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void getListCount(final HttpServletRequest request, final HttpServletResponse response,
                              @RequestParam("appId") final String appId,
-                             @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                              @RequestParam("dataListId") final String dataListId)
             throws IOException {
 
@@ -729,7 +729,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -783,7 +783,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)", method = RequestMethod.GET)
     public void getList(final HttpServletRequest request, final HttpServletResponse response,
                         @RequestParam("appId") final String appId,
-                        @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                        @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                         @RequestParam("dataListId") final String dataListId,
                         @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
                         @RequestParam(value = "start", required = false) final Integer start,
@@ -797,7 +797,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -891,7 +891,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/form/(*:formDefId)", method = RequestMethod.GET)
     public void getListForm(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                             @RequestParam("dataListId") final String dataListId,
                             @RequestParam("formDefId") final String formDefId,
                             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
@@ -908,7 +908,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -1018,7 +1018,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST)
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
                                  @RequestParam("appId") String appId,
-                                 @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                  @RequestParam("processId") String processId)
             throws IOException, JSONException {
 
@@ -1026,7 +1026,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             // get processDefId
             String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
@@ -1506,7 +1506,7 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
             String processDefId = validateAndDetermineProcessDefId(appDefinition, processId);
 
             int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
@@ -2028,7 +2028,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
     public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("appId") final String appId,
-                                       @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                       @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                        @RequestParam("dataListId") final String dataListId,
                                        @RequestParam(value = "processId", required = false) final String[] processId,
                                        @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
@@ -2044,7 +2044,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2162,7 +2162,7 @@ public class DataJsonController {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
                                             @RequestParam("appId") final String appId,
-                                            @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
+                                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                             @RequestParam("dataListId") final String dataListId,
                                             @RequestParam(value = "processId", required = false) final String[] processId,
                                             @RequestParam(value = "activityId", required = false) final String[] activityId)
@@ -2172,7 +2172,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, appVersion);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2846,6 +2846,18 @@ public class DataJsonController {
     }
 
 
+    /**
+     * If value null than return failover
+     *
+     * @param value
+     * @param failover
+     * @param <T>
+     * @return
+     */
+    @Nonnull
+    private <T> T ifNull(@Nullable T value, @Nonnull T failover) {
+        return value == null ? failover : value;
+    }
     /**
      * Stream element children
      *
