@@ -491,6 +491,14 @@ public interface AppService {
     public String getPrimaryKeyWithForeignKey(String appId, String appVersion, String formId, String foreignKeyName, String foreignKeyValue);
 
     /**
+     *
+     * @param packageId
+     * @param fromVersion
+     * @param toVersion
+     */
+    public void  updateRunningProcesses(final String packageId, final Long fromVersion, final Long toVersion);
+
+    /**
      * Get table name of a form
      * @param appId
      * @param appVersion
