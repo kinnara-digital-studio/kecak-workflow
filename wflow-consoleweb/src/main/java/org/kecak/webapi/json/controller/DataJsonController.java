@@ -520,9 +520,6 @@ public class DataJsonController {
 
             // construct response
             JSONObject jsonData = getData(form, formData);
-            Optional.of(jsonData)
-                    .map(j -> j.optString("id"))
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + primaryKey + "] in form [" + formDefId + "] not found"));
 
             String currentDigest = getDigest(jsonData);
 
@@ -967,20 +964,19 @@ public class DataJsonController {
 
                             return Optional.of(form)
                                     .filter(f -> f.isAuthorize(formData))
-                                    .map(f -> getData(f, formData))
+                                    .map(throwable(f -> getData(f, formData), (Exception e) -> null))
                                     .orElse(null);
+
                         }))
 
                         .filter(Objects::nonNull)
 
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
-                            for (int i = 0, size = a2.length(); i < size; i++) {
-                                try {
-                                    a1.put(a2.get(i));
-                                } catch (JSONException ignored) {
-                                }
-                            }
+                            IntStream.iterate(0, i -> i + 1).limit(a2.length()).boxed()
+                                    .map(throwable(a2::get))
+                                    .filter(Objects::nonNull)
+                                    .forEach(throwable((ThrowableConsumer<Object, RuntimeException>) a1::put));
                         });
 
                 String currentDigest = getDigest(jsonData);
@@ -2563,43 +2559,49 @@ public class DataJsonController {
      * @param formData
      */
     @Nonnull
-    private JSONObject getData(@Nonnull final Form form, @Nullable FormData formData) {
-        JSONObject parentJson = new JSONObject();
-        if (formData != null) {
-            elementStream(form, formData)
-                    .filter(e -> e.getLoadBinder() != null)
-                    .forEach(throwable(e -> {
-                        FormRowSet rowSet = formData.getLoadBinderData(e);
-
-                        if (rowSet == null) {
-                            return;
-                        }
-
-                        String elementId = e.getPropertyString("id");
-
-                        // Form, Section, or Subform
-                        if (e instanceof FormContainer) {
-                            JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
-                            data.sortedKeys().forEachRemaining(throwable(key -> {
-                                // check if current field is part of this container
-                                if(FormUtil.findElement(key.toString(), e, formData, true) != null)
-                                    parentJson.put(key.toString(), data.get(key.toString()));
-                            }));
-                        }
-
-                        // most likely grid element
-                        else if (rowSet.isMultiRow()) {
-                            JSONArray data = convertFormRowSetToJsonArray(e, formData, rowSet);
-                            parentJson.put(elementId, data);
-                        }
-
-                        // any other element with load binder
-                        else {
-                            JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
-                            parentJson.put(elementId, data);
-                        }
-                    }));
+    private JSONObject getData(@Nonnull final Form form, @Nonnull FormData formData) throws ApiException{
+        if(formData.getLoadBinderData(form) == null) {
+            throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found");
         }
+
+        JSONObject parentJson = new JSONObject();
+        Optional.of(formData)
+                .map(fd -> elementStream(form, fd))
+                .orElseGet(Stream::empty)
+                .filter(e -> e.getLoadBinder() != null)
+                .forEach(throwable(e -> {
+
+                    FormRowSet rowSet = formData.getLoadBinderData(e);
+
+                    if (rowSet == null) {
+                        return;
+                    }
+
+                    String elementId = e.getPropertyString("id");
+
+                    // Form, Section, or Subform
+                    if (e instanceof FormContainer) {
+                        JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
+                        data.sortedKeys().forEachRemaining(throwable(key -> {
+                            // check if current field is part of this container
+                            if(FormUtil.findElement(key.toString(), e, formData, true) != null)
+                                parentJson.put(key.toString(), data.get(key.toString()));
+                        }));
+                    }
+
+                    // most likely grid element
+                    else if (rowSet.isMultiRow()) {
+                        JSONArray data = convertFormRowSetToJsonArray(e, formData, rowSet);
+                        parentJson.put(elementId, data);
+                    }
+
+                    // any other element with load binder
+                    else {
+                        JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
+                        parentJson.put(elementId, data);
+                    }
+                }));
+
         return parentJson;
     }
 
