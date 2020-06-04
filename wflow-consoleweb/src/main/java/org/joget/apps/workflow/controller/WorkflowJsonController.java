@@ -1197,5 +1197,32 @@ public class WorkflowJsonController {
             client.close();
         }
     }
-    
+
+    @RequestMapping(value = "/json/workflow/monitoring/package/(*:packageId)/(*:fromVersion)/update", method = RequestMethod.POST)
+    public void updateRunningProcesses(Writer writer, @RequestParam("packageId") String packageId, @RequestParam("fromVersion") Long fromVersion, @RequestParam(value = "callback", required = false) String callback) throws JSONException, IOException {
+
+        String packageVersion = workflowManager.getCurrentPackageVersion(packageId);
+        if(packageVersion != null) {
+            WorkflowPackage workflowPackage = workflowManager.getPackage(packageId, packageVersion);
+            if(workflowPackage != null) {
+                WorkflowPackage fromWorkflowPackage = workflowManager.getPackage(workflowPackage.getPackageId(), String.valueOf(fromVersion));
+                if(fromWorkflowPackage != null) {
+                    String message = "Starting to update package [" + workflowPackage.getPackageId() + "] from version [" + fromVersion + "] to [" + workflowPackage.getVersion() + "]. This may take a while.";
+                    appService.updateRunningProcesses(workflowPackage.getPackageId(), fromVersion, Long.parseLong(workflowPackage.getVersion()));
+
+                    LogUtil.info(getClass().getName(), message);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("message", message);
+                    AppUtil.writeJson(writer, jsonObject, callback);
+                } else {
+                    LogUtil.warn(getClass().getName(), "Invalid package [" + workflowPackage.getPackageId() + "] [" + fromVersion + "]");
+                }
+            } else {
+                LogUtil.warn(getClass().getName(), "Invalid package ["+packageId+"] ["+packageVersion+"]");
+            }
+        } else {
+            LogUtil.warn(getClass().getName(), "Invalid package version ["+packageId+"]");
+        }
+    }
 }
