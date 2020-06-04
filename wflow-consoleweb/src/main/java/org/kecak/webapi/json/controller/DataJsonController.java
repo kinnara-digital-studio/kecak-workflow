@@ -2571,14 +2571,9 @@ public class DataJsonController {
                 .map(fd -> elementStream(form, fd))
                 .orElseGet(Stream::empty)
                 .filter(e -> e.getLoadBinder() != null)
+                .filter(e -> formData.getLoadBinderData(e) != null)
                 .forEach(throwable(e -> {
-
                     FormRowSet rowSet = formData.getLoadBinderData(e);
-
-                    if (rowSet == null) {
-                        return;
-                    }
-
                     String elementId = e.getPropertyString("id");
 
                     // Form, Section, or Subform
