@@ -116,7 +116,7 @@ public class EmailProcessor {
 
         if (ia == null) {
             LogUtil.warn(getClass().getName(), "Address not found for sender [" + sender + "]");
-            return null;
+            return Collections.EMPTY_SET;
         }
 
         String email = ia.getAddress();
