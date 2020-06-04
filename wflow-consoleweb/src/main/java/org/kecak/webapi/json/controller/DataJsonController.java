@@ -2560,9 +2560,11 @@ public class DataJsonController {
      */
     @Nonnull
     private JSONObject getData(@Nonnull final Form form, @Nonnull FormData formData) throws ApiException{
-        if(formData.getLoadBinderData(form) == null) {
-            throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found");
-        }
+        // check result size
+        Optional.of(form).map(formData::getLoadBinderData)
+                .map(FormRowSet::size)
+                .filter(i -> i > 0)
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found"));
 
         JSONObject parentJson = new JSONObject();
         Optional.of(formData)
