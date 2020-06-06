@@ -2589,8 +2589,6 @@ public class DataJsonController {
                     if (e instanceof FormContainer) {
                         JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
                         data.sortedKeys().forEachRemaining(throwable(key -> {
-                            // check if current field is part of this container
-                            if(key.toString().startsWith("_") || FormUtil.findElement(key.toString(), e, formData, true) != null)
                                 parentJson.put(key.toString(), data.get(key.toString()));
                         }));
                     }
@@ -2724,35 +2722,36 @@ public class DataJsonController {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
 
         return Optional.ofNullable(row)
-                .map(peek(r -> r.forEach((k, v) -> {
-                    String elementId = String.valueOf(k);
+                .map(throwable(r -> {
+                    final JSONObject json = new JSONObject();
 
-                    if (element instanceof GridElement) {
-                        Arrays.stream(((GridElement) element).getColumnProperties())
-                                .filter(m -> k.equals(m.get("value")))
-                                .findFirst()
+                    r.forEach(throwable((k, v) -> {
+                        String elementId = String.valueOf(k);
 
-                                // execute grid's format column
-                                .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(row.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
+                        if (element instanceof GridElement) {
+                            Arrays.stream(((GridElement) element).getColumnProperties())
+                                    .filter(m -> k.equals(m.get("value")))
+                                    .findFirst()
 
-                                .ifPresent(value -> r.setProperty(elementId, value));
+                                    // execute grid's format column
+                                    .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
-                    } else {
-                        Optional.ofNullable(FormUtil.findElement(elementId, element, null))
-                                .map(e -> e.getElementValue(formData))
-                                .ifPresent(value -> r.setProperty(elementId, value));
+                                    .ifPresent(throwable(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+                        } else {
+                            Optional.ofNullable(FormUtil.findElement(elementId, element, null))
+                                    .map(e -> e.getElementValue(formData))
+                                    .ifPresent(throwable(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+                        }
+                    }));
 
-                    }
-                })))
-                .map(JSONObject::new)
-                .map(peek(throwable(json -> {
-                    assert row != null;
-                    json.put("_" + FormUtil.PROPERTY_ID, row.getId());
-                    json.put("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated());
-                    json.put("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy());
-                    json.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, row.getDateModified());
-                    json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, row.getModifiedBy());
-                })))
+                    json.put("_" + FormUtil.PROPERTY_ID, r.getId());
+                    json.put("_" + FormUtil.PROPERTY_DATE_CREATED, r.getDateCreated());
+                    json.put("_" + FormUtil.PROPERTY_CREATED_BY, r.getCreatedBy());
+                    json.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, r.getDateModified());
+                    json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, r.getModifiedBy());
+
+                    return json;
+                }, (JSONException e) -> null))
                 .orElseGet(JSONObject::new);
     }
 
@@ -2965,6 +2964,18 @@ public class DataJsonController {
      */
     private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer) {
         return throwableConsumer;
+    }
+
+    /**
+     *
+     * @param throwableConsumer
+     * @param failoverConsumer
+     * @param <T>
+     * @param <E>
+     * @return
+     */
+    private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer, Consumer<E> failoverConsumer) {
+        return throwableConsumer.onException(failoverConsumer);
     }
 
     /**
