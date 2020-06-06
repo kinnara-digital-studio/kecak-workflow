@@ -24,10 +24,7 @@ import org.joget.commons.util.FileManager;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SetupManager;
 import org.joget.commons.util.UuidGenerator;
-import org.joget.workflow.model.WorkflowActivity;
-import org.joget.workflow.model.WorkflowAssignment;
-import org.joget.workflow.model.WorkflowProcess;
-import org.joget.workflow.model.WorkflowProcessResult;
+import org.joget.workflow.model.*;
 import org.joget.workflow.model.dao.WorkflowHelper;
 import org.joget.workflow.model.dao.WorkflowProcessLinkDao;
 import org.joget.workflow.model.service.WorkflowManager;
@@ -2446,12 +2443,17 @@ public class DataJsonController {
     /**
      * Get assignment object
      *
-     * @param activityId
+     * @param activityId any activity ID, event the completed / aborted
      * @return
      * @throws ApiException
      */
     @Nonnull
     private WorkflowAssignment getAssignment(@Nonnull String activityId) throws ApiException {
+//        return Optional.ofNullable(workflowManager.getActivityById(activityId))
+//                .map(WorkflowActivity::getProcessId)
+//                .map(throwable(this::getAssignmentByProcess, (ApiException e) -> null))
+//                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + activityId + "] not available"));
+
         return Optional.of(activityId)
                 .map(workflowManager::getAssignment)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + activityId + "] not available"));
@@ -2460,12 +2462,21 @@ public class DataJsonController {
     /**
      * Get assignment object by process ID
      *
-     * @param processId
+     * @param processId any process ID, event the aborted one
      * @return
      * @throws ApiException
      */
     @Nonnull
     private WorkflowAssignment getAssignmentByProcess(@Nonnull String processId) throws ApiException {
+//        return Optional.of(processId)
+//                .map(workflowProcessLinkDao::getLinks)
+//                .map(Collection::stream)
+//                .orElseGet(Stream::empty)
+//                .map(WorkflowProcessLink::getProcessId)
+//                .map(workflowManager::getAssignmentByProcess)
+//                .findFirst()
+//                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
+
         return Optional.of(processId)
                 .map(workflowManager::getAssignmentByProcess)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
@@ -2581,7 +2592,7 @@ public class DataJsonController {
                         JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
                         data.sortedKeys().forEachRemaining(throwable(key -> {
                             // check if current field is part of this container
-                            if(FormUtil.findElement(key.toString(), e, formData, true) != null)
+                            if(isDefaultColumn(key.toString()) || FormUtil.findElement(key.toString(), e, formData, true) != null)
                                 parentJson.put(key.toString(), data.get(key.toString()));
                         }));
                     }
@@ -2600,6 +2611,21 @@ public class DataJsonController {
                 }));
 
         return parentJson;
+    }
+
+
+    /**
+     * Is default column
+     *
+     * @param columnKey
+     * @return
+     */
+    private boolean isDefaultColumn(@Nonnull String columnKey) {
+        return Stream.of(FormUtil.PROPERTY_ID, FormUtil.PROPERTY_CREATED_BY, FormUtil.PROPERTY_MODIFIED_BY, FormUtil.PROPERTY_DATE_CREATED, FormUtil.PROPERTY_DATE_MODIFIED)
+                .map(columnKey::equals)
+                .filter(b -> b)
+                .findAny()
+                .orElse(false);
     }
 
 
@@ -2692,11 +2718,11 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element container, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
+    private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
         return Optional.ofNullable(rowSet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
-                .map(r -> convertFromRowToJsonObject(container, formData, r))
+                .map(r -> convertFromRowToJsonObject(element, formData, r))
                 .collect(JSONArray::new, JSONArray::put, (result, source) -> IntStream.range(0, source.length())
                         .boxed()
                         .map(source::optJSONObject)
@@ -2711,25 +2737,25 @@ public class DataJsonController {
      * @return
      */
     @Nonnull
-    private JSONObject convertFromRowToJsonObject(@Nonnull final Element container, @Nonnull final FormData formData, @Nullable final FormRow row) {
+    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRow row) {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
 
         return Optional.ofNullable(row)
                 .map(peek(r -> r.forEach((k, v) -> {
                     String elementId = String.valueOf(k);
 
-                    if (container instanceof GridElement) {
-                        Arrays.stream(((GridElement) container).getColumnProperties())
+                    if (element instanceof GridElement) {
+                        Arrays.stream(((GridElement) element).getColumnProperties())
                                 .filter(m -> k.equals(m.get("value")))
                                 .findFirst()
 
                                 // execute grid's format column
-                                .map(m -> ((GridElement) container).formatColumn(elementId, m, String.valueOf(row.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
+                                .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(row.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
                                 .ifPresent(value -> r.setProperty(elementId, value));
 
                     } else {
-                        Optional.ofNullable(FormUtil.findElement(elementId, container, null))
+                        Optional.ofNullable(FormUtil.findElement(elementId, element, null))
                                 .map(e -> e.getElementValue(formData))
                                 .ifPresent(value -> r.setProperty(elementId, value));
 
@@ -2748,19 +2774,6 @@ public class DataJsonController {
         return Optional.of(convertFormRowSetToJsonArray(element, formData, rowSet))
                 .map(r -> r.optJSONObject(0))
                 .orElseGet(JSONObject::new);
-    }
-
-    /**
-     * Get Form for assignment
-     *
-     * @param assignment
-     * @return
-     */
-    private Form getAssignmentForm(AppDefinition appDef, WorkflowAssignment assignment) {
-        FormData formData = new FormData();
-        PackageActivityForm activityForm = appService.viewAssignmentForm(appDef.getAppId(), String.valueOf(appDef.getVersion()), assignment.getActivityId(), formData, null);
-        Form form = activityForm.getForm();
-        return form;
     }
 
     /**
