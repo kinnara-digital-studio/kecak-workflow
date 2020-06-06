@@ -2100,7 +2100,7 @@ public class DataJsonController {
                             String primaryKey = String.valueOf(row.get(primaryKeyColumn));
 
                             // put process detail
-                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, row.get("_" + FormUtil.PROPERTY_ID));
+                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, String.valueOf(row.get("_" + FormUtil.PROPERTY_ID)));
                             if (workflowAssignment != null) {
                                 row.put("activityId", workflowAssignment.getActivityId());
                                 row.put("activityDefId", workflowAssignment.getActivityDefId());
@@ -2462,23 +2462,21 @@ public class DataJsonController {
     /**
      * Get assignment object by process ID
      *
-     * @param processId any process ID, event the aborted one
+     * @param processId any linked process ID or primary key
      * @return
      * @throws ApiException
      */
     @Nonnull
     private WorkflowAssignment getAssignmentByProcess(@Nonnull String processId) throws ApiException {
-//        return Optional.of(processId)
-//                .map(workflowProcessLinkDao::getLinks)
-//                .map(Collection::stream)
-//                .orElseGet(Stream::empty)
-//                .map(WorkflowProcessLink::getProcessId)
-//                .map(workflowManager::getAssignmentByProcess)
-//                .findFirst()
-//                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
-
         return Optional.of(processId)
+                .map(workflowProcessLinkDao::getLinks)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .map(WorkflowProcessLink::getProcessId)
+                .filter(Objects::nonNull)
                 .map(workflowManager::getAssignmentByProcess)
+                .filter(Objects::nonNull)
+                .findFirst()
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
     }
 
@@ -2592,7 +2590,7 @@ public class DataJsonController {
                         JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
                         data.sortedKeys().forEachRemaining(throwable(key -> {
                             // check if current field is part of this container
-                            if(isDefaultColumn(key.toString()) || FormUtil.findElement(key.toString(), e, formData, true) != null)
+                            if(key.toString().startsWith("_") || FormUtil.findElement(key.toString(), e, formData, true) != null)
                                 parentJson.put(key.toString(), data.get(key.toString()));
                         }));
                     }
@@ -2611,21 +2609,6 @@ public class DataJsonController {
                 }));
 
         return parentJson;
-    }
-
-
-    /**
-     * Is default column
-     *
-     * @param columnKey
-     * @return
-     */
-    private boolean isDefaultColumn(@Nonnull String columnKey) {
-        return Stream.of(FormUtil.PROPERTY_ID, FormUtil.PROPERTY_CREATED_BY, FormUtil.PROPERTY_MODIFIED_BY, FormUtil.PROPERTY_DATE_CREATED, FormUtil.PROPERTY_DATE_MODIFIED)
-                .map(columnKey::equals)
-                .filter(b -> b)
-                .findAny()
-                .orElse(false);
     }
 
 
@@ -2762,6 +2745,14 @@ public class DataJsonController {
                     }
                 })))
                 .map(JSONObject::new)
+                .map(peek(throwable(json -> {
+                    assert row != null;
+                    json.put("_" + FormUtil.PROPERTY_ID, row.getId());
+                    json.put("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated());
+                    json.put("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy());
+                    json.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, row.getDateModified());
+                    json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, row.getModifiedBy());
+                })))
                 .orElseGet(JSONObject::new);
     }
 
@@ -2817,9 +2808,8 @@ public class DataJsonController {
      * @return
      */
     @Nullable
-    private WorkflowAssignment getAssignmentFromProcessIdMap(final Map<String, Collection<String>> mapPrimaryKeyToProcessId, Object primaryKey) {
+    private WorkflowAssignment getAssignmentFromProcessIdMap(final Map<String, Collection<String>> mapPrimaryKeyToProcessId, String primaryKey) {
         return Optional.ofNullable(primaryKey)
-                .map(Objects::toString)
                 .map(mapPrimaryKeyToProcessId::get)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
