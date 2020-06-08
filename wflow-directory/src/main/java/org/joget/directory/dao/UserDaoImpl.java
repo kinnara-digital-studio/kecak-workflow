@@ -65,7 +65,16 @@ public class UserDaoImpl extends AbstractSpringDao<User> implements UserDao {
             
             String currentUsername = workflowUserManager.getCurrentUsername();
         	Date currentDate = new Date();
-        	
+
+            if(user.getId() == null) {
+                user.setId(user.getUsername());
+            }
+
+        	if(user.getActive() == null) {
+        	    // default value for user
+                user.setActive(1);
+            }
+
         	user.setCreatedBy(currentUsername);
         	user.setModifiedBy(currentUsername);
         	user.setDateCreated(currentDate);
