@@ -969,12 +969,10 @@ public class DataJsonController {
                         .filter(Objects::nonNull)
 
                         // collect as JSON
-                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
-                            IntStream.iterate(0, i -> i + 1).limit(a2.length()).boxed()
-                                    .map(throwable(a2::get))
-                                    .filter(Objects::nonNull)
-                                    .forEach(throwable((ThrowableConsumer<Object, RuntimeException>) a1::put));
-                        });
+                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> IntStream.iterate(0, i -> i + 1).limit(a2.length()).boxed()
+                                .map(throwable(a2::get))
+                                .filter(Objects::nonNull)
+                                .forEach(throwable((ThrowableConsumer<Object, RuntimeException>) a1::put)));
 
                 String currentDigest = getDigest(jsonData);
 
@@ -3001,13 +2999,28 @@ public class DataJsonController {
     }
 
     /**
+     *
      * @param throwableFunction
+     * @param failoverFunction
      * @param <T>
      * @param <R>
      * @param <E>
      * @return
      */
     private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
+        return throwableFunction.onException(failoverFunction);
+    }
+
+    /**
+     *
+     * @param throwableFunction
+     * @param failoverFunction
+     * @param <T>
+     * @param <R>
+     * @param <E>
+     * @return
+     */
+    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, BiFunction<T, E, R> failoverFunction) {
         return throwableFunction.onException(failoverFunction);
     }
 
