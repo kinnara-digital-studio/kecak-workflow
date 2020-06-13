@@ -366,6 +366,7 @@ public class DataJsonController {
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
+            formData.setPrimaryKeyValue(primaryKey);
 
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
@@ -523,8 +524,11 @@ public class DataJsonController {
             JSONObject jsonResponse = new JSONObject();
 
             jsonResponse.put(FIELD_DATA, jsonData);
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
             jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+            // delete data
+            formDataDao.delete(form, new String[] { formData.getPrimaryKeyValue() });
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
@@ -1566,6 +1570,64 @@ public class DataJsonController {
         }
     }
 
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param assignmentId
+     */
+    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.DELETE)
+    public void deleteAssignmentData(final HttpServletRequest request, final HttpServletResponse response,
+                                     @RequestParam("assignmentId") final String assignmentId) throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            WorkflowAssignment assignment = getAssignment(assignmentId);
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+            // set current app definition
+            AppUtil.setCurrentAppDefinition(appDefinition);
+
+            // retrieve data
+            Map<String, String> parameterMap = new HashMap<>();
+            parameterMap.put("activityId", assignment.getActivityId());
+            FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
+
+            // generate form
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
+
+            // check form permission
+            if (!form.isAuthorize(formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            try {
+                //TODO
+                JSONObject jsonData = getData(form, formData);
+
+                jsonData.put("activityId", assignment.getActivityId());
+                jsonData.put("processId", assignment.getProcessId());
+
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
     /**
      * Convert request body to form data
      *
@@ -2491,72 +2553,13 @@ public class DataJsonController {
         final String processId = assignment.getProcessId();
 
         AppDefinition appDefinition =  Optional.of(activityId)
-                .map(this::getAppDefinitionForWorkflowActivity)
+                .map(appService::getAppDefinitionForWorkflowActivity)
                 .orElseGet(() -> Optional.of(processId)
-                        .map(this::getAppDefinitionForWorkflowProcess)
+                        .map(appService::getAppDefinitionForWorkflowProcess)
                         .orElse(null));
 
         return Optional.ofNullable(appDefinition)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for assignment [" + activityId + "] process [" + processId + "] not found"));
-    }
-
-    /**
-     * Copy from {@link org.joget.apps.app.service.AppServiceImpl#getAppDefinitionForWorkflowActivity(String)}
-     * with small changes
-     *
-     * @param activityId
-     * @return
-     */
-    private AppDefinition getAppDefinitionForWorkflowActivity(String activityId) {
-        AppDefinition appDef = null;
-
-        WorkflowActivity activity = workflowManager.getActivityById(activityId);
-        if (activity != null) {
-            String processDefId = activity.getProcessDefId();
-            WorkflowProcess process = workflowManager.getProcess(processDefId);
-            if (process != null) {
-                String packageId = process.getPackageId();
-                Long packageVersion = Long.parseLong(process.getVersion());
-                PackageDefinition packageDef = packageDefinitionDao.loadPackageDefinition(packageId, packageVersion);
-                if (packageDef != null) {
-                    appDef = packageDef.getAppDefinition();
-                } else {
-                    LogUtil.warn(getClass().getName(), "Undefined package [" + packageId + "] ["+packageVersion+"] for process ["+ processDefId + "]");
-                }
-            } else {
-                LogUtil.warn(getClass().getName(), "Undefined process definition [" + processDefId + "]");
-            }
-        } else {
-            LogUtil.warn(getClass().getName(), "Undefined assignment activity [" + activityId + "]");
-        }
-        return appDef;
-    }
-
-    /**
-     * Copy from {@link org.joget.apps.app.service.AppServiceImpl#getAppDefinitionForWorkflowProcess(String)}
-     * with small changes
-     *
-     * Retrieves the app definition for a specific workflow process.
-     * @param processId
-     * @return
-     */
-    private AppDefinition getAppDefinitionForWorkflowProcess(String processId) {
-        AppDefinition appDef = null;
-
-        WorkflowProcess process = workflowManager.getRunningProcessById(processId);
-        if (process != null) {
-            String packageId = process.getPackageId();
-            Long packageVersion = Long.parseLong(process.getVersion());
-            PackageDefinition packageDef = packageDefinitionDao.loadPackageDefinition(packageId, packageVersion);
-            if (packageDef != null) {
-                appDef = packageDef.getAppDefinition();
-            } else {
-                LogUtil.warn(getClass().getName(), "Undefined package [" + packageId + "] ["+packageVersion+"] for process ["+ processId + "]");
-            }
-        } else {
-            LogUtil.warn(getClass().getName(), "Undefined process [" + processId + "]");
-        }
-        return appDef;
     }
 
     /**
@@ -2636,7 +2639,7 @@ public class DataJsonController {
      * @throws ApiException
      */
     @Nonnull
-    private AppDefinition getApplicationDefinition(String appId, long version) throws ApiException {
+    private AppDefinition getApplicationDefinition(@Nonnull String appId, long version) throws ApiException {
         return Optional.of(version == 0 ? appDefinitionDao.getPublishedVersion(appId) : version)
                 .map(l -> appDefinitionDao.loadVersion(appId, l))
 
