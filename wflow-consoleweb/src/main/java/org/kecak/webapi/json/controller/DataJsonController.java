@@ -1570,6 +1570,9 @@ public class DataJsonController {
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
+
+                jsonResponse.put(FIELD_DATA, jsonData);
+
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
@@ -1608,6 +1611,9 @@ public class DataJsonController {
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
+
+                jsonResponse.put(FIELD_DATA, jsonData);
+
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
