@@ -527,7 +527,8 @@ public class DataJsonController {
             jsonResponse.put(FIELD_DIGEST, currentDigest);
 
             // delete data
-            formDataDao.delete(form, new String[] { formData.getPrimaryKeyValue() });
+            deleteData(form, formData, true);
+
             jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
 
             response.setStatus(HttpServletResponse.SC_OK);
@@ -535,6 +536,33 @@ public class DataJsonController {
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    /**
+     * Delete data
+     *
+     * @param form
+     * @param formData
+     * @throws ApiException
+     */
+    private void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
+        formDataDao.delete(form, new String[] { formData.getPrimaryKeyValue() });
+
+        // delete sub data
+        if(deepClean) {
+            Optional.of(formData)
+                    .map(FormData::getLoadBinderMap)
+                    .map(Map::entrySet)
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .filter(e -> e.getKey() instanceof FormDataDeletableBinder)
+                    .forEach(e -> {
+                        FormDataDeletableBinder formLoadBinder = (FormDataDeletableBinder) e.getKey();
+                        String formId = formLoadBinder.getFormId();
+                        String tableName = formLoadBinder.getTableName();
+                        formDataDao.delete(formId, tableName, e.getValue());
+                    });
         }
     }
 
@@ -694,7 +722,7 @@ public class DataJsonController {
      * @param primaryKey
      * @return
      */
-    private FormRow getData(@Nonnull Form form, String primaryKey) {
+    private FormRow getFormRow(@Nonnull Form form, String primaryKey) {
         return Optional.ofNullable(appService.loadFormData(form, primaryKey))
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
@@ -1131,11 +1159,11 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            // get assignment
             WorkflowAssignment assignment = getAssignment(assignmentId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            // get application definition
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
@@ -1218,11 +1246,11 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
+            // get assignment
             WorkflowAssignment assignment = getAssignmentByProcess(processId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
+            // get application definition
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
@@ -1310,38 +1338,10 @@ public class DataJsonController {
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            // retrieve data
-            Map<String, String> parameterMap = new HashMap<>();
-            parameterMap.put("activityId", assignment.getActivityId());
-            FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            if (asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
-            }
-
-            // generate form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
-            if (asLabel) {
-                FormUtil.setReadOnlyProperty(form, true, true);
-            }
-
-            // check form permission
-            if (!form.isAuthorize(formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
-            response.setStatus(HttpServletResponse.SC_OK);
+            JSONObject jsonData = internalGetAssignmentJsonData(assignment, asLabel, asAttachmentUrl);
 
             try {
-                JSONObject jsonData = getData(form, formData);
-
-                jsonData.put("activityId", assignment.getActivityId());
-                jsonData.put("processId", assignment.getProcessId());
-
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
@@ -1351,6 +1351,7 @@ public class DataJsonController {
                 if (!Objects.equals(digest, currentDigest))
                     jsonResponse.put(FIELD_DATA, jsonData);
 
+                response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -1382,38 +1383,10 @@ public class DataJsonController {
 
         try {
             WorkflowAssignment assignment = getAssignmentByProcess(processId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            // retrieve data
-            Map<String, String> parameterMap = new HashMap<>();
-            parameterMap.put("activityId", assignment.getActivityId());
-            FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-            if (asAttachmentUrl) {
-                formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
-            }
-
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
-
-            if (asLabel) {
-                FormUtil.setReadOnlyProperty(form, true, true);
-            }
-
-            // check form permission
-            if (!form.isAuthorize(formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
-            response.setStatus(HttpServletResponse.SC_OK);
+            JSONObject jsonData = internalGetAssignmentJsonData(assignment, asLabel, asAttachmentUrl);
 
             try {
-                JSONObject jsonData = getData(form, formData);
-
-                jsonData.put("activityId", assignment.getActivityId());
-                jsonData.put("processId", assignment.getProcessId());
-
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
@@ -1423,6 +1396,7 @@ public class DataJsonController {
                 if (!Objects.equals(digest, currentDigest))
                     jsonResponse.put(FIELD_DATA, jsonData);
 
+                response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -1515,8 +1489,12 @@ public class DataJsonController {
                     .map(workflowManager::getAssignment)
                     .filter(Objects::nonNull)
                     .map(throwable(assignment -> {
+                        // get application definition
                         AppDefinition assignmentAppDefinition = getApplicationDefinition(assignment);
+
                         FormData formData = new FormData();
+
+                        // get form
                         Form form = getAssignmentForm(assignmentAppDefinition, assignment, formData);
 
                         // check form permission
@@ -1524,7 +1502,7 @@ public class DataJsonController {
                             return null;
                         }
 
-                        FormRow row = getData(form, formData.getPrimaryKeyValue());
+                        FormRow row = getFormRow(form, formData.getPrimaryKeyValue());
                         row.setProperty("activityId", assignment.getActivityId());
                         row.setProperty("processId", assignment.getProcessId());
                         row.setProperty("assigneeId", assignment.getAssigneeId());
@@ -1570,8 +1548,8 @@ public class DataJsonController {
         }
     }
 
-
     /**
+     * Delete assignment data and abort process
      *
      * @param request
      * @param response
@@ -1585,47 +1563,154 @@ public class DataJsonController {
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            // set current app definition
-            AppUtil.setCurrentAppDefinition(appDefinition);
-
-            // retrieve data
-            Map<String, String> parameterMap = new HashMap<>();
-            parameterMap.put("activityId", assignment.getActivityId());
-            FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
-
-            // generate form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
-
-            // check form permission
-            if (!form.isAuthorize(formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
-            response.setStatus(HttpServletResponse.SC_OK);
+            JSONObject jsonData = internalDeleteAssignmentData(assignment);
 
             try {
-                //TODO
-                JSONObject jsonData = getData(form, formData);
-
-                jsonData.put("activityId", assignment.getActivityId());
-                jsonData.put("processId", assignment.getProcessId());
-
                 String currentDigest = getDigest(jsonData);
 
                 JSONObject jsonResponse = new JSONObject();
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
+
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+
+                response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+    }
+
+    /**
+     * Delete assignment data and abort process
+     *
+     * @param request
+     * @param response
+     * @param processId
+     */
+    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.DELETE)
+    public void deleteAssignmentDataByProcess(final HttpServletRequest request, final HttpServletResponse response,
+                                     @RequestParam("processId") final String processId) throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            WorkflowAssignment assignment = getAssignmentByProcess(processId);
+
+            JSONObject jsonData = internalDeleteAssignmentData(assignment);
+
+            try {
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.warn(getClass().getName(), e.getMessage());
+        }
+    }
+
+    /**
+     * Delete assignment data
+     *
+     * @param assignment
+     * @return
+     * @throws ApiException
+     */
+    private JSONObject internalDeleteAssignmentData(WorkflowAssignment assignment) throws ApiException {
+        // set current app definition
+        AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+        // retrieve data
+        FormData formData = getAssignmentFormData(assignment);
+
+        // generate form
+        Form form = getAssignmentForm(appDefinition, assignment, formData);
+
+        // check form permission
+        if (!form.isAuthorize(formData)) {
+            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+        }
+
+        JSONObject jsonData = getData(form, formData);
+
+        abortProcess(assignment);
+
+        deleteData(form, formData, true);
+
+        return jsonData;
+    }
+
+    /**
+     * Get assignment data as JSONObject
+     *
+     * @param assignment
+     * @param asLabel
+     * @param asAttachmentUrl
+     * @return
+     * @throws ApiException
+     */
+    private JSONObject internalGetAssignmentJsonData(@Nonnull WorkflowAssignment assignment, boolean asLabel, boolean asAttachmentUrl) throws ApiException {
+        AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+        // retrieve data
+        FormData formData = getAssignmentFormData(assignment);
+        if (asAttachmentUrl) {
+            formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
+        }
+
+        // get form
+        Form form = getAssignmentForm(appDefinition, assignment, formData);
+
+        if (asLabel) {
+            FormUtil.setReadOnlyProperty(form, true, true);
+        }
+
+        // check form permission
+        if (!form.isAuthorize(formData)) {
+            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+        }
+
+        JSONObject jsonData = getData(form, formData);
+        return jsonData;
+    }
+
+    /**
+     * Get formData from assignment
+     *
+     * @param assignment
+     * @return
+     */
+    @Nonnull
+    private FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment) {
+        Map<String, String> parameterMap = new HashMap<>();
+        parameterMap.put("activityId", assignment.getActivityId());
+        FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
+        return formData;
+    }
+
+    /**
+     * Abort assignment
+     *
+     * @param assignment
+     */
+    private void abortProcess(@Nonnull WorkflowAssignment assignment) throws ApiException {
+        if(!workflowManager.processAbort(assignment.getProcessId()))
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Failed to abort assignment [" + assignment + "]");
     }
 
     /**
@@ -2339,7 +2424,7 @@ public class DataJsonController {
      * @throws ApiException
      */
     @Nonnull
-    private Form getAssignmentForm(AppDefinition appDefinition, WorkflowAssignment assignment, final FormData formData) throws ApiException {
+    private Form getAssignmentForm(@Nonnull AppDefinition appDefinition, @Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
         return Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
@@ -2559,6 +2644,10 @@ public class DataJsonController {
                         .orElse(null));
 
         return Optional.ofNullable(appDefinition)
+
+                // set current app definition
+                .map(peek(AppUtil::setCurrentAppDefinition))
+
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for assignment [" + activityId + "] process [" + processId + "] not found"));
     }
 
@@ -2590,7 +2679,7 @@ public class DataJsonController {
                     if (e instanceof FormContainer) {
                         JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
                         data.sortedKeys().forEachRemaining(throwable(key -> {
-                                parentJson.put(key.toString(), data.get(key.toString()));
+                            parentJson.put(key.toString(), data.get(key.toString()));
                         }));
                     }
 
@@ -2606,6 +2695,13 @@ public class DataJsonController {
                         parentJson.put(elementId, data);
                     }
                 }));
+
+        try {
+            parentJson.putOpt("activityId", formData.getActivityId());
+            parentJson.putOpt("processId", formData.getProcessId());
+        } catch (JSONException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
 
         return parentJson;
     }
