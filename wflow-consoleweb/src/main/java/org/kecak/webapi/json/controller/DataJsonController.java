@@ -496,7 +496,8 @@ public class DataJsonController {
                                @RequestParam("appId") final String appId,
                                @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                @RequestParam("formDefId") final String formDefId,
-                               @RequestParam("primaryKey") final String primaryKey)
+                               @RequestParam("primaryKey") final String primaryKey,
+                               @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -523,7 +524,10 @@ public class DataJsonController {
 
             JSONObject jsonResponse = new JSONObject();
 
-            jsonResponse.put(FIELD_DATA, jsonData);
+            if (!Objects.equals(currentDigest, digest)) {
+                jsonResponse.put(FIELD_DATA, jsonData);
+            }
+
             jsonResponse.put(FIELD_DIGEST, currentDigest);
 
             // delete data
@@ -536,33 +540,6 @@ public class DataJsonController {
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
-        }
-    }
-
-    /**
-     * Delete data
-     *
-     * @param form
-     * @param formData
-     * @throws ApiException
-     */
-    private void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
-        formDataDao.delete(form, new String[] { formData.getPrimaryKeyValue() });
-
-        // delete sub data
-        if(deepClean) {
-            Optional.of(formData)
-                    .map(FormData::getLoadBinderMap)
-                    .map(Map::entrySet)
-                    .map(Collection::stream)
-                    .orElseGet(Stream::empty)
-                    .filter(e -> e.getKey() instanceof FormDataDeletableBinder)
-                    .forEach(e -> {
-                        FormDataDeletableBinder formLoadBinder = (FormDataDeletableBinder) e.getKey();
-                        String formId = formLoadBinder.getFormId();
-                        String tableName = formLoadBinder.getTableName();
-                        formDataDao.delete(formId, tableName, e.getValue());
-                    });
         }
     }
 
@@ -713,25 +690,6 @@ public class DataJsonController {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
-    }
-
-    /**
-     * Load form data using form service as {@link FormRow}
-     *
-     * @param form
-     * @param primaryKey
-     * @return
-     */
-    private FormRow getFormRow(@Nonnull Form form, String primaryKey) {
-        return Optional.ofNullable(appService.loadFormData(form, primaryKey))
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .findFirst()
-                .map(FormRow::entrySet)
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .filter(this::isNotEmpty)
-                .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
     }
 
     /**
@@ -1557,7 +1515,8 @@ public class DataJsonController {
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.DELETE)
     public void deleteAssignmentData(final HttpServletRequest request, final HttpServletResponse response,
-                                     @RequestParam("assignmentId") final String assignmentId) throws IOException {
+                                     @RequestParam("assignmentId") final String assignmentId,
+                                     @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
@@ -1571,7 +1530,8 @@ public class DataJsonController {
 
                 JSONObject jsonResponse = new JSONObject();
 
-                jsonResponse.put(FIELD_DATA, jsonData);
+                if (!Objects.equals(currentDigest, digest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
 
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
@@ -1598,7 +1558,8 @@ public class DataJsonController {
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.DELETE)
     public void deleteAssignmentDataByProcess(final HttpServletRequest request, final HttpServletResponse response,
-                                     @RequestParam("processId") final String processId) throws IOException {
+                                              @RequestParam("processId") final String processId,
+                                              @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
@@ -1612,7 +1573,8 @@ public class DataJsonController {
 
                 JSONObject jsonResponse = new JSONObject();
 
-                jsonResponse.put(FIELD_DATA, jsonData);
+                if (!Objects.equals(currentDigest, digest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
 
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
@@ -2127,6 +2089,53 @@ public class DataJsonController {
         byte[] data = Base64.getDecoder().decode(bse64EncodedFile);
         return new MockMultipartFile(filename, filename, null, data);
     }
+
+    /**
+     * Delete data
+     *
+     * @param form
+     * @param formData
+     * @throws ApiException
+     */
+    private void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
+        formDataDao.delete(form, new String[] { formData.getPrimaryKeyValue() });
+
+        // delete sub data
+        if(deepClean) {
+            Optional.of(formData)
+                    .map(FormData::getLoadBinderMap)
+                    .map(Map::entrySet)
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .filter(e -> e.getKey() instanceof FormDataDeletableBinder)
+                    .forEach(e -> {
+                        FormDataDeletableBinder formLoadBinder = (FormDataDeletableBinder) e.getKey();
+                        String formId = formLoadBinder.getFormId();
+                        String tableName = formLoadBinder.getTableName();
+                        formDataDao.delete(formId, tableName, e.getValue());
+                    });
+        }
+    }
+
+    /**
+     * Load form data using form service as {@link FormRow}
+     *
+     * @param form
+     * @param primaryKey
+     * @return
+     */
+    private FormRow getFormRow(@Nonnull Form form, String primaryKey) {
+        return Optional.ofNullable(appService.loadFormData(form, primaryKey))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .findFirst()
+                .map(FormRow::entrySet)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .filter(this::isNotEmpty)
+                .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
+    }
+
 
     /**
      * Decode base64 to file
