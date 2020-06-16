@@ -56,7 +56,8 @@
 	                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
 
             	</form>
-            	<p class="m-t"><small>@Copyright Kecak Workflow 2020</small> </p>
+            	<p class="m-t"><small>@Copyright Kecak Workflow 2020</small></p>
+            	<p class="m-t"><small>Build Number <fmt:message key="build.number" /></small></p>
         	</div>
     	</div>
     	<script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
