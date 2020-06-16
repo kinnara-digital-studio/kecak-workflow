@@ -941,7 +941,7 @@ public class DataJsonController {
                         .map(String::valueOf)
 
                         //load form
-                        .map(throwable(s -> {
+                        .map(throwableFunction(s -> {
                             final FormData formData = new FormData();
                             formData.setPrimaryKeyValue(s);
 
@@ -951,7 +951,7 @@ public class DataJsonController {
 
                             return Optional.of(form)
                                     .filter(f -> f.isAuthorize(formData))
-                                    .map(throwable(f -> getData(f, formData), (Exception e) -> null))
+                                    .map(throwableFunction(f -> getData(f, formData), (Exception e) -> null))
                                     .orElse(null);
 
                         }))
@@ -960,9 +960,9 @@ public class DataJsonController {
 
                         // collect as JSON
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> IntStream.iterate(0, i -> i + 1).limit(a2.length()).boxed()
-                                .map(throwable(a2::get))
+                                .map(throwableFunction(a2::get))
                                 .filter(Objects::nonNull)
-                                .forEach(throwable((ThrowableConsumer<Object, RuntimeException>) a1::put)));
+                                .forEach(throwableConsumer((ThrowableConsumer<Object, RuntimeException>) a1::put)));
 
                 String currentDigest = getDigest(jsonData);
 
@@ -1155,7 +1155,7 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(throwable(nextAssignment -> {
+                        .ifPresent(throwableConsumer(nextAssignment -> {
                             JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -1241,7 +1241,7 @@ public class DataJsonController {
                 Optional.ofNullable(resultFormData)
                         .map(FormData::getProcessId)
                         .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(throwable(nextAssignment -> {
+                        .ifPresent(throwableConsumer(nextAssignment -> {
                             JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
@@ -1446,7 +1446,7 @@ public class DataJsonController {
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
                     .filter(Objects::nonNull)
-                    .map(throwable(assignment -> {
+                    .map(throwableFunction(assignment -> {
                         // get application definition
                         AppDefinition assignmentAppDefinition = getApplicationDefinition(assignment);
 
@@ -1722,7 +1722,7 @@ public class DataJsonController {
         elementStream(form, formData)
                 .filter(e -> !(e instanceof Form || e instanceof Section || e instanceof Column))
                 .filter(e -> e.getStoreBinder() != null)
-                .forEach(throwable(element -> {
+                .forEach(throwableConsumer(element -> {
                     // handle store binder
                     processStoreBinder(element, formData);
                 }));
@@ -1747,7 +1747,7 @@ public class DataJsonController {
                                 .map(this::handleEncodedFile)
                                 .map(Arrays::stream)
                                 .orElseGet(Stream::empty)
-                                .map(throwable((String s) -> decodeFile(s)))
+                                .map(throwableFunction((String s) -> decodeFile(s)))
                                 .filter(Objects::nonNull)
                                 .map(f -> FileManager.storeFile(f, uploadPath))
                                 .toArray(String[]::new);
@@ -1796,7 +1796,7 @@ public class DataJsonController {
         try {
             JSONArray jsonArray = new JSONArray(value);
             return IntStream.iterate(0, i -> i + 1).limit(jsonArray.length()).boxed()
-                    .map(throwable(jsonArray::getString))
+                    .map(throwableFunction(jsonArray::getString))
                     .filter(Objects::nonNull)
                     .toArray(String[]::new);
 
@@ -1821,7 +1821,7 @@ public class DataJsonController {
             // multiple file, values are in JSONArray
             if (jsonValues != null) {
                 MultipartFile[] files = IntStream.iterate(0, i -> i + 1).limit(jsonBody.length()).boxed()
-                        .map(throwable(jsonValues::getString))
+                        .map(throwableFunction(jsonValues::getString))
                         .map(value -> addFileRequestParameter(value, element, formData))
                         .filter(Objects::nonNull)
                         .toArray(MultipartFile[]::new);
@@ -2255,7 +2255,7 @@ public class DataJsonController {
                         .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
-                        .collect(JSONArray::new, throwable((jsonArray, row) -> {
+                        .collect(JSONArray::new, throwableConsumer((jsonArray, row) -> {
                             String primaryKeyColumn = getPrimaryKeyColumn(dataList);
                             String primaryKey = String.valueOf(row.get(primaryKeyColumn));
 
@@ -2686,14 +2686,14 @@ public class DataJsonController {
                 .orElseGet(Stream::empty)
                 .filter(e -> e.getLoadBinder() != null)
                 .filter(e -> formData.getLoadBinderData(e) != null)
-                .forEach(throwable(e -> {
+                .forEach(throwableConsumer(e -> {
                     FormRowSet rowSet = formData.getLoadBinderData(e);
                     String elementId = e.getPropertyString("id");
 
                     // Form, Section, or Subform
                     if (e instanceof FormContainer) {
                         JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
-                        data.sortedKeys().forEachRemaining(throwable(key -> {
+                        data.sortedKeys().forEachRemaining(throwableConsumer(key -> {
                             parentJson.put(key.toString(), data.get(key.toString()));
                         }));
                     }
@@ -2799,7 +2799,7 @@ public class DataJsonController {
         final JSONObject result = new JSONObject();
 
         // show error message
-        formErrors.forEach(throwable(result::put));
+        formErrors.forEach(throwableConsumer(result::put));
 
         return result;
     }
@@ -2832,12 +2832,16 @@ public class DataJsonController {
     @Nonnull
     private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRow row) {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        WorkflowAssignment workflowAssignment = Optional.of(formData)
+                .map(FormData::getActivityId)
+                .map(throwableFunction(this::getAssignment))
+                .orElse(null);
 
         return Optional.ofNullable(row)
-                .map(throwable(r -> {
+                .map(throwableFunction(r -> {
                     final JSONObject json = new JSONObject();
 
-                    r.forEach(throwable((k, v) -> {
+                    r.forEach(throwableConsumer((k, v) -> {
                         String elementId = String.valueOf(k);
 
                         if (element instanceof GridElement) {
@@ -2848,11 +2852,13 @@ public class DataJsonController {
                                     // execute grid's format column
                                     .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
-                                    .ifPresent(throwable(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
                         } else {
                             Optional.ofNullable(FormUtil.findElement(elementId, element, null))
                                     .map(e -> e.getElementValue(formData))
-                                    .ifPresent(throwable(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+                                    .ifPresent(throwableConsumer(s -> {
+                                        json.put(elementId, AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition));
+                                    }, (JSONException ignored) -> {}));
                         }
                     }));
 
@@ -3074,7 +3080,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer) {
+    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer) {
         return throwableConsumer;
     }
 
@@ -3086,7 +3092,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, E extends Exception> Consumer<T> throwable(ThrowableConsumer<T, E> throwableConsumer, Consumer<E> failoverConsumer) {
+    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer, Consumer<E> failoverConsumer) {
         return throwableConsumer.onException(failoverConsumer);
     }
 
@@ -3097,7 +3103,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, U, E extends Exception> BiConsumer<T, U> throwable(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
+    private <T, U, E extends Exception> BiConsumer<T, U> throwableConsumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
         return throwableBiConsumer;
     }
 
@@ -3108,7 +3114,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> ThrowableFunction<T, R, E> throwable(ThrowableFunction<T, R, E> throwableFunction) {
+    private <T, R, E extends Exception> ThrowableFunction<T, R, E> throwableFunction(ThrowableFunction<T, R, E> throwableFunction) {
         return throwableFunction;
     }
 
@@ -3121,7 +3127,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
+    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
         return throwableFunction.onException(failoverFunction);
     }
 
@@ -3134,7 +3140,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> Function<T, R> throwable(ThrowableFunction<T, R, E> throwableFunction, BiFunction<T, E, R> failoverFunction) {
+    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, BiFunction<T, E, R> failoverFunction) {
         return throwableFunction.onException(failoverFunction);
     }
 
