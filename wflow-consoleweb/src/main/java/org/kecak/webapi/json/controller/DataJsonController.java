@@ -1893,36 +1893,36 @@ public class DataJsonController {
 
         Form form = FormUtil.findRootForm(element);
         String parameterName = FormUtil.getElementParameterName(element);
+        String requestParameter = formData.getRequestParameter(parameterName);
 
-        try {
-            FormRowSet rowSet;
+        FormRowSet rowSet;
 
-            // Multi row
-            if (storeBinder instanceof FormStoreMultiRowElementBinder) {
-                JSONArray values = new JSONArray(formData.getRequestParameter(parameterName));
-                rowSet = convertJsonArrayToRowSet(form, values);
-            }
-
-            // Single row
-            else if (storeBinder instanceof FormStoreElementBinder) {
-                JSONObject value = new JSONObject(formData.getRequestParameter(parameterName));
-                rowSet = convertJsonObjectToRowSet(form, value);
-            }
-
-            // Undefined store binder
-            else {
-                throw new ApiException(HttpServletResponse.SC_NOT_IMPLEMENTED,
-                        "Unknown store binder type [" + storeBinder.getClass().getName()
-                                + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID)
-                                + "] element [" + element.getPropertyString(FormUtil.PROPERTY_ID) + "] ");
-            }
-
-            // store binder data to be stored
-            formData.setStoreBinderData(storeBinder, rowSet);
-
-        } catch (JSONException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+        // Multi row
+        if (storeBinder instanceof FormStoreMultiRowElementBinder) {
+            JSONArray values = Optional.ofNullable(requestParameter)
+                    .map(throwableFunction(JSONArray::new))
+                    .orElseGet(JSONArray::new);
+            rowSet = convertJsonArrayToRowSet(form, values);
         }
+
+        // Single row
+        else if (storeBinder instanceof FormStoreElementBinder) {
+            JSONObject value = Optional.ofNullable(formData.getRequestParameter(parameterName))
+                    .map(throwableFunction(JSONObject::new))
+                    .orElseGet(JSONObject::new);
+            rowSet = convertJsonObjectToRowSet(form, value);
+        }
+
+        // Undefined store binder
+        else {
+            throw new ApiException(HttpServletResponse.SC_NOT_IMPLEMENTED,
+                    "Unknown store binder type [" + storeBinder.getClass().getName()
+                            + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID)
+                            + "] element [" + element.getPropertyString(FormUtil.PROPERTY_ID) + "] ");
+        }
+
+        // store binder data to be stored
+        formData.setStoreBinderData(storeBinder, rowSet);
     }
 
     /**
