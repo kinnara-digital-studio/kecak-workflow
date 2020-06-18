@@ -81,7 +81,7 @@ public class WorkflowAdministrationJsonController {
         }
     }
 
-    @RequestMapping(value = "/json/workflow/monitoring/package/(*:packageId)/(*:fromVersion)/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/workflow/monitoring/package/(*:packageId)/(*:fromVersion)/update", method = {RequestMethod.POST, RequestMethod.PUT})
     public void updateRunningProcesses(Writer writer, @RequestParam("packageId") String packageId, @RequestParam("fromVersion") Long fromVersion, @RequestParam(value = "callback", required = false) String callback) throws JSONException, IOException {
         String packageVersion = workflowManager.getCurrentPackageVersion(packageId);
         if(packageVersion != null) {

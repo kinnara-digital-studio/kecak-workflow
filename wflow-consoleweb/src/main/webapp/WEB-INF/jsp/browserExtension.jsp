@@ -34,8 +34,7 @@
 	                <button type="submit" class="btn btn-primary block full-width m-b">Logout</button>
 	                <a href="${pageContext.request.contextPath}/" class="btn btn-default block full-width m-b">Home</a><br/>
             	</form>
-            	<p class="m-t"><small>@Copyright Kecak Workflow 2020</small> </p>
-            	<p class="m-t"><small>Build Number <fmt:message key="build.number" /></small> </p>
+            	<p class="m-t"><small>@Copyright Kecak Workflow 2020 - Build <fmt:message key="build.number" /></small> </p>
         	</div>
     	</div>
     	<script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>

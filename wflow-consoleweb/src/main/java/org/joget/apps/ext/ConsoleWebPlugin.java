@@ -2,6 +2,7 @@ package org.joget.apps.ext;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -98,7 +99,9 @@ public class ConsoleWebPlugin extends ExtDefaultPlugin implements PluginWebSuppo
      * @return 
      */
     public String getFooter(String path) {
-        return "&copy;Copyright Kecak Workflow 2020";
+        MessageSource messageSource = (MessageSource)AppUtil.getApplicationContext().getBean("messageSource");
+        Locale locale = LocaleContextHolder.getLocale();
+        return "&copy;Copyright Kecak Workflow 2020 - Build " + messageSource.getMessage("build.number", null, "", locale);
     }
     
     /**
