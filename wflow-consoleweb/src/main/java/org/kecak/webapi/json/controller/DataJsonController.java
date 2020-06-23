@@ -53,6 +53,7 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author aristo
@@ -122,7 +123,7 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            fillStoreBinderInFormData(jsonBody, form, formData);
+            fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // check form permission
             if (!form.isAuthorize(formData)) {
@@ -373,7 +374,7 @@ public class DataJsonController {
 
             Form form = getForm(appDefinition, formDefId, formData);
 
-            fillStoreBinderInFormData(jsonBody, form, formData);
+            fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // check form permission
             if (!form.isAuthorize(formData)) {
@@ -1684,22 +1685,6 @@ public class DataJsonController {
     /**
      * Convert request body to form data
      *
-     * @param jsonPayload
-     * @param form
-     * @return
-     * @throws IOException
-     * @throws JSONException
-     * @throws ApiException
-     */
-    @Nonnull
-    private FormData fillStoreBinderInFormData(final JSONObject jsonPayload, final Form form, final FormData formData) throws IOException, JSONException, ApiException {
-        return fillStoreBinderInFormData(jsonPayload, form, formData, false);
-    }
-
-
-    /**
-     * Convert request body to form data
-     *
      * @param jsonBody
      * @param form
      * @param formData
@@ -1722,37 +1707,65 @@ public class DataJsonController {
         elementStream(form, formData)
                 .filter(e -> !(e instanceof Form || e instanceof Section || e instanceof Column))
                 .filter(e -> e.getStoreBinder() != null)
-                .forEach(throwableConsumer(element -> {
-                    // handle store binder
-                    processStoreBinder(element, formData);
-                }));
 
+                // handle store binder
+                .forEach(throwableConsumer(element -> processStoreBinder(element, formData)));
+
+//
+//        elementStream(form, formData)
+//                .filter(e -> e instanceof FormContainer)
+//                .forEach(e -> {
+//                    String parameterName = FormUtil.getElementParameterName(e);
+//                    String parameterValue = formData.getRequestParameter(parameterName);
+//                    if(parameterValue == null) {
+//                        String oldValue = Optional.ofNullable(formData.getLoadBinderData(e))
+//                                .map(Collection::stream)
+//                                .orElseGet(Stream::empty)
+//                                .findFirst()
+//                                .map(r -> r.getProperty(e.getPropertyString("id")))
+//                                .orElse("");
+//
+//                        formData.addRequestParameterValues(parameterName, new String[] {oldValue});
+//                    }
+//                });
 
         // handle files; no need to reupload the file if you still need to keep the old one,
         // simply don't send the field
         // unfortunately this only works for FileUpload, other fields still need to be re-uploaded
-        // TODO : apply this kind of logic for the rests of the fields
+        // TODO : apply this kind of logic for the rests of the fields (done)
 
+        // persist old values
         String uploadPath = getUploadFilePath();
+        FormUtil.executeLoadBinders(form, formData);
         elementStream(form, formData)
-                .filter(e -> e instanceof FileDownloadSecurity)
                 .forEach(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
-                    String parameterValue = Optional.of(parameterName)
-                            .map(formData::getRequestParameter)
-                            .orElse(null);
+                    String parameterValue = formData.getRequestParameter(parameterName);
 
-                    if (parameterValue != null) {
-                        String[] filePaths = Optional.ofNullable(parameterValue)
-                                .map(this::handleEncodedFile)
-                                .map(Arrays::stream)
+                    if(parameterValue == null) {
+                        String oldValue = Optional.ofNullable(formData.getLoadBinderData(e))
+                                .map(Collection::stream)
                                 .orElseGet(Stream::empty)
-                                .map(throwableFunction((String s) -> decodeFile(s)))
-                                .filter(Objects::nonNull)
-                                .map(f -> FileManager.storeFile(f, uploadPath))
-                                .toArray(String[]::new);
+                                .findFirst()
+                                .map(r -> r.getProperty(e.getPropertyString("id")))
+                                .orElse("");
 
-                        formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
+                        formData.addRequestParameterValues(parameterName, new String[] {oldValue});
+                    } else {
+                        if (e instanceof FileDownloadSecurity) {
+                            if (parameterValue != null) {
+                                String[] filePaths = Optional.ofNullable(parameterValue)
+                                        .map(this::handleEncodedFile)
+                                        .map(Arrays::stream)
+                                        .orElseGet(Stream::empty)
+                                        .map(throwableFunction((String s) -> decodeFile(s)))
+                                        .filter(Objects::nonNull)
+                                        .map(f -> FileManager.storeFile(f, uploadPath))
+                                        .toArray(String[]::new);
+
+                                formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
+                            }
+                        }
                     }
                 });
         ;
@@ -2673,9 +2686,10 @@ public class DataJsonController {
      * @param formData
      */
     @Nonnull
-    private JSONObject getData(@Nonnull final Form form, @Nonnull FormData formData) throws ApiException{
+    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData) throws ApiException{
         // check result size
-        Optional.of(form).map(formData::getLoadBinderData)
+        Optional.of(form)
+                .map(formData::getLoadBinderData)
                 .map(FormRowSet::size)
                 .filter(i -> i > 0)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found"));
@@ -2780,13 +2794,30 @@ public class DataJsonController {
      *
      * @param appDefinition
      * @param formDefId
+     * @param formData
      * @return
      * @throws ApiException
      */
     @Nonnull
-    private Form getForm(AppDefinition appDefinition, String formDefId, FormData formData) throws ApiException {
+    private Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData) throws ApiException {
         return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
+//                .map(f -> setReadonly(f, formData))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
+    }
+
+    @Nonnull
+    private Form setReadonly(@Nonnull Form form, FormData formData) {
+        elementStream(form, formData)
+                .filter(e -> !(e instanceof FormContainer))
+                .forEach(element -> {
+                    String parameterName = FormUtil.getElementParameterName(element);
+                    String parameterValue = formData.getRequestParameter(parameterName);
+                    FormUtil.setReadOnlyProperty(element);
+//                    if(Objects.isNull(parameterValue)) {
+//                        FormUtil.setReadOnlyProperty(element);
+//                    }
+                });
+        return form;
     }
 
     /**
@@ -2832,13 +2863,11 @@ public class DataJsonController {
     @Nonnull
     private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRow row) {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-        WorkflowAssignment workflowAssignment = Optional.of(formData)
-                .map(FormData::getActivityId)
-                .map(throwableFunction(this::getAssignment))
-                .orElse(null);
 
         return Optional.ofNullable(row)
                 .map(throwableFunction(r -> {
+                    final WorkflowAssignment workflowAssignment = getAssignment(formData);
+
                     final JSONObject json = new JSONObject();
 
                     r.forEach(throwableConsumer((k, v) -> {
@@ -2852,7 +2881,8 @@ public class DataJsonController {
                                     // execute grid's format column
                                     .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
-                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+//                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s)).onException(ignored -> {}));
                         } else {
                             Optional.ofNullable(FormUtil.findElement(elementId, element, null))
                                     .map(e -> e.getElementValue(formData))
@@ -2915,6 +2945,26 @@ public class DataJsonController {
                 .map(DataList::getBinder)
                 .map(DataListBinder::getPrimaryKeyColumnName)
                 .orElse("id");
+    }
+
+    /**
+     * Get assignment from form data
+     *
+     * @param formData
+     * @return
+     */
+    @Nullable
+    private WorkflowAssignment getAssignment(@Nonnull FormData formData) {
+        return Optional.of(formData)
+                // try load addignment from activity ID
+                .map(FormData::getActivityId)
+                .map(throwableFunction(this::getAssignment))
+
+                // if fails, try to load assignment from process ID
+                .orElseGet(throwableSupplier(() -> Optional.of(formData)
+                        .map(FormData::getProcessId)
+                        .map(throwableFunction(this::getAssignmentByProcess))
+                        .orElse(null)));
     }
 
     /**
@@ -3073,6 +3123,20 @@ public class DataJsonController {
      */
 
     // Throwable methods
+    /**
+     *
+     * @param throwableSupplier
+     * @param <R>
+     * @param <E>
+     * @return
+     */
+    private <R, E extends Exception> ThrowableSupplier<R, E> throwableSupplier(ThrowableSupplier<R, E> throwableSupplier) {
+        return throwableSupplier;
+    }
+
+    private <R, E extends Exception> ThrowableSupplier<R, E> throwableSupplier(ThrowableSupplier<R, E> throwableSupplier, Function<? super E, R> onException) {
+        return throwableSupplier.onException(onException);
+    }
 
     /**
      * @param throwableConsumer
@@ -3080,7 +3144,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer) {
+    private <T, E extends Exception> ThrowableConsumer<T, ? super E> throwableConsumer(ThrowableConsumer<T, ? super E> throwableConsumer) {
         return throwableConsumer;
     }
 
@@ -3092,7 +3156,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer, Consumer<E> failoverConsumer) {
+    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer, Consumer<? super E> failoverConsumer) {
         return throwableConsumer.onException(failoverConsumer);
     }
 
@@ -3114,7 +3178,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> ThrowableFunction<T, R, E> throwableFunction(ThrowableFunction<T, R, E> throwableFunction) {
+    private <T, R, E extends Exception> ThrowableFunction<T, R, ? extends E> throwableFunction(ThrowableFunction<T, R, ? extends E> throwableFunction) {
         return throwableFunction;
     }
 
@@ -3145,6 +3209,31 @@ public class DataJsonController {
     }
 
     // Extension for functional interfaces
+
+    @FunctionalInterface
+    interface ThrowableSupplier<R, E extends Exception> extends Supplier<R> {
+        @Nullable
+        R getThrowable() throws E;
+
+        @Nullable
+        default R get() {
+            try {
+                return getThrowable();
+            } catch (Exception e) {
+                LogUtil.error(getClass().getName(), e, e.getMessage());
+                return null;
+            }
+        }
+
+        default ThrowableSupplier<R, E> onException(Function<? super E, R> onException) {
+            try {
+                return this::getThrowable;
+            } catch (Exception e) {
+                Objects.requireNonNull(onException);
+                return () -> onException.apply((E) e);
+            }
+        }
+    }
 
     /**
      * Throwable version of {@link Function}.
@@ -3206,6 +3295,9 @@ public class DataJsonController {
      */
     @FunctionalInterface
     interface ThrowableConsumer<T, E extends Exception> extends Consumer<T> {
+
+        void acceptThrowable(T t) throws E;
+
         @Override
         default void accept(T t) {
             try {
@@ -3215,18 +3307,40 @@ public class DataJsonController {
             }
         }
 
-        default ThrowableConsumer<T, E> onException(final Consumer<E> c) {
-            Objects.requireNonNull(c);
+        default ThrowableConsumer<T, ? super E> onException(final Consumer<? super E> onException) {
+            Objects.requireNonNull(onException);
             return (T t) -> {
                 try {
                     acceptThrowable(t);
                 } catch (Exception e) {
-                    c.accept((E) e);
+                    onException.accept((E) e);
                 }
             };
         }
+    }
 
-        void acceptThrowable(T t) throws E;
+    /**
+     * Throwable version of {@link BiConsumer}
+     *
+     * @param <T>
+     * @param <U>
+     * @param <E>
+     */
+    @FunctionalInterface
+    interface ThrowableBiConsumer<T, U, E extends Exception> extends BiConsumer<T, U> {
+        void acceptThrowable(T t, U u) throws E;
+
+        default void accept(T t, U u) {
+            try {
+                acceptThrowable(t, u);
+            } catch (Exception e) {
+                onException((E) e);
+            }
+        }
+
+        default void onException(E e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
     }
 
     /**
@@ -3237,6 +3351,9 @@ public class DataJsonController {
      */
     @FunctionalInterface
     interface ThrowablePredicate<T, E extends Exception> extends Predicate<T> {
+
+        boolean testThrowable(T t) throws E;
+
         @Override
         default boolean test(T t) {
             try {
@@ -3250,31 +3367,5 @@ public class DataJsonController {
             LogUtil.error(getClass().getName(), e, e.getMessage());
             return false;
         }
-
-        boolean testThrowable(T t) throws E;
-    }
-
-    /**
-     * Throwable version of {@link BiConsumer}
-     *
-     * @param <T>
-     * @param <U>
-     * @param <E>
-     */
-    @FunctionalInterface
-    interface ThrowableBiConsumer<T, U, E extends Exception> extends BiConsumer<T, U> {
-        default void accept(T t, U u) {
-            try {
-                acceptThrowable(t, u);
-            } catch (Exception e) {
-                onException((E) e);
-            }
-        }
-
-        default void onException(E e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
-
-        void acceptThrowable(T t, U u) throws E;
     }
 }
