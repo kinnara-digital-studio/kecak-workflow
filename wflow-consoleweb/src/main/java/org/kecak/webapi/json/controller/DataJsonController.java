@@ -1711,33 +1711,14 @@ public class DataJsonController {
                 // handle store binder
                 .forEach(throwableConsumer(element -> processStoreBinder(element, formData)));
 
-//
-//        elementStream(form, formData)
-//                .filter(e -> e instanceof FormContainer)
-//                .forEach(e -> {
-//                    String parameterName = FormUtil.getElementParameterName(e);
-//                    String parameterValue = formData.getRequestParameter(parameterName);
-//                    if(parameterValue == null) {
-//                        String oldValue = Optional.ofNullable(formData.getLoadBinderData(e))
-//                                .map(Collection::stream)
-//                                .orElseGet(Stream::empty)
-//                                .findFirst()
-//                                .map(r -> r.getProperty(e.getPropertyString("id")))
-//                                .orElse("");
-//
-//                        formData.addRequestParameterValues(parameterName, new String[] {oldValue});
-//                    }
-//                });
-
         // handle files; no need to reupload the file if you still need to keep the old one,
         // simply don't send the field
-        // unfortunately this only works for FileUpload, other fields still need to be re-uploaded
-        // TODO : apply this kind of logic for the rests of the fields (done)
 
         // persist old values
         String uploadPath = getUploadFilePath();
         FormUtil.executeLoadBinders(form, formData);
         elementStream(form, formData)
+                .filter(e -> !(e instanceof FormContainer))
                 .forEach(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String parameterValue = formData.getRequestParameter(parameterName);
@@ -1751,36 +1732,23 @@ public class DataJsonController {
                                 .orElse("");
 
                         formData.addRequestParameterValues(parameterName, new String[] {oldValue});
-                    } else {
-                        if (e instanceof FileDownloadSecurity) {
-                            if (parameterValue != null) {
-                                String[] filePaths = Optional.ofNullable(parameterValue)
-                                        .map(this::handleEncodedFile)
-                                        .map(Arrays::stream)
-                                        .orElseGet(Stream::empty)
-                                        .map(throwableFunction((String s) -> decodeFile(s)))
-                                        .filter(Objects::nonNull)
-                                        .map(f -> FileManager.storeFile(f, uploadPath))
-                                        .toArray(String[]::new);
+                    }
 
-                                formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
-                            }
-                        }
+                    // parameter value is not null and it is a FileDownloadSecurity
+                    else if (e instanceof FileDownloadSecurity) {
+
+                        String[] filePaths = Optional.ofNullable(parameterValue)
+                                .map(this::handleEncodedFile)
+                                .map(Arrays::stream)
+                                .orElseGet(Stream::empty)
+                                .map(throwableFunction((String s) -> decodeFile(s)))
+                                .filter(Objects::nonNull)
+                                .map(f -> FileManager.storeFile(f, uploadPath))
+                                .toArray(String[]::new);
+
+                        formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
                     }
                 });
-        ;
-
-//        // handle request parameters
-//        processRequestParameters(jsonBody, element, formData);
-
-//        formData.setDoValidation(true);
-//        formData.addRequestParameterValues(FormUtil.getElementParameterName(form) + "_SUBMITTED", new String[]{""});
-//        formData.addRequestParameterValues("_action", new String[]{"submit"});
-
-        // use field "ID" as primary key if possible
-//        if (isEmpty(formData.getPrimaryKeyValue())) {
-//            formData.setPrimaryKeyValue(jsonBody.optString(FormUtil.PROPERTY_ID));
-//        }
 
         return formData;
     }
@@ -2958,12 +2926,12 @@ public class DataJsonController {
         return Optional.of(formData)
                 // try load addignment from activity ID
                 .map(FormData::getActivityId)
-                .map(throwableFunction(this::getAssignment))
+                .map(throwableFunction(this::getAssignment, (ApiException e) -> null))
 
                 // if fails, try to load assignment from process ID
                 .orElseGet(throwableSupplier(() -> Optional.of(formData)
                         .map(FormData::getProcessId)
-                        .map(throwableFunction(this::getAssignmentByProcess))
+                        .map(throwableFunction(this::getAssignmentByProcess, (ApiException e) -> null))
                         .orElse(null)));
     }
 
@@ -3191,7 +3159,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, Function<E, R> failoverFunction) {
+    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, Function<? super E, ? extends R> failoverFunction) {
         return throwableFunction.onException(failoverFunction);
     }
 
