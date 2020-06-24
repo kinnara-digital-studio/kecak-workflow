@@ -1716,39 +1716,50 @@ public class DataJsonController {
 
         // persist old values
         String uploadPath = getUploadFilePath();
-        FormUtil.executeLoadBinders(form, formData);
+        FormData oldFormData = new FormData();
+        oldFormData.setPrimaryKeyValue(formData.getPrimaryKeyValue());
+        oldFormData.setActivityId(formData.getActivityId());
+        oldFormData.setProcessId(formData.getProcessId());
+        FormUtil.executeLoadBinders(form, oldFormData);
         elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
-                .forEach(e -> {
+                .forEach(throwableConsumer(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String parameterValue = formData.getRequestParameter(parameterName);
 
                     if(parameterValue == null) {
-                        String oldValue = Optional.ofNullable(formData.getLoadBinderData(e))
-                                .map(Collection::stream)
-                                .orElseGet(Stream::empty)
-                                .findFirst()
-                                .map(r -> r.getProperty(e.getPropertyString("id")))
-                                .orElse("");
+                        // get old data value
+                        FormRowSet rowSet = oldFormData.getLoadBinderData(e);
 
-                        formData.addRequestParameterValues(parameterName, new String[] {oldValue});
+                        // ordinary element
+                        if(e.getLoadBinder() == null) {
+                            JSONObject data = convertFormRowSetToJsonObject(e, oldFormData, rowSet);
+
+                            String elementId = e.getPropertyString("id");
+                            formData.addRequestParameterValues(parameterName, new String[]{data.getString(elementId)});
+                        }
+
+                        // any other element with store binder
+                        else {
+                            formData.setStoreBinderData(e.getStoreBinder(), rowSet);
+                        }
                     }
 
                     // parameter value is not null and it is a FileDownloadSecurity
                     else if (e instanceof FileDownloadSecurity) {
 
-                        String[] filePaths = Optional.ofNullable(parameterValue)
+                        String[] filePaths = Optional.of(parameterValue)
                                 .map(this::handleEncodedFile)
                                 .map(Arrays::stream)
                                 .orElseGet(Stream::empty)
-                                .map(throwableFunction((String s) -> decodeFile(s)))
+                                .map(throwableFunction(this::decodeFile))
                                 .filter(Objects::nonNull)
                                 .map(f -> FileManager.storeFile(f, uploadPath))
                                 .toArray(String[]::new);
 
                         formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
                     }
-                });
+                }));
 
         return formData;
     }
