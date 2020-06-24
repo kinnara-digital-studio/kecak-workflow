@@ -1729,25 +1729,30 @@ public class DataJsonController {
 
                     if(parameterValue == null) {
                         // get old data value
-                        FormRowSet rowSet = oldFormData.getLoadBinderData(e);
+                        Optional.of(e)
+                                .map(oldFormData::getLoadBinderData)
+                                .ifPresent(rowSet -> {
+                                    // ordinary element
+                                    if(e.getStoreBinder() == null) {
+                                        String elementId = e.getPropertyString("id");
 
-                        // ordinary element
-                        if(e.getLoadBinder() == null) {
-                            JSONObject data = convertFormRowSetToJsonObject(e, oldFormData, rowSet);
+                                        Optional.of(rowSet)
+                                                .map(Collection::stream)
+                                                .orElseGet(Stream::empty)
+                                                .findFirst()
+                                                .map(row -> row.getProperty(elementId))
+                                                .ifPresent(val -> formData.addRequestParameterValues(parameterName, new String[]{ val }));
+                                    }
 
-                            String elementId = e.getPropertyString("id");
-                            formData.addRequestParameterValues(parameterName, new String[]{data.getString(elementId)});
-                        }
-
-                        // any other element with store binder
-                        else {
-                            formData.setStoreBinderData(e.getStoreBinder(), rowSet);
-                        }
+                                    // any other element with store binder
+                                    else {
+                                        formData.setStoreBinderData(e.getStoreBinder(), rowSet);
+                                    }
+                                });
                     }
 
                     // parameter value is not null and it is a FileDownloadSecurity
                     else if (e instanceof FileDownloadSecurity) {
-
                         String[] filePaths = Optional.of(parameterValue)
                                 .map(this::handleEncodedFile)
                                 .map(Arrays::stream)
