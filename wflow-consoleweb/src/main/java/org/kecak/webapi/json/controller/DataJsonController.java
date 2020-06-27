@@ -1110,7 +1110,7 @@ public class DataJsonController {
      * @param response     HTTP Response
      * @param assignmentId Assignment ID
      */
-    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT} )
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("assignmentId") String assignmentId)
             throws IOException, JSONException {
@@ -1197,7 +1197,7 @@ public class DataJsonController {
      * @param response  HTTP Response
      * @param processId Assingment Process ID
      */
-    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT})
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                                 @RequestParam("processId") String processId)
             throws IOException, JSONException {
