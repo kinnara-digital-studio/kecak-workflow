@@ -53,7 +53,6 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * @author aristo
@@ -963,7 +962,7 @@ public class DataJsonController {
                         .collect(JSONArray::new, JSONArray::put, (a1, a2) -> IntStream.iterate(0, i -> i + 1).limit(a2.length()).boxed()
                                 .map(throwableFunction(a2::get))
                                 .filter(Objects::nonNull)
-                                .forEach(throwableConsumer((ThrowableConsumer<Object, RuntimeException>) a1::put)));
+                                .forEach(throwableConsumer(a1::put)));
 
                 String currentDigest = getDigest(jsonData);
 
@@ -2252,7 +2251,7 @@ public class DataJsonController {
                         .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
-                        .collect(JSONArray::new, throwableConsumer((jsonArray, row) -> {
+                        .collect(JSONArray::new, throwableBiConsumer((jsonArray, row) -> {
                             String primaryKeyColumn = getPrimaryKeyColumn(dataList);
                             String primaryKey = String.valueOf(row.get(primaryKeyColumn));
 
@@ -2814,7 +2813,7 @@ public class DataJsonController {
         final JSONObject result = new JSONObject();
 
         // show error message
-        formErrors.forEach(throwableConsumer(result::put));
+        formErrors.forEach(throwableBiConsumer(result::put));
 
         return result;
     }
@@ -2854,7 +2853,7 @@ public class DataJsonController {
 
                     final JSONObject json = new JSONObject();
 
-                    r.forEach(throwableConsumer((k, v) -> {
+                    r.forEach(throwableBiConsumer((k, v) -> {
                         String elementId = String.valueOf(k);
 
                         if (element instanceof GridElement) {
@@ -2866,7 +2865,7 @@ public class DataJsonController {
                                     .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
 //                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
-                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s)).onException(ignored -> {}));
+                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
                         } else {
                             Optional.ofNullable(FormUtil.findElement(elementId, element, null))
                                     .map(e -> e.getElementValue(formData))
@@ -3151,7 +3150,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, U, E extends Exception> BiConsumer<T, U> throwableConsumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
+    private <T, U, E extends Exception> BiConsumer<T, U> throwableBiConsumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
         return throwableBiConsumer;
     }
 
