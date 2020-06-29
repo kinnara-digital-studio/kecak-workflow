@@ -2857,21 +2857,33 @@ public class DataJsonController {
                         String elementId = String.valueOf(k);
 
                         if (element instanceof GridElement) {
-                            Arrays.stream(((GridElement) element).getColumnProperties())
-                                    .filter(m -> k.equals(m.get("value")))
-                                    .findFirst()
+                            Map<String, Object>[] columnProperties = ((GridElement) element).getColumnProperties();
 
-                                    // execute grid's format column
-                                    .map(m -> ((GridElement) element).formatColumn(elementId, m, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
+                            // if column properties not defined, put all data from rowSet as they are
+                            if(columnProperties == null) {
+                                Optional.of(v)
+                                        .map(String::valueOf)
+                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException e) -> {}));
+                            }
 
-//                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
-                                    .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException ignored) -> {}));
+                            // if column properties is defined, format column
+                            else {
+                                Optional.of(columnProperties)
+                                        .map(Arrays::stream)
+                                        .orElseGet(Stream::empty)
+
+                                        .filter(it -> k.equals(it.get("value")))
+                                        .findFirst()
+
+                                        // execute grid's format column
+                                        .map(it -> ((GridElement) element).formatColumn(elementId, it, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
+
+                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException ignored) -> {}));
+                            }
                         } else {
                             Optional.ofNullable(FormUtil.findElement(elementId, element, null))
-                                    .map(e -> e.getElementValue(formData))
-                                    .ifPresent(throwableConsumer(s -> {
-                                        json.put(elementId, AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition));
-                                    }, (JSONException ignored) -> {}));
+                                    .map(it -> it.getElementValue(formData))
+                                    .ifPresent(throwableConsumer(it -> json.put(elementId, AppUtil.processHashVariable(it, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
                         }
                     }));
 
@@ -3150,7 +3162,7 @@ public class DataJsonController {
      * @param <E>
      * @return
      */
-    private <T, U, E extends Exception> BiConsumer<T, U> throwableBiConsumer(ThrowableBiConsumer<T, U, E> throwableBiConsumer) {
+    private <T, U, E extends Exception> BiConsumer<T, U> throwableBiConsumer(ThrowableBiConsumer<T, U, ? super E> throwableBiConsumer) {
         return throwableBiConsumer;
     }
 
