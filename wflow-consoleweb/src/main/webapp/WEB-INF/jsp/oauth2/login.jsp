@@ -56,7 +56,7 @@
 	                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
 
             	</form>
-            	<p class="m-t"><small>@Copyright Kecak Workflow 2020 - Build <fmt:message key="build.number" /></small></p>
+            	<p class="m-t"><small>@Copyright Kecak Workflow <fmt:message key="build.year" /> - Build <fmt:message key="build.number" /></small></p>
 
         	</div>
     	</div>

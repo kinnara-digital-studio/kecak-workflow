@@ -3,6 +3,7 @@ package org.kecak.webapi.json.controller;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.report.service.ReportManager;
 import org.joget.workflow.model.WorkflowActivity;
@@ -106,5 +107,12 @@ public class WorkflowAdministrationJsonController {
         } else {
             LogUtil.warn(getClass().getName(), "Invalid package version ["+packageId+"]");
         }
+    }
+
+    @RequestMapping(value = "/json/build/info", method = RequestMethod.GET)
+    public void getBuildInfo(Writer writer, @RequestParam(value = "callback", required = false) String callback) throws IOException, JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("buildNumber", ResourceBundleUtil.getMessage("build.number"));
+        AppUtil.writeJson(writer, jsonObject, callback);
     }
 }

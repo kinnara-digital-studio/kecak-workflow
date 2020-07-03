@@ -222,6 +222,7 @@
                     <doUpdate>false</doUpdate>
                     <revisionOnScmFailure>0</revisionOnScmFailure>
                     <shortRevisionLength>8</shortRevisionLength>
+                    <timestampFormat>{0,date,yyyy}</timestampFormat>
                 </configuration>
             </plugin>
             <plugin>

@@ -101,7 +101,7 @@ public class ConsoleWebPlugin extends ExtDefaultPlugin implements PluginWebSuppo
     public String getFooter(String path) {
         MessageSource messageSource = (MessageSource)AppUtil.getApplicationContext().getBean("messageSource");
         Locale locale = LocaleContextHolder.getLocale();
-        return "&copy;Copyright Kecak Workflow 2020 - Build " + messageSource.getMessage("build.number", null, "", locale);
+        return "&copy;Copyright Kecak Workflow " + messageSource.getMessage("build.year", null, "", locale) + " - Build " + messageSource.getMessage("build.number", null, "", locale);
     }
     
     /**
