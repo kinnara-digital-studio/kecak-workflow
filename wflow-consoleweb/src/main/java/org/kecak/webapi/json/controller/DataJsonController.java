@@ -1371,20 +1371,20 @@ public class DataJsonController {
      * @param request   HTTP Request
      * @param response  HTTP Response
      * @param appId     Application ID
-     * @param version   Application version
+     * @param appVersion   Application version
      * @param processId Process Definition ID
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/assignments/count", method = RequestMethod.GET)
     public void getAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
                                     @RequestParam(value = "appId", required = false) final String appId,
-                                    @RequestParam(value = "version", required = false) final Long version,
+                                    @RequestParam(value = "version", required = false, defaultValue = "0") final Long appVersion,
                                     @RequestParam(value = "processId", required = false) final String processId) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            AppDefinition appDefinition = getApplicationDefinition(appId, version);
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
             String processDefId = validateAndDetermineProcessDefId(appDefinition, processId);
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
@@ -1703,6 +1703,8 @@ public class DataJsonController {
         String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
         formData.setPrimaryKeyValue(primaryKey);
 
+        WorkflowAssignment assignment = isAssignment ? getAssignment(formData) : null;
+
         elementStream(form, formData)
                 .filter(e -> !(e instanceof Form || e instanceof Section || e instanceof Column))
                 .filter(e -> e.getStoreBinder() != null)
@@ -1734,13 +1736,25 @@ public class DataJsonController {
                                     // ordinary element
                                     if(e.getStoreBinder() == null) {
                                         String elementId = e.getPropertyString("id");
-
                                         Optional.of(rowSet)
                                                 .map(Collection::stream)
                                                 .orElseGet(Stream::empty)
                                                 .findFirst()
-                                                .map(row -> row.getProperty(elementId))
-                                                .ifPresent(val -> formData.addRequestParameterValues(parameterName, new String[]{ val }));
+                                                .ifPresent(row -> {
+                                                    String elementValue;
+
+                                                    // hidden field, special case
+                                                    if(e instanceof HiddenField) {
+                                                        elementValue = getValueForHiddenField(e, row, assignment);
+                                                    }
+
+                                                    // other Element types
+                                                    else {
+                                                        elementValue = row.getProperty(elementId);
+                                                    }
+
+                                                    formData.addRequestParameterValues(parameterName, new String[]{elementValue});
+                                                });
                                     }
 
                                     // any other element with store binder
@@ -1766,6 +1780,37 @@ public class DataJsonController {
                 }));
 
         return formData;
+    }
+
+    /**
+     *
+     * @param element
+     * @param row
+     * @param assignment
+     * @return
+     */
+    private String getValueForHiddenField(Element element, FormRow row, WorkflowAssignment assignment) {
+        String elementId = getStringProperty(element, "id");
+        String defaultValue = AppUtil.processHashVariable(getStringProperty(element, "value"), assignment, null, null);
+        String databaseValue = row.getProperty(elementId);
+        String priority = getStringProperty(element, "useDefaultWhenEmpty");
+
+        if (isNotEmpty(priority) && (("true".equals(priority) && isEmpty(databaseValue)) || "valueOnly".equals(priority))) {
+            return defaultValue;
+        }
+
+        return ifEmpty(databaseValue, defaultValue);
+    }
+
+    /**
+     *
+     * @param element
+     * @param propertyName
+     * @return
+     */
+    @Nonnull
+    private String getStringProperty(Element element, String propertyName) {
+        return ifNull(element.getPropertyString(propertyName), "");
     }
 
     /**
@@ -2026,7 +2071,7 @@ public class DataJsonController {
     private JSONObject getRequestPayload(HttpServletRequest request) {
         try {
             String payload = request.getReader().lines().collect(Collectors.joining());
-            return new JSONObject(payload);
+            return new JSONObject( ifEmpty( payload, "{}" ));
         } catch (IOException | JSONException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
             return new JSONObject();
@@ -2748,8 +2793,9 @@ public class DataJsonController {
      */
     @Nonnull
     private AppDefinition getApplicationDefinition(@Nonnull String appId, long version) throws ApiException {
-        return Optional.of(version == 0 ? appDefinitionDao.getPublishedVersion(appId) : version)
-                .map(l -> appDefinitionDao.loadVersion(appId, l))
+        return Optional.ofNullable(appDefinitionDao.getPublishedVersion(appId))
+                .map(it -> version == 0 ? it : version)
+                .map(it -> appDefinitionDao.loadVersion(appId, it))
 
                 // set current app definition
                 .map(peek(AppUtil::setCurrentAppDefinition))
@@ -3043,7 +3089,7 @@ public class DataJsonController {
 
 
     /**
-     * If value null than return failover
+     * If value null then return failover
      *
      * @param value
      * @param failover
@@ -3054,6 +3100,19 @@ public class DataJsonController {
     private <T> T ifNull(@Nullable T value, @Nonnull T failover) {
         return value == null ? failover : value;
     }
+
+    /**
+     * If value empty or null then return failover
+     *
+     * @param value
+     * @param failOver
+     * @param <T>
+     * @return
+     */
+    private <T> T ifEmpty(@Nullable T value, @Nonnull T failOver) {
+        return isEmpty(value) ? failOver : value;
+    }
+
     /**
      * Stream element children
      *
