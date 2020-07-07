@@ -83,7 +83,7 @@ public class WorkflowAdministrationJsonController {
     }
 
     @RequestMapping(value = "/json/workflow/monitoring/package/(*:packageId)/(*:fromVersion)/update", method = {RequestMethod.POST, RequestMethod.PUT})
-    public void updateRunningProcesses(Writer writer, @RequestParam("packageId") String packageId, @RequestParam("fromVersion") Long fromVersion, @RequestParam(value = "callback", required = false) String callback) throws JSONException, IOException {
+    public void updateRunningProcesses(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("packageId") String packageId, @RequestParam("fromVersion") Long fromVersion, @RequestParam(value = "callback", required = false) String callback) throws JSONException, IOException {
         String packageVersion = workflowManager.getCurrentPackageVersion(packageId);
         if(packageVersion != null) {
             WorkflowPackage workflowPackage = workflowManager.getPackage(packageId, packageVersion);
@@ -97,15 +97,21 @@ public class WorkflowAdministrationJsonController {
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("message", message);
-                    AppUtil.writeJson(writer, jsonObject, callback);
+                    AppUtil.writeJson(response.getWriter(), jsonObject, callback);
                 } else {
-                    LogUtil.warn(getClass().getName(), "Invalid package [" + workflowPackage.getPackageId() + "] [" + fromVersion + "]");
+                    String message = "Invalid package [" + workflowPackage.getPackageId() + "] [" + fromVersion + "]";
+                    LogUtil.warn(getClass().getName(), message);
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
                 }
             } else {
-                LogUtil.warn(getClass().getName(), "Invalid package ["+packageId+"] ["+packageVersion+"]");
+                String message = "Invalid package ["+packageId+"] ["+packageVersion+"]";
+                LogUtil.warn(getClass().getName(), message);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
             }
         } else {
-            LogUtil.warn(getClass().getName(), "Invalid package version ["+packageId+"]");
+            String message = "Invalid package version ["+packageId+"]";
+            LogUtil.warn(getClass().getName(), message);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, message);
         }
     }
 
