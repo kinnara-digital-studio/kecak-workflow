@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.apps.form.model.GridElement;
+import org.kecak.utils.Unclutter;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -49,7 +50,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -58,7 +58,7 @@ import java.util.stream.Stream;
  * @author aristo
  */
 @Controller
-public class DataJsonController {
+public class DataJsonController implements Unclutter {
     private final static String FIELD_MESSAGE = "message";
     private final static String FIELD_DATA = "data";
     private final static String FIELD_VALIDATION_ERROR = "validation_error";
@@ -118,7 +118,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -184,7 +184,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -235,7 +235,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -299,7 +299,7 @@ public class DataJsonController {
             final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, jsonBody));
 
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -369,7 +369,7 @@ public class DataJsonController {
             formData.setPrimaryKeyValue(primaryKey);
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -444,7 +444,7 @@ public class DataJsonController {
             }
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -507,7 +507,7 @@ public class DataJsonController {
             formData.setPrimaryKeyValue(primaryKey);
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
@@ -638,7 +638,7 @@ public class DataJsonController {
             final FormData formData = new FormData();
 
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
 
@@ -713,7 +713,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -781,7 +781,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -892,7 +892,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -1007,7 +1007,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get processDefId
             String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
@@ -1384,7 +1384,7 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
             String processDefId = validateAndDetermineProcessDefId(appDefinition, processId);
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
@@ -1433,7 +1433,7 @@ public class DataJsonController {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
             String processDefId = validateAndDetermineProcessDefId(appDefinition, processId);
 
             int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? DataList.DEFAULT_PAGE_SIZE : DataList.MAXIMUM_PAGE_SIZE;
@@ -1799,7 +1799,7 @@ public class DataJsonController {
             return defaultValue;
         }
 
-        return ifEmpty(databaseValue, defaultValue);
+        return this.ifEmptyThen(databaseValue, defaultValue);
     }
 
     /**
@@ -1810,7 +1810,7 @@ public class DataJsonController {
      */
     @Nonnull
     private String getStringProperty(Element element, String propertyName) {
-        return ifNull(element.getPropertyString(propertyName), "");
+        return ifNullThen(element.getPropertyString(propertyName), "");
     }
 
     /**
@@ -2071,7 +2071,7 @@ public class DataJsonController {
     private JSONObject getRequestPayload(HttpServletRequest request) {
         try {
             String payload = request.getReader().lines().collect(Collectors.joining());
-            return new JSONObject( ifEmpty( payload, "{}" ));
+            return new JSONObject( this.ifEmptyThen( payload, "{}" ));
         } catch (IOException | JSONException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
             return new JSONObject();
@@ -2238,7 +2238,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2366,7 +2366,7 @@ public class DataJsonController {
 
         try {
             // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNull(appVersion, 0L));
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get dataList definition
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
@@ -2804,21 +2804,6 @@ public class DataJsonController {
     }
 
     /**
-     * Helper peek for {@link Optional}
-     *
-     * @param consumer
-     * @param <T>
-     * @return
-     */
-    @Nonnull
-    private <T> UnaryOperator<T> peek(@Nonnull final Consumer<T> consumer) {
-        return t -> {
-            consumer.accept(t);
-            return t;
-        };
-    }
-
-    /**
      * Null-safe way to retrieve {@link AppService#viewDataForm(String, String, String, String, String, String, FormData, String, String)}
      *
      * @param appDefinition
@@ -3041,79 +3026,6 @@ public class DataJsonController {
     }
 
     /**
-     * Nullsafe. If string is null or empty
-     *
-     * @param value
-     * @return
-     */
-    private boolean isEmpty(@Nullable Object value) {
-        return Optional.ofNullable(value)
-                .map(String::valueOf)
-                .map(String::isEmpty)
-                .orElse(true);
-    }
-
-    /**
-     * Nullsafe. If object is not null and not empty
-     *
-     * @param value
-     * @return
-     */
-    private boolean isNotEmpty(@Nullable Object value) {
-        return !isEmpty(value);
-    }
-
-    /**
-     * Nullsafe. If collection is null or empty
-     *
-     * @param collection
-     * @param <T>
-     * @return
-     */
-    private <T> boolean isEmpty(@Nullable Collection<T> collection) {
-        return Optional.ofNullable(collection)
-                .map(Collection::isEmpty)
-                .orElse(true);
-    }
-
-    /**
-     * Nullsafe. If collection is not null and not empty
-     *
-     * @param collection
-     * @param <T>
-     * @return
-     */
-    private <T> boolean isNotEmpty(@Nullable Collection<T> collection) {
-        return !isEmpty(collection);
-    }
-
-
-    /**
-     * If value null then return failover
-     *
-     * @param value
-     * @param failover
-     * @param <T>
-     * @return
-     */
-    @Nonnull
-    private <T> T ifNull(@Nullable T value, @Nonnull T failover) {
-        return value == null ? failover : value;
-    }
-
-    /**
-     * If value empty or null then return failover
-     *
-     * @param value
-     * @param failOver
-     * @param <T>
-     * @return
-     */
-    private <T> T ifEmpty(@Nullable T value, @Nonnull T failOver) {
-        return isEmpty(value) ? failOver : value;
-    }
-
-    /**
      * Stream element children
      *
      * @param element
@@ -3149,277 +3061,6 @@ public class DataJsonController {
             } catch (JSONException e2) {
                 return stringValue;
             }
-        }
-    }
-
-    /**
-     * Return null if string empty
-     *
-     * @param s
-     * @return
-     */
-    private String nullIfEmpty(String s) {
-        return s.isEmpty() ? null : s;
-    }
-
-    /*
-     *
-     *   DARN, THIS IS NEAT !!!!!!!
-     *
-     *
-     *       * * *   * * *
-     *     *       *       *
-     *      *             *
-     *        *         *
-     *          *     *
-     *            * *
-     *             *
-     */
-
-    // Throwable methods
-    /**
-     *
-     * @param throwableSupplier
-     * @param <R>
-     * @param <E>
-     * @return
-     */
-    private <R, E extends Exception> ThrowableSupplier<R, E> throwableSupplier(ThrowableSupplier<R, E> throwableSupplier) {
-        return throwableSupplier;
-    }
-
-    private <R, E extends Exception> ThrowableSupplier<R, E> throwableSupplier(ThrowableSupplier<R, E> throwableSupplier, Function<? super E, R> onException) {
-        return throwableSupplier.onException(onException);
-    }
-
-    /**
-     * @param throwableConsumer
-     * @param <T>
-     * @param <E>
-     * @return
-     */
-    private <T, E extends Exception> ThrowableConsumer<T, ? super E> throwableConsumer(ThrowableConsumer<T, ? super E> throwableConsumer) {
-        return throwableConsumer;
-    }
-
-    /**
-     *
-     * @param throwableConsumer
-     * @param failoverConsumer
-     * @param <T>
-     * @param <E>
-     * @return
-     */
-    private <T, E extends Exception> Consumer<T> throwableConsumer(ThrowableConsumer<T, E> throwableConsumer, Consumer<? super E> failoverConsumer) {
-        return throwableConsumer.onException(failoverConsumer);
-    }
-
-    /**
-     * @param throwableBiConsumer
-     * @param <T>
-     * @param <U>
-     * @param <E>
-     * @return
-     */
-    private <T, U, E extends Exception> BiConsumer<T, U> throwableBiConsumer(ThrowableBiConsumer<T, U, ? super E> throwableBiConsumer) {
-        return throwableBiConsumer;
-    }
-
-    /**
-     * @param throwableFunction
-     * @param <T>
-     * @param <R>
-     * @param <E>
-     * @return
-     */
-    private <T, R, E extends Exception> ThrowableFunction<T, R, ? extends E> throwableFunction(ThrowableFunction<T, R, ? extends E> throwableFunction) {
-        return throwableFunction;
-    }
-
-    /**
-     *
-     * @param throwableFunction
-     * @param failoverFunction
-     * @param <T>
-     * @param <R>
-     * @param <E>
-     * @return
-     */
-    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, Function<? super E, ? extends R> failoverFunction) {
-        return throwableFunction.onException(failoverFunction);
-    }
-
-    /**
-     *
-     * @param throwableFunction
-     * @param failoverFunction
-     * @param <T>
-     * @param <R>
-     * @param <E>
-     * @return
-     */
-    private <T, R, E extends Exception> Function<T, R> throwableFunction(ThrowableFunction<T, R, E> throwableFunction, BiFunction<T, E, R> failoverFunction) {
-        return throwableFunction.onException(failoverFunction);
-    }
-
-    // Extension for functional interfaces
-
-    @FunctionalInterface
-    interface ThrowableSupplier<R, E extends Exception> extends Supplier<R> {
-        @Nullable
-        R getThrowable() throws E;
-
-        @Nullable
-        default R get() {
-            try {
-                return getThrowable();
-            } catch (Exception e) {
-                LogUtil.error(getClass().getName(), e, e.getMessage());
-                return null;
-            }
-        }
-
-        default ThrowableSupplier<R, E> onException(Function<? super E, R> onException) {
-            try {
-                return this::getThrowable;
-            } catch (Exception e) {
-                Objects.requireNonNull(onException);
-                return () -> onException.apply((E) e);
-            }
-        }
-    }
-
-    /**
-     * Throwable version of {@link Function}.
-     * Returns null then exception is raised
-     *
-     * @param <T>
-     * @param <R>
-     * @param <E>
-     */
-    @FunctionalInterface
-    interface ThrowableFunction<T, R, E extends Exception> extends Function<T, R> {
-
-        @Override
-        default R apply(T t) {
-            try {
-                return applyThrowable(t);
-            } catch (Exception e) {
-                LogUtil.error(getClass().getName(), e, e.getMessage());
-                return null;
-            }
-        }
-
-        R applyThrowable(T t) throws E;
-
-        /**
-         * @param f
-         * @return
-         */
-        default Function<T, R> onException(Function<? super E, ? extends R> f) {
-            return (T a) -> {
-                try {
-                    return (R) applyThrowable(a);
-                } catch (Exception e) {
-                    return f.apply((E) e);
-                }
-            };
-        }
-
-        /**
-         * @param f
-         * @return
-         */
-        default Function<T, R> onException(BiFunction<? super T, ? super E, ? extends R> f) {
-            return (T a) -> {
-                try {
-                    return (R) applyThrowable(a);
-                } catch (Exception e) {
-                    return f.apply(a, (E) e);
-                }
-            };
-        }
-    }
-
-    /**
-     * Throwable version of {@link Consumer}
-     *
-     * @param <T>
-     * @param <E>
-     */
-    @FunctionalInterface
-    interface ThrowableConsumer<T, E extends Exception> extends Consumer<T> {
-
-        void acceptThrowable(T t) throws E;
-
-        @Override
-        default void accept(T t) {
-            try {
-                acceptThrowable(t);
-            } catch (Exception e) {
-                LogUtil.error(getClass().getName(), e, e.getMessage());
-            }
-        }
-
-        default ThrowableConsumer<T, ? super E> onException(final Consumer<? super E> onException) {
-            Objects.requireNonNull(onException);
-            return (T t) -> {
-                try {
-                    acceptThrowable(t);
-                } catch (Exception e) {
-                    onException.accept((E) e);
-                }
-            };
-        }
-    }
-
-    /**
-     * Throwable version of {@link BiConsumer}
-     *
-     * @param <T>
-     * @param <U>
-     * @param <E>
-     */
-    @FunctionalInterface
-    interface ThrowableBiConsumer<T, U, E extends Exception> extends BiConsumer<T, U> {
-        void acceptThrowable(T t, U u) throws E;
-
-        default void accept(T t, U u) {
-            try {
-                acceptThrowable(t, u);
-            } catch (Exception e) {
-                onException((E) e);
-            }
-        }
-
-        default void onException(E e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
-    }
-
-    /**
-     * Throwable version of {@link Predicate}
-     *
-     * @param <T>
-     * @param <E>
-     */
-    @FunctionalInterface
-    interface ThrowablePredicate<T, E extends Exception> extends Predicate<T> {
-
-        boolean testThrowable(T t) throws E;
-
-        @Override
-        default boolean test(T t) {
-            try {
-                return testThrowable(t);
-            } catch (Exception e) {
-                return onException((E) e);
-            }
-        }
-
-        default boolean onException(E e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-            return false;
         }
     }
 }

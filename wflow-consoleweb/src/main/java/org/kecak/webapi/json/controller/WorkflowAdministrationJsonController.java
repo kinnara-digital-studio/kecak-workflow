@@ -2,9 +2,12 @@ package org.kecak.webapi.json.controller;
 
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.commons.util.FileLimitException;
+import org.joget.commons.util.FileStore;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.directory.model.service.DirectoryManager;
+import org.joget.plugin.base.PluginManager;
 import org.joget.report.service.ReportManager;
 import org.joget.workflow.model.WorkflowActivity;
 import org.joget.workflow.model.WorkflowPackage;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +47,8 @@ public class WorkflowAdministrationJsonController {
     private AppService appService;
     @Autowired
     private ReportManager reportManager;
+    @Autowired
+    private PluginManager pluginManager;
 
     @RequestMapping("/json/workflow/assignment/process/(*:processId)/transfer/(*:targetActivityDefId)")
     public void assignmentTransfer(final HttpServletRequest request, final HttpServletResponse response,
@@ -115,6 +121,14 @@ public class WorkflowAdministrationJsonController {
         }
     }
 
+    /**
+     * Get info of current kecak instance
+     *
+     * @param writer
+     * @param callback
+     * @throws IOException
+     * @throws JSONException
+     */
     @RequestMapping(value = "/json/build/info", method = RequestMethod.GET)
     public void getBuildInfo(Writer writer, @RequestParam(value = "callback", required = false) String callback) throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();

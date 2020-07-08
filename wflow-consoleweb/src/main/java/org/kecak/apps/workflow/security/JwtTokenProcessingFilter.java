@@ -8,6 +8,7 @@ import org.joget.directory.model.service.DirectoryManager;
 import org.joget.directory.model.service.DirectoryUtil;
 import org.joget.directory.model.service.UserSecurity;
 import org.joget.workflow.model.service.WorkflowUserManager;
+import org.kecak.utils.Unclutter;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
@@ -22,8 +23,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.function.Predicate;
 
-public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFilter implements Unclutter {
     private WorkflowUserManager workflowUserManager;
     private AuditTrailManager auditTrailManager;
     private LocalLocaleResolver localeResolver;
@@ -56,6 +59,11 @@ public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFi
         if(authentication.isAuthenticated()) {
             UserDetails currnentUser = (UserDetails) authentication.getPrincipal();
             workflowUserManager.setCurrentThreadUser(currnentUser.getUsername());
+
+            String loginAs = getOptionalParameter(request, "loginAs", "");
+            if(isNotEmpty(loginAs) && workflowUserManager.isCurrentUserInRole(WorkflowUserManager.ROLE_ADMIN)) {
+                workflowUserManager.setCurrentThreadUser(loginAs);
+            }
         }
         return getAuthenticationManager().authenticate(authRequest);
     }
@@ -126,5 +134,22 @@ public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFi
 
     public void setDirectoryManager(DirectoryManager directoryManager) {
         this.directoryManager = directoryManager;
+    }
+
+
+    /**
+     * Get optional parameter for http request
+     *
+     * @param request
+     * @param parameterName
+     * @param defaultValue
+     * @return
+     */
+    private String getOptionalParameter(HttpServletRequest request, String parameterName, String defaultValue) {
+        return Optional.of(parameterName)
+                .map(request::getParameter)
+                .map(String::trim)
+                .filter(not(String::isEmpty))
+                .orElse(defaultValue);
     }
 }
