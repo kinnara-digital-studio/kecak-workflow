@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Controller
-public class PluginConsoleJsonController {
+public class PluginAdministrationJsonController {
     @Autowired
     private WorkflowUserManager workflowUserManager;
     @Autowired
