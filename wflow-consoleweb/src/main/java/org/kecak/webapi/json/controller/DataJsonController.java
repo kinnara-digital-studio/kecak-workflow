@@ -715,22 +715,8 @@ public class DataJsonController implements Unclutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            // get dataList definition
-            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
-            if (datalistDefinition == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
-            }
-
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
-            if (dataList == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
-            }
+            DataList dataList = getDataList(appDefinition, dataListId);
 
             getCollectFilters(request.getParameterMap(), dataList);
 
@@ -783,22 +769,8 @@ public class DataJsonController implements Unclutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            // get dataList definition
-            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
-            if (datalistDefinition == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
-            }
-
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
-            if (dataList == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
-            }
+            DataList dataList = getDataList(appDefinition, dataListId);
 
             // configure sorting
             if (sort != null) {
@@ -894,22 +866,8 @@ public class DataJsonController implements Unclutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            // get dataList definition
-            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
-            if (datalistDefinition == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
-            }
-
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
-            if (dataList == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
-            }
+            DataList dataList = getDataList(appDefinition, dataListId);
 
             // configure sorting
             if (sort != null) {
@@ -2240,22 +2198,8 @@ public class DataJsonController implements Unclutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            // get dataList definition
-            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
-            if (datalistDefinition == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
-            }
-
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
-            if (dataList == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
-            }
+            DataList dataList = getDataList(appDefinition, dataListId);
 
             // configure sorting
             if (sort != null) {
@@ -2368,22 +2312,8 @@ public class DataJsonController implements Unclutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            // get dataList definition
-            DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
-            if (datalistDefinition == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
-            }
-
             // get dataList
-            DataList dataList = dataListService.fromJson(datalistDefinition.getJson(), false);
-            if (dataList == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]");
-            }
-
-            // check permission
-            if(!dataListService.isAuthorize(dataList)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
-            }
+            DataList dataList = getDataList(appDefinition, dataListId);
 
             getCollectFilters(request.getParameterMap(), dataList);
 
@@ -2761,6 +2691,36 @@ public class DataJsonController implements Unclutter {
         }
 
         return parentJson;
+    }
+
+    /**
+     * Generate datalist
+     *
+     * @param appDefinition
+     * @param dataListId
+     * @return
+     * @throws ApiException
+     */
+    @Nonnull
+    private DataList getDataList(@Nonnull AppDefinition appDefinition, @Nonnull String dataListId) throws ApiException {
+        // get dataList definition
+        DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
+        if (datalistDefinition == null) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+        }
+
+        DataList dataList = Optional.of(datalistDefinition)
+                .map(DatalistDefinition::getJson)
+                .map(it -> AppUtil.processHashVariable(it, null, null, null))
+                .map(it -> dataListService.fromJson(it, false))
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]"));
+
+        // check permission
+        if(!dataListService.isAuthorize(dataList)) {
+            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
+        }
+
+        return dataList;
     }
 
 
