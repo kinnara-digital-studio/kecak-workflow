@@ -1181,7 +1181,7 @@ DatalistBuilder = {
                         name  : 'permission',
                         required : 'false',
                         type : 'elementselect',
-                        options_ajax:'[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.form.model.FormPermission',
+                        options_ajax : '[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.userview.model.UserviewPermission',
                         url : '[CONTEXT_PATH]/web/property/json' + DatalistBuilder.appPath + '/getPropertyOptions'
                     }
                 ]
