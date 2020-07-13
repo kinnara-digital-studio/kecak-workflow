@@ -1199,8 +1199,8 @@ DatalistBuilder = {
             closeAfterSaved : false
         }
 
-        $('#tabpanels > #properties').html("");
-        $('#tabpanels > #properties').propertyEditor(options);
+        $('#properties').html("");
+        $('#properties').propertyEditor(options);
     },
 
     updateDatalistProperties : function(container, properties){
