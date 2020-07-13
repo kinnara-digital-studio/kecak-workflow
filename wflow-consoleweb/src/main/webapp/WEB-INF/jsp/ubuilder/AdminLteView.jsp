@@ -389,7 +389,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
                 </c:forEach>
             </div>
         </div>
-      <c:if test="${category.properties.hide ne 'yes'}">
+      <c:if test="${category.properties.hide != 'yes'}">
           <ul class="sidebar-menu" data-widget="tree">
           <c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
             <c:set var="c_class" value=""/>

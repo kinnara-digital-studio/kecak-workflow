@@ -326,7 +326,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
               <a href="${pageContext.request.contextPath}/web/console/app/${appId}/${appVersion}/userview/builder/${userview.properties.id}" target="_blank"><i class="icon-edit"></i> <fmt:message key="adminBar.label.menu"/>: <c:out value="${userview.properties.name}"/></a>
           </div>
         </c:if>
-        <c:if test="${category.properties.hide ne 'yes'}">
+        <c:if test="${category.properties.hide != 'yes'}">
           <ul class="nav nav-list">
             <c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
               <c:set var="c_class" value=""/>
