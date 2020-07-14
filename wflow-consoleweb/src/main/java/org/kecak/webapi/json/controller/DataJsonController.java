@@ -1156,14 +1156,15 @@ public class DataJsonController implements Unclutter {
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT})
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
-                                                @RequestParam("processId") String processId)
+                                                @RequestParam("processId") String processId,
+                                                @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
-            WorkflowAssignment assignment = getAssignmentByProcess(processId);
+            WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
 
             // get application definition
             AppDefinition appDefinition = getApplicationDefinition(assignment);
@@ -1290,6 +1291,7 @@ public class DataJsonController implements Unclutter {
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.GET)
     public void getAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("processId") final String processId,
+                                       @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
                                        @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                                        @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                                        @RequestParam(value = "digest", required = false) String digest)
@@ -1298,7 +1300,7 @@ public class DataJsonController implements Unclutter {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = getAssignmentByProcess(processId);
+            WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
 
             JSONObject jsonData = internalGetAssignmentJsonData(assignment, asLabel, asAttachmentUrl);
 
@@ -1517,12 +1519,13 @@ public class DataJsonController implements Unclutter {
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.DELETE)
     public void deleteAssignmentDataByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                               @RequestParam("processId") final String processId,
+                                              @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
                                               @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment = getAssignmentByProcess(processId);
+            WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
 
             JSONObject jsonData = internalDeleteAssignmentData(assignment);
 
@@ -2609,6 +2612,38 @@ public class DataJsonController implements Unclutter {
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
+    }
+
+
+    /**
+     * Get assignment object by process ID and activity Def ID
+     *
+     * @param processId
+     * @param activityDefId
+     * @return
+     * @throws ApiException
+     */
+    @Nonnull
+    private WorkflowAssignment getAssignmentByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
+        return Optional.of(processId)
+                .map(workflowProcessLinkDao::getLinks)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .map(WorkflowProcessLink::getProcessId)
+                .filter(Objects::nonNull)
+                .map(s -> workflowManager.getAssignmentPendingAndAcceptedList(null, null, processId, null, null, null, null))
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+
+                // filter by Activity Def ID, if activityDefId is empty, get the first activity
+                .filter(it -> activityDefId.isEmpty() || Optional.of(it)
+                        .map(WorkflowAssignment::getActivityId)
+                        .map(workflowManager::getActivityById)
+                        .map(WorkflowActivity::getActivityDefId)
+                        .map(activityDefId::equals)
+                        .orElse(false))
+                .findFirst()
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] activity definition [" + activityDefId + "] not available"));
     }
 
 
