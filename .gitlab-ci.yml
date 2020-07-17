@@ -1,0 +1,27 @@
+stages:
+  - build
+  - deploy
+build-war:
+  image: kinnaradigitalstudio/kecak-builder
+  stage: build
+  tags: 
+    - sandbox
+  script:
+    - cd "${CI_PROJECT_DIR}"/wflow-app && sh kecak_make.sh
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/target/*.war
+    expire_in: 1 day
+
+deploy-to-sandbox:
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && ssh-keyscan -H "$SERVER_HOSTNAME" > ~/.ssh/known_hosts'
+  script:
+    - scp ${CI_PROJECT_DIR}/target/*.war $GIT_USERNAME@$SERVER_HOSTNAME:/home/fahmi.mahmud/docker-image-kecak-workflow
+    - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/fahmi.mahmud/docker-image-kecak-workflow/docker-build.sh
+    - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
