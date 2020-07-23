@@ -1,6 +1,8 @@
 package org.kecak.apps.form.model;
 
+import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.service.FormUtil;
 
 /**
  * @author aristo
@@ -15,5 +17,8 @@ public interface MultiValueElement {
      * @param formData
      * @return
      */
-    String[] getElementValues(FormData formData);
+    default String[] getElementValues(FormData formData) {
+        assert this instanceof Element;
+        return FormUtil.getElementPropertyValues((Element) this, formData);
+    }
 }
