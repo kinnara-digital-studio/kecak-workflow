@@ -19,6 +19,7 @@ deploy-to-sandbox:
     - sandbox
   image: kinnaradigitalstudio/kecak-builder
   before_script:
+    - apt update && apt install -y git
     - docker info
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
