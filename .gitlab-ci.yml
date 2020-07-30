@@ -17,7 +17,7 @@ deploy-to-sandbox:
   stage: deploy
   tags: 
     - sandbox
-  image: kinnaradigitalstudio/kecak-builder
+  image: docker:19.03.12
   before_script:
     - apt update && apt install -y git
     - docker info
