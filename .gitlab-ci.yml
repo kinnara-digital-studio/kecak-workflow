@@ -23,5 +23,5 @@ deploy-to-sandbox:
     - '[[ -f /.dockerenv ]] && ssh-keyscan -H "$SERVER_HOSTNAME" > ~/.ssh/known_hosts'
   script:
     - scp wflow-consoleweb/target/kecak.war $GIT_USERNAME@$SERVER_HOSTNAME:/home/fahmi.mahmud/docker-image-kecak-workflow
-    - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/fahmi.mahmud/docker-image-kecak-workflow/docker-build.sh
+    - ssh $GIT_USERNAME@$SERVER_HOSTNAME python3 /home/fahmi.mahmud/docker-image-kecak-workflow/docker-build.py
     - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
