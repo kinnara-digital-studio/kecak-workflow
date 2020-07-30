@@ -17,7 +17,7 @@ deploy-to-sandbox:
   stage: deploy
   tags: 
     - sandbox
-  image: docker:19.03.12
+  image: kinnaradigitalstudio/kecak-builder
   before_script:
     - docker info
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
