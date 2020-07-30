@@ -19,7 +19,7 @@ deploy-to-sandbox:
     - sandbox
   image: docker:19.03.12
   before_script:
-    - apt update && apt install -y git
+    - apk update && apk add git
     - docker info
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
