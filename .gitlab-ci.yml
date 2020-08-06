@@ -15,13 +15,24 @@ build-war:
 
 deploy-to-sandbox:
   stage: deploy
+  tags: 
+    - sandbox
+  image: docker:19.03.12
   before_script:
+    - apk update && apk add git
+    - docker info
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - '[[ -f /.dockerenv ]] && ssh-keyscan -H "$SERVER_HOSTNAME" > ~/.ssh/known_hosts'
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && ssh-keyscan -H "gitlab.com" > ~/.ssh/known_hosts'
+    - git config --global user.email "$GIT_MAIL"
+    - git config --global user.name "$GIT_USERNAME"
+    - git clone git@gitlab.com:kinnarastudio/docker-image-kecak-workflow.git
+    - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}" docker.io
+    - cp wflow-consoleweb/target/kecak.war "${CI_PROJECT_DIR}"/docker-image-kecak-workflow/kecak.war
+    - cd "${CI_PROJECT_DIR}"/docker-image-kecak-workflow
   script:
-    - scp wflow-consoleweb/target/kecak.war $GIT_USERNAME@$SERVER_HOSTNAME:/home/fahmi.mahmud/docker-image-kecak-workflow
-    - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/fahmi.mahmud/docker-image-kecak-workflow/docker-build.sh
-    - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
+    - docker build -t kinnaradigitalstudio/kecak-workflow:v1 .
+    - docker push kinnaradigitalstudio/kecak-workflow:v1
