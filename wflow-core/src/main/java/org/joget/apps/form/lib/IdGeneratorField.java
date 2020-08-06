@@ -1,15 +1,21 @@
 package org.joget.apps.form.lib;
 
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.EnvironmentVariableDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
+import org.springframework.context.ApplicationContext;
 
 public class IdGeneratorField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
@@ -63,7 +69,7 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
                 value = FormUtil.getElementPropertyValue(this, formData);
                 if (!(value != null && value.trim().length() > 0)) {
                     String envVariable = getPropertyString("envVariable");
-                    AppDefinition appDef = AppUtil.getCurrentAppDefinition();
+                    AppDefinition appDef = isUsingPublishedAppVersion() ? getPublishedAppDefinition() : AppUtil.getCurrentAppDefinition();
                     EnvironmentVariableDao environmentVariableDao = (EnvironmentVariableDao) AppUtil.getApplicationContext().getBean("environmentVariableDao");
                     
                     Integer count = environmentVariableDao.getIncreasedCounter(envVariable, "Used for plugin: " + getName(), appDef);
@@ -138,5 +144,32 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
     public String renderAdminLteTemplate(FormData formData, Map dataModel) {
         String template = "AdminLteTheme/AdminLteIdGeneratorField.ftl";
         return renderTemplate(template,formData,dataModel);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean isUsingPublishedAppVersion() {
+        return "true".equalsIgnoreCase(getPropertyString("usePublishedAppVersion"));
+    }
+
+    /**
+     * Get published application definition
+     *
+     * @return
+     */
+    private AppDefinition getPublishedAppDefinition() {
+        AppDefinition currentAppDefinition = AppUtil.getCurrentAppDefinition();
+        AppDefinitionDao appDefinitionDao = (AppDefinitionDao) AppUtil.getApplicationContext().getBean("appDefinitionDao");
+        String appId = currentAppDefinition.getAppId();
+        long version = appDefinitionDao.getPublishedVersion(appId);
+        Collection<AppDefinition> appDefinitions = appDefinitionDao.findByVersion(appId, appId, version, null, null, null, null, 1);
+        if(appDefinitions == null || appDefinitions.isEmpty())
+            return currentAppDefinition;
+
+        return appDefinitions.stream()
+                .findFirst()
+                .orElse(currentAppDefinition);
     }
 }

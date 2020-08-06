@@ -22,8 +22,17 @@
         type : 'textfield',
         required : 'True',
         value : 'counter'
-    },
-    {
+    },{
+        name : 'usePublishedAppVersion',
+        label : '@@form.idgeneratorfield.usePublishedAppVersion@@',
+        description : '@@form.idgeneratorfield.usePublishedAppVersion.desc@@',
+        type : 'checkbox',
+        default : 'false',
+        options : [{
+            value : 'true',
+            label : ''
+        }]
+    },{
         name : 'format',
         label : '@@form.idgeneratorfield.format@@',
         type : 'textfield',
