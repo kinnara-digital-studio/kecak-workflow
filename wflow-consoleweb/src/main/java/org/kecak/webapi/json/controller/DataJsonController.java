@@ -2583,13 +2583,8 @@ public class DataJsonController implements Unclutter {
      */
     @Nonnull
     private WorkflowAssignment getAssignment(@Nonnull String activityId) throws ApiException {
-//        return Optional.ofNullable(workflowManager.getActivityById(activityId))
-//                .map(WorkflowActivity::getProcessId)
-//                .map(throwable(this::getAssignmentByProcess, (ApiException e) -> null))
-//                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + activityId + "] not available"));
-
         return Optional.of(activityId)
-                .map(workflowManager::getAssignment)
+                .map(throwableFunction(workflowManager::getAssignment))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + activityId + "] not available"));
     }
 
@@ -2606,11 +2601,9 @@ public class DataJsonController implements Unclutter {
                 .map(workflowProcessLinkDao::getLinks)
                 .map(Collection::stream)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] is not defined"))
-                .map(WorkflowProcessLink::getProcessId)
-                .filter(Objects::nonNull)
-                .map(workflowManager::getAssignmentByProcess)
-                .filter(Objects::nonNull)
                 .findFirst()
+                .map(WorkflowProcessLink::getProcessId)
+                .map(throwableFunction(workflowManager::getAssignmentByProcess))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
     }
 
