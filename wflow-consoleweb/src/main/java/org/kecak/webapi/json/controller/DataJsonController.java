@@ -2876,13 +2876,13 @@ public class DataJsonController implements Unclutter {
                         String elementId = String.valueOf(k);
 
                         if (element instanceof GridElement) {
-                            Map<String, Object>[] columnProperties = ((GridElement) element).getColumnProperties();
+                            Map<String, String>[] columnProperties = ((GridElement) element).getColumnProperties();
 
                             // if column properties not defined, put all data from rowSet as they are
-                            if(columnProperties == null) {
+                            if(columnProperties == null || columnProperties.length == 0) {
                                 Optional.of(v)
                                         .map(String::valueOf)
-                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException e) -> {}));
+                                        .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException e) -> {}));
                             }
 
                             // if column properties is defined, format column
@@ -2891,7 +2891,7 @@ public class DataJsonController implements Unclutter {
                                         .map(Arrays::stream)
                                         .orElseGet(Stream::empty)
 
-                                        .filter(it -> k.equals(it.get("value")))
+                                        .filter(m -> k.equals(((GridElement) element).getField(m)))
                                         .findFirst()
 
                                         // execute grid's format column
@@ -2901,7 +2901,7 @@ public class DataJsonController implements Unclutter {
                             }
                         } else {
                             Optional.ofNullable(FormUtil.findElement(elementId, element, null))
-                                    .map(it -> it.getElementValue(formData))
+                                    .map(e -> e.getElementValue(formData))
                                     .ifPresent(throwableConsumer(it -> json.put(elementId, AppUtil.processHashVariable(it, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
                         }
                     }));
@@ -2923,8 +2923,11 @@ public class DataJsonController implements Unclutter {
      */
     @Nonnull
     private JSONObject convertFormRowSetToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
-        return Optional.of(convertFormRowSetToJsonArray(element, formData, rowSet))
-                .map(r -> r.optJSONObject(0))
+        return Optional.ofNullable(rowSet)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .findFirst()
+                .map(r -> convertFromRowToJsonObject(element, formData, r))
                 .orElseGet(JSONObject::new);
     }
 

@@ -1,5 +1,6 @@
 package org.kecak.apps.form.model;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -21,12 +22,20 @@ public interface GridElement {
      * @param contextPath
      * @return
      */
-    String formatColumn(String columnName, Map<String, Object> properties, String recordId, String value, String appId, Long appVersion, String contextPath);
+    String formatColumn(String columnName, Map<String, String> properties, String recordId, String value, String appId, Long appVersion, String contextPath);
 
     /**
      * Get properties of grid columns
      *
      * @return
      */
-    Map<String, Object>[] getColumnProperties();
+    Map<String, String>[] getColumnProperties();
+
+    /**
+     * Extract field name / id from column property
+     *
+     * @param columnProperty
+     * @return
+     */
+    String getField(Map<String, String> columnProperty);
 }
