@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -2807,11 +2808,11 @@ public class DataJsonController implements Unclutter {
                             Map<String, String>[] columnProperties = ((GridElement) element).getColumnProperties();
 
                             // if column properties not defined, put all data from rowSet as they are
-                            if(columnProperties == null || columnProperties.length == 0) {
+                            if (columnProperties == null || columnProperties.length == 0) {
                                 Optional.of(v)
                                         .map(String::valueOf)
                                         .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException e) -> {
-                                            LogUtil.error(getClass().getName(), e, "ID ["+r.getId()+"] Key ["+ k +"] Value [" + v + "] Message [" + e.getMessage() + "]");
+                                            LogUtil.error(getClass().getName(), e, "ID [" + r.getId() + "] Key [" + k + "] Value [" + v + "] Message [" + e.getMessage() + "]");
                                         }));
                             }
 
@@ -2827,22 +2828,16 @@ public class DataJsonController implements Unclutter {
                                         // execute grid's format column
                                         .map(it -> ((GridElement) element).formatColumn(elementId, it, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
-                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException e) -> {
-                                            LogUtil.error(getClass().getName(), e, "ID ["+r.getId()+"] Key ["+ k +"] Value [" + v + "] Message [" + e.getMessage() + "]");
-                                        }));
+                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException e) -> LogUtil.error(getClass().getName(), e, "ID [" + r.getId() + "] Key [" + k + "] Value [" + v + "] Message [" + e.getMessage() + "]")));
                             }
                         } else {
-//                            Optional.ofNullable(FormUtil.findElement(elementId, element, null))
-//                                    .map(e -> e.getElementValue(formData))
-//                                    .ifPresent(throwableConsumer(it -> json.put(elementId, AppUtil.processHashVariable(it, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
-
                             Optional.of(k)
                                     .map(String::valueOf)
                                     .ifPresent(throwableConsumer(s -> json.put(s, AppUtil.processHashVariable(String.valueOf(v), workflowAssignment, null, null, appDefinition)), (JSONException e) -> {
-                                        LogUtil.error(getClass().getName(), e, "ID ["+r.getId()+"] Key ["+ k +"] Value [" + v + "] Message [" + e.getMessage() + "]");
+                                        LogUtil.error(getClass().getName(), e, "ID [" + r.getId() + "] Key [" + k + "] Value [" + v + "] Message [" + e.getMessage() + "]");
                                     }));
                         }
-                    }).onException(e -> {}));
+                    }).onException(e -> LogUtil.error(getClass().getName(), e, e.getMessage())));
 
                     json.put("_" + FormUtil.PROPERTY_ID, r.getId());
                     json.put("_" + FormUtil.PROPERTY_DATE_CREATED, r.getDateCreated());
@@ -2851,6 +2846,9 @@ public class DataJsonController implements Unclutter {
                     json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, r.getModifiedBy());
 
                     return json;
+                }, (FormRow formRow, JSONException e) -> {
+                    LogUtil.error(getClass().getName(), e, e.getMessage());
+                    return null;
                 }))
                 .orElseGet(JSONObject::new);
     }
