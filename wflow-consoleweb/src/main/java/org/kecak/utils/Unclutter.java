@@ -1,14 +1,17 @@
 package org.kecak.utils;
 
 import org.joget.commons.util.LogUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @@author aristo
@@ -127,6 +130,38 @@ public interface Unclutter {
         return s.isEmpty() ? null : s;
     }
 
+
+    // JSON
+    /**
+     * Stream JSONArray
+     *
+     * @param jsonArray
+     * @param <R>
+     * @return
+     */
+    default <R> Stream<R> jsonStream(JSONArray jsonArray) {
+        int length = Optional.ofNullable(jsonArray).map(JSONArray::length).orElse(0);
+        return IntStream.iterate(0, i -> i + 1).limit(length)
+                .boxed()
+                .map(throwableFunction(jsonArray::get))
+                .filter(Objects::nonNull)
+                .map(throwableFunction(o -> (R)o))
+                .filter(Objects::nonNull);
+    }
+
+    /**
+     * Stream keys of JSONObject
+     *
+     * @param jsonObject
+     * @return
+     */
+    default Stream<String> jsonStream(JSONObject jsonObject) {
+        return Optional.ofNullable(jsonObject)
+                .map(json -> StreamSupport.stream(Spliterators.spliteratorUnknownSize(
+                        (Iterator<String>)json.keys(), 0), false))
+                .orElseGet(Stream::empty);
+    }
+
     // Throwable methods
     /**
      *
@@ -172,7 +207,7 @@ public interface Unclutter {
      * @param <E>
      * @return
      */
-    default <T, U, E extends Exception> BiConsumer<T, U> throwableBiConsumer(ThrowableBiConsumer<T, U, ? super E> throwableBiConsumer) {
+    default <T, U, E extends Exception> ThrowableBiConsumer<T, U, ? extends E> throwableBiConsumer(ThrowableBiConsumer<T, U, ? extends E> throwableBiConsumer) {
         return throwableBiConsumer;
     }
 
@@ -312,8 +347,9 @@ public interface Unclutter {
             }
         }
 
-        default ThrowableConsumer<T, ? super E> onException(final Consumer<? super E> onException) {
+        default Consumer<T> onException(final Consumer<? super E> onException) {
             Objects.requireNonNull(onException);
+
             return (T t) -> {
                 try {
                     acceptThrowable(t);
@@ -339,12 +375,22 @@ public interface Unclutter {
             try {
                 acceptThrowable(t, u);
             } catch (Exception e) {
-                onException((E) e);
+                LogUtil.error(getClass().getName(), e, e.getMessage());
+//                onException((E) e);
             }
         }
 
-        default void onException(E e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+        default BiConsumer<T, U> onException(Consumer<? super E> consumer) {
+            Objects.requireNonNull(consumer);
+
+            return (T t, U u) -> {
+                try {
+                    acceptThrowable(t, u);
+                } catch (Exception e) {
+                    consumer.accept((E)e);
+                }
+            };
+
         }
     }
 
@@ -364,13 +410,19 @@ public interface Unclutter {
             try {
                 return testThrowable(t);
             } catch (Exception e) {
-                return onException((E) e);
+                LogUtil.error(getClass().getName(), e, e.getMessage());
+                return false;
             }
         }
 
-        default boolean onException(E e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-            return false;
+        default Predicate<T> onException(Predicate<? super E> predicate) {
+            return (T t) -> {
+                try {
+                    return testThrowable(t);
+                } catch (Exception e) {
+                    return predicate.test((E)e);
+                }
+            };
         }
     }
 }

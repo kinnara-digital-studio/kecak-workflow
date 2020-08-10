@@ -16,7 +16,6 @@ import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.dao.FormDataDao;
 import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.*;
-import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
@@ -51,7 +50,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -797,14 +795,7 @@ public class DataJsonController implements Unclutter {
                         .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
-                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> {
-                            for (int i = 0, size = a2.length(); i < size; i++) {
-                                try {
-                                    a1.put(a2.get(i));
-                                } catch (JSONException ignored) {
-                                }
-                            }
-                        });
+                        .collect(JSONArray::new, JSONArray::put, (result, src) -> jsonStream(src).forEach(throwableConsumer(result::put)));
 
                 String currentDigest = getDigest(jsonData);
 
@@ -917,10 +908,7 @@ public class DataJsonController implements Unclutter {
                         .filter(Objects::nonNull)
 
                         // collect as JSON
-                        .collect(JSONArray::new, JSONArray::put, (a1, a2) -> IntStream.iterate(0, i -> i + 1).limit(a2.length()).boxed()
-                                .map(throwableFunction(a2::get))
-                                .filter(Objects::nonNull)
-                                .forEach(throwableConsumer(a1::put)));
+                        .collect(JSONArray::new, JSONArray::put, (result, source) -> jsonStream(source).forEach(throwableConsumer(result::put)));
 
                 String currentDigest = getDigest(jsonData);
 
@@ -1797,68 +1785,11 @@ public class DataJsonController implements Unclutter {
     private String[] handleEncodedFile(String value) {
         try {
             JSONArray jsonArray = new JSONArray(value);
-            return IntStream.iterate(0, i -> i + 1).limit(jsonArray.length()).boxed()
-                    .map(throwableFunction(jsonArray::getString))
-                    .filter(Objects::nonNull)
+            return this.<String>jsonStream(jsonArray)
                     .toArray(String[]::new);
 
         } catch (JSONException e) {
             return new String[]{value};
-        }
-    }
-
-    /**
-     * Process request parameters
-     *
-     * @param jsonBody
-     * @param element
-     * @param formData
-     * @throws JSONException
-     */
-    private void processRequestParameters(@Nonnull JSONObject jsonBody, @Nonnull Element element, @Nonnull final FormData formData) throws JSONException {
-        String key = element.getPropertyString(FormUtil.PROPERTY_ID);
-        if (element instanceof FileDownloadSecurity) {
-            JSONArray jsonValues = jsonBody.optJSONArray(key);
-
-            // multiple file, values are in JSONArray
-            if (jsonValues != null) {
-                MultipartFile[] files = IntStream.iterate(0, i -> i + 1).limit(jsonBody.length()).boxed()
-                        .map(throwableFunction(jsonValues::getString))
-                        .map(value -> addFileRequestParameter(value, element, formData))
-                        .filter(Objects::nonNull)
-                        .toArray(MultipartFile[]::new);
-
-                if (files.length > 0) {
-//                    FileStore.getFileMap().put(key, files);
-                    for (MultipartFile file : files) {
-                        FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
-                    }
-                }
-            }
-
-            // single file, value is in string
-            else {
-                String value = jsonBody.getString(key);
-                MultipartFile file = addFileRequestParameter(value, element, formData);
-                if (file != null) {
-//                    FileStore.getFileMap().put(key, new MultipartFile[] { file });
-                    FileUtil.storeFile(file, element, formData.getPrimaryKeyValue());
-                }
-            }
-        } else {
-            String value;
-            if (element instanceof HiddenField) {
-                value = getDefaultValue(element, formData);
-            } else {
-                value = jsonBody.optString(key, null);
-                if (isEmpty(value)) {
-                    value = getDefaultValue(element, formData);
-                }
-            }
-
-            if (value != null) {
-                formData.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
-            }
         }
     }
 
@@ -1994,11 +1925,7 @@ public class DataJsonController implements Unclutter {
 
     @Nonnull
     private FormRowSet convertJsonArrayToRowSet(@Nullable Form form, @Nonnull JSONArray jsonArray) {
-        FormRowSet result = Optional.of(jsonArray)
-                .map(a -> IntStream.range(0, a.length()).boxed())
-                .orElseGet(Stream::empty)
-                .filter(Objects::nonNull)
-                .map(jsonArray::optJSONObject)
+        FormRowSet result = this.<JSONObject>jsonStream(jsonArray)
                 .map(j -> convertJsonObjectToFormRow(form, j))
                 .collect(Collectors.toCollection(FormRowSet::new));
 
@@ -2494,11 +2421,16 @@ public class DataJsonController implements Unclutter {
 
     @Nonnull
     private Map<String, Object> formatRow(DataList dataList, Map<String, Object> row) {
-        Map<String, Object> formatterRow = new HashMap<>();
-        for (DataListColumn column : dataList.getColumns()) {
-            String field = column.getName();
-            formatterRow.put(field, formatValue(dataList, row, field));
-        }
+        final Map<String, Object> formatterRow = new HashMap<>();
+
+        Optional.of(dataList)
+                .map(DataList::getColumns)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .forEach(throwableConsumer(column -> {
+                    String field = column.getName();
+                    formatterRow.put(field, formatValue(dataList, row, field));
+                }));
 
         String primaryKeyColumn = getPrimaryKeyColumn(dataList);
         formatterRow.put("_" + FormUtil.PROPERTY_ID, row.get(primaryKeyColumn));
@@ -2849,11 +2781,7 @@ public class DataJsonController implements Unclutter {
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
                 .map(r -> convertFromRowToJsonObject(element, formData, r))
-                .collect(JSONArray::new, JSONArray::put, (result, source) -> IntStream.range(0, source.length())
-                        .boxed()
-                        .map(source::optJSONObject)
-                        .filter(Objects::nonNull)
-                        .forEach(result::put));
+                .collect(JSONArray::new, JSONArray::put, (result, source) -> jsonStream(source).forEach(result::put));
     }
 
     /**
@@ -2882,7 +2810,9 @@ public class DataJsonController implements Unclutter {
                             if(columnProperties == null || columnProperties.length == 0) {
                                 Optional.of(v)
                                         .map(String::valueOf)
-                                        .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException e) -> {}));
+                                        .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException e) -> {
+                                            LogUtil.error(getClass().getName(), e, "ID ["+r.getId()+"] Key ["+ k +"] Value [" + v + "] Message [" + e.getMessage() + "]");
+                                        }));
                             }
 
                             // if column properties is defined, format column
@@ -2897,14 +2827,22 @@ public class DataJsonController implements Unclutter {
                                         // execute grid's format column
                                         .map(it -> ((GridElement) element).formatColumn(elementId, it, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
-                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException ignored) -> {}));
+                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException e) -> {
+                                            LogUtil.error(getClass().getName(), e, "ID ["+r.getId()+"] Key ["+ k +"] Value [" + v + "] Message [" + e.getMessage() + "]");
+                                        }));
                             }
                         } else {
-                            Optional.ofNullable(FormUtil.findElement(elementId, element, null))
-                                    .map(e -> e.getElementValue(formData))
-                                    .ifPresent(throwableConsumer(it -> json.put(elementId, AppUtil.processHashVariable(it, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
+//                            Optional.ofNullable(FormUtil.findElement(elementId, element, null))
+//                                    .map(e -> e.getElementValue(formData))
+//                                    .ifPresent(throwableConsumer(it -> json.put(elementId, AppUtil.processHashVariable(it, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
+
+                            Optional.of(k)
+                                    .map(String::valueOf)
+                                    .ifPresent(throwableConsumer(s -> json.put(s, AppUtil.processHashVariable(String.valueOf(v), workflowAssignment, null, null, appDefinition)), (JSONException e) -> {
+                                        LogUtil.error(getClass().getName(), e, "ID ["+r.getId()+"] Key ["+ k +"] Value [" + v + "] Message [" + e.getMessage() + "]");
+                                    }));
                         }
-                    }));
+                    }).onException(e -> {}));
 
                     json.put("_" + FormUtil.PROPERTY_ID, r.getId());
                     json.put("_" + FormUtil.PROPERTY_DATE_CREATED, r.getDateCreated());
@@ -2913,7 +2851,7 @@ public class DataJsonController implements Unclutter {
                     json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, r.getModifiedBy());
 
                     return json;
-                }, (JSONException e) -> null))
+                }))
                 .orElseGet(JSONObject::new);
     }
 
