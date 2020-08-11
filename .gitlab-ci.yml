@@ -48,5 +48,6 @@ deploy-to-sandbox:
     - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && ssh-keyscan -H "${CI_PROJECT_DIR}" > ~/.ssh/known_hosts'
   script:
     - ssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
