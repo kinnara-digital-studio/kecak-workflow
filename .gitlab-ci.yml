@@ -31,8 +31,7 @@ build-docker-image:
     - git config --global user.name "$GIT_USERNAME"
     - git clone git@gitlab.com:kinnarastudio/docker-image-kecak-workflow.git
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
-    - cd "${CI_PROJECT_DIR}"
-    - cp wflow-consoleweb/target/kecak.war "${CI_PROJECT_DIR}"/docker-image-kecak-workflow/kecak.war
+    - cp "${CI_PROJECT_DIR}"/wflow-consoleweb/target/kecak.war "${CI_PROJECT_DIR}"/docker-image-kecak-workflow/kecak.war
     - cd "${CI_PROJECT_DIR}"/docker-image-kecak-workflow
   script:
     - docker build -t kinnaradigitalstudio/kecak-workflow:v1 .
