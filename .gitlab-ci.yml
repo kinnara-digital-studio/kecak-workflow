@@ -21,7 +21,7 @@ deploy-to-sandbox:
   before_script:
     - apk update && apk add git
     - docker info
-    - 'which ssh-agent || ( apk update -y && apk add openssh-client -y )'
+    - 'which ssh-agent || ( apk update && apk add openssh-client )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
