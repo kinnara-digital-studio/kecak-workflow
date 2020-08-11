@@ -10,18 +10,18 @@ build-war:
     - cd "${CI_PROJECT_DIR}"/wflow-app && sh kecak_make.sh
   artifacts:
     paths:
-      - /"${CI_PROJECT_DIR}"/wflow-consoleweb/target/kecak.war
+      - wflow-consoleweb/target/kecak.war
     expire_in: 1 day
 
 build-docker-image:
-  stage: build
+  stage: deploy
   tags: 
     - sandbox
   image: docker:19.03.12
   before_script:
     - apk update && apk add git
     - docker info
-    - 'which ssh-agent || ( apk update && apk add openssh-client )'
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -31,14 +31,11 @@ build-docker-image:
     - git config --global user.name "$GIT_USERNAME"
     - git clone git@gitlab.com:kinnarastudio/docker-image-kecak-workflow.git
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
-    - cp "${CI_PROJECT_DIR}"/wflow-consoleweb/target/kecak.war "${CI_PROJECT_DIR}"/docker-image-kecak-workflow/kecak.war
+    - cp wflow-consoleweb/target/kecak.war "${CI_PROJECT_DIR}"/docker-image-kecak-workflow/kecak.war
     - cd "${CI_PROJECT_DIR}"/docker-image-kecak-workflow
   script:
     - docker build -t kinnaradigitalstudio/kecak-workflow:v1 .
     - docker push kinnaradigitalstudio/kecak-workflow:v1
-  artifacts:
-    paths:
-      - /"${CI_PROJECT_DIR}"/wflow-consoleweb/target/kecak.war
 
 deploy-to-sandbox:
   stage: deploy
