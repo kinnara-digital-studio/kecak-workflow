@@ -10,7 +10,7 @@ build-war:
     - cd "${CI_PROJECT_DIR}"/wflow-app && sh kecak_make.sh
   artifacts:
     paths:
-      - wflow-consoleweb/target/kecak.war
+      - "${CI_PROJECT_DIR}"/wflow-consoleweb/target/kecak.war
     expire_in: 1 day
 
 build-docker-image:
@@ -38,7 +38,7 @@ build-docker-image:
     - docker push kinnaradigitalstudio/kecak-workflow:v1
   artifacts:
     paths:
-      - wflow-consoleweb/target/kecak.war
+      - "${CI_PROJECT_DIR}"/wflow-consoleweb/target/kecak.war
 
 deploy-to-sandbox:
   stage: deploy
