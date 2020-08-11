@@ -49,4 +49,4 @@ deploy-to-sandbox:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - ssh -i $GCP_SSH_KEY $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
+    - ssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
