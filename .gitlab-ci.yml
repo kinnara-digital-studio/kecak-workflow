@@ -13,8 +13,8 @@ build-war:
       - wflow-consoleweb/target/kecak.war
     expire_in: 1 day
 
-deploy-to-sandbox:
-  stage: deploy
+build-docker-image:
+  stage: build
   tags: 
     - sandbox
   image: docker:19.03.12
@@ -24,7 +24,6 @@ deploy-to-sandbox:
     - 'which ssh-agent || ( apk update && apk add openssh-client )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - '[[ -f /.dockerenv ]] && ssh-keyscan -H "gitlab.com" > ~/.ssh/known_hosts'
@@ -37,4 +36,16 @@ deploy-to-sandbox:
   script:
     - docker build -t kinnaradigitalstudio/kecak-workflow:v1 .
     - docker push kinnaradigitalstudio/kecak-workflow:v1
+deploy-to-sandbox:
+  stage: deploy
+  tags: 
+    - sandbox
+  image: ubuntu
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
     - ssh -i $GCP_SSH_KEY $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
