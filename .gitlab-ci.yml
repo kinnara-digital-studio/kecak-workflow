@@ -36,6 +36,10 @@ build-docker-image:
   script:
     - docker build -t kinnaradigitalstudio/kecak-workflow:v1 .
     - docker push kinnaradigitalstudio/kecak-workflow:v1
+  artifacts:
+    paths:
+      - wflow-consoleweb/target/kecak.war
+
 deploy-to-sandbox:
   stage: deploy
   tags: 
