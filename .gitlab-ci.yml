@@ -36,3 +36,4 @@ deploy-to-sandbox:
   script:
     - docker build -t kinnaradigitalstudio/kecak-workflow:v1 .
     - docker push kinnaradigitalstudio/kecak-workflow:v1
+    - ssh $GIT_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
