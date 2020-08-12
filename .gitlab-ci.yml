@@ -43,6 +43,9 @@ deploy-to-sandbox:
     - sandbox
   image: docker:19.03.12
   before_script:
+    - apk update && apk add --no-cache py-pip
+    - pip install docker-compose
+    - docker-compose --version
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
