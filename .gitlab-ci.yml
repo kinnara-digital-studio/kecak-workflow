@@ -41,9 +41,9 @@ deploy-to-sandbox:
   stage: deploy
   tags: 
     - sandbox
-  image: ubuntu
+  image: docker:19.03.12
   before_script:
-    - 'which ssh-agent || ( apk update && apk openssh-client )'
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
