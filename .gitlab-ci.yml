@@ -43,8 +43,7 @@ deploy-to-sandbox:
     - sandbox
   image: docker:19.03.12
   before_script:
-    - apk update && apk add --no-cache py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
-    - pip install docker-compose
+    - apk update && apk add docker-compose
     - docker-compose --version
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
