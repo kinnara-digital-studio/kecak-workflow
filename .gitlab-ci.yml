@@ -44,7 +44,7 @@ deploy-to-sandbox:
   image: docker:19.03.12
   before_script:
     - apk update && apk add docker-compose
-    - DOCKER_HOST=“ssh://$SERVER_USERNAME@$SERVER_HOSTNAME”
+    - DOCKER_HOST="ssh://$SERVER_USERNAME@$SERVER_HOSTNAME"
     - docker-compose --version
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
