@@ -45,7 +45,7 @@ deploy-to-sandbox:
   before_script:
     - apk update && apk add docker-compose
     - docker-compose --version
-    - docker context create remote ‐‐docker “host=ssh://$SERVER_USERNAME@$SERVER_HOSTNAME”
+    - docker context create remote ‐‐docker “host=ssh://${SERVER_USERNAME}@${SERVER_HOSTNAME}”
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
