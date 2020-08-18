@@ -147,7 +147,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return renderTemplate(template, formData, dataModel);
     }
 
-    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value
@@ -238,7 +238,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return controlElement;
     }
 
-    private Form generateForm(AppDefinition appDef, String formDefId) {
+    protected Form generateForm(AppDefinition appDef, String formDefId) {
         ApplicationContext appContext = AppUtil.getApplicationContext();
         FormService formService = (FormService) appContext.getBean("formService");
         FormDefinitionDao formDefinitionDao = (FormDefinitionDao)appContext.getBean("formDefinitionDao");

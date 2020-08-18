@@ -2391,33 +2391,26 @@ public class DataJsonController implements Unclutter {
      */
     @Nonnull
     private String formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
-        if (dataList.getColumns() == null) {
-            return Optional.ofNullable(row.get(field))
-                    .map(String::valueOf)
-                    .orElse("");
-        }
+        String value = Optional.of(field)
+                .map(row::get)
+                .map(String::valueOf)
+                .orElse("");
 
-        for (DataListColumn column : dataList.getColumns()) {
-            if (!field.equals(column.getName())) {
-                continue;
-            }
-
-            String value = Optional.ofNullable(row.get(field))
-                    .map(String::valueOf)
-                    .orElse("");
-
-            if (column.getFormats() == null) {
-                return value;
-            }
-
-            for (DataListColumnFormat format : column.getFormats()) {
-                if (format != null) {
-                    return format.format(dataList, column, row, value).replaceAll("<[^>]*>", "");
-                }
-            }
-        }
-
-        return Optional.of(field).map(row::get).map(String::valueOf).orElse("");
+        return Optional.of(dataList)
+                .map(DataList::getColumns)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .filter(c -> field.equals(c.getName()))
+                .findFirst()
+                .map(column -> Optional.of(column)
+                        .map(DataListColumn::getFormats)
+                        .map(Collection::stream)
+                        .orElseGet(Stream::empty)
+                        .findFirst()
+                        .map(f -> f.format(dataList, column, row, value))
+                        .map(s -> s.replaceAll("<[^>]*>", ""))
+                        .orElse(value))
+                .orElse(value);
     }
 
     @Nonnull
