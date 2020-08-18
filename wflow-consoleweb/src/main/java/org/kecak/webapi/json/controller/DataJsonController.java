@@ -2422,21 +2422,17 @@ public class DataJsonController implements Unclutter {
 
     @Nonnull
     private Map<String, Object> formatRow(DataList dataList, Map<String, Object> row) {
-        final Map<String, Object> formatterRow = new HashMap<>();
-
-        Optional.of(dataList)
+        Map<String, Object> formattedRow = Optional.of(dataList)
                 .map(DataList::getColumns)
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
-                .forEach(throwableConsumer(column -> {
-                    String field = column.getName();
-                    formatterRow.put(field, formatValue(dataList, row, field));
-                }));
+                .filter(not(DataListColumn::isHidden))
+                .collect(Collectors.toMap(DataListColumn::getName, c -> formatValue(dataList, row, c.getName())));
 
         String primaryKeyColumn = getPrimaryKeyColumn(dataList);
-        formatterRow.put("_" + FormUtil.PROPERTY_ID, row.get(primaryKeyColumn));
+        formattedRow.put("_" + FormUtil.PROPERTY_ID, row.get(primaryKeyColumn));
 
-        return formatterRow;
+        return formattedRow;
     }
 
     /**
