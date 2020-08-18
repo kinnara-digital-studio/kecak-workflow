@@ -59,7 +59,7 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFo
         return renderTemplate(template, formData, dataModel);
     }
 
-    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value
