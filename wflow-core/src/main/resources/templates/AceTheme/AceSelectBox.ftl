@@ -1,5 +1,5 @@
 <div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <script type="text/javascript" src="${request.contextPath}/bower_components/select2/dist/js/select2.min.js"></script>
+    <script type="text/javascript" src="${request.contextPath}/bower_components/select2/dist/js/select2.full.min.js"></script>
     <link rel="stylesheet" href="${request.contextPath}/bower_components/select2/dist/css/select2.min.css">
     <label class="control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
     <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
