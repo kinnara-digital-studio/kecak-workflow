@@ -726,7 +726,7 @@ public class DataJsonController implements Unclutter {
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -813,7 +813,7 @@ public class DataJsonController implements Unclutter {
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -926,7 +926,7 @@ public class DataJsonController implements Unclutter {
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -1260,7 +1260,7 @@ public class DataJsonController implements Unclutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1306,7 +1306,7 @@ public class DataJsonController implements Unclutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1342,7 +1342,7 @@ public class DataJsonController implements Unclutter {
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -1447,7 +1447,7 @@ public class DataJsonController implements Unclutter {
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
