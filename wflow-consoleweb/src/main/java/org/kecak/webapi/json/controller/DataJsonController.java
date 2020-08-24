@@ -2220,7 +2220,7 @@ public class DataJsonController implements Unclutter {
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -2276,7 +2276,7 @@ public class DataJsonController implements Unclutter {
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
@@ -2284,6 +2284,68 @@ public class DataJsonController implements Unclutter {
         }
     }
 
+
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST)
+    public void postDataListAction(final HttpServletRequest request, final HttpServletResponse response,
+                                   @RequestParam("appId") final String appId,
+                                   @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                   @RequestParam("dataListId") final String dataListId,
+                                   @RequestParam("actionType") final String actionType,
+                                   @RequestParam(value = "actionIndex", defaultValue = "0") final Integer actionIndex,
+                                   @RequestParam("id") final String[] ids) throws IOException {
+
+        try {
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // get dataList
+            DataList dataList = getDataList(appDefinition, dataListId);
+            DataListAction action = getDataListAction(dataList, actionType, ifNullThen(actionIndex, 0));
+            DataListActionResult actionResult = action.executeAction(dataList, ids);
+
+            try {
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("message", actionResult.getMessage());
+                jsonResponse.put("url", actionResult.getUrl());
+                jsonResponse.put("type", actionResult.getType());
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+        } catch (ApiException e) {
+            LogUtil.warn(getClass().getName(), e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+
+    @Nonnull
+    private DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionType, int actionIndex) throws ApiException {
+        // validate action type
+        if(!actionType.matches("rowAction|action")) {
+            throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "Action type [" + actionType + "] not found");
+        }
+
+        return Optional.of(actionIndex)
+                .flatMap(i -> Optional.of(dataList)
+                        .map(d -> {
+                            switch (actionType) {
+                                case "rowAction":
+                                    return d.getRowActions();
+                                case "action":
+                                    return d.getActions();
+                                default:
+                                    return null;
+                            }
+                        })
+                        .filter(a -> i < a.length)
+                        .map(a -> a[i])
+                )
+                .filter(DataListAction::isPermitted)
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Action type [" + actionType + "] index [" + actionIndex + "] not found"));
+    }
 
     /**
      * Get Assignment List
@@ -2656,7 +2718,7 @@ public class DataJsonController implements Unclutter {
         // get dataList definition
         DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
         if (datalistDefinition == null) {
-            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "DataList Definition for dataList [" + dataListId + "] not found");
+            throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "DataList Definition for dataList [" + dataListId + "] not found");
         }
 
         DataList dataList = Optional.of(datalistDefinition)
@@ -2710,7 +2772,7 @@ public class DataJsonController implements Unclutter {
                 // set current app definition
                 .map(peek(AppUtil::setCurrentAppDefinition))
 
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + version + "]"));
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Application [" + appId + "] version [" + version + "] not found"));
     }
 
     /**
