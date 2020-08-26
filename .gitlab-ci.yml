@@ -31,4 +31,4 @@ deploy-to-sandbox:
   tags: 
     - kinnara
   script:
-    - ssh -i /home/gitlab-runner/.ssh/gcp-ubuntu-RSAssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
+    - ssh -i /home/gitlab-runner/.ssh/gcp-ubuntu-RSA $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
