@@ -2,10 +2,11 @@ stages:
   - build
   - deploy
 build-war:
-  image: kinnaradigitalstudio/kecak-builder
   stage: build
   tags: 
-    - sandbox
+    - shell
+    - kinnara
+
   script:
     - cd "${CI_PROJECT_DIR}"/wflow-app && sh kecak_make.sh
   artifacts:
@@ -16,19 +17,8 @@ build-war:
 build-docker-image:
   stage: deploy
   tags: 
-    - sandbox
-  image: docker:19.03.12
+    - kinnara
   before_script:
-    - apk update && apk add git
-    - docker info
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - '[[ -f /.dockerenv ]] && ssh-keyscan -H "gitlab.com" > ~/.ssh/known_hosts'
-    - git config --global user.email "$GIT_MAIL"
-    - git config --global user.name "$GIT_USERNAME"
     - git clone git@gitlab.com:kinnarastudio/docker-image-kecak-workflow.git
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
     - cp wflow-consoleweb/target/kecak.war "${CI_PROJECT_DIR}"/docker-image-kecak-workflow/kecak.war
@@ -40,19 +30,10 @@ build-docker-image:
 deploy-to-sandbox:
   stage: deploy
   tags: 
-    - sandbox
-  image: docker:19.03.12
+    - kinnara
   before_script:
-    - apk update && apk add docker-compose
-    - docker-compose --version
-    - docker context create remote ‐‐docker “host=ssh://"${SERVER_USERNAME}"@"${SERVER_HOSTNAME}"”
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "$GCP_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - '[[ -f /.dockerenv ]] && ssh-keyscan -H "${SERVER_HOSTNAME}" > ~/.ssh/known_hosts'
+    # - docker context create remote ‐‐docker “host=ssh://"${SERVER_USERNAME}"@"${SERVER_HOSTNAME}"”
   script:
-    # - ssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
-    - docker context ls
-    - docker-compose ‐‐context remote up -d
+    - ssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
+    # - docker context ls
+    # - docker-compose ‐‐context remote up -d
