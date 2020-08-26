@@ -30,9 +30,5 @@ deploy-to-sandbox:
   stage: deploy
   tags: 
     - kinnara
-  before_script:
-    # - docker context create remote ‐‐docker “host=ssh://"${SERVER_USERNAME}"@"${SERVER_HOSTNAME}"”
   script:
-    - ssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
-    # - docker context ls
-    # - docker-compose ‐‐context remote up -d
+    - ssh -i /home/gitlab-runner/.ssh/gcp-ubuntu-RSAssh $SERVER_USERNAME@$SERVER_HOSTNAME /home/ubuntu/docker-compose-kecak-workflow/update-docker-image.sh
