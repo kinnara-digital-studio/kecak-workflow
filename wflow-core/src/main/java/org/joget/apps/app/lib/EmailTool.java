@@ -95,7 +95,9 @@ public class EmailTool extends DefaultApplicationPlugin implements PluginWebSupp
                 replaceMap = new HashMap<String, String>();
                 replaceMap.put("\\n", "<br/>");
             }
-            
+
+            toSpecific = AppUtil.processHashVariable(toSpecific, wfAssignment, null, replaceMap);
+
             emailSubject = WorkflowUtil.processVariable(emailSubject, formDataTable, wfAssignment);
             emailMessage = AppUtil.processHashVariable(emailMessage, wfAssignment, null, replaceMap);
             
