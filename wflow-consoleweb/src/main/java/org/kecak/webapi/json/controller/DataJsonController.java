@@ -2844,12 +2844,11 @@ public class DataJsonController implements Unclutter {
      */
     @Nonnull
     private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRow row) {
-        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        final WorkflowAssignment workflowAssignment = getAssignment(formData);
 
         return Optional.ofNullable(row)
                 .map(throwableFunction(r -> {
-                    final WorkflowAssignment workflowAssignment = getAssignment(formData);
-
                     final JSONObject json = new JSONObject();
 
                     r.forEach(throwableBiConsumer((k, v) -> {
@@ -2879,16 +2878,14 @@ public class DataJsonController implements Unclutter {
                                         // execute grid's format column
                                         .map(it -> ((GridElement) element).formatColumn(elementId, it, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
 
-                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it), (JSONException e) -> LogUtil.error(getClass().getName(), e, "ID [" + r.getId() + "] Key [" + k + "] Value [" + v + "] Message [" + e.getMessage() + "]")));
+                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it)));
                             }
                         } else {
-                            Optional.of(k)
-                                    .map(String::valueOf)
-                                    .ifPresent(throwableConsumer(s -> json.put(s, AppUtil.processHashVariable(String.valueOf(v), workflowAssignment, null, null, appDefinition)), (JSONException e) -> {
-                                        LogUtil.error(getClass().getName(), e, "ID [" + r.getId() + "] Key [" + k + "] Value [" + v + "] Message [" + e.getMessage() + "]");
-                                    }));
+                            Optional.ofNullable(FormUtil.findElement(elementId, element, null))
+                                    .map(e -> e.getElementValue(formData))
+                                    .ifPresent(throwableConsumer(s -> json.put(elementId, AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
                         }
-                    }).onException(e -> LogUtil.error(getClass().getName(), e, e.getMessage())));
+                    }));
 
                     json.put("_" + FormUtil.PROPERTY_ID, r.getId());
                     json.put("_" + FormUtil.PROPERTY_DATE_CREATED, r.getDateCreated());
