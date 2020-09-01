@@ -9,9 +9,7 @@ import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.*;
 
 /**
  * @@author aristo
@@ -57,6 +55,13 @@ public interface Unclutter {
         return Optional.ofNullable(value)
                 .map(String::valueOf)
                 .map(String::isEmpty)
+                .orElse(true);
+    }
+
+    default boolean isEmpty(@Nullable Object[] array) {
+        return Optional.ofNullable(array)
+                .map(a -> a.length)
+                .map(i -> i == 0)
                 .orElse(true);
     }
 
@@ -160,6 +165,50 @@ public interface Unclutter {
                 .map(json -> StreamSupport.stream(Spliterators.spliteratorUnknownSize(
                         (Iterator<String>)json.keys(), 0), false))
                 .orElseGet(Stream::empty);
+    }
+
+    /**
+     * Collector for JSONArray
+     *
+     * @param <T>
+     * @return
+     */
+    default <T> Collector<T, JSONArray, JSONArray> jsonCollector() {
+        return Collector.of(JSONArray::new, (array, t) -> {
+            if(t != null) {
+                array.put(t);
+            }
+
+        }, (left, right) -> {
+            jsonStream(right).forEach(throwableConsumer(left::put));
+            return left;
+        });
+    }
+
+    /**
+     * Collector for JSONObject
+     *
+     * @param keyExtractor
+     * @param valueExtractor
+     * @param <T>
+     * @param <V>
+     * @return
+     */
+    default <T, V> Collector<T, JSONObject, JSONObject> jsonCollector(Function<T, String> keyExtractor, Function<T, V> valueExtractor) {
+        Objects.requireNonNull(keyExtractor);
+        Objects.requireNonNull(valueExtractor);
+
+        return Collector.of(JSONObject::new, throwableBiConsumer((jsonObject, t) -> {
+            String key = keyExtractor.apply(t);
+            V value = valueExtractor.apply(t);
+
+            if(key != null && value != null) {
+                jsonObject.put(key, value);
+            }
+        }), (left, right) -> {
+            jsonStream(right).forEach(throwableConsumer(s -> left.put(s, right.get(s))));
+            return left;
+        });
     }
 
     // Throwable methods
