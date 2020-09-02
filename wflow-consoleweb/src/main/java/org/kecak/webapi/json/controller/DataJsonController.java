@@ -596,12 +596,12 @@ public class DataJsonController implements Unclutter {
             // construct response
             JSONObject jsonData = getData(form, formData);
             Object fieldData = jsonStream(jsonData)
-                    .filter(formDefId::equals)
+                    .filter(elementId::equals)
                     .findFirst()
                     .map(throwableFunction(jsonData::get))
                     .orElse(null);
 
-            String currentDigest = getDigest(jsonData);
+            String currentDigest = getDigest(fieldData);
 
             JSONObject jsonResponse = new JSONObject();
 
@@ -2419,6 +2419,10 @@ public class DataJsonController implements Unclutter {
      */
     private String getDigest(JSONArray json) {
         return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
+    }
+
+    private String getDigest(Object value) {
+        return value == null ? null : DigestUtils.sha256Hex(String.valueOf(value));
     }
 
     /**
