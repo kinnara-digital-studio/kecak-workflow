@@ -1,5 +1,7 @@
 package org.kecak.utils;
 
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.FormData;
 import org.joget.commons.util.LogUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -135,6 +137,24 @@ public interface Unclutter {
         return s.isEmpty() ? null : s;
     }
 
+    /**
+     * Stream element children
+     *
+     * @param element
+     * @return
+     */
+    @Nonnull
+    default Stream<Element> elementStream(@Nonnull Element element, FormData formData) {
+        if (!element.isAuthorize(formData)) {
+            return Stream.empty();
+        }
+
+        Stream<Element> stream = Stream.of(element);
+        for (Element child : element.getChildren()) {
+            stream = Stream.concat(stream, elementStream(child, formData));
+        }
+        return stream;
+    }
 
     // JSON
     /**
@@ -202,7 +222,7 @@ public interface Unclutter {
             String key = keyExtractor.apply(t);
             V value = valueExtractor.apply(t);
 
-            if(key != null && value != null) {
+            if(key != null && !key.isEmpty() && value != null) {
                 jsonObject.put(key, value);
             }
         }), (left, right) -> {

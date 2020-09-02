@@ -2682,21 +2682,29 @@ public class DataJsonController implements Unclutter {
 
                     // Form, Section, or Subform
                     if (e instanceof FormContainer) {
-                        JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
-                        data.sortedKeys().forEachRemaining(throwableConsumer(key -> {
-                            parentJson.put(key.toString(), data.get(key.toString()));
+                        FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
+                        JSONObject data = collectContainerElement((FormContainer) e, formData, row);
+                        jsonStream(data).forEach(throwableConsumer(key -> {
+                            parentJson.put(key, data.get(key));
                         }));
                     }
 
-                    // most likely grid element
-                    else if (rowSet.isMultiRow()) {
-                        JSONArray data = convertFormRowSetToJsonArray(e, formData, rowSet);
+                    // grid element
+                    else if (e instanceof GridElement) {
+                        JSONArray data = collectGridElement((GridElement) e, rowSet);
                         parentJson.put(elementId, data);
                     }
 
-                    // any other element with load binder
+                    // element with multirow load binder
+                    else if (rowSet.isMultiRow()){
+                        JSONArray data = collectElement(e, rowSet);
+                        parentJson.put(elementId, data);
+                    }
+
+                    // most likely element with load binder
                     else {
-                        JSONObject data = convertFormRowSetToJsonObject(e, formData, rowSet);
+                        FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
+                        JSONObject data = collectElement(e, row);
                         parentJson.put(elementId, data);
                     }
                 }));
@@ -2833,6 +2841,7 @@ public class DataJsonController implements Unclutter {
      * @param rowSet
      * @return
      */
+    @Deprecated
     @Nonnull
     private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
         return Optional.ofNullable(rowSet)
@@ -2842,53 +2851,152 @@ public class DataJsonController implements Unclutter {
                 .collect(jsonCollector());
     }
 
+//    /**
+//     *
+//     * @param formContainer
+//     * @param formData
+//     * @param row
+//     * @return
+//     */
+//    private JSONObject collectContainerData(@Nonnull final FormContainer formContainer, @Nonnull final FormData formData, @Nonnull final FormRow row) {
+//        assert formContainer instanceof Element;
+//
+//        final Element element = (Element) formContainer;
+//        final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+//        final WorkflowAssignment workflowAssignment = getAssignment(formData);
+//
+//        JSONObject jsonObject = elementStream(element, formData)
+//                .collect(jsonCollector(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> Optional.of(formData)
+//                        .map(e::getElementValue)
+//                        .map(s -> AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition))
+//                        .orElse(null)));
+//
+//        try {
+//            jsonObject.put("_" + FormUtil.PROPERTY_ID, row.getId());
+//            jsonObject.put("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated());
+//            jsonObject.put("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy());
+//            jsonObject.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, row.getDateModified());
+//            jsonObject.put("_" + FormUtil.PROPERTY_MODIFIED_BY, row.getModifiedBy());
+//        } catch (JSONException e) {
+//            LogUtil.error(getClass().getName(), e, e.getMessage());
+//        }
+//
+//        return jsonObject;
+//    }
+
+//    /**
+//     *
+//     * @param element
+//     * @param formData
+//     * @param rowSet
+//     * @return
+//     */
+//    private JSONArray collectMultiRowData(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRowSet rowSet) {
+//        return Optional.of(rowSet)
+//                .map(Collection::stream)
+//                .orElseGet(Stream::empty)
+//                .map(r -> convertFromRowToJsonObject(element, formData, r))
+//                .collect(jsonCollector());
+//    }
+
     /**
-     * Convert {@link FormRow} to {@link JSONObject}
      *
+     * @param gridElement
+     * @param rowSet
+     * @return
+     */
+    private JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet) {
+        return rowSet.stream()
+                .map(r -> collectGridElement(gridElement, r))
+                .collect(jsonCollector());
+    }
+
+    /**
+     *
+     * @param gridElement
      * @param row
      * @return
      */
-    @Nonnull
-    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row) {
+    private JSONObject collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRow row) {
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-        final WorkflowAssignment workflowAssignment = getAssignment(formData);
+        final Map<String, String>[] columnProperties = gridElement.getColumnProperties();
 
-        JSONObject jsonObject = elementStream(element, formData)
-                .filter(e -> !(e instanceof FormContainer))
-                .collect(jsonCollector(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> {
-                    if (element instanceof GridElement) {
-                        String k = e.getPropertyString(FormUtil.PROPERTY_ID);
-                        String v = row.getProperty(k);
+        final JSONObject jsonObject = Optional.ofNullable(columnProperties)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .collect(jsonCollector(gridElement::getField, m -> {
+                    String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
+                    String columnName = Optional.of(m)
+                            .map(gridElement::getField)
+                            .orElse("");
 
-                        Map<String, String>[] columnProperties = ((GridElement) element).getColumnProperties();
-
-                        // if column properties not defined, put all data from rowSet as they are
-                        if (isEmpty(columnProperties)) {
-                            return v;
-                        }
-
-                        // if column properties is defined, format column
-                        else {
-                            return Optional.of(columnProperties)
-                                    .map(Arrays::stream)
-                                    .orElseGet(Stream::empty)
-
-                                    .filter(m -> k.equals(((GridElement) element).getField(m)))
-                                    .findFirst()
-
-                                    // execute grid's format column
-                                    .map(it -> ((GridElement) element).formatColumn(k, it, String.valueOf(row.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
-
-                                    .orElse(null);
-                        }
-                    } else {
-                        return Optional.of(formData)
-                                .map(e::getElementValue)
-                                .map(s -> AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition))
-                                .orElse(null);
-                    }
+                    return Optional.of(columnName)
+                            .filter(this::isNotEmpty)
+                            .map(row::getProperty)
+                            .map(s -> gridElement.formatColumn(columnName, m, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), ""))
+                            .orElse(null);
                 }));
 
+        collectRowMetaData(row, jsonObject);
+
+        return jsonObject;
+    }
+
+    /**
+     *
+     * @param containerElement
+     * @param formData
+     * @return
+     */
+    private JSONObject collectContainerElement(@Nonnull final FormContainer containerElement, @Nonnull final FormData formData, @Nonnull final FormRow row) {
+        assert containerElement instanceof Element;
+
+        final JSONObject jsonObject = elementStream((Element) containerElement, formData)
+                .filter(e -> !(e instanceof FormContainer))
+                .collect(jsonCollector(e -> e.getPropertyString(FormUtil.PROPERTY_ID),
+                        e -> e.getElementValue(formData)));
+
+        collectRowMetaData(row, jsonObject);
+
+        return jsonObject;
+    }
+
+    /**
+     *
+     * @param element
+     * @param row
+     * @return
+     */
+    private JSONObject collectElement(@Nonnull final Element element, @Nonnull final FormRow row) {
+        Objects.requireNonNull(element);
+
+        final JSONObject jsonObject = row.entrySet().stream()
+                .collect(jsonCollector(e -> e.getKey().toString(), Map.Entry::getValue));
+
+        collectRowMetaData(row, jsonObject);
+
+        return jsonObject;
+    }
+
+    /**
+     *
+     * @param element
+     * @param rowSet
+     * @return
+     */
+    private JSONArray collectElement(@Nonnull final Element element, @Nonnull final FormRowSet rowSet) {
+        return rowSet.stream()
+                .map(r -> collectElement(element, r))
+                .collect(jsonCollector());
+    }
+
+    /**
+     * Collect metadata
+     *
+     * @param row
+     * @param jsonObject input/output parameter
+     */
+    private void collectRowMetaData(@Nonnull final FormRow row, @Nonnull final JSONObject jsonObject) {
         try {
             jsonObject.put("_" + FormUtil.PROPERTY_ID, row.getId());
             jsonObject.put("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated());
@@ -2898,122 +3006,24 @@ public class DataJsonController implements Unclutter {
         } catch (JSONException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
         }
-
-        return jsonObject;
-
-        //v2
-//        return elementStream(element, formData)
-//                .filter(e -> !(e instanceof FormContainer))
-//                .collect(throwableSupplier(() -> {
-//                    JSONObject json = new JSONObject();
-//                    json.put("_" + FormUtil.PROPERTY_ID, row.getId());
-//                    json.put("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated());
-//                    json.put("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy());
-//                    json.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, row.getDateModified());
-//                    json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, row.getModifiedBy());
-//                    return json;
-//                }, (JSONException e) -> new JSONObject()), throwableBiConsumer((json, e) -> {
-//                    String k = e.getPropertyString(FormUtil.PROPERTY_ID);
-//                    String v = row.getProperty(k);
-//
-//                    if (element instanceof GridElement) {
-//                        Map<String, String>[] columnProperties = ((GridElement) element).getColumnProperties();
-//
-//                        // if column properties not defined, put all data from rowSet as they are
-//                        if (columnProperties == null || columnProperties.length == 0) {
-//                            Optional.of(v)
-//                                    .map(String::valueOf)
-//                                    .ifPresent(throwableConsumer(s -> json.put(k, s)));
-//                        }
-//
-//                        // if column properties is defined, format column
-//                        else {
-//                            Optional.of(columnProperties)
-//                                    .map(Arrays::stream)
-//                                    .orElseGet(Stream::empty)
-//
-//                                    .filter(m -> k.equals(((GridElement) element).getField(m)))
-//                                    .findFirst()
-//
-//                                    // execute grid's format column
-//                                    .map(it -> ((GridElement) element).formatColumn(k, it, String.valueOf(row.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
-//
-//                                    .ifPresent(throwableConsumer(it -> json.put(k, it)));
-//                        }
-//                    } else {
-//                        Optional.of(formData)
-//                                .map(e::getElementValue)
-//                                .ifPresent(throwableConsumer(s -> json.put(k, s)));
-//                    }
-//                }), (j1, j2) -> jsonStream(j2).forEach(throwableConsumer(s -> j1.put(s, j2.getString(s)))));
-
-        // v1
-//        return Optional.ofNullable(row)
-//                .map(throwableFunction(r -> {
-//                    final JSONObject json = new JSONObject();
-//
-//                    r.forEach(throwableBiConsumer((k, v) -> {
-//                        String elementId = String.valueOf(k);
-//
-//                        if (element instanceof GridElement) {
-//                            Map<String, String>[] columnProperties = ((GridElement) element).getColumnProperties();
-//
-//                            // if column properties not defined, put all data from rowSet as they are
-//                            if (columnProperties == null || columnProperties.length == 0) {
-//                                Optional.of(v)
-//                                        .map(String::valueOf)
-//                                        .ifPresent(throwableConsumer(s -> json.put(elementId, s), (JSONException e) -> {
-//                                            LogUtil.error(getClass().getName(), e, "ID [" + r.getId() + "] Key [" + k + "] Value [" + v + "] Message [" + e.getMessage() + "]");
-//                                        }));
-//                            }
-//
-//                            // if column properties is defined, format column
-//                            else {
-//                                Optional.of(columnProperties)
-//                                        .map(Arrays::stream)
-//                                        .orElseGet(Stream::empty)
-//
-//                                        .filter(m -> k.equals(((GridElement) element).getField(m)))
-//                                        .findFirst()
-//
-//                                        // execute grid's format column
-//                                        .map(it -> ((GridElement) element).formatColumn(elementId, it, String.valueOf(r.getId()), String.valueOf(v), appDefinition.getAppId(), appDefinition.getVersion(), ""))
-//
-//                                        .ifPresent(throwableConsumer(it -> json.put(elementId, it)));
-//                            }
-//                        } else {
-//                            Optional.ofNullable(FormUtil.findElement(elementId, element, null))
-//                                    .map(e -> e.getElementValue(formData))
-//                                    .ifPresent(throwableConsumer(s -> json.put(elementId, AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition)), (JSONException ignored) -> {}));
-//                        }
-//                    }));
-//
-//                    json.put("_" + FormUtil.PROPERTY_ID, r.getId());
-//                    json.put("_" + FormUtil.PROPERTY_DATE_CREATED, r.getDateCreated());
-//                    json.put("_" + FormUtil.PROPERTY_CREATED_BY, r.getCreatedBy());
-//                    json.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, r.getDateModified());
-//                    json.put("_" + FormUtil.PROPERTY_MODIFIED_BY, r.getModifiedBy());
-//
-//                    return json;
-//                }, (FormRow formRow, JSONException e) -> {
-//                    LogUtil.error(getClass().getName(), e, e.getMessage());
-//                    return null;
-//                }))
-//                .orElseGet(JSONObject::new);
     }
 
     /**
-     * @param rowSet
+     * Convert {@link FormRow} to {@link JSONObject}
+     *
+     * @param row
      * @return
      */
+    @Deprecated
     @Nonnull
-    private JSONObject convertFormRowSetToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
-        return Optional.ofNullable(rowSet)
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .findFirst()
-                .map(r -> convertFromRowToJsonObject(element, formData, r))
-                .orElseGet(JSONObject::new);
+    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row) {
+        if(element instanceof GridElement) {
+            return collectGridElement((GridElement) element, row);
+        } else if (element instanceof FormContainer) {
+            return collectContainerElement((FormContainer) element, formData, row);
+        } else {
+            return collectElement(element, row);
+        }
     }
 
     /**
@@ -3099,25 +3109,6 @@ public class DataJsonController implements Unclutter {
         return Optional.ofNullable(formData)
                 .map(FormData::getFormErrors)
                 .orElseGet(HashMap::new);
-    }
-
-    /**
-     * Stream element children
-     *
-     * @param element
-     * @return
-     */
-    @Nonnull
-    private Stream<Element> elementStream(@Nonnull Element element, FormData formData) {
-        if (!element.isAuthorize(formData)) {
-            return Stream.empty();
-        }
-
-        Stream<Element> stream = Stream.of(element);
-        for (Element child : element.getChildren()) {
-            stream = Stream.concat(stream, elementStream(child, formData));
-        }
-        return stream;
     }
 
     /**
