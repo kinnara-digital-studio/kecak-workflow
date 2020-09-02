@@ -2851,54 +2851,6 @@ public class DataJsonController implements Unclutter {
                 .collect(jsonCollector());
     }
 
-//    /**
-//     *
-//     * @param formContainer
-//     * @param formData
-//     * @param row
-//     * @return
-//     */
-//    private JSONObject collectContainerData(@Nonnull final FormContainer formContainer, @Nonnull final FormData formData, @Nonnull final FormRow row) {
-//        assert formContainer instanceof Element;
-//
-//        final Element element = (Element) formContainer;
-//        final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-//        final WorkflowAssignment workflowAssignment = getAssignment(formData);
-//
-//        JSONObject jsonObject = elementStream(element, formData)
-//                .collect(jsonCollector(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> Optional.of(formData)
-//                        .map(e::getElementValue)
-//                        .map(s -> AppUtil.processHashVariable(s, workflowAssignment, null, null, appDefinition))
-//                        .orElse(null)));
-//
-//        try {
-//            jsonObject.put("_" + FormUtil.PROPERTY_ID, row.getId());
-//            jsonObject.put("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated());
-//            jsonObject.put("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy());
-//            jsonObject.put("_" + FormUtil.PROPERTY_DATE_MODIFIED, row.getDateModified());
-//            jsonObject.put("_" + FormUtil.PROPERTY_MODIFIED_BY, row.getModifiedBy());
-//        } catch (JSONException e) {
-//            LogUtil.error(getClass().getName(), e, e.getMessage());
-//        }
-//
-//        return jsonObject;
-//    }
-
-//    /**
-//     *
-//     * @param element
-//     * @param formData
-//     * @param rowSet
-//     * @return
-//     */
-//    private JSONArray collectMultiRowData(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRowSet rowSet) {
-//        return Optional.of(rowSet)
-//                .map(Collection::stream)
-//                .orElseGet(Stream::empty)
-//                .map(r -> convertFromRowToJsonObject(element, formData, r))
-//                .collect(jsonCollector());
-//    }
-
     /**
      *
      * @param gridElement
