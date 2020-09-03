@@ -2668,7 +2668,7 @@ public class DataJsonController implements Unclutter {
                 .map(formData::getLoadBinderData)
                 .map(FormRowSet::size)
                 .filter(i -> i > 0)
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found"));
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found"));
 
         JSONObject parentJson = new JSONObject();
         Optional.of(formData)
