@@ -2691,8 +2691,14 @@ public class DataJsonController implements Unclutter {
 
                     // grid element
                     else if (e instanceof GridElement) {
-                        JSONArray data = collectGridElement((GridElement) e, rowSet);
-                        parentJson.put(elementId, data);
+                        if(rowSet.isMultiRow()) {
+                            JSONArray data = collectGridElement((GridElement) e, rowSet);
+                            parentJson.put(elementId, data);
+                        } else {
+                            FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
+                            JSONObject data = collectGridElement((GridElement) e, row);
+                            parentJson.put(elementId, data);
+                        }
                     }
 
                     // element with multirow load binder
@@ -2873,25 +2879,29 @@ public class DataJsonController implements Unclutter {
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         final Map<String, String>[] columnProperties = gridElement.getColumnProperties();
 
-        final JSONObject jsonObject = Optional.ofNullable(columnProperties)
-                .map(Arrays::stream)
-                .orElseGet(Stream::empty)
-                .collect(jsonCollector(gridElement::getField, m -> {
-                    String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
-                    String columnName = Optional.of(m)
-                            .map(gridElement::getField)
-                            .orElse("");
+        if(columnProperties == null && gridElement instanceof Element) {
+            return collectElement((Element) gridElement, row);
+        } else {
+            final JSONObject jsonObject = Optional.ofNullable(columnProperties)
+                    .map(Arrays::stream)
+                    .orElseGet(Stream::empty)
+                    .collect(jsonCollector(gridElement::getField, m -> {
+                        String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
+                        String columnName = Optional.of(m)
+                                .map(gridElement::getField)
+                                .orElse("");
 
-                    return Optional.of(columnName)
-                            .filter(this::isNotEmpty)
-                            .map(row::getProperty)
-                            .map(s -> gridElement.formatColumn(columnName, m, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), ""))
-                            .orElse(null);
-                }));
+                        return Optional.of(columnName)
+                                .filter(this::isNotEmpty)
+                                .map(row::getProperty)
+                                .map(s -> gridElement.formatColumn(columnName, m, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), ""))
+                                .orElse(null);
+                    }));
 
-        collectRowMetaData(row, jsonObject);
+            collectRowMetaData(row, jsonObject);
 
-        return jsonObject;
+            return jsonObject;
+        }
     }
 
     /**
