@@ -17,6 +17,8 @@ import org.joget.workflow.model.WorkflowProcess;
 import org.joget.workflow.model.WorkflowProcessResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nonnull;
+
 /**
  * Service method to manage and interact with app
  */
@@ -31,6 +33,7 @@ public interface AppService {
      * @param workflowVariableMap
      * @return
      */
+    @Deprecated
     FormData completeAssignmentForm(String appId, String version, String activityId, FormData formData, Map<String, String> workflowVariableMap);
 
     /**
@@ -234,6 +237,16 @@ public interface AppService {
      * @return
      */
     WorkflowProcessResult submitFormToStartProcess(String appId, String version, String processDefId, FormData formData, Map<String, String> workflowVariableMap, String originProcessId, String formUrl);
+
+    /**
+     *
+     * @param packageActivityForm
+     * @param formData
+     * @param workflowVariableMap
+     * @param originProcessId
+     * @return
+     */
+    WorkflowProcessResult submitFormToStartProcess(PackageActivityForm packageActivityForm, FormData formData, Map<String, String> workflowVariableMap, String originProcessId);
 
     /**
      * Retrieve a form for a specific activity instance
@@ -476,6 +489,14 @@ public interface AppService {
      * @return 
      */
     public String getPrimaryKeyWithForeignKey(String appId, String appVersion, String formId, String foreignKeyName, String foreignKeyValue);
+
+    /**
+     *
+     * @param packageId
+     * @param fromVersion
+     * @param toVersion
+     */
+    public void  updateRunningProcesses(final String packageId, final Long fromVersion, final Long toVersion);
 
     /**
      * Get table name of a form
