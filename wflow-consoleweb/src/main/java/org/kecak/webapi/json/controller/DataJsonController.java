@@ -2474,6 +2474,7 @@ public class DataJsonController implements Unclutter {
                         .map(DataListColumn::getFormats)
                         .map(Collection::stream)
                         .orElseGet(Stream::empty)
+                        .filter(Objects::nonNull)
                         .findFirst()
                         .map(f -> f.format(dataList, column, row, value))
                         .map(s -> s.replaceAll("<[^>]*>", ""))
