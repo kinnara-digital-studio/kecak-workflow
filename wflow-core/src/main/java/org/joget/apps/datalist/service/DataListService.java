@@ -1,18 +1,23 @@
 package org.joget.apps.datalist.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.datalist.model.DataList;
-import org.joget.apps.datalist.model.DataListAction;
-import org.joget.apps.datalist.model.DataListBinder;
-import org.joget.apps.datalist.model.DataListColumnFormat;
+import org.joget.apps.datalist.model.*;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
+import org.joget.directory.model.User;
+import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
+import org.joget.workflow.model.service.WorkflowUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Service class to manage data lists
@@ -22,6 +27,13 @@ public class DataListService {
 
     @Autowired
     PluginManager pluginManager;
+
+    @Autowired
+    WorkflowUserManager workflowUserManager;
+
+    @Autowired
+    @Qualifier("main")
+    ExtDirectoryManager directoryManager;
 
     /**
      * Create a DataList object from JSON definition
@@ -112,5 +124,26 @@ public class DataListService {
         }
         DataListColumnFormat[] result = (DataListColumnFormat[]) list.toArray(new DataListColumnFormat[0]);
         return result;
+    }
+
+
+    /**
+     * Check authorization using permission
+     *
+     * @param dataList
+     * @return
+     */
+    public boolean isAuthorize(DataList dataList) {
+        return Optional.ofNullable(dataList)
+                .map(DataList::getPermission)
+                .map(userviewPermission -> {
+                    User user = Optional.of(workflowUserManager.getCurrentUsername())
+                            .map(directoryManager::getUserByUsername)
+                            .orElse(null);
+
+                    userviewPermission.setCurrentUser(user);
+                    return userviewPermission.isAuthorize();
+                })
+                .orElse(true);
     }
 }

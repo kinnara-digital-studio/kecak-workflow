@@ -2744,7 +2744,7 @@ public class DataJsonController implements Unclutter {
         DataList dataList = Optional.of(datalistDefinition)
                 .map(DatalistDefinition::getJson)
                 .map(it -> AppUtil.processHashVariable(it, null, null, null))
-                .map(it -> dataListService.fromJson(it, false))
+                .map(it -> dataListService.fromJson(it))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]"));
 
         // check permission
