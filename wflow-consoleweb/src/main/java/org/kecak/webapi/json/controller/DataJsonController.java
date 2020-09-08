@@ -123,7 +123,7 @@ public class DataJsonController implements Unclutter {
             fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -187,7 +187,7 @@ public class DataJsonController implements Unclutter {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -240,7 +240,6 @@ public class DataJsonController implements Unclutter {
             // check element permission
             elementStream(form, formData)
                     .filter(e -> elementId.equals(e.getPropertyString(FormUtil.PROPERTY_ID)))
-                    .filter(e -> e.isAuthorize(formData))
                     .findAny()
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this element"));
 
@@ -302,7 +301,7 @@ public class DataJsonController implements Unclutter {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -374,7 +373,7 @@ public class DataJsonController implements Unclutter {
             fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -451,7 +450,7 @@ public class DataJsonController implements Unclutter {
             }
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -511,7 +510,7 @@ public class DataJsonController implements Unclutter {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -589,7 +588,7 @@ public class DataJsonController implements Unclutter {
             }
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -644,7 +643,7 @@ public class DataJsonController implements Unclutter {
             Form form = getForm(appDefinition, formDefId, formData);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -902,7 +901,7 @@ public class DataJsonController implements Unclutter {
                             }
 
                             return Optional.of(form)
-                                    .filter(f -> f.isAuthorize(formData))
+                                    .filter(f -> isAuthorize(f, formData))
                                     .map(throwableFunction(f -> getData(f, formData), (Exception e) -> null))
                                     .orElse(null);
 
@@ -982,7 +981,7 @@ public class DataJsonController implements Unclutter {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1083,7 +1082,7 @@ public class DataJsonController implements Unclutter {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1171,7 +1170,7 @@ public class DataJsonController implements Unclutter {
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
-            if (!form.isAuthorize(formData)) {
+            if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
@@ -1407,7 +1406,7 @@ public class DataJsonController implements Unclutter {
                         Form form = getAssignmentForm(assignmentAppDefinition, assignment, formData);
 
                         // check form permission
-                        if (!form.isAuthorize(formData)) {
+                        if (!isAuthorize(form, formData)) {
                             return null;
                         }
 
@@ -1562,7 +1561,7 @@ public class DataJsonController implements Unclutter {
         Form form = getAssignmentForm(appDefinition, assignment, formData);
 
         // check form permission
-        if (!form.isAuthorize(formData)) {
+        if (!isAuthorize(form, formData)) {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
 
@@ -1601,7 +1600,7 @@ public class DataJsonController implements Unclutter {
         }
 
         // check form permission
-        if (!form.isAuthorize(formData)) {
+        if (!isAuthorize(form, formData)) {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
 
@@ -2192,7 +2191,7 @@ public class DataJsonController implements Unclutter {
                                 formData.setPrimaryKeyValue(primaryKey);
                                 Form form = getAssignmentForm(appDefinition, workflowAssignment, formData);
 
-                                if (form.isAuthorize(formData)) {
+                                if (isAuthorize(form, formData)) {
                                     row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
                                 }
                             }
@@ -2474,6 +2473,7 @@ public class DataJsonController implements Unclutter {
                         .map(DataListColumn::getFormats)
                         .map(Collection::stream)
                         .orElseGet(Stream::empty)
+                        .filter(Objects::nonNull)
                         .findFirst()
                         .map(f -> f.format(dataList, column, row, value))
                         .map(s -> s.replaceAll("<[^>]*>", ""))
@@ -2482,16 +2482,20 @@ public class DataJsonController implements Unclutter {
     }
 
     @Nonnull
-    private Map<String, Object> formatRow(DataList dataList, Map<String, Object> row) {
+    private Map<String, Object> formatRow(@Nonnull DataList dataList, @Nonnull Map<String, Object> row) {
         Map<String, Object> formattedRow = Optional.of(dataList)
                 .map(DataList::getColumns)
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
+                .filter(Objects::nonNull)
                 .filter(not(DataListColumn::isHidden))
-                .collect(Collectors.toMap(DataListColumn::getName, c -> formatValue(dataList, row, c.getName())));
+                .map(DataListColumn::getName)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toMap(s -> s, s -> formatValue(dataList, row, s)));
 
         String primaryKeyColumn = getPrimaryKeyColumn(dataList);
-        formattedRow.put("_" + FormUtil.PROPERTY_ID, row.get(primaryKeyColumn));
+        formattedRow.putIfAbsent("_" + FormUtil.PROPERTY_ID, row.get(primaryKeyColumn));
 
         return formattedRow;
     }
@@ -2744,11 +2748,11 @@ public class DataJsonController implements Unclutter {
         DataList dataList = Optional.of(datalistDefinition)
                 .map(DatalistDefinition::getJson)
                 .map(it -> AppUtil.processHashVariable(it, null, null, null))
-                .map(it -> dataListService.fromJson(it, false))
+                .map(it -> dataListService.fromJson(it))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]"));
 
         // check permission
-        if(!dataListService.isAuthorize(dataList)) {
+        if(!isAuthorize(dataList)) {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
         }
 
@@ -3091,5 +3095,28 @@ public class DataJsonController implements Unclutter {
                 return stringValue;
             }
         }
+    }
+
+    /**
+     * Check datalist authorization
+     *
+     * @param dataList
+     * @return
+     */
+    private boolean isAuthorize(@Nonnull DataList dataList) {
+        return (dataList.getPermission() == null && !WorkflowUtil.isCurrentUserAnonymous())
+                || dataListService.isAuthorize(dataList);
+    }
+
+    /**
+     * Check form authorization
+     *
+     * @param form
+     * @param formData
+     * @return
+     */
+    private boolean isAuthorize(@Nonnull Form form, FormData formData) {
+        return (form.getProperty("permission") != null && !WorkflowUtil.isCurrentUserAnonymous())
+                || form.isAuthorize(formData);
     }
 }
