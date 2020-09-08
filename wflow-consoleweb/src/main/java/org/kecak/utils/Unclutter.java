@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -33,17 +34,36 @@ public interface Unclutter {
     }
 
     /**
-     * Helper peek for {@link Optional}
+     * Can be used in {@link Optional#map(Function)} to "peek" in Optional
+     * Example : Optional.map(peekMap(o -> System.out.printl(o))
      *
      * @param consumer
      * @param <T>
      * @return
      */
     @Nonnull
-    default <T> UnaryOperator<T> peek(@Nonnull final Consumer<T> consumer) {
+    default <T> UnaryOperator<T> peekMap(@Nonnull final Consumer<T> consumer) {
         return t -> {
             consumer.accept(t);
             return t;
+        };
+    }
+
+    /**
+     * Can be used in {@link Stream#filter(Predicate)} to remove duplicate values
+     * Example : Stream.filter(distinctFilter(m -> m.get("value"))
+     *
+     * @param keyExtractor
+     * @param <T>
+     * @return
+     */
+    default <T> Predicate<T> distinctFilter(@Nonnull Function<? super T, ?> keyExtractor) {
+        Objects.requireNonNull(keyExtractor);
+
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> {
+            Object key = keyExtractor.apply(t);
+            return key == null || seen.add(key);
         };
     }
 

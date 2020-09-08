@@ -2650,7 +2650,7 @@ public class DataJsonController implements Unclutter {
         return Optional.ofNullable(appDefinition)
 
                 // set current app definition
-                .map(peek(AppUtil::setCurrentAppDefinition))
+                .map(peekMap(AppUtil::setCurrentAppDefinition))
 
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Application definition for assignment [" + activityId + "] process [" + processId + "] not found"));
     }
@@ -2790,7 +2790,7 @@ public class DataJsonController implements Unclutter {
                 .map(it -> appDefinitionDao.loadVersion(appId, it))
 
                 // set current app definition
-                .map(peek(AppUtil::setCurrentAppDefinition))
+                .map(peekMap(AppUtil::setCurrentAppDefinition))
 
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "Application [" + appId + "] version [" + version + "] not found"));
     }
