@@ -3099,24 +3099,26 @@ public class DataJsonController implements Unclutter {
 
     /**
      * Check datalist authorization
+     * Restrict if no permission is set and user is anonymous
      *
      * @param dataList
      * @return
      */
     private boolean isAuthorize(@Nonnull DataList dataList) {
-        return (dataList.getPermission() == null && !WorkflowUtil.isCurrentUserAnonymous())
-                || dataListService.isAuthorize(dataList);
+        return (dataList.getPermission() != null || !WorkflowUtil.isCurrentUserAnonymous())
+                && dataListService.isAuthorize(dataList);
     }
 
     /**
      * Check form authorization
+     * Restrict if no permission is set and user is anonymous
      *
      * @param form
      * @param formData
      * @return
      */
     private boolean isAuthorize(@Nonnull Form form, FormData formData) {
-        return (form.getProperty("permission") != null && !WorkflowUtil.isCurrentUserAnonymous())
-                || form.isAuthorize(formData);
+        return (form.getProperty("permission") != null || !WorkflowUtil.isCurrentUserAnonymous())
+                && form.isAuthorize(formData);
     }
 }
