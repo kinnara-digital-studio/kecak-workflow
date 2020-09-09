@@ -64,16 +64,16 @@ public class AuthTokenService implements Serializable {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) throws ExpiredJwtException {
+    private boolean isTokenExpired(String token) throws ExpiredJwtException {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(clock.now());
     }
 
-    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
+    private boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }
 
-    private Boolean ignoreTokenExpiration(String token) {
+    private boolean ignoreTokenExpiration(String token) {
         // here you specify tokens, for that the expiration is ignored
         return false;
     }
