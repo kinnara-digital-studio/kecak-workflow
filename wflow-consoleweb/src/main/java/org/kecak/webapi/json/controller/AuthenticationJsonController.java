@@ -9,6 +9,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.utils.Unclutter;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Controller
-public class AuthenticationJsonController {
+public class AuthenticationJsonController implements Unclutter {
     private final String loginHeader = "Authorization";
     private final String refreshHeader = "REF_TOKEN";
     public final static String NEW_TOKEN = "NEW_TOKEN";
@@ -140,13 +141,8 @@ public class AuthenticationJsonController {
     }
 
     private Map<String, Object> parseClaimFromRequestPayload(JSONObject requestPayload) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-                (Iterator<String>)requestPayload.keys(), 0), false)
-                .collect(HashMap::new, (m, k) -> {
-                    try {
-                        m.put(k, requestPayload.get(k));
-                    } catch (JSONException ignored) { }
-                }, Map::putAll);
+        return jsonStream(requestPayload)
+                .collect(Collectors.toMap(k -> k, throwableFunction(requestPayload::get)));
     }
 
     @RequestMapping(value = "json/authentication/refresh", method = RequestMethod.POST)
