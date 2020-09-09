@@ -5,6 +5,7 @@ import org.joget.apps.app.service.AuthTokenService;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
+import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,29 +44,34 @@ public class AuthenticationJsonController implements Unclutter {
     @Autowired
     AuthTokenService authTokenService;
 
+    @Autowired
+    WorkflowUserManager workflowUserManager;
+
     @RequestMapping(value = "/json/authentication/login", method = RequestMethod.POST)
     public void postBasicAuthentication(final HttpServletRequest request,
                                         final HttpServletResponse response) throws IOException {
-        final JSONObject jsonResponse = new JSONObject();
-        String header = request.getHeader(loginHeader);
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            if(header == null) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid request header");
+            String username = WorkflowUtil.getCurrentUsername();
+
+            boolean isAdmin = WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN);
+            String loginAs = getOptionalParameter(request, "loginAs", "");
+            User userAs = Optional.of(loginAs)
+                    .map(directoryManager::getUserById)
+                    .orElse(null);
+
+            if (isAdmin && isNotEmpty(loginAs)) {
+                if (userAs == null || isEmpty(userAs.getUsername())) {
+                    throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error logging in as [" + loginAs + "]");
+                }
+
+                LogUtil.info(getClass().getName(), "[" + username + "] is logging in as [" + loginAs + "]");
+
+                workflowUserManager.setCurrentThreadUser(loginAs);
+                username = loginAs;
             }
-
-            if(!header.startsWith("Basic ")) {
-                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Only receive Basic Authentication");
-            }
-            String[] tokens = extractAndDecodeHeader(header, request);
-
-            String username = tokens[0];
-            LogUtil.debug(this.getClass().getName(), "Basic authentication found for user " + username);
-            String password = tokens[1];
-
-            boolean invalidLogin = !directoryManager.authenticate(username, password);
-            if (invalidLogin)
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Username or Password");
 
             JSONObject requestPayload;
             try {
@@ -76,18 +83,20 @@ public class AuthenticationJsonController implements Unclutter {
             Map<String, Object> claim = parseClaimFromRequestPayload(requestPayload);
             String jwtToken = authTokenService.generateToken(username, claim);
 
-            jsonResponse.put("status", HttpServletResponse.SC_OK);
-            jsonResponse.put("message", MESSAGE_SUCCESS);
-            jsonResponse.put("token", jwtToken);
+            try {
+                final JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("status", HttpServletResponse.SC_OK);
+                jsonResponse.put("message", MESSAGE_SUCCESS);
+                jsonResponse.put("token", jwtToken);
 
-            response.setContentType("application/json");
-            response.getWriter().write(jsonResponse.toString());
+                response.setContentType("application/json");
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                LogUtil.error(getClass().getName(), e, e.getMessage());
+            }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), "Error [" + e.getErrorCode() + "] message [" + e.getMessage() + "]");
-            response.sendError(e.getErrorCode(), "Error " + e.getErrorCode() + " : " + e.getMessage());
-        } catch (Exception e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+            response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
 
@@ -148,7 +157,8 @@ public class AuthenticationJsonController implements Unclutter {
     @RequestMapping(value = "json/authentication/refresh", method = RequestMethod.POST)
     public void refreshToken(final HttpServletRequest request,
                              final HttpServletResponse response) throws IOException {
-        final JSONObject jsonResponse = new JSONObject();
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         String header = request.getHeader(loginHeader);
         String refToken = request.getHeader(refreshHeader);
@@ -159,6 +169,8 @@ public class AuthenticationJsonController implements Unclutter {
             try {
                 String newToken = authTokenService.refreshToken(token, refToken);
                 response.setHeader(NEW_TOKEN, newToken);
+
+                final JSONObject jsonResponse = new JSONObject();
                 jsonResponse.put("status", HttpServletResponse.SC_OK);
                 jsonResponse.put("message", MESSAGE_SUCCESS);
                 response.getWriter().write(jsonResponse.toString());
@@ -291,6 +303,21 @@ public class AuthenticationJsonController implements Unclutter {
                         } catch (JSONException ignored) { }
                     }
                 });
+    }
+
+    /**
+     * Get optional parameter
+     *
+     * @param request
+     * @param parameterName
+     * @param defaultValue
+     * @return
+     */
+    private String getOptionalParameter(@Nonnull HttpServletRequest request, @Nonnull String parameterName, String defaultValue) {
+        return Optional.of(parameterName)
+                .map(request::getParameter)
+                .filter(not(String::isEmpty))
+                .orElse(defaultValue);
     }
 //
 //
