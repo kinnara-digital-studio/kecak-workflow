@@ -1392,7 +1392,13 @@ public class DataJsonController implements Unclutter {
             // get total data
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
-            FormRowSet resultRowSet = workflowManager.getAssignmentPendingAndAcceptedList(appId, processDefId, null, sort, desc, rowStart, pageSize).stream()
+
+            FormRowSet resultRowSet = Optional.of(appDefinition)
+                    .map(AppDefinition::getPackageDefinition)
+                    .map(PackageDefinition::getId)
+                    .map(s -> workflowManager.getAssignmentPendingAndAcceptedList(s, processDefId, null, sort, desc, rowStart, pageSize))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
                     .map(WorkflowAssignment::getActivityId)
                     .map(workflowManager::getAssignment)
                     .filter(Objects::nonNull)
@@ -2618,7 +2624,7 @@ public class DataJsonController implements Unclutter {
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] is not defined"))
                 .map(WorkflowProcessLink::getProcessId)
                 .filter(Objects::nonNull)
-                .map(s -> workflowManager.getAssignmentPendingAndAcceptedList(null, null, processId, null, null, null, null))
+                .map(s -> workflowManager.getAssignmentPendingAndAcceptedList(null, null, s, null, null, null, null))
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
 
