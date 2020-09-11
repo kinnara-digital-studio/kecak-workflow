@@ -5278,7 +5278,11 @@ public class WorkflowManagerImpl implements WorkflowManager {
             XPDLBrowser xpdl = shark.getXPDLBrowser();
             
             org.enhydra.shark.xpdl.elements.WorkflowProcess wp = SharkUtil.getWorkflowProcess(sessionHandle, processDefId);
-            org.enhydra.shark.xpdl.elements.Activity wa = wp.getActivity(activityDefId);
+
+            org.enhydra.shark.xpdl.elements.Activity wa = null;
+            if(wp != null) {
+                wa = wp.getActivity(activityDefId);
+            }
             
             //get limit
             double limit = -1;
@@ -5286,8 +5290,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
             filter.setFilterType(XPDLBrowser.SIMPLE_TYPE_XPDL);
             filter.setAttributeName("Name");
             filter.setFilterString("Limit");
-            
-            WMAttributeIterator actAttributeIterator = xpdl.listAttributes(sessionHandle, SharkUtil.createBasicEntity(wa), filter, true);
+
+            WMAttributeIterator actAttributeIterator = null;
+            if(wa != null) {
+                actAttributeIterator = xpdl.listAttributes(sessionHandle, SharkUtil.createBasicEntity(wa), filter, true);
+            }
+
             WMAttribute[] actAttributeList = null;
             if (actAttributeIterator != null) {
                 actAttributeList = actAttributeIterator.getArray();
