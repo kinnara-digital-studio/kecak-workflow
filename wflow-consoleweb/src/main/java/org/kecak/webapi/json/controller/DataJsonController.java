@@ -1389,7 +1389,7 @@ public class DataJsonController implements Declutter {
      * @param digest
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/assignment/process/form/(*:formDefId)/(*:processId)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/assignment/form/(*:formDefId)/process/(*:processId)", method = RequestMethod.GET)
     public void getAssignmentByProcessUsingForm(final HttpServletRequest request, final HttpServletResponse response,
                                                 @RequestParam("formDefId") final String formDefId,
                                                 @RequestParam("processId") final String processId,
