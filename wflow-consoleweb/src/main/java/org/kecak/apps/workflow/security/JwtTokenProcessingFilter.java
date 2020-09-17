@@ -8,7 +8,7 @@ import org.joget.directory.model.service.DirectoryManager;
 import org.joget.directory.model.service.DirectoryUtil;
 import org.joget.directory.model.service.UserSecurity;
 import org.joget.workflow.model.service.WorkflowUserManager;
-import org.kecak.utils.Unclutter;
+import org.kecak.utils.Declutter;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
@@ -24,9 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Predicate;
 
-public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFilter implements Unclutter {
+public class JwtTokenProcessingFilter extends AbstractAuthenticationProcessingFilter implements Declutter {
     private WorkflowUserManager workflowUserManager;
     private AuditTrailManager auditTrailManager;
     private LocalLocaleResolver localeResolver;

@@ -10,7 +10,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.utils.Unclutter;
+import org.kecak.utils.Declutter;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,10 +28,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Controller
-public class AuthenticationJsonController implements Unclutter {
+public class AuthenticationJsonController implements Declutter {
     private final String loginHeader = "Authorization";
     private final String refreshHeader = "REF_TOKEN";
     public final static String NEW_TOKEN = "NEW_TOKEN";

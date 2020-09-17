@@ -19,7 +19,7 @@ import java.util.stream.*;
  *
  * Common library to handle repetition code
  */
-public interface Unclutter {
+public interface Declutter {
 
     /**
      * Predicate not

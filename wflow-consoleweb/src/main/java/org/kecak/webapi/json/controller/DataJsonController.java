@@ -32,7 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.apps.form.model.GridElement;
-import org.kecak.utils.Unclutter;
+import org.kecak.utils.Declutter;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -54,9 +54,12 @@ import java.util.stream.Stream;
 
 /**
  * @author aristo
+ *
+ * Automatic API generation using Kecak UI builder
+ *
  */
 @Controller
-public class DataJsonController implements Unclutter {
+public class DataJsonController implements Declutter {
     private final static String FIELD_MESSAGE = "message";
     private final static String FIELD_DATA = "data";
     private final static String FIELD_VALIDATION_ERROR = "validation_error";
@@ -152,7 +155,7 @@ public class DataJsonController implements Unclutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -201,7 +204,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -253,7 +256,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -317,14 +320,6 @@ public class DataJsonController implements Unclutter {
                 jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
-
-//                String errorMessage = Optional.of(form)
-//                        .map(f -> FormUtil.findElement(elementId, form, result))
-//                        .map(e -> FormUtil.getElementParameterName(e))
-//                        .map(formErrors::get)
-//                        .orElse(MESSAGE_VALIDATION_ERROR);
-//
-//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
             } else {
                 // set current data as response
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -333,7 +328,7 @@ public class DataJsonController implements Unclutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -402,7 +397,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -472,7 +467,7 @@ public class DataJsonController implements Unclutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -536,7 +531,7 @@ public class DataJsonController implements Unclutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -615,7 +610,7 @@ public class DataJsonController implements Unclutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -688,7 +683,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -730,7 +725,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -817,7 +812,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -930,7 +925,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -1044,7 +1039,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1057,7 +1052,7 @@ public class DataJsonController implements Unclutter {
      * @param response     HTTP Response
      * @param assignmentId Assignment ID
      */
-    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT} )
+    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT})
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("assignmentId") String assignmentId)
             throws IOException, JSONException {
@@ -1131,7 +1126,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1176,7 +1171,7 @@ public class DataJsonController implements Unclutter {
 
             Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
 
-            FormData resultFormData = appService.completeAssignmentForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), assignment.getActivityId(), formData, workflowVariables);
+            FormData resultFormData = appService.completeAssignmentForm(form, assignment, formData, workflowVariables);
 
             // return processResult
             JSONObject jsonResponse = new JSONObject();
@@ -1218,7 +1213,7 @@ public class DataJsonController implements Unclutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1265,7 +1260,7 @@ public class DataJsonController implements Unclutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1311,18 +1306,153 @@ public class DataJsonController implements Unclutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
+    }
+
+    /**
+     * Get assignment using form
+     *
+     * @param request
+     * @param response
+     * @param formDefId
+     * @param assignmentId
+     * @param asLabel
+     * @param asAttachmentUrl
+     * @param digest
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/assignment/form/(*:formDefId)/(*:assignmentId)", method = RequestMethod.GET)
+    public void getAssignmentUsingForm(final HttpServletRequest request, final HttpServletResponse response,
+                                       @RequestParam("formDefId") final String formDefId,
+                                       @RequestParam("assignmentId") final String assignmentId,
+                                       @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                                       @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
+                                       @RequestParam(value = "digest", required = false) String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            WorkflowAssignment assignment = getAssignment(assignmentId);
+
+            FormData formData = getAssignmentFormData(assignment, asAttachmentUrl);
+
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+            Form form = getForm(appDefinition, formDefId, formData);
+
+            if (asLabel) {
+                FormUtil.setReadOnlyProperty(form, true, true);
+            }
+
+            // check form permission
+            if (!isAuthorize(form, formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            try {
+                // construct response
+                JSONObject jsonData = getData(form, formData);
+
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+
+                if (!Objects.equals(currentDigest, digest)) {
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                }
+
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e);
+            }
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
+    }
+
+    /**
+     * Get assignment by process using form
+     *
+     * @param request
+     * @param response
+     * @param formDefId
+     * @param processId
+     * @param asLabel
+     * @param asAttachmentUrl
+     * @param digest
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/assignment/process/form/(*:formDefId)/(*:processId)", method = RequestMethod.GET)
+    public void getAssignmentByProcessUsingForm(final HttpServletRequest request, final HttpServletResponse response,
+                                                @RequestParam("formDefId") final String formDefId,
+                                                @RequestParam("processId") final String processId,
+                                                @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
+                                                @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                                                @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
+                                                @RequestParam(value = "digest", required = false) String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
+
+            FormData formData = getAssignmentFormData(assignment, asAttachmentUrl);
+
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+            Form form = getForm(appDefinition, formDefId, formData);
+
+            if (asLabel) {
+                FormUtil.setReadOnlyProperty(form, true, true);
+            }
+
+            // check form permission
+            if (!isAuthorize(form, formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            try {
+                // construct response
+                JSONObject jsonData = getData(form, formData);
+
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+
+                if (!Objects.equals(currentDigest, digest)) {
+                    jsonResponse.put(FIELD_DATA, jsonData);
+                }
+
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write(jsonResponse.toString());
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e);
+            }
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
     /**
      * Get Assignment Count
      *
-     * @param request   HTTP Request
-     * @param response  HTTP Response
-     * @param appId     Application ID
-     * @param appVersion   Application version
-     * @param processId Process Definition ID
+     * @param request    HTTP Request
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param processId  Process Definition ID
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/assignments/count", method = RequestMethod.GET)
@@ -1346,7 +1476,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -1354,17 +1484,17 @@ public class DataJsonController implements Unclutter {
     /**
      * Get Assignment List
      *
-     * @param request       HTTP Request
-     * @param response      HTTP Response
-     * @param appId         Application ID
-     * @param appVersion    Application version
-     * @param processId     Process Def ID
-     * @param page          Page starts from 1
-     * @param start         From index (index starts from 0)
-     * @param rows          Page size (rows = 0 means load all data)
-     * @param sort          Sort by field
-     * @param desc          Descending (true/false)
-     * @param digest        Digest
+     * @param request    HTTP Request
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param processId  Process Def ID
+     * @param page       Page starts from 1
+     * @param start      From index (index starts from 0)
+     * @param rows       Page size (rows = 0 means load all data)
+     * @param sort       Sort by field
+     * @param desc       Descending (true/false)
+     * @param digest     Digest
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments", method = RequestMethod.GET)
@@ -1457,7 +1587,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -1501,7 +1631,7 @@ public class DataJsonController implements Unclutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1545,7 +1675,7 @@ public class DataJsonController implements Unclutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
         }
     }
 
@@ -1615,18 +1745,37 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
-     * Get formData from assignment
+     * Get {@link FormData} from {@link WorkflowAssignment}
      *
      * @param assignment
      * @return
      */
     @Nonnull
     private FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment) {
+        return getAssignmentFormData(assignment, false);
+    }
+
+    /**
+     * Get {@link FormData} from {@link WorkflowAssignment}
+     *
+     * @param assignment
+     * @param asAttachmentUrl
+     * @return
+     */
+    @Nonnull
+    private FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment, boolean asAttachmentUrl) {
         Map<String, String> parameterMap = new HashMap<>();
         parameterMap.put("activityId", assignment.getActivityId());
         FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
+
+        if (asAttachmentUrl) {
+            formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
+        }
+
         return formData;
     }
+
+
 
     /**
      * Abort assignment
@@ -1634,7 +1783,7 @@ public class DataJsonController implements Unclutter {
      * @param assignment
      */
     private void abortProcess(@Nonnull WorkflowAssignment assignment) throws ApiException {
-        if(!workflowManager.processAbort(assignment.getProcessId()))
+        if (!workflowManager.processAbort(assignment.getProcessId()))
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Failed to abort assignment [" + assignment + "]");
     }
 
@@ -1685,13 +1834,13 @@ public class DataJsonController implements Unclutter {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String parameterValue = formData.getRequestParameter(parameterName);
 
-                    if(parameterValue == null) {
+                    if (parameterValue == null) {
                         // get old data value
                         Optional.of(e)
                                 .map(oldFormData::getLoadBinderData)
                                 .ifPresent(rowSet -> {
                                     // ordinary element
-                                    if(e.getStoreBinder() == null) {
+                                    if (e.getStoreBinder() == null) {
                                         String elementId = e.getPropertyString("id");
                                         Optional.of(rowSet)
                                                 .map(Collection::stream)
@@ -1701,7 +1850,7 @@ public class DataJsonController implements Unclutter {
                                                     String elementValue;
 
                                                     // hidden field, special case
-                                                    if(e instanceof HiddenField) {
+                                                    if (e instanceof HiddenField) {
                                                         elementValue = getValueForHiddenField(e, row, assignment);
                                                     }
 
@@ -1740,7 +1889,6 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
-     *
      * @param element
      * @param row
      * @param assignment
@@ -1760,7 +1908,6 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
-     *
      * @param element
      * @param propertyName
      * @return
@@ -1778,7 +1925,7 @@ public class DataJsonController implements Unclutter {
     private String getUploadFilePath() {
         String basePath = SetupManager.getBaseDirectory();
         String dataFileBasePath = setupManager.getSettingValue("dataFileBasePath");
-        if (dataFileBasePath != null && dataFileBasePath.length() > 0) {
+        if (isNotEmpty(dataFileBasePath)) {
             basePath = dataFileBasePath;
         }
         return basePath;
@@ -1815,7 +1962,7 @@ public class DataJsonController implements Unclutter {
                 WorkflowAssignment workflowAssignment = getAssignment(formData.getActivityId());
                 return AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
             } catch (ApiException e) {
-                LogUtil.warn(getClass().getName(), e.getMessage());
+                LogUtil.error(getClass().getName(), e, e.getMessage());
             }
         }
         return null;
@@ -1967,7 +2114,7 @@ public class DataJsonController implements Unclutter {
     private JSONObject getRequestPayload(HttpServletRequest request) {
         try {
             String payload = request.getReader().lines().collect(Collectors.joining());
-            return new JSONObject( this.ifEmptyThen( payload, "{}" ));
+            return new JSONObject(this.ifEmptyThen(payload, "{}"));
         } catch (IOException | JSONException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
             return new JSONObject();
@@ -2035,10 +2182,10 @@ public class DataJsonController implements Unclutter {
      * @throws ApiException
      */
     private void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
-        formDataDao.delete(form, new String[] { formData.getPrimaryKeyValue() });
+        formDataDao.delete(form, new String[]{formData.getPrimaryKeyValue()});
 
         // delete sub data
-        if(deepClean) {
+        if (deepClean) {
             Optional.of(formData)
                     .map(FormData::getLoadBinderMap)
                     .map(Map::entrySet)
@@ -2230,7 +2377,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -2286,7 +2433,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -2322,7 +2469,7 @@ public class DataJsonController implements Unclutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.warn(getClass().getName(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -2331,7 +2478,7 @@ public class DataJsonController implements Unclutter {
     @Nonnull
     private DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionType, int actionIndex) throws ApiException {
         // validate action type
-        if(!actionType.matches("rowAction|action")) {
+        if (!actionType.matches("rowAction|action")) {
             throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "Action type [" + actionType + "] not found");
         }
 
@@ -2405,7 +2552,7 @@ public class DataJsonController implements Unclutter {
      *
      * @param appDefinition
      * @param assignment
-     * @param formData input/output parameter
+     * @param formData      input/output parameter
      * @return
      * @throws ApiException
      */
@@ -2510,7 +2657,7 @@ public class DataJsonController implements Unclutter {
      * Validate and Determine Process ID
      *
      * @param appDefinition Application definition
-     * @param processId  Process ID
+     * @param processId     Process ID
      * @return
      * @throws ApiException
      */
@@ -2651,7 +2798,7 @@ public class DataJsonController implements Unclutter {
         final String activityId = assignment.getActivityId();
         final String processId = assignment.getProcessId();
 
-        AppDefinition appDefinition =  Optional.of(activityId)
+        AppDefinition appDefinition = Optional.of(activityId)
                 .map(appService::getAppDefinitionForWorkflowActivity)
                 .orElseGet(() -> Optional.of(processId)
                         .map(appService::getAppDefinitionForWorkflowProcess)
@@ -2672,7 +2819,7 @@ public class DataJsonController implements Unclutter {
      * @param formData
      */
     @Nonnull
-    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData) throws ApiException{
+    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData) throws ApiException {
         // check result size
         Optional.of(form)
                 .map(formData::getLoadBinderData)
@@ -2701,7 +2848,7 @@ public class DataJsonController implements Unclutter {
 
                     // grid element
                     else if (e instanceof GridElement) {
-                        if(rowSet.isMultiRow()) {
+                        if (rowSet.isMultiRow()) {
                             JSONArray data = collectGridElement((GridElement) e, rowSet);
                             parentJson.put(elementId, data);
                         } else {
@@ -2712,7 +2859,7 @@ public class DataJsonController implements Unclutter {
                     }
 
                     // element with multirow load binder
-                    else if (rowSet.isMultiRow()){
+                    else if (rowSet.isMultiRow()) {
                         JSONArray data = collectElement(e, rowSet);
                         parentJson.put(elementId, data);
                     }
@@ -2758,7 +2905,7 @@ public class DataJsonController implements Unclutter {
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error generating dataList [" + dataListId + "]"));
 
         // check permission
-        if(!isAuthorize(dataList)) {
+        if (!isAuthorize(dataList)) {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not authorized to access datalist [" + dataListId + "]");
         }
 
@@ -2868,6 +3015,7 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
+     * Collect grid element
      *
      * @param gridElement
      * @param rowSet
@@ -2880,6 +3028,7 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
+     * Collect grid element
      *
      * @param gridElement
      * @param row
@@ -2889,7 +3038,7 @@ public class DataJsonController implements Unclutter {
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         final Map<String, String>[] columnProperties = gridElement.getColumnProperties();
 
-        if(columnProperties == null && gridElement instanceof Element) {
+        if (columnProperties == null && gridElement instanceof Element) {
             return collectElement((Element) gridElement, row);
         } else {
             final JSONObject jsonObject = Optional.ofNullable(columnProperties)
@@ -2915,6 +3064,7 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
+     * Collect container element
      *
      * @param containerElement
      * @param formData
@@ -2934,6 +3084,7 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
+     * Collect element
      *
      * @param element
      * @param row
@@ -2951,6 +3102,7 @@ public class DataJsonController implements Unclutter {
     }
 
     /**
+     * Collect element
      *
      * @param element
      * @param rowSet
@@ -2989,7 +3141,7 @@ public class DataJsonController implements Unclutter {
     @Deprecated
     @Nonnull
     private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row) {
-        if(element instanceof GridElement) {
+        if (element instanceof GridElement) {
             return collectGridElement((GridElement) element, row);
         } else if (element instanceof FormContainer) {
             return collectContainerElement((FormContainer) element, formData, row);
