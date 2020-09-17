@@ -155,7 +155,7 @@ public class DataJsonController implements Declutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -204,7 +204,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -256,7 +256,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -328,7 +328,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -397,7 +397,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -467,7 +467,7 @@ public class DataJsonController implements Declutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -531,7 +531,7 @@ public class DataJsonController implements Declutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -610,7 +610,7 @@ public class DataJsonController implements Declutter {
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -683,7 +683,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -725,7 +725,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -812,7 +812,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -925,7 +925,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -1039,7 +1039,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1126,7 +1126,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1213,7 +1213,7 @@ public class DataJsonController implements Declutter {
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1260,7 +1260,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1306,7 +1306,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1373,7 +1373,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1441,7 +1441,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1476,7 +1476,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -1587,7 +1587,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -1631,7 +1631,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1675,7 +1675,7 @@ public class DataJsonController implements Declutter {
             }
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
 
@@ -1767,6 +1767,14 @@ public class DataJsonController implements Declutter {
         Map<String, String> parameterMap = new HashMap<>();
         parameterMap.put("activityId", assignment.getActivityId());
         FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
+
+        String primaryKey = Optional.of(assignment)
+                .map(WorkflowAssignment::getProcessId)
+                .map(workflowManager::getWorkflowProcessLink)
+                .map(WorkflowProcessLink::getOriginProcessId)
+                .orElseGet(assignment::getProcessId);
+
+        formData.setPrimaryKeyValue(primaryKey);
 
         if (asAttachmentUrl) {
             formData.addRequestParameterValues(FileDownloadSecurity.PARAMETER_AS_LINK, new String[]{"true"});
@@ -1962,7 +1970,7 @@ public class DataJsonController implements Declutter {
                 WorkflowAssignment workflowAssignment = getAssignment(formData.getActivityId());
                 return AppUtil.processHashVariable(defaultValue, workflowAssignment, null, null);
             } catch (ApiException e) {
-                LogUtil.error(getClass().getName(), e, e.getMessage());
+                LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             }
         }
         return null;
@@ -2377,7 +2385,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -2433,7 +2441,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -2469,7 +2477,7 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
         } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
@@ -2964,7 +2972,6 @@ public class DataJsonController implements Declutter {
     @Nonnull
     private Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData) throws ApiException {
         return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
-//                .map(f -> setReadonly(f, formData))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
     }
 
