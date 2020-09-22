@@ -1,13 +1,5 @@
 package org.joget.apps.form.lib;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
@@ -19,6 +11,13 @@ import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
@@ -35,12 +34,12 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     }
 
     @SuppressWarnings("unchecked")
-	public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
+    public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
         String template = "fileUpload.ftl";
-        return renderTemplate(template,formData,dataModel);
+        return renderTemplate(template, formData, dataModel);
     }
 
-    private String renderTemplate(String template,FormData formData,@SuppressWarnings("rawtypes")  Map dataModel){
+    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
 
         // set value
         String[] values = FormUtil.getElementPropertyValues(this, formData);
@@ -117,7 +116,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         if (id != null) {
             String[] tempFilenames = formData.getRequestParameterValues(id);
             String[] tempExisting = formData.getRequestParameterValues(id + filePathPostfix);
-            
+
             if ((tempFilenames != null && tempFilenames.length > 0) || (tempExisting != null && tempExisting.length > 0)) {
                 List<String> filenames = new ArrayList<String>();
                 if (tempFilenames != null && tempFilenames.length > 0) {
@@ -128,7 +127,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                 if (tempRemove != null && tempRemove.length > 0) {
                     removalFlag.addAll(Arrays.asList(tempRemove));
                 }
-                
+
                 List<String> existingFilePath = new ArrayList<String>();
                 if (tempExisting != null && tempExisting.length > 0) {
                     existingFilePath.addAll(Arrays.asList(tempExisting));
@@ -151,7 +150,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         }
         return formData;
     }
-    
+
     @Override
     public FormRowSet formatData(FormData formData) {
         FormRowSet rowSet = null;
@@ -165,7 +164,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                 FormRow result = new FormRow();
                 List<String> resultedValue = new ArrayList<String>();
                 List<String> filePaths = new ArrayList<String>();
-                
+
                 for (String value : values) {
                     // check if the file is in temp file
                     File file = FileManager.getFileByPath(value);
@@ -177,16 +176,16 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                         resultedValue.add(value);
                     }
                 }
-                
+
                 if (!filePaths.isEmpty()) {
                     result.putTempFilePath(id, filePaths.toArray(new String[]{}));
                 }
-                
+
                 // formulate values
                 String delimitedValue = FormUtil.generateElementPropertyValues(resultedValue.toArray(new String[]{}));
                 String paramName = FormUtil.getElementParameterName(this);
                 formData.addRequestParameterValues(paramName, resultedValue.toArray(new String[]{}));
-                        
+
                 // set value into Properties and FormRowSet object
                 result.setProperty(id, delimitedValue);
                 rowSet = new FormRowSet();
@@ -195,6 +194,56 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         }
 
         return rowSet;
+    }
+
+    @Override
+    public String getElementValue(FormData formData) {
+        if (isReadOnlyLabel() || asAttachment(formData)) {
+            return getFileDownloadLink(formData);
+        } else {
+            return super.getElementValue(formData);
+        }
+    }
+
+    private String getFileDownloadLink(FormData formData) {
+        AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+        // set value
+        String[] values = FormUtil.getElementPropertyValues(this, formData);
+        return Arrays.stream(values)
+                .filter(Objects::nonNull)
+                .map(fileName -> {
+                    // determine actual path for the file uploads
+                    String appId = appDefinition.getAppId();
+                    long appVersion = appDefinition.getVersion();
+                    String formDefId = Optional.ofNullable(FormUtil.findRootForm(this))
+                            .map(new Function<Form, String>() {
+                                @Override
+                                public String apply(Form f) {
+                                    return f.getPropertyString(FormUtil.PROPERTY_ID);
+                                }
+                            })
+                            .orElse("");
+                    String encodedFileName = fileName;
+                    String primaryKeyValue = formData.getPrimaryKeyValue();
+                    try {
+                        encodedFileName = URLEncoder.encode(fileName, "UTF8").replaceAll("\\+", "%20");
+                    } catch (UnsupportedEncodingException ex) {
+                        // ignore
+                    }
+
+                    String filePath = "/web/client/app/" + appId + "/" + appVersion + "/form/download/" + formDefId + "/" + primaryKeyValue + "/" + encodedFileName + ".";
+                    if (asAttachment(formData)) {
+                        filePath += "?attachment=true";
+                    }
+
+                    return filePath;
+                })
+                .collect(Collectors.joining(";"));
+    }
+
+    private boolean isReadOnlyLabel() {
+        return "true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY))
+                && "true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY_LABEL));
     }
 
     public String getClassName() {
@@ -224,7 +273,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     public String getFormBuilderIcon() {
         return null;
     }
-    
+
     @Override
     public Boolean selfValidate(FormData formData) {
         String id = FormUtil.getElementParameterName(this);
@@ -235,16 +284,16 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
 
             File file = FileManager.getFileByPath(value);
             if (file != null) {
-                if(getPropertyString("maxSize") != null && !getPropertyString("maxSize").isEmpty()) {
+                if (getPropertyString("maxSize") != null && !getPropertyString("maxSize").isEmpty()) {
                     long maxSize = Long.parseLong(getPropertyString("maxSize")) * 1024;
-                    
+
                     if (file.length() > maxSize) {
                         valid = false;
                         error += getPropertyString("maxSizeMsg") + " ";
-                        
+
                     }
                 }
-                if(getPropertyString("fileType") != null && !getPropertyString("fileType").isEmpty()) {
+                if (getPropertyString("fileType") != null && !getPropertyString("fileType").isEmpty()) {
                     String[] fileType = getPropertyString("fileType").split(";");
                     String filename = file.getName().toUpperCase();
                     Boolean found = false;
@@ -259,15 +308,16 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
                     }
                 }
             }
-            
+
             if (!valid) {
                 formData.addFormError(id, error);
             }
-        } catch (Exception e) {}
-        
+        } catch (Exception e) {
+        }
+
         return valid;
     }
-    
+
     public boolean isDownloadAllowed(@SuppressWarnings("rawtypes") Map requestParameters) {
         String permissionType = getPropertyString("permissionType");
         if (permissionType.equals("public")) {
@@ -276,10 +326,10 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
             Object permissionElement = getProperty("permissionPlugin");
             if (permissionElement != null && permissionElement instanceof Map) {
                 @SuppressWarnings("rawtypes")
-				Map elementMap = (Map) permissionElement;
+                Map elementMap = (Map) permissionElement;
                 String className = (String) elementMap.get("className");
                 @SuppressWarnings("unchecked")
-				Map<String, Object> properties = (Map<String, Object>) elementMap.get("properties");
+                Map<String, Object> properties = (Map<String, Object>) elementMap.get("properties");
 
                 //convert it to plugin
                 PluginManager pm = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
@@ -306,12 +356,17 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     @Override
     public String renderAceTemplate(FormData formData, Map dataModel) {
         String template = "AceTheme/AceFileUpload.ftl";
-        return renderTemplate(template,formData,dataModel);
+        return renderTemplate(template, formData, dataModel);
     }
 
     @Override
     public String renderAdminLteTemplate(FormData formData, Map dataModel) {
         String template = "AdminLteTheme/AdminLteFileUpload.ftl";
-        return renderTemplate(template,formData,dataModel);
+        return renderTemplate(template, formData, dataModel);
+    }
+
+    private boolean asAttachment(FormData formData) {
+        return Boolean.parseBoolean(getPropertyString("attachment"))
+                || "true".equalsIgnoreCase(formData.getRequestParameter(PARAMETER_AS_LINK));
     }
 }
