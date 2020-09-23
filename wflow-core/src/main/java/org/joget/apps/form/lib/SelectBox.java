@@ -19,12 +19,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
     private final WeakHashMap<String, Form> formCache = new WeakHashMap<>();
@@ -33,14 +39,17 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
 
     private final static long PAGE_SIZE = 10;
 
+    @Override
     public String getName() {
         return "Select Box";
     }
 
+    @Override
     public String getVersion() {
         return "5.0.0";
     }
 
+    @Override
     public String getDescription() {
         return "Select Box Element";
     }
@@ -50,9 +59,10 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
      * @param formData
      * @return
      */
-    @SuppressWarnings("rawtypes")
-	public Collection<Map> getOptionMap(FormData formData) {
-        Collection<Map> optionMap = FormUtil.getElementPropertyOptionsMap(this, formData);
+    @Nonnull
+	public FormRowSet getOptionMap(FormData formData) {
+        FormRowSet optionMap = FormUtil.getElementPropertyOptionsMap(this, formData);
+        optionMap.setMultiRow(true);
         return optionMap;
     }
     
@@ -110,6 +120,26 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return rowSet;
     }
 
+    @Override
+    public String getElementValue(FormData formData) {
+        String originalValue = super.getElementValue(formData);
+        if(asLabel(formData)) {
+            return getValueLabel(originalValue, formData);
+        } else {
+            return originalValue;
+        }
+    }
+
+    @Override
+    public String[] getElementValues(FormData formData) {
+        String[] originalValues = FormUtil.getElementPropertyValues(this, formData);
+        if(asLabel(formData)) {
+            return getValueLabels(originalValues, formData);
+        } else {
+            return originalValues;
+        }
+    }
+
     @SuppressWarnings("unchecked")
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
@@ -117,28 +147,17 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return renderTemplate(template, formData, dataModel);
     }
 
-    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value
-        String[] valueArray = FormUtil.getElementPropertyValues(this, formData);
+        String[] valueArray = getElementValues(formData);
         List<String> values = Arrays.asList(valueArray);
         dataModel.put("values", values);
 
         // set options
-        @SuppressWarnings("rawtypes")
-        final List<Map<String, String>> optionMap = new ArrayList<>();
-        for(Map m : getOptionMap(formData)) {
-            optionMap.add((Map<String,String>)m);
-        }
+        FormRowSet optionMap = getOptionMap(formData);
         dataModel.put("options", optionMap);
-
-        Comparator<Map<String, String>> comparator = new Comparator<Map<String, String>>() {
-            @Override
-            public int compare(Map<String, String> m1, Map<String, String> m2) {
-                return m1.get("value").compareTo(m2.get("value"));
-            }
-        };
 
         dataModel.put("className", getClassName());
 
@@ -166,30 +185,37 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return html;
     }
 
+    @Override
     public String getClassName() {
         return getClass().getName();
     }
 
+    @Override
     public String getFormBuilderTemplate() {
         return "<label class='label'>Select Box</label><select><option>Option</option></select>";
     }
 
+    @Override
     public String getLabel() {
         return "Select Box";
     }
 
+    @Override
     public String getPropertyOptions() {
         return AppUtil.readPluginResource(getClass().getName(), "/properties/form/selectBox.json", null, true, "message/form/SelectBox");
     }
 
+    @Override
     public String getFormBuilderCategory() {
         return FormBuilderPalette.CATEGORY_GENERAL;
     }
 
+    @Override
     public int getFormBuilderPosition() {
         return 300;
     }
 
+    @Override
     public String getFormBuilderIcon() {
         return null;
     }
@@ -212,7 +238,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return controlElement;
     }
 
-    private Form generateForm(AppDefinition appDef, String formDefId) {
+    protected Form generateForm(AppDefinition appDef, String formDefId) {
         ApplicationContext appContext = AppUtil.getApplicationContext();
         FormService formService = (FormService) appContext.getBean("formService");
         FormDefinitionDao formDefinitionDao = (FormDefinitionDao)appContext.getBean("formDefinitionDao");
@@ -343,6 +369,98 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     public String renderAdminLteTemplate(FormData formData, Map dataModel) {
         String template = "AdminLteTheme/AdminLteSelectBox.ftl";
         return renderTemplate(template, formData, dataModel);
+    }
+
+
+    protected String getValueLabel(String value, FormData formData) {
+        String[] values = value == null ? new String[0] : value.split(";");
+        return Optional.of(getValueLabels(values, formData))
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+
+                // yes, we have to use anonymous object
+                .filter(new Predicate<String>() {
+                    @Override
+                    public boolean test(String s) {
+                        return !s.isEmpty();
+                    }
+                })
+                .collect(Collectors.joining(";"));
+    }
+
+    protected String[] getValueLabels(String[] values, FormData formData) {
+        FormRowSet optionMap = getOptionMap(formData);
+
+        // yes, we have to use anonymous object
+        Comparator<FormRow> comparator = Comparator.comparing(new Function<FormRow, String>() {
+            @Override
+            public String apply(FormRow r) {
+                return r.getProperty(FormUtil.PROPERTY_VALUE);
+            }
+        });
+
+        optionMap.sort(comparator);
+
+        // yes, we have to use anonymous object
+        return Optional.ofNullable(values)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .map(new Function<String, String[]>() {
+                    @Override
+                    public String[] apply(String s) {
+                        return s.split(";");
+                    }
+                })
+                .flatMap(Arrays::stream)
+                .map(new Function<String, FormRow>() {
+                    @Override
+                    public FormRow apply(String s) {
+                        FormRow row = new FormRow();
+                        row.setProperty(FormUtil.PROPERTY_VALUE, s);
+                        return row;
+                    }
+                })
+                .map(new Function<FormRow, Integer>() {
+                    @Override
+                    public Integer apply(FormRow row) {
+                        return Collections.binarySearch(optionMap, row, comparator);
+                    }
+                })
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer i) {
+                        return i >= 0;
+                    }
+                })
+                .map(new Function<Integer, FormRow>() {
+                    @Override
+                    public FormRow apply(Integer index) {
+                        return optionMap.get(index);
+                    }
+                })
+                .map(new Function<FormRow, String>() {
+                    @Override
+                    public String apply(FormRow r) {
+                        return r.getProperty(FormUtil.PROPERTY_LABEL);
+                    }
+                })
+                .toArray(new IntFunction<String[]>() {
+                    @Override
+                    public String[] apply(int value) {
+                        return new String[value];
+                    }
+                });
+    }
+
+    /**
+     * Should this element be shown as readonly label
+     *
+     * @param formData
+     * @return
+     */
+    protected boolean asLabel(FormData formData) {
+        return "true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY))
+                && "true".equalsIgnoreCase(getPropertyString(FormUtil.PROPERTY_READONLY_LABEL));
     }
 }
 

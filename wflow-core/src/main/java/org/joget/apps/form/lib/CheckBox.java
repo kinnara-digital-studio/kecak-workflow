@@ -61,7 +61,7 @@ public class CheckBox extends SelectBox implements FormBuilderPaletteElement, Ac
         return renderTemplate(template, formData, dataModel);
     }
 
-    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value
@@ -71,7 +71,7 @@ public class CheckBox extends SelectBox implements FormBuilderPaletteElement, Ac
 
         // set options
         @SuppressWarnings("rawtypes")
-        Collection<Map> optionMap = getOptionMap(formData);
+        FormRowSet optionMap = getOptionMap(formData);
         dataModel.put("options", optionMap);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
