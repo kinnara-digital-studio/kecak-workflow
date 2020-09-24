@@ -9,7 +9,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.utils.Declutter;
+import org.kecak.commons.util.StreamHelper;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,12 +23,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
-public class AuthenticationJsonController implements Declutter {
+public class AuthenticationJsonController implements StreamHelper {
     private final String loginHeader = "Authorization";
     private final String refreshHeader = "REF_TOKEN";
     public final static String NEW_TOKEN = "NEW_TOKEN";

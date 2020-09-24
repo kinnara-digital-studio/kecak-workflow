@@ -24,10 +24,7 @@ import org.enhydra.shark.instancepersistence.data.ProcessStateQuery;
 import org.enhydra.shark.utilities.MiscUtilities;
 import org.enhydra.shark.utilities.WMEntityUtilities;
 import org.enhydra.shark.xpdl.XMLUtil;
-import org.joget.commons.util.DynamicDataSourceManager;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.PagedList;
-import org.joget.commons.util.SetupManager;
+import org.joget.commons.util.*;
 import org.joget.workflow.model.*;
 import org.joget.workflow.model.dao.WorkflowHelper;
 import org.joget.workflow.model.dao.WorkflowProcessLinkDao;
@@ -35,6 +32,7 @@ import org.joget.workflow.shark.JSPClientUtilities;
 import org.joget.workflow.shark.model.dao.WorkflowAssignmentDao;
 import org.joget.workflow.util.DeadlineThreadManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.commons.util.StreamHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.jta.JtaTransactionManager;
@@ -51,7 +49,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class WorkflowManagerImpl implements WorkflowManager {
+public class WorkflowManagerImpl implements WorkflowManager, StreamHelper {
 
     static boolean initialized = false;
     private WorkflowUserManager userManager;
@@ -63,17 +61,17 @@ public class WorkflowManagerImpl implements WorkflowManager {
     private WorkflowAssignmentDao workflowAssignmentDao;
 
     @SuppressWarnings("rawtypes")
-	private Map processStateMap;
+    private Map processStateMap;
     private String previousProfile;
-    
+
     @SuppressWarnings("rawtypes")
-	private static ThreadLocal migrationAssignmentUserList = new ThreadLocal() {
+    private static ThreadLocal migrationAssignmentUserList = new ThreadLocal() {
         @Override
         protected synchronized Object initialValue() {
             return new HashMap<String, List<String>>();
         }
     };
-    
+
     /*--- Spring bean getters and setters ---*/
     public WorkflowUserManager getWorkflowUserManager() {
         return userManager;
@@ -122,6 +120,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Initializes Shark based on a path to the Shark.conf file.
+     *
      * @param path
      */
     private void setPath(String path) {
@@ -146,12 +145,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     String jndiName = "jwdb";
                     try {
                         ic.rebind(jndiName, this.dataSource);
-                    } catch(Exception ne) {
+                    } catch (Exception ne) {
                         // workaround for Websphere as it does not allow non-serializable object binding, so bind to java:comp/
                         try {
                             jndiName = "java:comp/jwdb";
                             ic.rebind(jndiName, this.dataSource);
-                        } catch(Exception nee) {
+                        } catch (Exception nee) {
                             jndiName = "jwdb";
                         }
                     }
@@ -188,8 +187,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
 
     /*--- Process definition information methods ---*/
+
     /**
      * Checks to see whether or not package exists.
+     *
      * @param packageId
      * @return true if the package exists, false otherwise.
      */
@@ -223,6 +224,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of packages currently in the system.
+     *
      * @return
      */
     public Collection<WorkflowPackage> getPackageList() {
@@ -262,6 +264,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the XPDL content for a package version.
+     *
      * @param packageId
      * @param version
      * @return
@@ -296,6 +299,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Retrieve a specific workflow package.
+     *
      * @param packageId
      * @param version
      * @return
@@ -328,6 +332,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the latest package version for the given package ID
+     *
      * @param packageId
      * @return null if the package is not available.
      */
@@ -357,6 +362,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of process definitions.
+     *
      * @param packageId Optional, to show only processes with the specified package ID
      * @return
      */
@@ -366,15 +372,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of process definitions.
+     *
      * @param packageId Optional, to show only processes with the specified package ID
-     * @param version Optional, to show only for the specified version
+     * @param version   Optional, to show only for the specified version
      * @return
      */
-	public Collection<WorkflowProcess> getProcessList(String packageId, String version) {
+    public Collection<WorkflowProcess> getProcessList(String packageId, String version) {
         SharkConnection sc = null;
         Collection<WorkflowProcess> processList = new ArrayList<WorkflowProcess>();
         @SuppressWarnings("unused")
-		Map<String, WorkflowProcess> processMap = new TreeMap<String, WorkflowProcess>();
+        Map<String, WorkflowProcess> processMap = new TreeMap<String, WorkflowProcess>();
         try {
             sc = connect();
 
@@ -433,6 +440,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of process definitions
+     *
      * @param sort
      * @param desc
      * @param start
@@ -450,7 +458,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
         boolean latestVersion = all == null || !all;
 
         if (filterByPackage || latestVersion || (checkWhiteList != null && checkWhiteList)) {
-            for (Iterator<WorkflowProcess> i = processList.iterator(); i.hasNext();) {
+            for (Iterator<WorkflowProcess> i = processList.iterator(); i.hasNext(); ) {
                 WorkflowProcess proc = i.next();
                 if (latestVersion && !proc.isLatest()) {
                     i.remove();
@@ -477,6 +485,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a process definition ID based on a process instance ID.
+     *
      * @param instanceId
      * @return
      */
@@ -521,6 +530,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a process definition by its definition ID.
+     *
      * @param processDefId
      * @return
      */
@@ -563,7 +573,6 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
 
 
-
         } catch (Exception ex) {
 
             LogUtil.error(getClass().getName(), ex, "");
@@ -580,6 +589,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the activity definitions for a process definition ID.
+     *
      * @param processDefId
      * @return
      */
@@ -645,6 +655,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the activity definitions for a process definition ID and actvity definition ID.
+     *
      * @param processDefId
      * @param activityDefId
      * @return
@@ -652,7 +663,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
     public WorkflowActivity getProcessActivityDefinition(String processDefId, String activityDefId) {
         Collection<WorkflowActivity> activityList = getProcessActivityDefinitionList(processDefId);
 
-        for (Iterator<WorkflowActivity> i = activityList.iterator(); i.hasNext();) {
+        for (Iterator<WorkflowActivity> i = activityList.iterator(); i.hasNext(); ) {
             WorkflowActivity wa = (WorkflowActivity) i.next();
             if (wa.getId().equals(activityDefId)) {
                 return wa;
@@ -663,11 +674,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the participant definitions for a process definition ID.
+     *
      * @param processDefId
      * @return
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public Collection<WorkflowParticipant> getProcessParticipantDefinitionList(String processDefId) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Collection<WorkflowParticipant> getProcessParticipantDefinitionList(String processDefId) {
         Collection<WorkflowParticipant> participantList = new ArrayList<WorkflowParticipant>();
         try {
             Map<String, WorkflowParticipant> participantMap = getParticipantMap(processDefId);
@@ -680,12 +692,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the participant definitions for a process definition ID in a map.
+     *
      * @param processDefId
      * @return
      */
     public Map<String, WorkflowParticipant> getParticipantMap(String processDefId) {
         @SuppressWarnings("unchecked")
-		Map<String, WorkflowParticipant> participantMap = new SequencedHashMap();
+        Map<String, WorkflowParticipant> participantMap = new SequencedHashMap();
 
         SharkConnection sc = null;
 
@@ -703,7 +716,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             WMEntity packageEntity = pa.getPackageEntity(sessionHandle, ent.getPkgId(), ent.getPkgVer());
             WMEntity[] pParticipants = WMEntityUtilities.getAllParticipants(sessionHandle, xpdlBrowser, packageEntity);
             @SuppressWarnings("unchecked")
-			Map<String, WorkflowParticipant> tempParticipantMap = new SequencedHashMap();
+            Map<String, WorkflowParticipant> tempParticipantMap = new SequencedHashMap();
             for (int i = 0; i < pParticipants.length; i++) {
                 WMEntity entity = pParticipants[i];
                 WMEntity entityType = WMEntityUtilities.getSubEntity(sessionHandle, xpdlBrowser, entity, "ParticipantType");
@@ -742,6 +755,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the variable definitions for a process definition ID.
+     *
      * @param processDefId
      * @return
      */
@@ -803,6 +817,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the application definitions for a process definition ID.
+     *
      * @param processDefId
      * @return
      */
@@ -830,7 +845,6 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
 
 
-
         } catch (Exception ex) {
 
             LogUtil.error(getClass().getName(), ex, "");
@@ -846,8 +860,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
 
     /*--- Process definition update methods ---*/
+
     /**
      * Upload a package XPDL without updating mapping information.
+     *
      * @param packageId
      * @param processDefinitionData
      * @return
@@ -891,6 +907,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Upload a package XPDL together with forms, participant and activity mapping information.
+     *
      * @param packageId
      * @param processDefinitionData
      * @return
@@ -947,6 +964,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Reads package ID from XPDL definition
+     *
      * @param processDefinitionData
      * @return
      */
@@ -961,6 +979,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Deletes a specific package version together with its process instances.
+     *
      * @param packageId
      * @param version
      */
@@ -1004,7 +1023,6 @@ public class WorkflowManagerImpl implements WorkflowManager {
             pa.closePackage(sessionHandle, packageId, version);
 
 
-
         } catch (Exception ex) {
 
             LogUtil.error(getClass().getName(), ex, "");
@@ -1019,6 +1037,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Deletes all versions for a package together with its associated process instances.
+     *
      * @param packageId
      */
     public void processDeleteAndUnload(String packageId) {
@@ -1055,7 +1074,6 @@ public class WorkflowManagerImpl implements WorkflowManager {
             pa.closeAllPackagesForId(sessionHandle, packageId);
 
 
-
         } catch (Exception ex) {
 
             LogUtil.error(getClass().getName(), ex, "");
@@ -1069,8 +1087,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
 
     /*--- Process and activity monitoring information methods ---*/
+
     /**
      * Returns a list of running processes, filtered by optional parameter values.
+     *
      * @param packageId
      * @param processId
      * @param processName
@@ -1164,6 +1184,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of running processes, filtered by optional parameter values.
+     *
      * @param packageId
      * @param processId
      * @param processName
@@ -1178,7 +1199,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             sc = connect();
             int size = 0;
             @SuppressWarnings("rawtypes")
-			Map stateMap = getProcessStateMap();
+            Map stateMap = getProcessStateMap();
             ProcessQuery pq = new ProcessQuery();
             BigDecimal processStateId = ((ProcessStateDO) stateMap.get(SharkConstants.STATE_OPEN_RUNNING)).get_OId().toBigDecimal();
             pq.setQueryState(ProcessStateDO.createExisting(processStateId), QueryBuilder.EQUAL);
@@ -1215,6 +1236,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of completed processes, filtered by optional parameter values.
+     *
      * @param packageId
      * @param processId
      * @param processName
@@ -1312,6 +1334,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of completed processes, filtered by optional parameter values.
+     *
      * @param packageId
      * @param processId
      * @param processName
@@ -1326,7 +1349,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             sc = connect();
             int size = 0;
             @SuppressWarnings("rawtypes")
-			Map stateMap = getProcessStateMap();
+            Map stateMap = getProcessStateMap();
             ProcessQuery pq = new ProcessQuery();
             pq.setQueryState(ProcessStateDO.createExisting(((ProcessStateDO) stateMap.get(SharkConstants.STATE_OPEN_RUNNING)).get_OId().toBigDecimal()), QueryBuilder.NOT_EQUAL);
             if (packageId != null && packageId.trim().length() > 0) {
@@ -1362,6 +1385,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a running process by process instance ID.
+     *
      * @param processId
      * @return
      */
@@ -1419,6 +1443,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of running or completed activities for a process instance ID.
+     *
      * @param processId
      * @param start
      * @param rows
@@ -1444,7 +1469,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             ActivityFilterBuilder aieb = shark.getActivityFilterBuilder();
             WMSessionHandle sessionHandle = sc.getSessionHandle();
             @SuppressWarnings("unused")
-			AdminMisc admin = shark.getAdminMisc();
+            AdminMisc admin = shark.getAdminMisc();
 
             WMFilter filter = new WMFilter();
 
@@ -1460,7 +1485,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     filter = aieb.setOrderById(sessionHandle, filter, !desc);
                 } else if (sort.equals("name")) {
                     filter = aieb.setOrderByName(sessionHandle, filter, !desc);
-                } else {	
+                } else {
                     filter = aieb.setOrderByActivatedTime(sessionHandle, filter, !desc);
                 }
             }
@@ -1513,6 +1538,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of running or completed activities for a process instance ID.
+     *
      * @param processId
      * @return
      */
@@ -1553,11 +1579,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns an activity instance based on the activity instance ID.
+     *
      * @param activityId
      * @return
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public WorkflowActivity getActivityById(String activityId) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public WorkflowActivity getActivityById(String activityId) {
 
         SharkConnection sc = null;
         WorkflowActivity workflowActivity = new WorkflowActivity();
@@ -1635,6 +1662,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the variable value based on a process instance ID.
+     *
      * @param processInstanceId
      * @param variableId
      * @return
@@ -1654,7 +1682,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             if (wfProcess != null) {
                 @SuppressWarnings("rawtypes")
-				Map varMap = wfProcess.process_context();
+                Map varMap = wfProcess.process_context();
                 LogUtil.debug(getClass().getName(), "varMap: " + varMap);
 
                 if (!varMap.isEmpty()) {
@@ -1676,6 +1704,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of workflow variables for the specified activity instance ID (for any user)
+     *
      * @param activityId
      * @return
      */
@@ -1698,10 +1727,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             if (acts.length > 0) {
                 @SuppressWarnings("rawtypes")
-				Map varMap = acts[0].process_context();
+                Map varMap = acts[0].process_context();
                 LogUtil.debug(getClass().getName(), "varMap: " + varMap);
                 for (@SuppressWarnings("rawtypes")
-				Iterator i = varMap.keySet().iterator(); i.hasNext();) {
+                     Iterator i = varMap.keySet().iterator(); i.hasNext(); ) {
                     String key = (String) i.next();
                     Object val = varMap.get(key);
                     WorkflowVariable wv = new WorkflowVariable();
@@ -1726,6 +1755,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of workflow variables for the specified process instance ID (for any user)
+     *
      * @param processId
      * @return
      */
@@ -1742,10 +1772,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             if (wfProcess != null) {
                 @SuppressWarnings("rawtypes")
-				Map varMap = wfProcess.process_context();
+                Map varMap = wfProcess.process_context();
                 LogUtil.debug(getClass().getName(), "varMap: " + varMap);
                 for (@SuppressWarnings("rawtypes")
-				Iterator i = varMap.keySet().iterator(); i.hasNext();) {
+                     Iterator i = varMap.keySet().iterator(); i.hasNext(); ) {
                     String key = (String) i.next();
                     Object val = varMap.get(key);
                     WorkflowVariable wv = new WorkflowVariable();
@@ -1770,6 +1800,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Gets the service level for a specific process instance ID.
+     *
      * @param processInstanceId
      * @return
      */
@@ -1780,6 +1811,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Gets the service level for a specific activity instance ID.
+     *
      * @param activityInstanceId
      * @return
      */
@@ -1790,6 +1822,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns process monitoring info (eg date creation, due dates, etc) for a process instance ID.
+     *
      * @param processInstanceId
      * @return
      */
@@ -1857,7 +1890,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 if (procAttributeList[0].getValue() != null && !procAttributeList[0].getValue().equals("")) {
                     try {
                         limit = Double.parseDouble((String) procAttributeList[0].getValue());
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
             }
 
@@ -1943,7 +1977,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     dueCal.setTime(wfProcess.getDue());
                     long delayInMilliseconds = completionCal.getTimeInMillis() - dueCal.getTimeInMillis();
                     long delayInSeconds = (long) delayInMilliseconds / 1000;
-                    
+
                     wfProcess.setDelayInSeconds(delayInSeconds);
                     wfProcess.setDelay(convertTimeInSecondsToString(delayInSeconds));
                 }
@@ -1959,7 +1993,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 //time taken for completion from date created
                 timeTakenInMilliSeconds = (wfProcess != null && wfProcess.getFinishTime() != null && wfProcess.getCreatedTime() != null) ? wfProcess.getFinishTime().getTime() - wfProcess.getCreatedTime().getTime() : 0;
                 timeTakenInSeconds = (long) timeTakenInMilliSeconds / 1000;
-                
+
                 wfProcess.setTimeConsumingFromDateCreatedInSeconds(timeTakenInSeconds);
                 wfProcess.setTimeConsumingFromDateCreated(convertTimeInSecondsToString(timeTakenInSeconds));
 
@@ -1986,6 +2020,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns activity monitoring info (eg date creation, limit, due (creation + limit), delay and completion) for a process instance ID.
+     *
      * @param activityInstanceId
      * @return
      */
@@ -2041,6 +2076,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns activity monitoring info (eg date creation, limit, due (creation + limit), delay and completion) for a process instance ID.
+     *
      * @param sc
      * @param wfActivity
      * @param includeAssignees
@@ -2090,13 +2126,14 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     wfAct.setType(WorkflowActivity.TYPE_SUBFLOW);
                 }
             }
-            
+
             double limit = -1;
             if (actAttributeList != null) {
                 if (actAttributeList[0].getValue() != null && !actAttributeList[0].getValue().equals("")) {
                     try {
                         limit = Double.parseDouble((String) actAttributeList[0].getValue());
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
             }
 
@@ -2255,8 +2292,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
         return wfAct;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	public Map getActivityInstanceByProcessIdAndStatus(String processId, Boolean accepted) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Map getActivityInstanceByProcessIdAndStatus(String processId, Boolean accepted) {
 
         SharkConnection sc = null;
         Map processMap = new HashMap();
@@ -2280,7 +2317,6 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     }
                 }
             }
-
 
 
         } catch (Exception ex) {
@@ -2350,14 +2386,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
 //    }
 
     /*--- Process and activity monitoring update methods ---*/
+
     /**
      * Set the workflow variable based on an activity instance ID.
+     *
      * @param activityInstanceId
      * @param variableId
      * @param variableValue
      */
     @SuppressWarnings("unchecked")
-	public void activityVariable(String activityInstanceId, String variableId, Object variableValue) {
+    public void activityVariable(String activityInstanceId, String variableId, Object variableValue) {
 
         SharkConnection sc = null;
 
@@ -2386,11 +2424,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
             if (wfActivityList.length > 0) {
                 WfActivity wfActivity = wfActivityList[0];
                 @SuppressWarnings("rawtypes")
-				Map var = new HashMap();
+                Map var = new HashMap();
                 var.put(variableId, variableValue);
                 wfActivity.set_result(var);
             }
-
 
 
         } catch (Exception ex) {
@@ -2403,9 +2440,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
         }
     }
-    
+
     /**
      * Set the workflow variables based on an activity instance ID.
+     *
      * @param activityInstanceId
      * @param variables
      */
@@ -2451,12 +2489,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Set the workflow variable based on an process instance ID.
+     *
      * @param processInstanceId
      * @param variableId
      * @param variableValue
      */
     @SuppressWarnings("unchecked")
-	public void processVariable(String processInstanceId, String variableId, Object variableValue) {
+    public void processVariable(String processInstanceId, String variableId, Object variableValue) {
 
         SharkConnection sc = null;
 
@@ -2485,7 +2524,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             if (wfProcessList.length > 0) {
                 WfProcess wfProcess = wfProcessList[0];
                 @SuppressWarnings("rawtypes")
-				Map processContext = wfProcess.process_context();
+                Map processContext = wfProcess.process_context();
                 processContext.put(variableId, variableValue);
                 wfProcess.set_process_context(processContext);
             }
@@ -2500,14 +2539,15 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
         }
     }
-    
+
     /**
      * Set the workflow variables based on an process instance ID.
+     *
      * @param processInstanceId
      * @param variables
      */
     @SuppressWarnings("unchecked")
-	public void processVariables(String processInstanceId, Map<String, String> variables) {
+    public void processVariables(String processInstanceId, Map<String, String> variables) {
 
         SharkConnection sc = null;
 
@@ -2535,12 +2575,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             if (wfProcessList.length > 0) {
                 WfProcess wfProcess = wfProcessList[0];
-                
+
                 //to ignore non exist variable.
                 for (String key : variables.keySet()) {
                     try {
                         @SuppressWarnings("rawtypes")
-						Map processContext = wfProcess.process_context();
+                        Map processContext = wfProcess.process_context();
                         processContext.put(key, variables.get(key));
                         wfProcess.set_process_context(processContext);
                     } catch (Exception e) {
@@ -2562,6 +2602,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Reevaluate assignments for an activity based on an activity instance ID.
+     *
      * @param activityInstanceId
      */
     public void reevaluateAssignmentsForActivity(String activityInstanceId) {
@@ -2595,6 +2636,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Reevaluate assignments for an user
+     *
      * @param username
      */
     public void reevaluateAssignmentsForUser(String username) {
@@ -2631,6 +2673,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Reevaluate assignments for a process based on an process instance ID.
+     *
      * @param procInstanceId
      */
     public void reevaluateAssignmentsForProcess(String procInstanceId) {
@@ -2664,6 +2707,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Reevaluate assignments for an array of processes based on the process instance IDs.
+     *
      * @param procInstanceId
      */
     public void reevaluateAssignmentsForProcesses(String[] procInstanceId) {
@@ -2693,6 +2737,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Deletes a process instance.
+     *
      * @param procInstanceId
      */
     public void removeProcessInstance(String procInstanceId) {
@@ -2740,11 +2785,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Abort a process instance.
+     *
      * @param processId
      * @return
      */
     @SuppressWarnings("finally")
-	public boolean processAbort(String processId) {
+    public boolean processAbort(String processId) {
 
         SharkConnection sc = null;
         boolean aborted = false;
@@ -2779,6 +2825,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Create a process instance without starting any activities.
+     *
      * @param processDefId
      * @return The created process instance ID
      */
@@ -2793,6 +2840,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Starts a process based on the process definition ID.
+     *
      * @param processDefId
      * @return
      */
@@ -2802,6 +2850,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Starts a process based on the process definition ID, while setting workflow variables values
+     *
      * @param processDefId
      * @param variables
      * @return
@@ -2812,6 +2861,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Starts a process based on the process definition ID, while setting workflow variables values and start process username.
+     *
      * @param processDefId
      * @param variables
      * @param startProcUsername
@@ -2823,6 +2873,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Starts a process based on the process definition ID, while setting workflow variables values, start process username and parent process id.
+     *
      * @param processDefId
      * @param variables
      * @param startProcUsername
@@ -2837,9 +2888,9 @@ public class WorkflowManagerImpl implements WorkflowManager {
         if (processId == null || processId.isEmpty()) {
             return null;
         }
-        
+
         Map<String, Object> tree = new HashMap<String, Object>();
-        
+
         SharkConnection sc = null;
         try {
             sc = connect();
@@ -2852,34 +2903,34 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             WMFilter filter = aieb.addProcessIdEquals(sessionHandle, processId);
             filter = aieb.and(sessionHandle, filter, aieb.addStateStartsWith(sessionHandle, "open"));
-            
+
             ai.set_query_expression(aieb.toIteratorExpression(sessionHandle, filter));
             WfActivity[] wfActivityList = ai.get_next_n_sequence(0);
 
             for (int i = 0; i < wfActivityList.length; ++i) {
                 WfActivity wfActivity = wfActivityList[i];
                 Map<String, Object> actObj = new HashMap<String, Object>();
-                
+
                 //get activity details
                 WMEntity entity = admin.getActivityDefinitionInfo(sessionHandle, wfActivity.container().key(), wfActivity.key());
                 String activityDefId = entity.getId();
                 String processDefId = wfActivity.container().manager().name();
                 String activityId = wfActivity.key();
-                
+
                 //get activity pending users
                 CustomWfActivityWrapper wrapper = new CustomWfActivityWrapper(sessionHandle, processDefId, processId, activityId);
                 List<String> users = wrapper.getAssignmentResourceIds();
                 if (users != null && !users.isEmpty()) {
                     actObj.put("users", users);
                 }
-                
+
                 //get variable
                 @SuppressWarnings("rawtypes")
-				Map varMap = wfActivity.process_context();
+                Map varMap = wfActivity.process_context();
                 if (varMap != null && !varMap.isEmpty()) {
                     actObj.put("variables", varMap);
                 }
-                
+
                 //check is sub flow
                 String subflowId = wrapper.getSubflowProcessId();
                 if (subflowId != null) {
@@ -2888,7 +2939,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                         actObj.put("subflow", subtree);
                     }
                 }
-                
+
                 tree.put(activityDefId, actObj);
             }
         } catch (Exception ex) {
@@ -2900,7 +2951,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 LogUtil.error(getClass().getName(), e, "");
             }
         }
-        
+
         return tree;
     }
 
@@ -2974,13 +3025,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
         return tree;
     }
-    
+
     @SuppressWarnings("unchecked")
-	protected void startActivitiesBasedOnActivitiesTree(String processId, Map<String, Object> tree, WorkflowProcessResult result) {
+    protected void startActivitiesBasedOnActivitiesTree(String processId, Map<String, Object> tree, WorkflowProcessResult result) {
         if (processId == null || processId.isEmpty() || tree == null || tree.isEmpty()) {
             return;
         }
-        
+
         SharkConnection sc = null;
         try {
             sc = connect();
@@ -2988,7 +3039,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             Shark shark = Shark.getInstance();
             ExecutionAdministration ea = shark.getExecutionAdministration();
             AdminMisc admin = shark.getAdminMisc();
-            
+
             //get all activity definition
             Map<String, WMEntity> activityDefinitions = new HashMap<String, WMEntity>();
             WMEntity procEntity = admin.getProcessDefinitionInfo(sessionHandle, processId);
@@ -2997,7 +3048,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             for (WMEntity ent : entities) {
                 activityDefinitions.put(ent.getId(), ent);
             }
-            
+
             //abort intial running activity
             WfActivityIterator ai = sc.get_iterator_activity();
             ActivityFilterBuilder aieb = shark.getActivityFilterBuilder();
@@ -3009,13 +3060,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 WfActivity wfActivity = wfActivityList[i];
                 wfActivity.abort();
             }
-            
+
             for (String actDefId : tree.keySet()) {
                 WMEntity actDef = activityDefinitions.get(actDefId);
-                
+
                 if (actDef != null) {
                     Map<String, Object> actMap = (Map<String, Object>) tree.get(actDefId);
-                    
+
                     //set migration users
                     if (actMap.containsKey("users")) {
                         List<String> users = (List<String>) actMap.get("users");
@@ -3026,7 +3077,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     ea.startActivity(sessionHandle, processId, null, actDef);
                 }
             }
-            
+
             //set workflow variable and handle subflow
             WfActivityIterator nai = sc.get_iterator_activity();
             nai.set_query_expression(aieb.toIteratorExpression(sessionHandle, filter));
@@ -3035,21 +3086,21 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 WfActivity wfActivity = runningWfActivityList[i];
                 WMEntity entity = admin.getActivityDefinitionInfo(sessionHandle, wfActivity.container().key(), wfActivity.key());
                 String activityDefId = entity.getId();
-                
+
                 Map<String, Object> actMap = (Map<String, Object>) tree.get(activityDefId);
-                
+
                 //variables
                 if (actMap.containsKey("variables")) {
                     @SuppressWarnings("rawtypes")
-					Map vars = (Map) actMap.get("variables");
+                    Map vars = (Map) actMap.get("variables");
                     wfActivity.set_result(vars);
                 }
-                
+
                 //subflow
                 if (actMap.containsKey("subflow")) {
                     String processDefId = wfActivity.container().manager().name();
                     String activityId = wfActivity.key();
-                
+
                     CustomWfActivityWrapper wrapper = new CustomWfActivityWrapper(sessionHandle, processDefId, processId, activityId);
                     String subflowId = wrapper.getSubflowProcessId();
                     if (subflowId != null) {
@@ -3070,22 +3121,23 @@ public class WorkflowManagerImpl implements WorkflowManager {
             } catch (Exception e) {
                 LogUtil.error(getClass().getName(), e, "");
             }
-        }    
+        }
     }
-    
+
     /**
      * Start a new process while copying variables, form data and running activities from a previous running process instance.
-     * @param currentProcessId The current running process instance
-     * @param newProcessDefId The new process definition ID to start
+     *
+     * @param currentProcessId    The current running process instance
+     * @param newProcessDefId     The new process definition ID to start
      * @param abortCurrentProcess Set to true to abort the current running process
      * @return
      */
     public WorkflowProcessResult processCopyFromInstanceId(String currentProcessId, String newProcessDefId, boolean abortCurrentProcess) {
         WorkflowProcessResult result = new WorkflowProcessResult();
-        
+
         try {
             Map<String, Object> activitiesTree = getRunningActivitiesTree(currentProcessId);
-            
+
             if (activitiesTree != null && !activitiesTree.isEmpty()) {
                 // get current variable values
                 Collection<WorkflowVariable> variableList = getProcessVariableList(currentProcessId);
@@ -3094,16 +3146,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     String val = (variable.getVal() != null) ? variable.getVal().toString() : null;
                     variableMap.put(variable.getId(), val);
                 }
-            
+
                 String starter = getUserByProcessIdAndActivityDefId(newProcessDefId, currentProcessId, WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS);
                 result = processStart(newProcessDefId, null, variableMap, starter, currentProcessId, true);
                 WorkflowProcess processStarted = result.getProcess();
-                
+
                 if (processStarted != null) {
                     String newProcessId = processStarted.getInstanceId();
                     result.setActivities(new ArrayList<WorkflowActivity>());
                     startActivitiesBasedOnActivitiesTree(newProcessId, activitiesTree, result);
-                    
+
                     // abort old process if required
                     if (abortCurrentProcess) {
                         processAbort(currentProcessId);
@@ -3122,8 +3174,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
     public WorkflowProcessResult assignmentTransfer(@Nonnull String currentProcessId, @Nonnull String targetActivityId) {
         String newProcessDefId = getProcessDefIdByInstanceId(currentProcessId);
 
-        if(newProcessDefId.isEmpty()) {
-            LogUtil.warn(getClass().getName(), "Process Definition ["+newProcessDefId+"] not available");
+        if (newProcessDefId.isEmpty()) {
+            LogUtil.warn(getClass().getName(), "Process Definition [" + newProcessDefId + "] not available");
             return null;
         }
 
@@ -3173,15 +3225,15 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     @Override
     public WorkflowProcessResult assignmentStepBack(String currentProcessId, Integer steps) {
-        if(steps == 0) {
+        if (steps == 0) {
             LogUtil.warn(getClass().getName(), "Cannot stepping back 0 steps");
-            return  null;
+            return null;
         }
 
         String newProcessDefId = getProcessDefIdByInstanceId(currentProcessId);
 
-        if(newProcessDefId.isEmpty()) {
-            LogUtil.warn(getClass().getName(), "Process Definition ["+newProcessDefId+"] not available");
+        if (newProcessDefId.isEmpty()) {
+            LogUtil.warn(getClass().getName(), "Process Definition [" + newProcessDefId + "] not available");
             return null;
         }
 
@@ -3189,8 +3241,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
         try {
             List<WorkflowActivity> activityHistory = getActivityHistory(currentProcessId);
-            LogUtil.info(getClass().getName(), "activityHistory ["+activityHistory.stream().map(WorkflowActivity::getActivityDefId).collect(Collectors.joining("||"))+"]");
-            if(activityHistory.size() > steps) {
+            LogUtil.info(getClass().getName(), "activityHistory [" + activityHistory.stream().map(WorkflowActivity::getActivityDefId).collect(Collectors.joining("||")) + "]");
+            if (activityHistory.size() > steps) {
 
                 // get previous activity
                 WorkflowActivity previousActivity = activityHistory.get(steps);
@@ -3203,7 +3255,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 Map<String, Object> newActivitiesTree = new HashMap<>();
                 newActivitiesTree.put(previousActivity.getActivityDefId(), previousActivityData);
 
-                LogUtil.info(getClass().getName(), "newActivitiesTree ["+newActivitiesTree.entrySet().stream().map(e -> "["+e.getKey()+"->"+e.getValue()+"]").collect(Collectors.joining("||"))+"]");
+                LogUtil.info(getClass().getName(), "newActivitiesTree [" + newActivitiesTree.entrySet().stream().map(e -> "[" + e.getKey() + "->" + e.getValue() + "]").collect(Collectors.joining("||")) + "]");
 
                 // get current variable values
                 Collection<WorkflowVariable> variableList = getProcessVariableList(currentProcessId);
@@ -3236,6 +3288,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Starts a process based on the process definition ID, while setting workflow variables values, start process username and parent process id.
+     *
      * @param processDefId
      * @param processId
      * @param variables
@@ -3247,12 +3300,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Generic method to start a process with various options
-     * @param processDefId The process definition ID of the process to start
-     * @param processId The process instance ID of a current running process to start
-     * @param variables Workflow variables values to set for the process
+     *
+     * @param processDefId      The process definition ID of the process to start
+     * @param processId         The process instance ID of a current running process to start
+     * @param variables         Workflow variables values to set for the process
      * @param startProcUsername The username of the person starting the process
-     * @param parentProcessId The process instance ID of a parent or calling process
-     * @param startManually Set to true to prevent beginning activities from being started.
+     * @param parentProcessId   The process instance ID of a parent or calling process
+     * @param startManually     Set to true to prevent beginning activities from being started.
      * @return
      */
     public WorkflowProcessResult processStart(String processDefId, String processId, Map<String, String> variables, String startProcUsername, String parentProcessId, boolean startManually) {
@@ -3289,7 +3343,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 Set<String> keys = variables.keySet();
                 if (keys != null && keys.size() > 0) {
                     @SuppressWarnings("rawtypes")
-					Map contextSignature = wfProcess.manager().context_signature();
+                    Map contextSignature = wfProcess.manager().context_signature();
                     for (String key : keys) {
                         Object value = variables.get(key);
 
@@ -3332,7 +3386,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 XPDLBrowser xpdl = shark.getXPDLBrowser();
                 WfActivity[] activityList = wfProcess.get_sequence_step(0);
                 WorkflowActivity activity = getNextActivity(sessionHandle, mgr, admin, xpdl, wfProcess.key(), activityList);
-                
+
                 if (activity != null) {
                     activitiesStarted.add(activity);
                     result.setActivities(activitiesStarted);
@@ -3352,6 +3406,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Check an assignment is exist or not (for current user) based on an activity instance ID.
+     *
      * @param activityId
      * @return
      */
@@ -3385,6 +3440,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns an assignment for the current user based on an activity instance ID.
+     *
      * @param activityId
      * @return null if the assignment does not exist.
      */
@@ -3423,7 +3479,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
                 if (WorkflowUtil.containsHashVariable(ass.getActivityName())) {
                     @SuppressWarnings("unchecked")
-					Collection<WorkflowVariable> variableList = JSPClientUtilities.getVariableData(sc, activity, false);
+                    Collection<WorkflowVariable> variableList = JSPClientUtilities.getVariableData(sc, activity, false);
                     ass.setProcessVariableList((List<WorkflowVariable>) variableList);
 
                     //process activity name variable
@@ -3470,11 +3526,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a mock assignment based on an activity instance ID.
+     *
      * @param activityId
      * @return null if the assignment does not exist.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public WorkflowAssignment getMockAssignment(String activityId) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public WorkflowAssignment getMockAssignment(String activityId) {
         WorkflowAssignment mockAss = new WorkflowAssignment();
 
         WorkflowActivity act = getActivityById(activityId);
@@ -3501,6 +3558,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the first assignment for the current user based on a process instance ID.
+     *
      * @param processId
      * @return null if the assignment does not exist.
      */
@@ -3542,6 +3600,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of assignments for the current user.
+     *
      * @param accepted
      * @param processDefId
      * @param sort
@@ -3656,6 +3715,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of assignments for the current user.
+     *
      * @param packageId
      * @param processDefId
      * @param processId
@@ -3671,6 +3731,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of assignments for the current user.
+     *
      * @param packageId
      * @param processDefId
      * @param processId
@@ -3685,7 +3746,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
         if (processDefId != null) {
             processDefId = getConvertedLatestProcessDefId(processDefId);
         }
-        
+
         SharkConnection sc = null;
         Collection<WorkflowAssignment> assignmentList = new ArrayList<WorkflowAssignment>();
 
@@ -3738,7 +3799,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             if (rows != null && rows > 0) {
                 filter.setLimit(rows);
             }
-            
+
             // execute
             WfAssignmentIterator ai = sc.get_iterator_assignment();
             ai.set_query_expression(aieb.toIteratorExpression(sessionHandle, filter));
@@ -3769,7 +3830,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 // check for hash variable
                 if (WorkflowUtil.containsHashVariable(ass.getActivityName())) {
                     @SuppressWarnings("unchecked")
-					Collection<WorkflowVariable> variableList = JSPClientUtilities.getVariableData(sc, activity, false);
+                    Collection<WorkflowVariable> variableList = JSPClientUtilities.getVariableData(sc, activity, false);
                     ass.setProcessVariableList((List<WorkflowVariable>) variableList);
 
                     //process activity name variable
@@ -3789,8 +3850,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     }
                 }
                 assignmentList.add(ass);
-            } 
-            
+            }
+
             // set participant info
             participantsForAssignment(assignmentList);
 
@@ -3805,44 +3866,47 @@ public class WorkflowManagerImpl implements WorkflowManager {
         }
         return assignmentList;
     }
-    
+
     /**
      * Returns list of process id based on running assignments for the current user.
+     *
      * @param packageId
      * @param processDefId
      * @param processId
      * @param activityDefId
-     * @return 
+     * @return
      */
     public Set<String> getAssignmentProcessIds(String packageId, String processDefId, String processId, String activityDefId) {
         if (processDefId != null) {
             processDefId = getConvertedLatestProcessDefId(processDefId);
         }
-        
+
         String username = getWorkflowUserManager().getCurrentUsername();
         Set<String> assignmentList = workflowAssignmentDao.getAssignmentProcessIds(packageId, processDefId, processId, activityDefId, username, "open");
-        
+
         return assignmentList;
     }
-    
+
     /**
      * Returns list of running assignments for the current user based on process ids.
+     *
      * @param processIds
      * @param sort
      * @param desc
      * @param start
      * @param rows
-     * @return 
+     * @return
      */
     public Collection<WorkflowAssignment> getAssignmentsByProcessIds(Collection<String> processIds, String sort, Boolean desc, Integer start, Integer rows) {
         String username = getWorkflowUserManager().getCurrentUsername();
         Collection<WorkflowAssignment> assignmentList = workflowAssignmentDao.getAssignmentsByProcessIds(processIds, username, "open", sort, desc, start, rows);
-        
+
         return assignmentList;
     }
-    
+
     /**
      * Returns a list of assignments with lite info for the current user.
+     *
      * @param packageId
      * @param processDefId
      * @param processId
@@ -3851,21 +3915,22 @@ public class WorkflowManagerImpl implements WorkflowManager {
      * @param desc
      * @param start
      * @param rows
-     * @return 
+     * @return
      */
     public Collection<WorkflowAssignment> getAssignmentListLite(String packageId, String processDefId, String processId, String activityDefId, String sort, Boolean desc, Integer start, Integer rows) {
         if (processDefId != null) {
             processDefId = getConvertedLatestProcessDefId(processDefId);
         }
-        
+
         String username = getWorkflowUserManager().getCurrentUsername();
         Collection<WorkflowAssignment> assignmentList = workflowAssignmentDao.getAssignments(packageId, processDefId, processId, activityDefId, username, "open", sort, desc, start, rows);
-        
+
         return assignmentList;
     }
 
     /**
      * Returns a list of assignments for the current user filter by processDefIds.
+     *
      * @param processDefIds
      * @param sort
      * @param desc
@@ -3954,7 +4019,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 // check for hash variable
                 if (WorkflowUtil.containsHashVariable(ass.getActivityName())) {
                     @SuppressWarnings("unchecked")
-					Collection<WorkflowVariable> variableList = JSPClientUtilities.getVariableData(sc, activity, false);
+                    Collection<WorkflowVariable> variableList = JSPClientUtilities.getVariableData(sc, activity, false);
                     ass.setProcessVariableList((List<WorkflowVariable>) variableList);
 
                     //process activity name variable
@@ -3991,6 +4056,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of assignments for the current user filter by processDefIds.
+     *
      * @param processDefIds
      * @return
      */
@@ -4050,6 +4116,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the all (pending and accepted) assignments for the current user
+     *
      * @param packageId
      * @param processDefId
      * @param processId
@@ -4073,6 +4140,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns pending assignments for the current user
+     *
      * @param processDefId
      * @param sort
      * @param desc
@@ -4094,15 +4162,14 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns accepted assignments for the current user
-     * 
-     * @deprecated Since v3, the concept of accept & withdraw assignment is removed.  
-     * 
+     *
      * @param processDefId
      * @param sort
      * @param desc
      * @param start
      * @param rows
      * @return
+     * @deprecated Since v3, the concept of accept & withdraw assignment is removed.
      */
     public PagedList<WorkflowAssignment> getAssignmentAcceptedList(String processDefId, String sort, Boolean desc, Integer start, Integer rows) {
         List<WorkflowAssignment> assignmentList = (List<WorkflowAssignment>) getAssignmentList(Boolean.TRUE, processDefId, sort, desc, start, rows);
@@ -4118,6 +4185,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of assignments for the current user.
+     *
      * @param accepted
      * @param processDefId
      * @return
@@ -4129,6 +4197,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of assignments for the current user.
+     *
      * @param packageId
      * @return
      */
@@ -4138,6 +4207,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the number of assignments for the current user.
+     *
      * @param packageId
      * @return
      */
@@ -4145,19 +4215,18 @@ public class WorkflowManagerImpl implements WorkflowManager {
         if (processDefId != null) {
             processDefId = getConvertedLatestProcessDefId(processDefId);
         }
-        
+
         String username = getWorkflowUserManager().getCurrentUsername();
         String state = "open";
-        
+
         return workflowAssignmentDao.getAssignmentSize(packageId, processDefId, processId, activityDefId, username, state);
     }
 
     /**
      * Accept an assignment (for the current user) based on the activity instance ID.
-     * 
-     * @deprecated Since v3, the concept of accept & withdraw assignment is removed  
-     * 
+     *
      * @param activityId
+     * @deprecated Since v3, the concept of accept & withdraw assignment is removed
      */
     public void assignmentAccept(String activityId) {
 
@@ -4183,10 +4252,9 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Withdraw an assignment (for the current user) based on the activity instance ID.
-     * 
-     * @deprecated Since v3, the concept of accept & withdraw assignment is removed.  
-     * 
+     *
      * @param activityId
+     * @deprecated Since v3, the concept of accept & withdraw assignment is removed.
      */
     public void assignmentWithdraw(String activityId) {
 
@@ -4212,6 +4280,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Complete an assignment (for the current user) based on the activity instance ID.
+     *
      * @param activityId
      */
     public void assignmentComplete(String activityId) {
@@ -4237,6 +4306,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Complete an assignment (for the current user) while setting workflow variable values
+     *
      * @param activityId
      * @param variableMap key=variable name and value=variable value.
      */
@@ -4250,6 +4320,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Abort an activity based on the process instance Id and activity definition ID.
+     *
      * @param processId
      * @param activityDefId
      */
@@ -4304,6 +4375,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Start a specific activity for a running process instance.
+     *
      * @param processId
      * @param activityDefId
      * @param abortRunningActivities Set to true to abort the current running activities
@@ -4370,7 +4442,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             String blockActivityId = null; // TODO: handle block activity?
             ExecutionAdministration ea = shark.getExecutionAdministration();
             ea.startActivity(sessionHandle, processId, blockActivityId, activityDef);
-            
+
             result = true;
 
         } catch (Exception ex) {
@@ -4389,11 +4461,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Reassigns the assignment from a user to another user
+     *
      * @param processDefId
      * @param processId
      * @param activityId
      * @param username
-     * @param replaceUser user to be replaced
+     * @param replaceUser  user to be replaced
      */
     public void assignmentReassign(String processDefId, String processId, String activityId, String username, String replaceUser) {
         SharkConnection sc = null;
@@ -4430,7 +4503,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             if (wfa.assignee() == null || (wfa.assignee() != null && !res.resource_key().equals(wfa.assignee().resource_key()))) {
                 wfa.set_assignee(res);
             }
-            
+
             WorkflowUtil.addAuditTrail(this.getClass().getName(), "assignmentReassignUser", activityId, new Class[]{activityId.getClass()}, new Object[]{activityId}, null);
 
         } catch (Exception ex) {
@@ -4446,10 +4519,11 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Force completes an assignment of a user
+     *
      * @param processDefId
      * @param processId
      * @param activityId
-     * @param username 
+     * @param username
      */
     public void assignmentForceComplete(String processDefId, String processId, String activityId, String username) {
         SharkConnection sc = null;
@@ -4489,12 +4563,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Set workflow variable value based on activity instance ID. This only works when the current user is assigned to the activity.
+     *
      * @param activityId
      * @param variableName
      * @param variableValue
      */
     @SuppressWarnings("unchecked")
-	public void assignmentVariable(String activityId, String variableName, String variableValue) {
+    public void assignmentVariable(String activityId, String variableName, String variableValue) {
 
         SharkConnection sc = null;
 
@@ -4508,7 +4583,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
 
             @SuppressWarnings("rawtypes")
-			Map _m = new HashMap();
+            Map _m = new HashMap();
             Object c = a.activity().process_context().get(variableName);
 
             if (c instanceof Long) {
@@ -4536,9 +4611,9 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
 
     /**
-     *  Set workflow variables value based on activity instance ID. 
+     * Set workflow variables value based on activity instance ID.
      * This only works when the current user is assigned to the activity.
-     * 
+     *
      * @param activityId
      * @param variableMap key=variable name and value=variable value
      */
@@ -4569,7 +4644,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the name of the user that accepted/completed activity.
-     * @param processDefId Unused for now
+     *
+     * @param processDefId  Unused for now
      * @param processId
      * @param activityDefId
      * @return
@@ -4591,6 +4667,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns the name of the user that accepted/completed an activity.
+     *
      * @param processId
      * @param activityDefId
      * @return
@@ -4643,11 +4720,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of workflow variables for the specified activity instance ID (only if assigned to the current user)
+     *
      * @param activityId
      * @return
      */
     @SuppressWarnings("unchecked")
-	public Collection<WorkflowVariable> getAssignmentVariableList(String activityId) {
+    public Collection<WorkflowVariable> getAssignmentVariableList(String activityId) {
         Collection<WorkflowVariable> variableList = new ArrayList<WorkflowVariable>();
 
         SharkConnection sc = null;
@@ -4673,6 +4751,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns a list of usernames that are assigned to a specific activity instance.
+     *
      * @param processId
      * @param processInstanceId
      * @param activityInstanceId
@@ -4704,8 +4783,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
 
     /*--- Internal methods to Shark ---*/
+
     /**
      * Connect to the Shark engine using the current username.
+     *
      * @return
      * @throws Exception
      */
@@ -4721,6 +4802,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Disconnect from the Shark engine. Must be called in a finally block.
+     *
      * @param sConn
      * @throws Exception
      */
@@ -4732,13 +4814,14 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Returns internal process state IDs used by Shark.
+     *
      * @return
      * @throws NonUniqueQueryException
      * @throws DataObjectException
      * @throws QueryException
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	protected Map getProcessStateMap() throws NonUniqueQueryException, DataObjectException, QueryException {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    protected Map getProcessStateMap() throws NonUniqueQueryException, DataObjectException, QueryException {
         // get states
         if (this.processStateMap == null) {
             this.processStateMap = new HashMap();
@@ -4757,6 +4840,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Populates the 'participant' property for each assignment in the Collection based on the XPDL definition.
+     *
      * @param assignmentList
      */
     protected void participantsForAssignment(Collection<WorkflowAssignment> assignmentList) {
@@ -4768,7 +4852,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             Shark shark = Shark.getInstance();
             AdminMisc admin = shark.getAdminMisc();
             XPDLBrowser xpdlBrowser = shark.getXPDLBrowser();
-            for (Iterator<WorkflowAssignment> i = assignmentList.iterator(); i.hasNext();) {
+            for (Iterator<WorkflowAssignment> i = assignmentList.iterator(); i.hasNext(); ) {
                 WorkflowAssignment assignment = (WorkflowAssignment) i.next();
 
 
@@ -4806,6 +4890,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Retrieves a Shark assignment object based on an activity instance ID.
+     *
      * @param sc
      * @param activityId
      * @return
@@ -4836,6 +4921,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Retrieves the next Shark assignment based on a process instance ID.
+     *
      * @param sc
      * @param processId
      * @return
@@ -4866,6 +4952,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Retrieves the next Shark assignment based on a activity ID.
+     *
      * @param sc
      * @param activityId
      * @return
@@ -4891,6 +4978,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
 
     /*--- Internal methods (audit trail not captured) ---*/
+
     /**
      * Internal method used to updates deadline checker time interval
      */
@@ -4908,15 +4996,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             long intervalInMillis = deadlineCheckerIntervalValue * 1000;
             DeadlineThreadManager.startThread(intervalInMillis);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // ignore initial error
         }
     }
 
     /**
      * Internal method used to checks deadlines
+     *
      * @param instancesPerTransaction
-     * @param failuresToIgnore 
+     * @param failuresToIgnore
      */
     public void internalCheckDeadlines(int instancesPerTransaction, int failuresToIgnore) {
         SharkConnection sc = null;
@@ -4926,7 +5015,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             WMSessionHandle shandle = sc.getSessionHandle();
             Shark shark = Shark.getInstance();
-            
+
             shark.getExecutionAdministration().checkDeadlinesWithFiltering(shandle, null);
         } catch (Exception ex) {
             LogUtil.error(getClass().getName(), ex, "");
@@ -4938,18 +5027,19 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
         }
     }
-    
+
     /**
      * Returns all the id of running process instances
-     * @return 
+     *
+     * @return
      */
     public Collection<String> getRunningProcessIds() {
         SharkConnection sc = null;
         Collection<String> runningProcesseIds = new ArrayList<String>();
-        
+
         try {
             sc = connect();
-            
+
             WfProcessIterator pi = sc.get_iterator_process();
 
             String sharkExpression = "stateequals.(\"open.running\")";
@@ -4976,21 +5066,22 @@ public class WorkflowManagerImpl implements WorkflowManager {
         }
         return runningProcesseIds;
     }
-    
+
     /**
-     * Internal method used to checks deadlines for selected process instances 
+     * Internal method used to checks deadlines for selected process instances
+     *
      * @param pids
      * @return the status of the method call
      */
     public boolean internalCheckDeadlines(String[] pids) {
         SharkConnection sc = null;
         boolean success = false;
-        
+
         try {
             sc = connect();
             WMSessionHandle shandle = sc.getSessionHandle();
             Shark shark = Shark.getInstance();
-            
+
             shark.getExecutionAdministration().checkDeadlinesForProcesses(shandle, pids);
             success = true;
         } catch (Exception ex) {
@@ -5007,7 +5098,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Internal method used to delete a process instance only if it is completed.
-     * @param procInstanceId 
+     *
+     * @param procInstanceId
      */
     public void internalRemoveProcessOnComplete(String procInstanceId) {
         SharkConnection sc = null;
@@ -5035,7 +5127,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
             if (wfProcess != null && wfProcess.state().startsWith(SharkConstants.STATEPREFIX_CLOSED)) {
                 WorkflowUtil.addAuditTrail(this.getClass().getName(), "processCompleted", procInstanceId, new Class[]{procInstanceId.getClass()}, new Object[]{procInstanceId}, null);
-                
+
                 Boolean deleteProcessOnCompletion = Boolean.valueOf(WorkflowUtil.getSystemSetupValue("deleteProcessOnCompletion"));
                 if (deleteProcessOnCompletion != null && deleteProcessOnCompletion) {
                     ea.deleteProcessesWithFiltering(sessionHandle, filter);
@@ -5055,40 +5147,43 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Gets the parent process instance id of a process instance
+     *
      * @param processId
-     * @return 
+     * @return
      */
     public WorkflowProcessLink getWorkflowProcessLink(String processId) {
         return workflowProcessLinkDao.getWorkflowProcessLink(processId);
     }
 
-    
+
     public void internalAddWorkflowProcessLink(String parentProcessId, String processInstanceId) {
         workflowProcessLinkDao.addWorkflowProcessLink(parentProcessId, processInstanceId);
     }
 
     /**
      * Internal method used to delete the processes link
-     * @param wfProcessLink 
+     *
+     * @param wfProcessLink
      */
     public void internalDeleteWorkflowProcessLink(WorkflowProcessLink wfProcessLink) {
         workflowProcessLinkDao.delete(wfProcessLink);
     }
 
     /**
-     * Replaces the WorkflowManager.LATEST in process def id to the latest process def id 
+     * Replaces the WorkflowManager.LATEST in process def id to the latest process def id
+     *
      * @param processDefId
-     * @return 
+     * @return
      */
     public String getConvertedLatestProcessDefId(String processDefId) {
         if (processDefId.contains(":")) {
             processDefId = processDefId.replaceAll(":", "#");
         }
-        
+
         if (processDefId != null && processDefId.contains(LATEST)) {
             ApplicationContext appContext = WorkflowUtil.getApplicationContext();
             WorkflowHelper workflowMapper = (WorkflowHelper) appContext.getBean("workflowHelper");
-        
+
             String currentVersion = workflowMapper.getPublishedPackageVersion(processDefId.split("#")[0]);
 
             if (currentVersion != null && currentVersion.trim().length() > 0) {
@@ -5100,8 +5195,9 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
     /**
      * Checks the current user is allow to start a process
+     *
      * @param processDefId
-     * @return 
+     * @return
      */
     public Boolean isUserInWhiteList(String processDefId) {
         String temp[] = processDefId.split("#");
@@ -5130,23 +5226,24 @@ public class WorkflowManagerImpl implements WorkflowManager {
             return false;
         }
     }
-    
+
     /**
      * Gets the usernames of process activity for process version migration
+     *
      * @param processId
      * @param activityDefId
-     * @return 
+     * @return
      */
     @SuppressWarnings("unchecked")
-	public List<String> getMigrationAssignmentUserList(String processId, String activityDefId) {
+    public List<String> getMigrationAssignmentUserList(String processId, String activityDefId) {
         String key = processId + "_" + activityDefId;
-		List<String> users = ((HashMap<String, List<String>>) migrationAssignmentUserList.get()).get(key);
-        
+        List<String> users = ((HashMap<String, List<String>>) migrationAssignmentUserList.get()).get(key);
+
         //remove after retrieved
         if (users != null) {
             ((HashMap<String, List<String>>) migrationAssignmentUserList.get()).remove(key);
         }
-        
+
         return users;
     }
 
@@ -5179,7 +5276,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(createdTime);
-        calendar.add(Calendar.SECOND, (int) (newDeadline.getDeadlineLimit()/1000));
+        calendar.add(Calendar.SECOND, (int) (newDeadline.getDeadlineLimit() / 1000));
         return calendar.getTime();
     }
 
@@ -5211,14 +5308,14 @@ public class WorkflowManagerImpl implements WorkflowManager {
         }
         return -1;
     }
-    
+
     protected String convertTimeInSecondsToString(long timeInSeconds) {
         long timeInMinutes = (long) timeInSeconds / 60;
         long timeInHours = (long) timeInMinutes / 60;
         long timeInDays = (long) timeInHours / 24;
-                    
+
         String temp = "";
-        
+
         if (timeInSeconds < 60) {
             temp = timeInSeconds + " second(s)";
         } else if (timeInSeconds >= 60 && timeInMinutes < 60) {
@@ -5228,10 +5325,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
         } else if (timeInHours >= 24) {
             temp = timeInDays + " day(s) " + (timeInHours % 24) + " hour(s) " + (timeInMinutes % 60) + " minutes(s) " + (timeInSeconds % 60) + " second(s)";
         }
-        
+
         return temp;
     }
-    
+
     protected WorkflowActivity getNextActivity(WMSessionHandle sessionHandle, WfProcessMgr mgr, AdminMisc admin, XPDLBrowser xpdl, String processId, WfActivity[] activityList) {
         try {
             for (WfActivity wfAct : activityList) {
@@ -5264,10 +5361,11 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     }
                 }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return null;
     }
-    
+
     public long getActivityLimit(String processDefId, String activityDefId) {
         SharkConnection sc = null;
         long limitInS = -1;
@@ -5276,14 +5374,14 @@ public class WorkflowManagerImpl implements WorkflowManager {
             WMSessionHandle sessionHandle = sc.getSessionHandle();
             Shark shark = Shark.getInstance();
             XPDLBrowser xpdl = shark.getXPDLBrowser();
-            
+
             org.enhydra.shark.xpdl.elements.WorkflowProcess wp = SharkUtil.getWorkflowProcess(sessionHandle, processDefId);
 
             org.enhydra.shark.xpdl.elements.Activity wa = null;
-            if(wp != null) {
+            if (wp != null) {
                 wa = wp.getActivity(activityDefId);
             }
-            
+
             //get limit
             double limit = -1;
             WMFilter filter = new WMFilter();
@@ -5292,7 +5390,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             filter.setFilterString("Limit");
 
             WMAttributeIterator actAttributeIterator = null;
-            if(wa != null) {
+            if (wa != null) {
                 actAttributeIterator = xpdl.listAttributes(sessionHandle, SharkUtil.createBasicEntity(wa), filter, true);
             }
 
@@ -5300,15 +5398,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
             if (actAttributeIterator != null) {
                 actAttributeList = actAttributeIterator.getArray();
             }
-            
+
             if (actAttributeList != null) {
                 if (actAttributeList[0].getValue() != null && !actAttributeList[0].getValue().equals("")) {
                     try {
                         limit = Double.parseDouble((String) actAttributeList[0].getValue());
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
             }
-            
+
             if (limit != -1) {
                 //get duration unit
                 String durationUnit = "";
@@ -5316,7 +5415,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 filter.setFilterType(XPDLBrowser.SIMPLE_TYPE_XPDL);
                 filter.setAttributeName("Type");
                 filter.setFilterString("ProcessHeader");
-                
+
                 WMEntityIterator procEntityIterator = xpdl.listEntities(sessionHandle, SharkUtil.createBasicEntity(wp), filter, true);
                 WMEntity[] procEntityList = null;
                 if (procEntityIterator != null) {
@@ -5341,7 +5440,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                         durationUnit = (String) procAttributeList[0].getValue();
                     }
                 }
-            
+
                 if (!durationUnit.equals("")) {
                     if (durationUnit.equals("D")) {
                         limitInS = Math.round(limit * 24 * 60 * 60);
@@ -5354,7 +5453,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                     }
                 }
             }
-            
+
         } catch (Exception e) {
             LogUtil.error(getClass().getName(), e, "");
         } finally {
@@ -5364,11 +5463,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 LogUtil.error(getClass().getName(), e, "");
             }
         }
-            
-        return limitInS;    
+
+        return limitInS;
     }
 
-    protected @Nonnull List<WorkflowActivity> getActivityHistory(String processId) {
+    protected @Nonnull
+    List<WorkflowActivity> getActivityHistory(String processId) {
         return workflowProcessLinkDao.getLinks(processId).stream()
                 .filter(Objects::nonNull)
                 .flatMap(l -> getActivityList(l.getProcessId(), null, 1000, null, null).stream())
@@ -5389,7 +5489,6 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
 
     /**
-     * 
      * @param packageId
      * @param processId
      * @param processName
@@ -5461,13 +5560,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 workflowProcess.setVersion(manager.version());
                 workflowProcess.setRequesterId(getUserByProcessIdAndActivityDefId(workflowProcess.getId(), workflowProcess.getInstanceId(), WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS));
 
-                WorkflowProcess trackWflowProcess = getRunningProcessInfo(wfProcess.key());
-                if(trackWflowProcess != null) {
-                    workflowProcess.setStartedTime(trackWflowProcess.getStartedTime());
-                    workflowProcess.setDue(trackWflowProcess.getDue());
-                } else {
-                    LogUtil.warn(getClass().getName(), "Fail when retrieving process info [" + wfProcess.key() + "]");
-                }
+                Optional.of(wfProcess)
+                        .map(throwableFunction(WfExecutionObject::key, (p, e) -> {
+                            LogUtil.warn(getClass().getName(), "Error ["+ e.getMessage() + "] when getting key from [" + p + "]");
+                            return null;
+                        }))
+                        .map(this::getRunningProcessInfo)
+                        .ifPresent(trackWflowProcess -> {
+                            workflowProcess.setStartedTime(trackWflowProcess.getStartedTime());
+                            workflowProcess.setDue(trackWflowProcess.getDue());
+                        });
 
                 runningProcessList.add(workflowProcess);
             }
