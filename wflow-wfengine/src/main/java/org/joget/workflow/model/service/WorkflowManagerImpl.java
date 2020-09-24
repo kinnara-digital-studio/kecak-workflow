@@ -5462,8 +5462,12 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 workflowProcess.setRequesterId(getUserByProcessIdAndActivityDefId(workflowProcess.getId(), workflowProcess.getInstanceId(), WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS));
 
                 WorkflowProcess trackWflowProcess = getRunningProcessInfo(wfProcess.key());
-                workflowProcess.setStartedTime(trackWflowProcess.getStartedTime());
-                workflowProcess.setDue(trackWflowProcess.getDue());
+                if(trackWflowProcess != null) {
+                    workflowProcess.setStartedTime(trackWflowProcess.getStartedTime());
+                    workflowProcess.setDue(trackWflowProcess.getDue());
+                } else {
+                    LogUtil.warn(getClass().getName(), "Fail when retrieving process info [" + wfProcess.key() + "]");
+                }
 
                 runningProcessList.add(workflowProcess);
             }
