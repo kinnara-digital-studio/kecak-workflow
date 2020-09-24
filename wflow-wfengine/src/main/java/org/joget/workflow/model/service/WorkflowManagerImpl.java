@@ -5561,8 +5561,8 @@ public class WorkflowManagerImpl implements WorkflowManager, StreamHelper {
                 workflowProcess.setRequesterId(getUserByProcessIdAndActivityDefId(workflowProcess.getId(), workflowProcess.getInstanceId(), WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS));
 
                 Optional.of(wfProcess)
-                        .map(throwableFunction(WfExecutionObject::key, (p, e) -> {
-                            LogUtil.warn(getClass().getName(), "Error ["+ e.getMessage() + "] when getting key from [" + p + "]");
+                        .map(throwableFunction(WfExecutionObject::key, e -> {
+                            LogUtil.warn(getClass().getName(), e.getMessage());
                             return null;
                         }))
                         .map(this::getRunningProcessInfo)
