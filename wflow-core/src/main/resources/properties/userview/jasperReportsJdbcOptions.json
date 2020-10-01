@@ -5,7 +5,7 @@
         label : '@@userview.jrjo.driver@@',
         description : '@@userview.jrjo.driver.desc@@',
         type : 'textfield',
-        value : 'com.mysql.jdbc.Driver',
+        value : 'com.mysql.cj.jdbc.Driver',
         required : 'true'
     },{
         name : 'jdbcUrl',
