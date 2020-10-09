@@ -52,9 +52,17 @@ public class TextFieldDataListFilterType extends DataListFilterTypeDefault {
         String value = getValue(datalist, name, getPropertyString("defaultValue"));
         if (datalist != null && datalist.getBinder() != null && value != null && !value.isEmpty()) {
             queryObject.setQuery("lower(" + datalist.getBinder().getColumnName(name) + ") like lower(?)");
-            queryObject.setValues(new String[]{'%' + value + '%'});
+            if(exactMatch()) {
+                queryObject.setValues(new String[]{value});
+            } else {
+                queryObject.setValues(new String[]{'%' + value + '%'});
+            }
             return queryObject;
         }
         return null;
+    }
+
+    private boolean exactMatch() {
+        return "true".equalsIgnoreCase(getPropertyString("exactMatch"));
     }
 }

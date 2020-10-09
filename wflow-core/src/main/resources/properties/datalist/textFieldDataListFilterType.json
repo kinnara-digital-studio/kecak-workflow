@@ -6,6 +6,17 @@
                 name:'defaultValue',
                 label:'@@datalist.tfdlft.defaultValue@@',
                 type:'textfield'
+            },
+            {
+                name:'exactMatch',
+                label:'@@datalist.tfdlft.exactMatch@@',
+                type:'checkbox',
+                options:[
+                    {
+                        value: 'true',
+                        label: ''
+                    }
+                ]
             }
         ]
     }
