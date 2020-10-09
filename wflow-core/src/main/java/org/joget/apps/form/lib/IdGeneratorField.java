@@ -26,7 +26,7 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
         return renderTemplate(template,formData,dataModel);
     }
 
-    private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
 
         String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
@@ -150,7 +150,7 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
      *
      * @return
      */
-    private boolean isUsingPublishedAppVersion() {
+    protected boolean isUsingPublishedAppVersion() {
         return "true".equalsIgnoreCase(getPropertyString("usePublishedAppVersion"));
     }
 
@@ -159,7 +159,7 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
      *
      * @return
      */
-    private AppDefinition getPublishedAppDefinition() {
+    protected AppDefinition getPublishedAppDefinition() {
         AppDefinition currentAppDefinition = AppUtil.getCurrentAppDefinition();
         AppDefinitionDao appDefinitionDao = (AppDefinitionDao) AppUtil.getApplicationContext().getBean("appDefinitionDao");
         String appId = currentAppDefinition.getAppId();
