@@ -8,7 +8,6 @@
                 <#if values?? && values?seq_contains(option.value!)>
                     <label class="readonly_label">
                         <span>${option.label!?html}</span>
-                        <input id="${elementParamName!}" name="${elementParamName!}" type="hidden" value="${option.value!?html}" />
                     </label>
                 </#if>
             </#list>

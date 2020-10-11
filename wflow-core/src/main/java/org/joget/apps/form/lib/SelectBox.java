@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
-    private final WeakHashMap<String, Form> formCache = new WeakHashMap<>();
+    private final Map<String, Form> formCache = new HashMap<>();
 
     private Element controlElement;
 
