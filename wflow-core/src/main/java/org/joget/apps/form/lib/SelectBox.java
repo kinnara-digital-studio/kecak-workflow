@@ -151,7 +151,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         dynamicOptions(formData);
 
         // set value
-        String[] valueArray = getElementValues(formData);
+        String[] valueArray = FormUtil.getElementPropertyValues(this, formData);
         List<String> values = Arrays.asList(valueArray);
         dataModel.put("values", values);
 
