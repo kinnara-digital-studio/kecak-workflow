@@ -125,7 +125,7 @@
                             imageUrl = '${pageContext.request.contextPath}/web/userview/screenshot/' + app.id + '/' + uv.id;
                         }
                         content += '<a class="app-link" target="_blank" href="' + userviewUrl + '">\
-                                            <span class="app-icon"><img src="' + imageUrl + '" width="240" border="0"></span>\
+                                            <span class="app-icon"><img src="' + imageUrl + '" width="240" border="0" style="width: inherit;height: inherit;"></span>\
                                             <div class="app-name">' + uv.name + '</div>\
                                             <div class="app-description">' + app.name + '</div>\
                                             <div class="uv-description" style="display:none">' + uv.description + '</div>\

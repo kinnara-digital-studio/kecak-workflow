@@ -30,6 +30,7 @@ import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
+import org.joget.apps.userview.model.UserviewTheme;
 import org.kecak.apps.app.model.EmailProcessorPlugin;
 import org.kecak.apps.app.model.SchedulerPlugin;
 import org.kecak.apps.scheduler.SchedulerManager;
@@ -5435,28 +5436,43 @@ public class ConsoleWebController {
         }
         String path = basePath + "app_screenshots";
 
-        InputStream imageInput;
-        File f = new File(path, filename);
-        if (!f.exists()) {
-            String defaultImage = "images/sampleapp.png";
-            imageInput = getClass().getClassLoader().getResourceAsStream(defaultImage);
-        } else {
-            imageInput = new FileInputStream(f);
-        }
+        UserviewTheme userviewTheme = userviewService.getUserviewTheme(appId, userviewId);
+        String logoUrl = Optional.ofNullable(userviewTheme).map(UserviewTheme::getLogoResourcePath).orElse("");
+        if(!logoUrl.isEmpty()) {
+            try(InputStream logoStream = pluginManager.getPluginResource(userviewTheme.getClassName(), logoUrl)) {
+                byte[] bbuf = new byte[65536];
+                try (OutputStream out = response.getOutputStream();
+                     DataInputStream in = new DataInputStream(logoStream)) {
 
-        response.setContentType("image/png");
-        OutputStream out = response.getOutputStream();
-        byte[] bbuf = new byte[65536];
-        DataInputStream in = new DataInputStream(imageInput);
-        try {
-            int length = 0;
-            while ((in != null) && ((length = in.read(bbuf)) != -1)) {
-                out.write(bbuf, 0, length);
+                    int length;
+                    while ((length = in.read(bbuf)) != -1) {
+                        out.write(bbuf, 0, length);
+                    }
+                    out.flush();
+                }
+            } catch (IOException e) {
+                LogUtil.error(getClass().getName(), e, e.getMessage());
             }
-        } finally {
-            in.close();
-            out.flush();
-            out.close();
+        } else {
+            InputStream imageInput;
+            File f = new File(path, filename);
+            if (!f.exists()) {
+                String defaultImage = "images/sampleapp.png";
+                imageInput = getClass().getClassLoader().getResourceAsStream(defaultImage);
+            } else {
+                imageInput = new FileInputStream(f);
+            }
+
+            response.setContentType("image/png");
+            byte[] bbuf = new byte[65536];
+            try (OutputStream out = response.getOutputStream();
+                 DataInputStream in = new DataInputStream(imageInput)) {
+                int length;
+                while ((length = in.read(bbuf)) != -1) {
+                    out.write(bbuf, 0, length);
+                }
+                out.flush();
+            }
         }
     }
 

@@ -49,10 +49,4 @@ public interface MobileApplicationTheme {
      * @return
      */
     Color getSecondaryFontColor();
-
-    /**
-     *
-     * @return
-     */
-    String getUserviewLogo();
 }
