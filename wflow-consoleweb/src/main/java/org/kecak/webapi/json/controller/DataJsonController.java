@@ -2251,6 +2251,43 @@ public class DataJsonController implements Declutter {
     }
 
     /**
+     * @deprecated use {@link DataJsonController#getDataListAssignments}
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityDefIds
+     * @param page
+     * @param start
+     * @param rows
+     * @param sort
+     * @param desc
+     * @param digest
+     * @throws IOException
+     */
+    @Deprecated
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
+    public void deprecatedGetDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
+                                                 @RequestParam("appId") final String appId,
+                                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                                 @RequestParam("dataListId") final String dataListId,
+                                                 @RequestParam(value = "processId", required = false) final String[] processId,
+                                                 @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
+                                                 @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                 @RequestParam(value = "start", required = false) final Integer start,
+                                                 @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
+                                                 @RequestParam(value = "sort", required = false) final String sort,
+                                                 @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
+                                                 @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException {
+
+        getDataListAssignments(request, response, appId, appVersion, dataListId, processId, activityDefIds, page, start, rows, sort, desc, digest);
+    }
+
+    /**
      * Get DataList Assignments
      * <p>
      * Same functionality as DataList Inbox plugin
@@ -2270,7 +2307,7 @@ public class DataJsonController implements Declutter {
      * @param digest
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/assignments", method = RequestMethod.GET)
     public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("appId") final String appId,
                                        @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
@@ -2390,7 +2427,31 @@ public class DataJsonController implements Declutter {
         }
     }
 
+
+    /**
+     * @deprecated use {@link #getDataListAssignmentsCount(HttpServletRequest, HttpServletResponse, String, Long, String, String[], String[])}
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityId
+     * @throws IOException
+     */
+    @Deprecated
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
+    public void depecatedGetDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
+                                            @RequestParam("appId") final String appId,
+                                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                            @RequestParam("dataListId") final String dataListId,
+                                            @RequestParam(value = "processId", required = false) final String[] processId,
+                                            @RequestParam(value = "activityId", required = false) final String[] activityId)
+            throws IOException {
+        getDataListAssignmentsCount(request, response, appId, appVersion, dataListId, processId, activityId);
+    }
+
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/assignments/count", method = RequestMethod.GET)
     public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
                                             @RequestParam("appId") final String appId,
                                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
@@ -2445,7 +2506,6 @@ public class DataJsonController implements Declutter {
             response.sendError(e.getErrorCode(), e.getMessage());
         }
     }
-
 
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST)
     public void postDataListAction(final HttpServletRequest request, final HttpServletResponse response,
@@ -2762,7 +2822,6 @@ public class DataJsonController implements Declutter {
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] not available"));
     }
 
-
     /**
      * Get assignment object by process ID and activity Def ID
      *
@@ -2784,7 +2843,7 @@ public class DataJsonController implements Declutter {
                 .flatMap(Collection::stream)
 
                 // filter by Activity Def ID, if activityDefId is empty, get the first activity
-                .filter(it -> activityDefId.isEmpty() || Optional.of(it)
+                .filter(it -> isEmpty(activityDefId) || Optional.of(it)
                         .map(WorkflowAssignment::getActivityId)
                         .map(workflowManager::getActivityById)
                         .map(WorkflowActivity::getActivityDefId)
