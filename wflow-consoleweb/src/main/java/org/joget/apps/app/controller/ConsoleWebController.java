@@ -22,12 +22,15 @@ import org.joget.apps.ext.ConsoleWebPlugin;
 import org.joget.apps.form.dao.FormDataDao;
 import org.joget.apps.form.lib.DefaultFormBinder;
 import org.joget.apps.form.model.Form;
+import org.joget.apps.form.model.FormLoadMultiRowElementBinder;
+import org.joget.apps.form.model.FormStoreMultiRowElementBinder;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.generator.service.GeneratorUtil;
 import org.joget.apps.property.PropertiesTemplate;
 import org.joget.apps.property.dao.PropertyDao;
 import org.joget.apps.property.model.Property;
+import org.joget.apps.userview.model.UserviewTheme;
 import org.kecak.apps.app.model.EmailProcessorPlugin;
 import org.kecak.apps.app.model.SchedulerPlugin;
 import org.kecak.apps.scheduler.SchedulerManager;
@@ -3838,7 +3841,6 @@ public class ConsoleWebController {
             } else {
                 properties = SetupManager.getSettingValue(DirectoryUtil.IMPL_PROPERTIES);
             }
-
             if (!(plugin instanceof PropertyEditable)) {
                 @SuppressWarnings("rawtypes")
                 Map propertyMap = new HashMap();
@@ -3853,6 +3855,7 @@ public class ConsoleWebController {
             }
 
             map.addAttribute("plugin", plugin);
+            LogUtil.info(getClass().getName(),"directory : " + map.toString());
 
             String url = request.getContextPath() + "/web/console/setting/directoryManagerImpl/config/submit?id=" + directoryManagerImpl;
             map.addAttribute("actionUrl", url);
@@ -5305,10 +5308,13 @@ public class ConsoleWebController {
         pluginTypeMap.put("org.joget.apps.datalist.model.DataListFilterType", ResourceBundleUtil.getMessage("setting.plugin.datalistFilterType"));
         pluginTypeMap.put("org.joget.workflow.model.DeadlinePlugin", ResourceBundleUtil.getMessage("setting.plugin.deadline"));
         pluginTypeMap.put("org.joget.directory.model.service.DirectoryManagerPlugin", ResourceBundleUtil.getMessage("setting.plugin.directoryManager"));
+        pluginTypeMap.put("org.kecak.oauth.model.Oauth2ClientPlugin", ResourceBundleUtil.getMessage("setting.plugin.oauth2Login"));
         pluginTypeMap.put("org.joget.apps.form.model.Element", ResourceBundleUtil.getMessage("setting.plugin.formElement"));
         pluginTypeMap.put("org.joget.apps.form.model.FormLoadElementBinder", ResourceBundleUtil.getMessage("setting.plugin.formLoadBinder"));
+        pluginTypeMap.put(FormLoadMultiRowElementBinder.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.formMultirowLoadBinder"));
         pluginTypeMap.put("org.joget.apps.form.model.FormLoadOptionsBinder", ResourceBundleUtil.getMessage("setting.plugin.formOptionsBinder"));
         pluginTypeMap.put("org.joget.apps.form.model.FormStoreBinder", ResourceBundleUtil.getMessage("setting.plugin.formStoreBinder"));
+        pluginTypeMap.put(FormStoreMultiRowElementBinder.class.getName(), ResourceBundleUtil.getMessage("setting.plugin.formMultirowStoreBinder"));
         pluginTypeMap.put("org.joget.apps.form.model.FormPermission", ResourceBundleUtil.getMessage("setting.plugin.formPermission"));
         pluginTypeMap.put("org.joget.apps.form.model.Validator", ResourceBundleUtil.getMessage("setting.plugin.formValidator"));
         pluginTypeMap.put("org.joget.apps.generator.model.GeneratorPlugin", ResourceBundleUtil.getMessage("setting.plugin.generator"));
@@ -5430,28 +5436,43 @@ public class ConsoleWebController {
         }
         String path = basePath + "app_screenshots";
 
-        InputStream imageInput;
-        File f = new File(path, filename);
-        if (!f.exists()) {
-            String defaultImage = "images/sampleapp.png";
-            imageInput = getClass().getClassLoader().getResourceAsStream(defaultImage);
-        } else {
-            imageInput = new FileInputStream(f);
-        }
+        UserviewTheme userviewTheme = userviewService.getUserviewTheme(appId, userviewId);
+        String logoUrl = Optional.ofNullable(userviewTheme).map(UserviewTheme::getLogoResourcePath).orElse("");
+        if(!logoUrl.isEmpty()) {
+            try(InputStream logoStream = pluginManager.getPluginResource(userviewTheme.getClassName(), logoUrl)) {
+                byte[] bbuf = new byte[65536];
+                try (OutputStream out = response.getOutputStream();
+                     DataInputStream in = new DataInputStream(logoStream)) {
 
-        response.setContentType("image/png");
-        OutputStream out = response.getOutputStream();
-        byte[] bbuf = new byte[65536];
-        DataInputStream in = new DataInputStream(imageInput);
-        try {
-            int length = 0;
-            while ((in != null) && ((length = in.read(bbuf)) != -1)) {
-                out.write(bbuf, 0, length);
+                    int length;
+                    while ((length = in.read(bbuf)) != -1) {
+                        out.write(bbuf, 0, length);
+                    }
+                    out.flush();
+                }
+            } catch (IOException e) {
+                LogUtil.error(getClass().getName(), e, e.getMessage());
             }
-        } finally {
-            in.close();
-            out.flush();
-            out.close();
+        } else {
+            InputStream imageInput;
+            File f = new File(path, filename);
+            if (!f.exists()) {
+                String defaultImage = "images/sampleapp.png";
+                imageInput = getClass().getClassLoader().getResourceAsStream(defaultImage);
+            } else {
+                imageInput = new FileInputStream(f);
+            }
+
+            response.setContentType("image/png");
+            byte[] bbuf = new byte[65536];
+            try (OutputStream out = response.getOutputStream();
+                 DataInputStream in = new DataInputStream(imageInput)) {
+                int length;
+                while ((length = in.read(bbuf)) != -1) {
+                    out.write(bbuf, 0, length);
+                }
+                out.flush();
+            }
         }
     }
 
@@ -5685,6 +5706,101 @@ public class ConsoleWebController {
             }
         }
         return "console/setting/clientAppList";
+    }
+
+    @RequestMapping("/console/setting/oauth2plugin")
+    public String consoleSettingOauth2Plugin(ModelMap map) {
+        map.addAttribute("pluginType", getPluginType());
+        return "console/setting/oauth2Plugin";
+    }
+
+    @RequestMapping(value = "/console/setting/oauth2plugin/config",method = RequestMethod.GET)
+    public String consoleSettingOAuth2PluginConfig(ModelMap map, @RequestParam(value = "id") String id) throws IOException {
+        Plugin plugin = pluginManager.getPlugin(id);
+
+        if (plugin != null) {
+            String properties = SetupManager.getSettingValue(id);
+            LogUtil.info(getClass().getName(),properties);
+            if (!(plugin instanceof PropertyEditable)) {
+                @SuppressWarnings("rawtypes")
+                Map propertyMap = new HashMap();
+                propertyMap = CsvUtil.getPluginPropertyMap(properties);
+                map.addAttribute("propertyMap", propertyMap);
+                LogUtil.info(getClass().getName(),"property map" + propertyMap.toString());
+            } else {
+                map.addAttribute("properties", PropertyUtil.propertiesJsonLoadProcessing(properties));
+                LogUtil.info(getClass().getName(),"properties" + PropertyUtil.propertiesJsonLoadProcessing(properties));
+            }
+
+            if (plugin instanceof PropertyEditable) {
+                map.addAttribute("propertyEditable", (PropertyEditable) plugin);
+            }
+
+            map.addAttribute("plugin", plugin);
+
+            String url = WorkflowUtil.getHttpServletRequest().getContextPath() + "/web/console/setting/oauth2plugin/config/submit?id=" + id;
+            map.addAttribute("actionUrl", url);
+
+            return "console/plugin/pluginConfig";
+        } else {
+            return "error404";
+        }
+    }
+
+    @RequestMapping(value = "/console/setting/oauth2plugin/config/submit", method = RequestMethod.POST)
+    public String consoleSettingOauth2PluginConfigSubmit(ModelMap map, @RequestParam("id") String id, @RequestParam(value = "pluginProperties", required = false) String pluginProperties, HttpServletRequest request) {
+        String currentUsername = WorkflowUtil.getCurrentUsername();
+        @SuppressWarnings("unused")
+        Plugin plugin = (Plugin) pluginManager.getPlugin(id);
+
+        Setting propertySetting = SetupManager.getSettingByProperty(id);
+        if (propertySetting == null) {
+            propertySetting = new Setting();
+            propertySetting.setProperty(id);
+        }
+
+        if (pluginProperties == null) {
+            //request params
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            Map<String, String> propertyMap = new HashMap();
+            Enumeration<String> e = request.getParameterNames();
+            while (e.hasMoreElements()) {
+                String paramName = e.nextElement();
+
+                if (!paramName.startsWith("param_")) {
+                    String[] paramValue = (String[]) request.getParameterValues(paramName);
+                    propertyMap.put(paramName, CsvUtil.getDeliminatedString(paramValue));
+                }
+            }
+
+            // form csv properties
+            StringWriter sw = new StringWriter();
+            try {
+                CSVWriter writer = new CSVWriter(sw);
+                @SuppressWarnings("rawtypes")
+                Iterator it = propertyMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    Map.Entry<String, String> pairs = (Map.Entry) it.next();
+                    writer.writeNext(new String[]{pairs.getKey(), pairs.getValue()});
+                }
+                writer.close();
+            } catch (Exception ex) {
+                LogUtil.error(getClass().getName(), ex, "");
+            }
+            String pluginProps = sw.toString();
+            propertySetting.setValue(pluginProps);
+        } else {
+            propertySetting.setValue(PropertyUtil.propertiesJsonStoreProcessing(propertySetting.getValue(), pluginProperties));
+        }
+        propertySetting.setDateModified(new Date());
+        propertySetting.setModifiedBy(currentUsername);
+        setupManager.saveSetting(propertySetting);
+
+        String contextPath = WorkflowUtil.getHttpServletRequest().getContextPath();
+        String url = contextPath + "/web/console/setting/oauth2plugin";
+        map.addAttribute("url", url);
+        return "console/dialogClose";
     }
 
 }

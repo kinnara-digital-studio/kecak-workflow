@@ -64,4 +64,12 @@ public abstract class UserviewTheme extends ExtElement {
      * @return
      */
     public abstract String getBeforeContent();
+
+    /**
+     * Image logo that will be shown in userview
+     * @return
+     */
+    public String getLogoResourcePath() {
+        return null;
+    }
 }
