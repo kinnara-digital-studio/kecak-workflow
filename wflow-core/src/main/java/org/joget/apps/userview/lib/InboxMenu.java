@@ -111,10 +111,10 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
 
     @Override
     public String getJspPage() {
-        return getJspPage("userview/plugin/form.jsp", "userview/plugin/datalist.jsp");
+        return getJspPage("userview/plugin/form.jsp", "userview/plugin/datalist.jsp", "userview/plugin/unauthorized.jsp");
     }
 
-    private String getJspPage(String jspFormFile, String jspListFile) {
+    protected String getJspPage(String jspFormFile, String jspListFile, String jspUnauthorizedFile) {
         String mode = getRequestParameterString("_mode");
 
         if ("assignment".equals(mode)) {
@@ -124,7 +124,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
             setAlertMessage(getPropertyString(mode + "-messageShowAfterComplete"));
 
 //                return handleBootstrapForm();
-            return handleForm(jspFormFile);
+            return handleForm(jspFormFile, jspUnauthorizedFile);
         } else {
             String customHeader = "<style>";
             customHeader += "span.dot_red{background-color: red;display: block;height: 15px;text-align: left;width: 15px;}";
@@ -194,7 +194,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
 			AppService appService = (AppService) ac.getBean("appService");
             DataListService dataListService = (DataListService) ac.getBean("dataListService");
             String json = AppUtil.readPluginResource(getClass().getName(), "/properties/userview/inboxMenuListJson.json", null, true, "message/userview/inboxMenu");
-            cacheDataList = dataListService.fromJson(json);
+            cacheDataList = dataListService.fromJson(json, false);
         }
         return cacheDataList;
     }
@@ -292,13 +292,13 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
         return count;
     }
 
-    private String handleForm(String jspFile) {
+    private String handleForm(String jspFile, String jspUnauthorized) {
         AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         if ("submit".equals(getRequestParameterString("_action"))) {
             // only allow POST
             HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
             if (request != null && !"POST".equalsIgnoreCase(request.getMethod())) {
-                return "userview/plugin/unauthorized.jsp";
+                return jspUnauthorized;
             }
 
             // submit form
@@ -553,7 +553,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
 
     @Override
     public String getAceJspPage(BootstrapUserview bootstrapTheme) {
-        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp());
+        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp(), bootstrapTheme.getUnauthorizedJsp());
     }
 
     @Override
@@ -563,7 +563,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
 
     @Override
     public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
-        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp());
+        return getJspPage(bootstrapTheme.getFormJsp(), bootstrapTheme.getDataListJsp(), bootstrapTheme.getUnauthorizedJsp());
     }
 
     @Override

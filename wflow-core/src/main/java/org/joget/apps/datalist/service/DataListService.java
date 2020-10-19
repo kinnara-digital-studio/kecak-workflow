@@ -38,13 +38,36 @@ public class DataListService {
     /**
      * Create a DataList object from JSON definition
      * @param json
+     * @param ignoreColumnPermission
      * @return
      */
-    public DataList fromJson(String json) {
+    public DataList fromJson(String json, boolean ignoreColumnPermission) {
         json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
 
         DataList dataList = JsonUtil.fromJson(json, DataList.class);
+
+        // check column permission
+        if(dataList != null) {
+            DataListColumn[] columns = Optional.of(dataList)
+                    .map(DataList::getColumns)
+                    .map(Arrays::stream)
+                    .orElseGet(Stream::empty)
+                    .filter(dataListColumn -> ignoreColumnPermission || dataListColumn.isPermitted())
+                    .toArray(DataListColumn[]::new);
+
+            dataList.setColumns(columns);
+        }
+
         return dataList;
+    }
+
+    /**
+     * Create a DataList object from JSON definition
+     * @param json
+     * @return
+     */
+    public DataList fromJson(String json) {
+        return fromJson(json, true);
     }
 
     /**
