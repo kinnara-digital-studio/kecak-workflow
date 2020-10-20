@@ -18,6 +18,8 @@ import org.joget.apps.form.model.FormStoreElementBinder;
 import org.joget.apps.form.model.FormStoreMultiRowElementBinder;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
+import org.joget.workflow.model.WorkflowAssignment;
+import org.joget.workflow.model.service.WorkflowManager;
 
 public class BeanShellFormBinder extends FormBinder implements FormLoadBinder, FormStoreBinder, FormLoadElementBinder, FormStoreElementBinder, FormLoadOptionsBinder, FormLoadMultiRowElementBinder, FormStoreMultiRowElementBinder, FormAjaxOptionsBinder {
 
@@ -104,11 +106,15 @@ public class BeanShellFormBinder extends FormBinder implements FormLoadBinder, F
     }
 
     @SuppressWarnings("unchecked")
-	public FormRowSet loadAjaxOptions(String[] dependencyValues) {
+	public FormRowSet loadAjaxOptions(String[] dependencyValues, FormData formData) {
         @SuppressWarnings("rawtypes")
 		Map properties = new HashMap();
         properties.putAll(getProperties());
         properties.put("values", (dependencyValues == null)? new String[]{}: dependencyValues);
-        return executeScript(getPropertyString("script"), properties, false);
+
+        WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
+        WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+        String script = AppUtil.processHashVariable(getPropertyString("script"), workflowAssignment, null, null);
+        return executeScript(script, properties, false);
     }
 }

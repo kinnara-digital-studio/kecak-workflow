@@ -14,6 +14,8 @@ import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.SecurityUtil;
+import org.joget.workflow.model.WorkflowAssignment;
+import org.joget.workflow.model.service.WorkflowManager;
 
 /**
  * Form load binder that loads the data rows of a form.
@@ -66,7 +68,7 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
     }
 
     public FormRowSet load(Element element, String primaryKey, FormData formData) {
-        return loadAjaxOptions(null);
+        return loadAjaxOptions(null, formData);
     }
 
     /**
@@ -88,7 +90,7 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
         return "true".equalsIgnoreCase(getPropertyString("useAjax"));
     }
 
-    public FormRowSet loadAjaxOptions(String[] dependencyValues) {
+    public FormRowSet loadAjaxOptions(String[] dependencyValues, FormData formData) {
         FormRowSet results = new FormRowSet();
         results.setMultiRow(true);
         //Using filtered formset to ensure the returned result is clean with no unnecessary nulls
@@ -103,8 +105,10 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
 
                 String condition = null;
                 Object[] conditionParams = null;
-                
-                String extraCondition = (String) getProperty("extraCondition");
+
+                WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
+                WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+                String extraCondition = AppUtil.processHashVariable(getPropertyString("extraCondition"), workflowAssignment, null, null);
                 if (extraCondition != null && !extraCondition.trim().isEmpty()) {
                     condition = " WHERE " + extraCondition;
                 }

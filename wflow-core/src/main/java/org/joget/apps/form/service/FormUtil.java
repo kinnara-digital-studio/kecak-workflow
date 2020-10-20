@@ -936,7 +936,7 @@ public class FormUtil implements ApplicationContextAware {
             String[] controlValues = FormUtil.getElementPropertyValues(controlElement, formData);
             
             FormAjaxOptionsBinder binder = (FormAjaxOptionsBinder) element.getOptionsBinder();
-            FormRowSet rowSet = binder.loadAjaxOptions(controlValues);
+            FormRowSet rowSet = binder.loadAjaxOptions(controlValues, formData);
             
             if (rowSet != null) {
                 optionsMap.addAll(rowSet);
@@ -1693,7 +1693,7 @@ public class FormUtil implements ApplicationContextAware {
                     
                     if (binder != null) {
                         FormAjaxOptionsBinder ab = (FormAjaxOptionsBinder) binder;
-                        rowSet = ab.loadAjaxOptions(dependencyValue.split(";"));
+                        rowSet = ab.loadAjaxOptions(dependencyValue.split(";"), new FormData());
                     }
                 }
             } catch (Exception e) {}
