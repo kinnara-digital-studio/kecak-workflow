@@ -19,5 +19,5 @@ public interface FormAjaxOptionsBinder extends Serializable {
      * Retrieve options based on dependency values
      * @return 
      */
-    public FormRowSet loadAjaxOptions(String[] dependencyValues);
+    public FormRowSet loadAjaxOptions(String[] dependencyValues, FormData formData);
 }
