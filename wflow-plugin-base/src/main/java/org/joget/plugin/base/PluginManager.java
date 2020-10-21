@@ -1192,6 +1192,9 @@ public class PluginManager implements ApplicationContextAware {
      * @return plugin object
      */
     public <T extends PropertyEditable> T getPlugin(String className, Map<String, Object> properties) {
+        if(className == null || className.isEmpty())
+            return null;
+
         T plugin = (T) getPlugin(className);
         if (plugin == null) {
             LogUtil.warn(PluginManager.class.getName(), "Error generating plugin [" + className + "]");
