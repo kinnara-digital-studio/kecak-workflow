@@ -1,5 +1,7 @@
 package org.joget.apps.form.model;
 
+import org.kecak.apps.form.model.BootstrapFormElement;
+
 import java.util.Map;
 
 /**

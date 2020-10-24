@@ -12,5 +12,5 @@ public interface AdminLteUserviewMenu extends BootstrapUserviewMenu {
 
     String getAdminLteRenderPage();
 
-    String getAdminLteDecoratedMenu(BootstrapUserviewTheme bootstrapTheme);
+    String getAdminLteDecoratedMenu();
 }

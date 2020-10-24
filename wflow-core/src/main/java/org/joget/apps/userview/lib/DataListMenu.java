@@ -190,7 +190,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
     }
 
     @Override
-    public String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
+    public String getAceDecoratedMenu() {
         return getDecoratedMenu();
     }
 
@@ -205,7 +205,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
+    public String getAdminLteDecoratedMenu() {
         return getDecoratedMenu();
     }
 }

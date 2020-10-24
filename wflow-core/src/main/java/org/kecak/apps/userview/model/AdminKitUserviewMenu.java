@@ -5,5 +5,5 @@ public interface AdminKitUserviewMenu extends BootstrapUserviewMenu {
 
     String getAdminKitRenderPage();
 
-    String getAdminKitDecoratedMenu(BootstrapUserviewTheme bootstrapTheme);
+    String getAdminKitDecoratedMenu();
 }
