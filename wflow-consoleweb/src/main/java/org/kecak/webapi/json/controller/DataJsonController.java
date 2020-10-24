@@ -54,9 +54,8 @@ import java.util.stream.Stream;
 
 /**
  * @author aristo
- *
+ * <p>
  * Automatic API generation using Kecak UI builder
- *
  */
 @Controller
 public class DataJsonController implements Declutter {
@@ -1784,7 +1783,6 @@ public class DataJsonController implements Declutter {
     }
 
 
-
     /**
      * Abort assignment
      *
@@ -2251,8 +2249,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     * @deprecated use {@link DataJsonController#getDataListAssignments}
-     *
      * @param request
      * @param response
      * @param appId
@@ -2267,6 +2263,7 @@ public class DataJsonController implements Declutter {
      * @param desc
      * @param digest
      * @throws IOException
+     * @deprecated use {@link DataJsonController#getDataListAssignments}
      */
     @Deprecated
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
@@ -2429,7 +2426,6 @@ public class DataJsonController implements Declutter {
 
 
     /**
-     * @deprecated use {@link #getDataListAssignmentsCount(HttpServletRequest, HttpServletResponse, String, Long, String, String[], String[])}
      * @param request
      * @param response
      * @param appId
@@ -2438,15 +2434,16 @@ public class DataJsonController implements Declutter {
      * @param processId
      * @param activityId
      * @throws IOException
+     * @deprecated use {@link #getDataListAssignmentsCount(HttpServletRequest, HttpServletResponse, String, Long, String, String[], String[])}
      */
     @Deprecated
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
     public void depecatedGetDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
-                                            @RequestParam("appId") final String appId,
-                                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                            @RequestParam("dataListId") final String dataListId,
-                                            @RequestParam(value = "processId", required = false) final String[] processId,
-                                            @RequestParam(value = "activityId", required = false) final String[] activityId)
+                                                     @RequestParam("appId") final String appId,
+                                                     @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                                     @RequestParam("dataListId") final String dataListId,
+                                                     @RequestParam(value = "processId", required = false) final String[] processId,
+                                                     @RequestParam(value = "activityId", required = false) final String[] activityId)
             throws IOException {
         getDataListAssignmentsCount(request, response, appId, appVersion, dataListId, processId, activityId);
     }
@@ -2660,13 +2657,28 @@ public class DataJsonController implements Declutter {
      * @param dataList          Input/Output parameter
      */
     private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
-        Arrays.stream(dataList.getFilters())
-                .peek(f -> {
-                    if (!(f.getType() instanceof DataListFilterTypeDefault))
-                        LogUtil.warn(getClass().getName(), "DataList filter [" + f.getName() + "] is not instance of [" + DataListFilterTypeDefault.class.getName() + "], filter will be ignored");
-                })
-                .filter(f -> Objects.nonNull(requestParameters.get(f.getName())) && f.getType() instanceof DataListFilterTypeDefault)
-                .forEach(f -> f.getType().setProperty("defaultValue", String.join(";", requestParameters.get(f.getName()))));
+        Optional.of(dataList)
+                .map(DataList::getFilters)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+
+                .filter(f -> Optional.of(f)
+                        .map(DataListFilter::getName)
+                        .map(requestParameters::get)
+                        .map(a -> a.length)
+                        .map(i -> i > 0)
+                        .orElse(false))
+
+                .forEach(filter -> {
+                    String filterName = filter.getName();
+                    String[] values = requestParameters.get(filterName);
+
+                    DataListFilterType filterType = filter.getType();
+                    filterType.setProperty("defaultValue", String.join(";", values));
+                });
+
+        dataList.getFilterQueryObjects();
+        dataList.setFilters(null);
     }
 
     /**
