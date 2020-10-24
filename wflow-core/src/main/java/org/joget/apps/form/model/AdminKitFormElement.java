@@ -5,6 +5,6 @@ import java.util.Map;
 /**
  * Form AdminLTE Theme
  */
-public interface AceFormElement extends BootstrapFormElement {
-    String renderAceTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel);
+public interface AdminKitFormElement extends BootstrapFormElement {
+    String renderAdminKitTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel);
 }

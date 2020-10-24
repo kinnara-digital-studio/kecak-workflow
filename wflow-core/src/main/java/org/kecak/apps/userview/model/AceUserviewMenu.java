@@ -7,12 +7,10 @@ import org.joget.apps.userview.model.UserviewMenu;
  *
  * Bootstrap Ace Theme for {@link UserviewMenu}
  */
-public interface AceUserviewMenu extends BootstrapUserviewMenu, BootstrapAceTheme {
-    default String getAceJspPage(BootstrapUserview bootstrapTheme) {
-        return null;
-    }
+public interface AceUserviewMenu extends BootstrapUserviewMenu {
+    String getAceJspPage(BootstrapUserviewTheme theme);
 
     String getAceRenderPage();
 
-    String getAceDecoratedMenu(BootstrapUserview bootstrapTheme);
+    String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme);
 }

@@ -19,7 +19,7 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.apps.userview.model.AceUserviewMenu;
 import org.kecak.apps.userview.model.AdminLteUserviewMenu;
-import org.kecak.apps.userview.model.BootstrapUserview;
+import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -486,22 +486,32 @@ public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteU
     }
 
     @Override
-    public String getAceJspPage(BootstrapUserview theme) {
+    public String getAceJspPage(BootstrapUserviewTheme theme) {
         return getJspPage(theme.getFormJsp(), theme.getUnauthorizedJsp());
     }
 
     @Override
-    public String getAceDecoratedMenu(BootstrapUserview theme) {
+    public String getAceRenderPage() {
+        return null;
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserviewTheme theme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(BootstrapUserview theme) {
+    public String getAdminLteJspPage(BootstrapUserviewTheme theme) {
         return getJspPage(theme.getFormJsp(), theme.getUnauthorizedJsp());
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(BootstrapUserview theme) {
+    public String getAdminLteRenderPage() {
+        return null;
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme theme) {
         return getDecoratedMenu();
     }
 }

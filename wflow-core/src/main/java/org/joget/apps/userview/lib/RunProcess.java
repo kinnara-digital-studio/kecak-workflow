@@ -29,7 +29,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.kecak.apps.userview.model.AceUserviewMenu;
 import org.kecak.apps.userview.model.AdminLteUserviewMenu;
-import org.kecak.apps.userview.model.BootstrapUserview;
+import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.ServletException;
@@ -608,22 +608,32 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
     }
 
     @Override
-    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+    public String getAceJspPage(BootstrapUserviewTheme bootstrapTheme) {
         return getJspPage(bootstrapTheme.getRunProcessJsp());
     }
 
     @Override
-    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
+    public String getAceRenderPage() {
+        return null;
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+    public String getAdminLteJspPage(BootstrapUserviewTheme bootstrapTheme) {
         return getJspPage(bootstrapTheme.getRunProcessJsp());
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
+    public String getAdminLteRenderPage() {
+        return null;
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

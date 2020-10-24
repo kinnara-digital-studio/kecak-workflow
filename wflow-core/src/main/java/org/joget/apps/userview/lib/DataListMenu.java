@@ -13,7 +13,7 @@ import org.joget.commons.util.StringUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.apps.userview.model.AceUserviewMenu;
 import org.kecak.apps.userview.model.AdminLteUserviewMenu;
-import org.kecak.apps.userview.model.BootstrapUserview;
+import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
@@ -180,22 +180,32 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, 
     }
 
     @Override
-    public String getAceJspPage(BootstrapUserview bootstrapTheme) {
+    public String getAceJspPage(BootstrapUserviewTheme bootstrapTheme) {
         return getJspPage(bootstrapTheme.getDataListJsp());
     }
 
     @Override
-    public String getAceDecoratedMenu(BootstrapUserview bootstrapTheme) {
+    public String getAceRenderPage() {
+        return getRenderPage();
+    }
+
+    @Override
+    public String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 
     @Override
-    public String getAdminLteJspPage(BootstrapUserview bootstrapTheme) {
+    public String getAdminLteJspPage(BootstrapUserviewTheme bootstrapTheme) {
         return getJspPage(bootstrapTheme.getDataListJsp());
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme) {
+    public String getAdminLteRenderPage() {
+        return null;
+    }
+
+    @Override
+    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

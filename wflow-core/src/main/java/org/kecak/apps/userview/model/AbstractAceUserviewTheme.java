@@ -1,40 +1,74 @@
 package org.kecak.apps.userview.model;
 
+import org.joget.apps.form.model.AceFormElement;
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.FormData;
+import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.userview.model.UserviewTheme;
+
+import java.util.Map;
 
 /**
  * @author aristo
  *
  * Abstract class to handle Ace Theme
  */
-public abstract class AbstractAceUserviewTheme extends UserviewTheme implements BootstrapUserview, BootstrapAceTheme {
+public abstract class AbstractAceUserviewTheme extends UserviewTheme implements BootstrapUserviewTheme {
     @Override
-    public String getUserviewJsp() {
+    public final String getUserviewJsp() {
         return "ubuilder/AceView";
     }
 
     @Override
-    public String getPreviewJsp() {
+    public final String getPreviewJsp() {
         return getUserviewJsp();
     }
 
     @Override
-    public String getDataListJsp() {
+    public final String getDataListJsp() {
         return "userview/plugin/AceDataList.jsp";
     }
 
     @Override
-    public String getFormJsp() {
+    public final String getFormJsp() {
         return "userview/plugin/AceForm.jsp";
     }
 
     @Override
-    public String getRunProcessJsp() {
+    public final String getRunProcessJsp() {
         return "userview/plugin/AceRunProcess.jsp";
     }
 
     @Override
-    public String getLoginJsp() {
+    public final String getLoginJsp() {
         return "ubuilder/AceLogin";
+    }
+
+    @Override
+    public String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel) {
+        assert element instanceof AceFormElement;
+
+        return ((AceFormElement) element).renderAceTemplate(formData, dataModel);
+    }
+
+    @Override
+    public String getBootstrapJspPage(UserviewMenu menu) {
+        assert menu instanceof AceUserviewMenu;
+
+        return ((AceUserviewMenu) menu).getAceJspPage(this);
+    }
+
+    @Override
+    public String getBootstrapRenderPage(UserviewMenu menu) {
+        assert menu instanceof AceUserviewMenu;
+
+        return ((AceUserviewMenu) menu).getAceRenderPage();
+    }
+
+    @Override
+    public String getBootstrapDecoratedMenu(UserviewMenu menu) {
+        assert menu instanceof AceUserviewMenu;
+
+        return ((AceUserviewMenu) menu).getAceDecoratedMenu(this);
     }
 }
