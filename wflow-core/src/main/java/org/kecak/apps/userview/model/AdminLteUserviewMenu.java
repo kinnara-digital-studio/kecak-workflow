@@ -7,8 +7,10 @@ import org.joget.apps.userview.model.UserviewMenu;
  *
  * Bootstrap AdminLTE Theme for {@link UserviewMenu}
  */
-public interface AdminLteUserviewMenu extends BootstrapUserviewMenu, BootstrapAdminLteTheme {
-    String getAdminLteJspPage(BootstrapUserview bootstrapTheme);
+public interface AdminLteUserviewMenu extends BootstrapUserviewMenu {
+    String getAdminLteJspPage(BootstrapUserviewTheme theme);
 
-    String getAdminLteDecoratedMenu(BootstrapUserview bootstrapTheme);
+    String getAdminLteRenderPage();
+
+    String getAdminLteDecoratedMenu();
 }
