@@ -9,9 +9,8 @@ import org.joget.apps.userview.model.UserviewTheme;
 import java.util.Map;
 
 /**
- * @author aristo
  *
- * Abstract class to handle Admin KIT Theme
+ * Abstract class to handle AdminKit Theme
  */
 public abstract class AbstractAdminKitUserviewTheme extends UserviewTheme implements BootstrapUserviewTheme {
     @Override
