@@ -2,6 +2,7 @@ package org.kecak.apps.userview.model;
 
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.userview.model.UserviewMenu;
 
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import java.util.Map;
  *
  * Bootstrap Web UI Framework for Userview Theme
  */
-public interface BootstrapUserview {
+public interface BootstrapUserviewTheme {
     /**
      * WARNING!!!!! these methods have to be implemented in Kecak Core
      * JSP File in Plugins cannot be recognized by Kecak Core
@@ -34,12 +35,33 @@ public interface BootstrapUserview {
     }
 
     /**
-     * Render core element
+     * Override this method to handle custom own form element's template
      *
      * @param element
      * @param formData
      * @param dataModel
      * @return
      */
-    String renderCoreElementTemplate(Element element, FormData formData, Map dataModel);
+    String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel);
+
+    /**
+     * Override this method to handle custom own userview menu's jsp
+     * @param menu
+     * @return
+     */
+    String getBootstrapJspPage(UserviewMenu menu);
+
+    /**
+     * Override this method to handle custom render page
+     * @param menu
+     * @return
+     */
+    String getBootstrapRenderPage(UserviewMenu menu);
+
+    /**
+     * Override this method to handle custom menu decoration
+     * @param menu
+     * @return
+     */
+    String getBootstrapDecoratedMenu(UserviewMenu menu);
 }

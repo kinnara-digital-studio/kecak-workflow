@@ -46,28 +46,22 @@ public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implem
 
     @Override
     public String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel) {
-        if(element instanceof AdminLteFormElement) {
-            return ((AdminLteFormElement) element).renderAdminLteTemplate(formData, dataModel);
-        } else {
-            return element.renderTemplate(formData, dataModel);
-        }
+        assert element instanceof AdminLteFormElement;
+
+        return ((AdminLteFormElement) element).renderAdminLteTemplate(formData, dataModel);
     }
 
     @Override
     public String getBootstrapJspPage(UserviewMenu menu) {
-        if(menu instanceof AdminLteUserviewMenu) {
-            return ((AdminLteUserviewMenu) menu).getAdminLteJspPage(this);
-        } else {
-            return menu.getJspPage();
-        }
+        assert menu instanceof AdminLteUserviewMenu;
+
+        return ((AdminLteUserviewMenu) menu).getAdminLteJspPage(this);
     }
 
     @Override
     public String getBootstrapRenderPage(UserviewMenu menu) {
-        if(menu instanceof AdminLteUserviewMenu) {
-            return ((AdminLteUserviewMenu) menu).getAdminLteRenderPage();
-        } else {
-            return menu.getRenderPage();
-        }
+        assert menu instanceof AdminLteUserviewMenu;
+
+        return ((AdminLteUserviewMenu) menu).getAdminLteRenderPage();
     }
 }

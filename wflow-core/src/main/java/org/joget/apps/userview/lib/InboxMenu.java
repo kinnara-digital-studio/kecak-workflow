@@ -562,7 +562,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
     }
 
     @Override
-    public String getAceDecoratedMenu() {
+    public String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 
@@ -577,7 +577,7 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport, AceUser
     }
 
     @Override
-    public String getAdminLteDecoratedMenu() {
+    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 }

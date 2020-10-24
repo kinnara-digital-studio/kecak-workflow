@@ -1,6 +1,6 @@
 package org.kecak.apps.userview.model;
 
-import org.joget.apps.form.model.AceFormElement;
+import org.joget.apps.form.model.AdminKitFormElement;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
@@ -8,7 +8,12 @@ import org.joget.apps.userview.model.UserviewTheme;
 
 import java.util.Map;
 
-public abstract class AdminKitUserviewTheme extends UserviewTheme implements BootstrapUserviewTheme {
+/**
+ * @author aristo
+ *
+ * Abstract class to handle Admin KIT Theme
+ */
+public abstract class AbstractAdminKitUserviewTheme extends UserviewTheme implements BootstrapUserviewTheme {
     @Override
     public final String getUserviewJsp() {
         return "ubuilder/AdminKitView";
@@ -41,29 +46,29 @@ public abstract class AdminKitUserviewTheme extends UserviewTheme implements Boo
 
     @Override
     public String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel) {
-        assert element instanceof AceFormElement;
+        assert element instanceof AdminKitFormElement;
 
-        return ((AceFormElement) element).renderAceTemplate(formData, dataModel);
+        return ((AdminKitFormElement) element).renderAdminKitTemplate(formData, dataModel);
     }
 
     @Override
     public String getBootstrapJspPage(UserviewMenu menu) {
-        assert menu instanceof AceUserviewMenu;
+        assert menu instanceof AdminKitUserviewMenu;
 
-        return ((AceUserviewMenu) menu).getAceJspPage(this);
+        return ((AdminKitUserviewMenu) menu).getAdminKitJspPage(this);
     }
 
     @Override
     public String getBootstrapRenderPage(UserviewMenu menu) {
-        assert menu instanceof AceUserviewMenu;
+        assert menu instanceof AdminKitUserviewMenu;
 
-        return ((AceUserviewMenu) menu).getAceRenderPage();
+        return ((AdminKitUserviewMenu) menu).getAdminKitRenderPage();
     }
 
     @Override
     public String getBootstrapDecoratedMenu(UserviewMenu menu) {
-        assert menu instanceof AceUserviewMenu;
+        assert menu instanceof AdminKitUserviewMenu;
 
-        return ((AceUserviewMenu) menu).getAceDecoratedMenu(this);
+        return ((AdminKitUserviewMenu) menu).getAdminKitDecoratedMenu(this);
     }
 }

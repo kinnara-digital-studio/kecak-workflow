@@ -618,7 +618,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
     }
 
     @Override
-    public String getAceDecoratedMenu() {
+    public String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 
@@ -633,7 +633,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUse
     }
 
     @Override
-    public String getAdminLteDecoratedMenu() {
+    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme bootstrapTheme) {
         return getDecoratedMenu();
     }
 }
