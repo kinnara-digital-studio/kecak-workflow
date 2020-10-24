@@ -11,9 +11,10 @@ import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
 import org.joget.apps.form.model.AceFormElement;
+import org.joget.apps.form.model.AdminKitFormElement;
 import org.joget.apps.form.model.AdminLteFormElement;
 
-public class TextField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+public class TextField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement, AdminKitFormElement {
 
     public String getName() {
         return "Text Field";
@@ -115,4 +116,10 @@ public class TextField extends Element implements FormBuilderPaletteElement, Ace
         String template = "AdminLteTheme/AdminLteTextField.ftl";
         return renderTemplate(template,formData,dataModel);
     }
+
+	@Override
+	public String renderAdminKitTemplate(FormData formData, Map dataModel) {
+		String template = "AdminKitTheme/AdminLteTextField.ftl";
+        return renderTemplate(template,formData,dataModel);
+	}
 }
