@@ -159,7 +159,13 @@ public abstract class UserviewMenu extends ExtElement{
      */
     public String getReadyRenderPage() {
         if (readyRenderPage == null) {
-            readyRenderPage = getRenderPage();
+            if(userview.getSetting().getTheme() instanceof BootstrapAceTheme && this instanceof AceUserviewMenu) {
+                readyRenderPage = ((AceUserviewMenu) this).getAceRenderPage();
+            } else if(userview.getSetting().getTheme() instanceof BootstrapAdminLteTheme && this instanceof AdminLteUserviewMenu) {
+                readyRenderPage = ((AdminLteUserviewMenu) this).getAdminLteRenderPage();
+            } else {
+                readyRenderPage = getRenderPage();
+            }
         }
         return readyRenderPage;
     }

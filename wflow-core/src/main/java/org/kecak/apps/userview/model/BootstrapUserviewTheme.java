@@ -1,5 +1,10 @@
 package org.kecak.apps.userview.model;
 
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.FormData;
+
+import java.util.Map;
+
 /**
  * @author aristo
  *
@@ -28,4 +33,13 @@ public interface BootstrapUserview {
         return "userview/plugin/unauthorized.jsp";
     }
 
+    /**
+     * Render core element
+     *
+     * @param element
+     * @param formData
+     * @param dataModel
+     * @return
+     */
+    String renderCoreElementTemplate(Element element, FormData formData, Map dataModel);
 }
