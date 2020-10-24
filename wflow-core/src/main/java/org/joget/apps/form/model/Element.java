@@ -14,6 +14,7 @@ import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
+import org.kecak.apps.form.model.BootstrapFormElement;
 import org.kecak.apps.userview.model.*;
 
 import java.util.ArrayList;

@@ -45,29 +45,37 @@ public abstract class AbstractAdminKitUserviewTheme extends UserviewTheme implem
 
     @Override
     public String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel) {
-        assert element instanceof AdminKitFormElement;
-
-        return ((AdminKitFormElement) element).renderAdminKitTemplate(formData, dataModel);
+        if(element instanceof AdminKitFormElement) {
+            return ((AdminKitFormElement) element).renderAdminKitTemplate(formData, dataModel);
+        } else {
+            return element.renderTemplate(formData, dataModel);
+        }
     }
 
     @Override
     public String getBootstrapJspPage(UserviewMenu menu) {
-        assert menu instanceof AdminKitUserviewMenu;
-
-        return ((AdminKitUserviewMenu) menu).getAdminKitJspPage(this);
+        if(menu instanceof AdminKitUserviewMenu) {
+            return ((AdminKitUserviewMenu) menu).getAdminKitJspPage(this);
+        } else {
+            return menu.getJspPage();
+        }
     }
 
     @Override
     public String getBootstrapRenderPage(UserviewMenu menu) {
-        assert menu instanceof AdminKitUserviewMenu;
-
-        return ((AdminKitUserviewMenu) menu).getAdminKitRenderPage();
+        if(menu instanceof AdminKitUserviewMenu) {
+            return ((AdminKitUserviewMenu) menu).getAdminKitRenderPage();
+        } else {
+            return menu.getRenderPage();
+        }
     }
 
     @Override
     public String getBootstrapDecoratedMenu(UserviewMenu menu) {
-        assert menu instanceof AdminKitUserviewMenu;
-
-        return ((AdminKitUserviewMenu) menu).getAdminKitDecoratedMenu(this);
+        if(menu instanceof AdminKitUserviewMenu) {
+            return ((AdminKitUserviewMenu) menu).getAdminKitDecoratedMenu();
+        } else {
+            return menu.getDecoratedMenu();
+        }
     }
 }

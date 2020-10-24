@@ -496,7 +496,7 @@ public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteU
     }
 
     @Override
-    public String getAceDecoratedMenu(BootstrapUserviewTheme theme) {
+    public String getAceDecoratedMenu() {
         return getDecoratedMenu();
     }
 
@@ -511,7 +511,7 @@ public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteU
     }
 
     @Override
-    public String getAdminLteDecoratedMenu(BootstrapUserviewTheme theme) {
+    public String getAdminLteDecoratedMenu() {
         return getDecoratedMenu();
     }
 }

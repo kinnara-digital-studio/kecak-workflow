@@ -1,4 +1,4 @@
-package org.joget.apps.form.model;
+package org.kecak.apps.form.model;
 
 /**
  * Bootstrap Web UI Framework for Form

@@ -12,5 +12,5 @@ public interface AceUserviewMenu extends BootstrapUserviewMenu {
 
     String getAceRenderPage();
 
-    String getAceDecoratedMenu(BootstrapUserviewTheme bootstrapTheme);
+    String getAceDecoratedMenu();
 }
