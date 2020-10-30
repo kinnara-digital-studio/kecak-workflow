@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * Bootstrap Web UI Framework for Userview Theme
  */
-public interface BootstrapUserviewTheme {
+public interface BootstrapUserviewTheme extends BootstrapUserview {
     /**
      * WARNING!!!!! these methods have to be implemented in Kecak Core
      * JSP File in Plugins cannot be recognized by Kecak Core
