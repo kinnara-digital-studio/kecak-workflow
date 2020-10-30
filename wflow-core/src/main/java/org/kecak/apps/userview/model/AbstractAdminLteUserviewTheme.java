@@ -70,4 +70,13 @@ public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implem
             return menu.getRenderPage();
         }
     }
+
+    @Override
+    public String getBootstrapDecoratedMenu(UserviewMenu menu) {
+        if(menu instanceof AdminLteUserviewMenu) {
+            return ((AdminLteUserviewMenu) menu).getAdminLteDecoratedMenu();
+        } else {
+            return menu.getDecoratedMenu();
+        }
+    }
 }

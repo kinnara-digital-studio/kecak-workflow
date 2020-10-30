@@ -8,26 +8,26 @@ public class CorporatiTheme extends UserviewTheme {
     @Override
     public String getCss() {
         String contextPath = AppUtil.getRequestContextPath();
-        String cssPath = contextPath + "/plugin/org.joget.plugin.enterprise.CorporatiTheme/themes/corporati/corporati.css";
+        String cssPath = contextPath + "/plugin/" + getClassName() + "/themes/corporati/corporati.css";
         String cssLink = "<link rel='stylesheet' href='" + cssPath + "'>";
         String css = "</style>\n" + cssLink;
 
         // add selected scheme CSS
         String colorScheme = getPropertyString("colorScheme");
         if ("green".equals(colorScheme)) {
-            String additionalCssPath = contextPath + "/plugin/org.joget.plugin.enterprise.CorporatiTheme/themes/corporati/corporatiGreen.css";
+            String additionalCssPath = contextPath + "/plugin/" + getClassName() + "/themes/corporati/corporatiGreen.css";
             String additionalCssLink = "<link rel='stylesheet' href='" + additionalCssPath + "'>";
             css += "</style>\n" + additionalCssLink;
         } else if ("blue".equals(colorScheme)) {
-            String additionalCssPath = contextPath + "/plugin/org.joget.plugin.enterprise.CorporatiTheme/themes/corporati/corporatiBlue.css";
+            String additionalCssPath = contextPath + "/plugin/" + getClassName() + "/themes/corporati/corporatiBlue.css";
             String additionalCssLink = "<link rel='stylesheet' href='" + additionalCssPath + "'>";
             css += "</style>\n" + additionalCssLink;
         } else if ("red".equals(colorScheme)) {
-            String additionalCssPath = contextPath + "/plugin/org.joget.plugin.enterprise.CorporatiTheme/themes/corporati/corporatiRed.css";
+            String additionalCssPath = contextPath + "/plugin/" + getClassName() + "/themes/corporati/corporatiRed.css";
             String additionalCssLink = "<link rel='stylesheet' href='" + additionalCssPath + "'>";
             css += "</style>\n" + additionalCssLink;
         } else if ("yellow".equals(colorScheme)) {
-            String additionalCssPath = contextPath + "/plugin/org.joget.plugin.enterprise.CorporatiTheme/themes/corporati/corporatiYellow.css";
+            String additionalCssPath = contextPath + "/plugin/" + getClassName() + "/themes/corporati/corporatiYellow.css";
             String additionalCssLink = "<link rel='stylesheet' href='" + additionalCssPath + "'>";
             css += "</style>\n" + additionalCssLink;
         }
