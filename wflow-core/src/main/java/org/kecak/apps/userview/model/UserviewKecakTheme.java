@@ -12,7 +12,7 @@ import java.util.Map;
  * A base abstract class to develop a Userview Theme plugin for version v5.0 onward.
  *
  */
-public abstract class UserviewKecakTheme extends UserviewTheme implements BootstrapUserview {
+public abstract class UserviewKecakTheme extends UserviewTheme implements BootstrapUserviewTheme {
 
     /**
      * HTML template to handle error when retrieving userview content
