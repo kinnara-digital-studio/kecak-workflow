@@ -1178,7 +1178,7 @@ public class PluginManager implements ApplicationContextAware {
         String className = (String) elementSelect.get("className");
         Map<String, Object> properties = (Map<String, Object>) elementSelect.get("properties");
 
-        return getPluginObject(className, properties);
+        return getPlugin(className, properties);
     }
 
     /**
@@ -1191,7 +1191,10 @@ public class PluginManager implements ApplicationContextAware {
      * @param <T> plugin class
      * @return plugin object
      */
-    public <T extends PropertyEditable> T getPluginObject(String className, Map<String, Object> properties) {
+    public <T extends PropertyEditable> T getPlugin(String className, Map<String, Object> properties) {
+        if(className == null || className.isEmpty())
+            return null;
+
         T plugin = (T) getPlugin(className);
         if (plugin == null) {
             LogUtil.warn(PluginManager.class.getName(), "Error generating plugin [" + className + "]");
