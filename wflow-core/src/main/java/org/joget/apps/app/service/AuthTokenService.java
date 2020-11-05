@@ -78,6 +78,10 @@ public class AuthTokenService implements Serializable {
         return false;
     }
 
+    public String generateToken(String username) {
+        return doGenerateToken(new HashMap<>(), username);
+    }
+
     public String generateToken(String username, Map<String, Object> claims) {
         return doGenerateToken(claims, username);
     }
