@@ -4,17 +4,14 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import org.joget.commons.util.SetupManager;
 import org.joget.directory.model.User;
-import org.springframework.stereotype.Service;
+import org.joget.workflow.model.service.WorkflowUserManager;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
-@Service("authTokenService")
 public class AuthTokenService implements Serializable {
     transient
     private static final long serialVersionUID = -3301605591108950415L;
@@ -42,6 +39,7 @@ public class AuthTokenService implements Serializable {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }
 
+    @Nullable
     public Date getExpirationDateFromToken(String token) throws ExpiredJwtException {
         return getClaimFromToken(token, Claims::getExpiration);
     }
@@ -64,29 +62,31 @@ public class AuthTokenService implements Serializable {
                 .getBody();
     }
 
-    private boolean isTokenExpired(String token) throws ExpiredJwtException {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(clock.now());
+    private Boolean isTokenExpired(String token) throws ExpiredJwtException {
+        @Nullable Date expiration = getExpirationDateFromToken(token);
+        return Optional.ofNullable(expiration)
+                .map(d -> d.before(clock.now()))
+                .orElse(false);
     }
 
-    private boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
+    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }
 
-    private boolean ignoreTokenExpiration(String token) {
+    private Boolean ignoreTokenExpiration(String token) {
         // here you specify tokens, for that the expiration is ignored
         return false;
     }
 
     public String generateToken(String username) {
-        return doGenerateToken(new HashMap<>(), username);
+        return generateToken(username, null);
     }
 
     public String generateToken(String username, Map<String, Object> claims) {
-        return doGenerateToken(claims, username);
+        return doGenerateToken(Optional.ofNullable(claims).orElseGet(HashMap::new), Optional.ofNullable(username).orElse(WorkflowUserManager.ROLE_ANONYMOUS));
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    private String doGenerateToken(@Nonnull Map<String, Object> claims, @Nonnull String subject) {
         final Date createdDate = clock.now();
         final Date expirationDate = calculateExpirationDate(createdDate);
         return Jwts.builder()
@@ -95,7 +95,7 @@ public class AuthTokenService implements Serializable {
                 .setSubject(subject)
                 .setIssuer(ISSUER)
                 .setIssuedAt(createdDate)
-                .setExpiration(expirationDate)
+//                .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS512, getSecret())
                 .compact();
     }
