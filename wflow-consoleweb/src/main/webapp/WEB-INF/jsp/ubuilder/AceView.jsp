@@ -326,56 +326,44 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
               <a href="${pageContext.request.contextPath}/web/console/app/${appId}/${appVersion}/userview/builder/${userview.properties.id}" target="_blank"><i class="icon-edit"></i> <fmt:message key="adminBar.label.menu"/>: <c:out value="${userview.properties.name}"/></a>
           </div>
         </c:if>
-        <c:if test="${category.properties.hide != 'yes'}">
           <ul class="nav nav-list">
             <c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
-              <c:set var="c_class" value=""/>
+              <c:set var="c_class" value="categoryMenu"/>
               <c:if test="${!empty userview.currentCategory && category.properties.id eq userview.currentCategory.properties.id}">
-                  <c:set var="c_class" value="${c_class} active"/>
+                  <c:set var="c_class" value="${c_class} active open"/>
               </c:if>
-
-              <c:set var="firstMenuItem" value="${category.menus[0]}"/>
-              <c:if test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
-                  <c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
-              </c:if>
-              <c:if test="${userview.setting.theme.properties.useDropdown != 'true'}">
-                <c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
-                    <c:set var="m_class" value=""/>
-                    <c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
-                        <c:set var="m_class" value="${m_class} active"/>
-                    </c:if>
-
-                    <li class="${m_class}" id="${menu.properties.id}">
-                      ${menu.menu}
-                      <b class="arrow"></b>
-                    </li>
-                </c:forEach>
-              </c:if>
-              <c:if test="${userview.setting.theme.properties.useDropdown == 'true'}">
-                <li class="${m_class} <c:if test="${userview.setting.theme.properties.submenuOnHover == 'true'}">hover</c:if> <c:if test="${userview.setting.theme.properties.altActiveItem == 'true'}">highlight</c:if>">
-                  <a href="#" class="dropdown-toggle">
-                    <span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
-                    <b class="arrow fa fa-angle-down"></b>
-                  </a>
-
-                  <b class="arrow"></b>
-                  <ul class="submenu">
-                      <c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
-                          <c:set var="m_class" value=""/>
-                          <c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
-                              <c:set var="m_class" value="${m_class} active"/>
-                          </c:if>
-                          <li class="${m_class}" id="${menu.properties.id}">
+              
+              <c:if test="${category.properties.hide != 'yes'}">
+              <li class="${c_class}">
+				<c:set var="firstMenuItem" value="${category.menus[0]}"/>
+              	<c:choose>
+					<c:when test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
+						<c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
+						<a href="${firstMenuItem.url}" class="dropdown-toggle">
+							<span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
+							<b class="arrow icon-angle-down"></b>
+						</a>
+					</c:when>
+					<c:otherwise>
+						<span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
+					</c:otherwise>
+				</c:choose>
+                <ul class="submenu">
+                	<c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
+                    	<c:set var="m_class" value=""/>
+                        <c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
+                        	<c:set var="m_class" value="${m_class} active"/>
+                        </c:if>
+               			<li class="${m_class}" id="${menu.properties.id}">
                             ${menu.menu}
                             <b class="arrow"></b>
-                          </li>
+                        </li>
                       </c:forEach>
                   </ul>
-                </li>
+            </li> <!-- /.Category Menu -->
             </c:if>
             </c:forEach>
           </ul><!-- /.nav-list -->
-        </c:if>
 
         <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
           <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
@@ -429,6 +417,8 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 
     <!-- Bootstrap 3.3.7 -->
     <script src="${pageContext.request.contextPath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    
+    <script src="${pageContext.request.contextPath}/js/vueJs/vue.min.js"></script>
     <script>
       $.fn.bootstrapBtn = $.fn.button.noConflict();
       $(function(){
