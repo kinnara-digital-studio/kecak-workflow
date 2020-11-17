@@ -93,7 +93,7 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
     }
 
     public String getFormBuilderTemplate() {
-        return "<label class='label'>Date Picker</label><input type='text' />";
+        return "<label class='label'>Date Picker</label><input type='text'/> <i class='fa fa-calendar'></i>";
     }
 
     public String getLabel() {

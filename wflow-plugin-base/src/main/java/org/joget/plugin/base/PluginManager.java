@@ -1166,12 +1166,28 @@ public class PluginManager implements ApplicationContextAware {
      * Kecak Exclusive
      *
      * Generate plugin object
+     * 
+     * @deprecated please use {@link PluginManager#getPlugin(Map)}
      *
      * @param elementSelect
      * @param <T>
      * @return
      */
+    @Deprecated
     public <T extends PropertyEditable> T getPluginObject(Map<String, Object> elementSelect) {
+        return getPlugin(elementSelect);
+    }
+
+    /**
+     * Kecak Exclusive
+     *
+     * Generate plugin object
+     *
+     * @param elementSelect
+     * @param <T>
+     * @return
+     */
+    public <T extends PropertyEditable> T getPlugin(Map<String, Object> elementSelect) {
         if (elementSelect == null)
             return null;
 
@@ -1180,7 +1196,6 @@ public class PluginManager implements ApplicationContextAware {
 
         return getPlugin(className, properties);
     }
-
     /**
      * Kecak Exclusive
      *

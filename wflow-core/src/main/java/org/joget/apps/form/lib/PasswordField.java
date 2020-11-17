@@ -29,15 +29,17 @@ public class PasswordField extends Element implements FormBuilderPaletteElement,
     }
 
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
-        // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
-        String binderValue = getBinderValue(formData);
+        if(!"true".equalsIgnoreCase(getPropertyString("emptyValueOnLoad"))) {
+            // set value
+            String value = FormUtil.getElementPropertyValue(this, formData);
+            String binderValue = getBinderValue(formData);
 
-        if (value != null && !value.isEmpty() && (value.equals(binderValue) || (binderValue != null && value.equals(SecurityUtil.decrypt(binderValue))))) {
-            value = SECURE_VALUE;
+            if (value != null && !value.isEmpty() && (value.equals(binderValue) || (binderValue != null && value.equals(SecurityUtil.decrypt(binderValue))))) {
+                value = SECURE_VALUE;
+            }
+
+            dataModel.put("value", value);
         }
-
-        dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
