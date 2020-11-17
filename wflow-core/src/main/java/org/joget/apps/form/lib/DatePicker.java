@@ -27,6 +27,17 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
         return "Date Picker Element";
     }
 
+    @Override
+    public String getElementValue(FormData formData) {
+        String displayFormat = getJavaDateFormat();
+
+        // set value
+        String value = FormUtil.getElementPropertyValue(this, formData);
+        value = formattedValue(value, displayFormat, formData);
+
+        return value;
+    }
+
     @SuppressWarnings("unchecked")
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
@@ -35,11 +46,10 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
     }
 
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
-        String displayFormat = getJavaDateFormat(getPropertyString("format"));
+        String displayFormat = getJavaDateFormat();
 
         // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
-        value = formattedValue(value, displayFormat, formData);
+        String value = getElementValue(formData);
 
         dataModel.put("displayFormat", displayFormat.toUpperCase());
 
@@ -57,7 +67,7 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
             String value = FormUtil.getElementPropertyValue(this, formData);
             if (!FormUtil.isReadonly(this, formData) && getPropertyString("dataFormat") != null && !getPropertyString("dataFormat").isEmpty()) {
                 try {
-                    String displayFormat = getJavaDateFormat(getPropertyString("format"));
+                    String displayFormat = getJavaDateFormat();
                     if (!displayFormat.equals(getPropertyString("dataFormat"))) {
                         SimpleDateFormat data = new SimpleDateFormat(getPropertyString("dataFormat"));
                         SimpleDateFormat display = new SimpleDateFormat(displayFormat);
@@ -83,7 +93,7 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
     }
 
     public String getFormBuilderTemplate() {
-        return "<label class='label'>Date Picker</label><input type='text' />";
+        return "<label class='label'>Date Picker</label><input type='text'/> <i class='fa fa-calendar'></i>";
     }
 
     public String getLabel() {
@@ -106,7 +116,8 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
         return "/plugin/org.joget.apps.form.lib.TextField/images/textField_icon.gif";
     }
     
-    protected String getJavaDateFormat(String format) {
+    protected String getJavaDateFormat() {
+        String format = getPropertyString("format");
         if (format == null || format.isEmpty()) {
             Locale locale = LocaleContextHolder.getLocale();
             if (locale != null && locale.toString().startsWith("zh")) {
@@ -151,7 +162,7 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
         String value = FormUtil.getElementPropertyValue(this, formData);
                
         if (value != null && !value.isEmpty()) {
-            String displayFormat = getJavaDateFormat(getPropertyString("format"));
+            String displayFormat = getJavaDateFormat();
             String formattedValue = formattedValue(value, displayFormat, formData);
             
             valid = DateUtil.validateDateFormat(formattedValue, displayFormat);
