@@ -433,7 +433,7 @@ public class StringUtil {
                 if (!sList.isEmpty()) {
                     for (String s : sList) {
                         String tempS = SecurityUtil.decrypt(s);
-                        content = content.replaceAll(StringUtil.escapeRegex(s), tempS);
+                        content = content.replaceAll(StringUtil.escapeRegex(s), tempS.replaceAll("\\$", "\\\\\\$"));
                     }
                 }
             } catch (Exception ex) {
