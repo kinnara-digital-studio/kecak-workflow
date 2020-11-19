@@ -254,13 +254,21 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 <body id="${bodyId}" class="hold-transition sidebar-mini layout-fixed ${userview.setting.theme.properties.skin}  ${userview.setting.theme.properties.layout} <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
 <div class="wrapper">
   <!-- Main Header -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
+  <header class="main-header">
+  	<!-- Logo -->
+    <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>A</b>LT</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg">${userview.properties.name}</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
       <!-- Sidebar toggle button-->
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
+      
       <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
@@ -312,15 +320,11 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
       </div>
     </nav>
     </nav>
+    </header>
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-	<!-- Brand Logo -->
-    <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="brand-link">
-      <span class="brand-text font-weight-light">${userview.properties.name}</span>
-    </a>
+  <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
@@ -344,47 +348,46 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
       <!-- /.search form -->
 
       <!-- Sidebar Menu -->
-      <nav class="mt-2">
-      	<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-      		<c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
-      			<c:set var="c_class" value="nav-item has-treeview"/>
-				<c:if test="${!empty userview.currentCategory && category.properties.id eq userview.currentCategory.properties.id}">
-				    <c:set var="c_class" value="${c_class} menu-open"/>
-				</c:if>
-	              
-	        	<c:if test="${category.properties.hide != 'yes'}">
-	        		<li class="${c_class}">
-	        			<c:set var="firstMenuItem" value="${category.menus[0]}"/>
-	        			<c:choose>
-							<c:when test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
-								<c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
-								<a href="${firstMenuItem.url}" class="nav-link active">
-									<i class="nav-icon fas"></i>
-									<p><ui:stripTag html="${category.properties.label}" relaxed="true"/>
-									<i class="right fas fa-angle-left"></i>
-									</p>
-								</a>
-							</c:when>
-							<c:otherwise>
-								<p><ui:stripTag html="${category.properties.label}" relaxed="true"/></p>
-							</c:otherwise>
-						</c:choose>
-						<ul class="nav nav-treeview">
-							<c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
-								<c:set var="m_class" value="nav-item"/>
-                       			<c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
-                        			<c:set var="m_class" value="${m_class} active"/>
-                        		</c:if>
-		               			<li class="${m_class}" id="${menu.properties.id}">
-		                            ${menu.menu}
-		                        </li>
-							</c:forEach>
-						</ul>
-	        		</li>
-	        	</c:if>
-      		</c:forEach>
-      	</ul>
-      </nav>
+      <ul class="sidebar-menu" data-widget="tree">
+		<c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
+			<c:set var="c_class" value="treeview"/>
+			<c:if test="${!empty userview.currentCategory && category.properties.id eq userview.currentCategory.properties.id}">
+				<c:set var="c_class" value="${c_class} menu-open"/>
+			</c:if>
+			       
+		 	<c:if test="${category.properties.hide != 'yes'}">
+	 			<li class="${c_class}">
+	 				<c:set var="firstMenuItem" value="${category.menus[0]}"/>
+		 			<c:choose>
+						<c:when test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
+						<c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
+							<a href="${firstMenuItem.url}" class="nav-link active">
+								<i class="nav-icon fas"></i>
+								<span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
+								<span class="pull-right-container">
+					              <i class="fa fa-angle-left pull-right"></i>
+					            </span>
+							</a>
+						</c:when>
+					<c:otherwise>
+						<span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
+					</c:otherwise>
+				</c:choose>
+					<ul class="treeview-menu">
+						<c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
+							<c:set var="m_class" value=""/>
+	               			<c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
+                				<c:set var="m_class" value="${m_class} active"/>
+	                		</c:if>
+			         			<li class="${m_class}" id="${menu.properties.id}">
+			                      ${menu.menu}
+			                  </li>
+						</c:forEach>
+					</ul>
+		   		</li>
+		   	</c:if>
+		</c:forEach>
+      </ul>
       <!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->
@@ -493,7 +496,6 @@ ${userview.setting.theme.css}
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- Bootstrap 3.3.7 -->
-<script src="${pageContext.request.contextPath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script>
   $.fn.bootstrapBtn = $.fn.button.noConflict();
 </script>
