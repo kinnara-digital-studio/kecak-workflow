@@ -1,5 +1,10 @@
-<div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
-    <label class="control-label">${element.properties.label} <span class="form-cell-validator">${decoration}</span></label>
+<div class="form-cell form-group control-group <#if error??>has-error</#if>" ${elementMetaData!}>
+    <label class="control-label">
+    	${element.properties.label} 
+    	<span class="form-cell-validator">${decoration}</span>
+	</label>
+	
+	<div class="controls">
     <div class="form-cell-value" id="${elementParamName!}${element.properties.elementUniqueKey!}">
     <#list options as option>
         <#if (element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true') >
@@ -21,7 +26,7 @@
     </div>
     <#if error??> <span class="form-error-message help-block">${error}</span></#if>
     <div style="clear:both;"></div>
-
+	</div>
     <#if (element.properties.controlField?? && element.properties.controlField! != "" && !(element.properties.readonly! == 'true' && element.properties.readonlyLabel! == 'true')) >
         <script type="text/javascript" src="${request.contextPath}/plugin/org.joget.apps.form.lib.SelectBox/js/jquery.dynamicoptions.js"></script>
         <script type="text/javascript">
