@@ -1,4 +1,4 @@
-<div class="form-cell form-group <#if error??>has-error</#if>" ${elementMetaData!}>
+<div class="form-cell form-group control-group <#if error??>has-error</#if>" ${elementMetaData!}>
     <#if element.properties.readonly! != 'true'>
         <#if !(request.getAttribute("org.joget.apps.form.lib.DatePicker_EDITABLE")??) >
             <#if request.getAttribute("currentLocale")!?starts_with("zh") >

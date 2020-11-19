@@ -235,7 +235,6 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         </script>
           <!-- Tell the browser to be responsive to screen width -->
           <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-          <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/bootstrap/dist/css/bootstrap.min.css">
           <!-- Ionicons -->
           <link rel="stylesheet" href="${pageContext.request.contextPath}/bower_components/Ionicons/css/ionicons.min.css">
           <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/bower_components//font-awesome/css/font-awesome.min.css">
@@ -252,18 +251,10 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
           <link href="${pageContext.request.contextPath}/css/userview.css?build=<fmt:message key="build.number"/>" rel="stylesheet" type="text/css" />
           <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon_uv.ico"/>
     </head>
-<body id="${bodyId}" class="hold-transition ${userview.setting.theme.properties.skin}  ${userview.setting.theme.properties.layout} <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
+<body id="${bodyId}" class="hold-transition sidebar-mini layout-fixed ${userview.setting.theme.properties.skin}  ${userview.setting.theme.properties.layout} <c:if test="${embed}">embeded</c:if><c:if test="${rightToLeft == 'true' || fn:startsWith(currentLocale, 'ar') == true}"> rtl</c:if>">
 <div class="wrapper">
   <!-- Main Header -->
-  <header class="main-header">
-    <!-- Logo -->
-    <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini">${fn:substring(userview.properties.name,0,3)}</span>
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">${userview.properties.name}</span>
-    </a>
-
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
@@ -320,10 +311,13 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         </ul>
       </div>
     </nav>
-  </header>
+    </nav>
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
-
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+	<!-- Brand Logo -->
+    <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="brand-link">
+      <span class="brand-text font-weight-light">${userview.properties.name}</span>
+    </a>
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
 
@@ -350,93 +344,47 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
       <!-- /.search form -->
 
       <!-- Sidebar Menu -->
-        <c:if test="${isQuickEditEnabled}">
-        <div class="quickEdit" style="display: none">
-            <a href="${pageContext.request.contextPath}/web/console/app/${appId}/${appVersion}/userview/builder/${userview.properties.id}" target="_blank"><i class="icon-edit"></i> <fmt:message key="adminBar.label.menu"/>: <c:out value="${userview.properties.name}"/></a>
-        </div>
-        </c:if>
-        <div id="${category.properties.id}" class="category ${c_class}">
-            <div class="category-label">
-                <c:set var="firstMenuItem" value="${category.menus[0]}"/>
-                <c:choose>
-                    <c:when test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
-                        <c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
-                        <a href="${firstMenuItem.url}"><span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span></a>
-                    </c:when>
-                    <c:otherwise>
-                        <span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="clear"></div>
-            <div class="menu-container">
-                <c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
-                    <c:set var="m_class" value=""/>
-
-                    <c:if test="${mStatus.first}">
-                        <c:set var="m_class" value="${m_class} first"/>
-                    </c:if>
-                    <c:if test="${mStatus.last}">
-                        <c:set var="m_class" value="${m_class} last"/>
-                    </c:if>
-                    <c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
-                        <c:set var="m_class" value="${m_class} current"/>
-                    </c:if>
-
-                    <div id="${menu.properties.id}" class="menu ${m_class}">
-                        ${menu.menu}
-                    </div>
-                </c:forEach>
-            </div>
-        </div>
-      <c:if test="${category.properties.hide != 'yes'}">
-          <ul class="sidebar-menu" data-widget="tree">
-          <c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
-            <c:set var="c_class" value=""/>
-            <c:if test="${!empty userview.currentCategory && category.properties.id eq userview.currentCategory.properties.id}">
-                <c:set var="c_class" value="${c_class} active"/>
-            </c:if>
-
-            <c:set var="firstMenuItem" value="${category.menus[0]}"/>
-            <c:if test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
-                <c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
-            </c:if>
-            <c:if test="${userview.setting.theme.properties.useDropdown != 'true'}">
-                <li class="header"><ui:stripTag html="${category.properties.label}" relaxed="true"/></li>
-                <c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
-                    <c:set var="m_class" value=""/>
-                    <c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
-                        <c:set var="m_class" value="${m_class} active"/>
-                    </c:if>
-
-                    <li class="${m_class}" id="${menu.properties.id}">
-                        ${menu.menu}
-                    </li>
-                </c:forEach>
-            </c:if>
-            <c:if test="${userview.setting.theme.properties.useDropdown == 'true'}">
-                <li class="treeview">
-                  <a href="#"><span><ui:stripTag html="${category.properties.label}" relaxed="true"/></span>
-                    <span class="pull-right-container">
-                        <i class="fa fa-angle-left pull-right"></i>
-                      </span>
-                  </a>
-                  <ul class="treeview-menu">
-                      <c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
-                          <c:set var="m_class" value=""/>
-                          <c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
-                              <c:set var="m_class" value="${m_class} active"/>
-                          </c:if>
-                          <li class="${m_class}" id="${menu.properties.id}">
-                              ${menu.menu}
-                          </li>
-                      </c:forEach>
-                  </ul>
-                </li>
-            </c:if>
-          </c:forEach>
-          </ul>
-      </c:if>
+      <nav class="mt-2">
+      	<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      		<c:forEach items="${userview.categories }" var="category" varStatus="cStatus">
+      			<c:set var="c_class" value="nav-item has-treeview"/>
+				<c:if test="${!empty userview.currentCategory && category.properties.id eq userview.currentCategory.properties.id}">
+				    <c:set var="c_class" value="${c_class} menu-open"/>
+				</c:if>
+	              
+	        	<c:if test="${category.properties.hide != 'yes'}">
+	        		<li class="${c_class}">
+	        			<c:set var="firstMenuItem" value="${category.menus[0]}"/>
+	        			<c:choose>
+							<c:when test="${!empty firstMenuItem && firstMenuItem.homePageSupported}">
+								<c:set var="menuItemId" value="${firstMenuItem.properties.menuId}"/>
+								<a href="${firstMenuItem.url}" class="nav-link active">
+									<i class="nav-icon fas"></i>
+									<p><ui:stripTag html="${category.properties.label}" relaxed="true"/>
+									<i class="right fas fa-angle-left"></i>
+									</p>
+								</a>
+							</c:when>
+							<c:otherwise>
+								<p><ui:stripTag html="${category.properties.label}" relaxed="true"/></p>
+							</c:otherwise>
+						</c:choose>
+						<ul class="nav nav-treeview">
+							<c:forEach items="${category.menus}" var="menu" varStatus="mStatus">
+								<c:set var="m_class" value="nav-item"/>
+                       			<c:if test="${!empty userview.current && menu.properties.id eq userview.current.properties.id}">
+                        			<c:set var="m_class" value="${m_class} active"/>
+                        		</c:if>
+		               			<li class="${m_class}" id="${menu.properties.id}">
+		                            ${menu.menu}
+		                        </li>
+							</c:forEach>
+						</ul>
+	        		</li>
+	        	</c:if>
+      		</c:forEach>
+      	</ul>
+      </nav>
       <!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->
