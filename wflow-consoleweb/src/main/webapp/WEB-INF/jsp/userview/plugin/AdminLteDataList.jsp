@@ -10,6 +10,7 @@
         });
     </script>
 </c:if>
+<h1>AdminLteDataList</h1>
 <div class="datalist-body-content">
     <div class="content-header"><h1>
     <c:if test="${!empty properties.customHeader}">
