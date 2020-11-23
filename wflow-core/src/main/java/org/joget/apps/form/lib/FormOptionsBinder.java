@@ -107,8 +107,13 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
                 Object[] conditionParams = null;
 
                 WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
-                WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
-                String extraCondition = AppUtil.processHashVariable(getPropertyString("extraCondition"), workflowAssignment, null, null);
+                WorkflowAssignment workflowAssignment = null;
+                String extraCondition = null;
+                if(formData!=null) {
+                	workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+                	extraCondition = AppUtil.processHashVariable(getPropertyString("extraCondition"), workflowAssignment, null, null);
+                }
+                
                 if (extraCondition != null && !extraCondition.trim().isEmpty()) {
                     condition = " WHERE " + extraCondition;
                 }
