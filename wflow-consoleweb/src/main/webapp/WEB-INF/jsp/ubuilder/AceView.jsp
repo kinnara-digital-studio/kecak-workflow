@@ -207,11 +207,12 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
               </c:set>
               <ui:stripTag html="${html}"/>
         </title>
-
+		${userview.setting.theme.css}
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/form.css?build=<fmt:message key="build.number"/>" />
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
         ${oauth2LogoutScript}
 
-            <style type="text/css">
+        <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {
                 display: none;
             }
@@ -411,10 +412,10 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     </div><!-- /.main-container -->
 
     <!-- basic scripts -->
-    ${userview.setting.theme.css}
+    
 
     <!-- REQUIRED JS SCRIPTS -->
-
+ 	${userview.setting.theme.javascript}
     <!-- Bootstrap 3.3.7 -->
     <script src="${pageContext.request.contextPath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     
@@ -432,7 +433,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         });
       });
     </script>
-    ${userview.setting.theme.javascript}
+   
 
     <script type="text/javascript">
             HelpGuide.base = "${pageContext.request.contextPath}"

@@ -217,6 +217,8 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
             }
         </style>
 
+		${userview.setting.theme.css}
+
         <script type="text/javascript">
             function userviewPrint(){
                 $('head').append('<link id="userview_print_css" rel="stylesheet" href="${pageContext.request.contextPath}/css/userview_print.css" type="text/css" media="print"/>');
@@ -491,15 +493,15 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-${userview.setting.theme.css}
+
 
 <!-- REQUIRED JS SCRIPTS -->
-
+${userview.setting.theme.javascript}
 <!-- Bootstrap 3.3.7 -->
 <script>
   $.fn.bootstrapBtn = $.fn.button.noConflict();
 </script>
-${userview.setting.theme.javascript}
+
 
 <script>
   $(document).ready(function () {

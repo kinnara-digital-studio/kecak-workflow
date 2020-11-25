@@ -457,7 +457,7 @@
 ${userview.setting.theme.css}
 
 <!-- REQUIRED JS SCRIPTS -->
-
+${userview.setting.theme.javascript}
 <script>
 $.fn.bootstrapBtn = $.fn.button.noConflict();
 $(function(){
@@ -471,7 +471,7 @@ $(function(){
   });
 });
 </script>
-${userview.setting.theme.javascript}
+
 
 <script type="text/javascript">
     HelpGuide.base = "${pageContext.request.contextPath}"

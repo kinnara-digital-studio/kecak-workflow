@@ -15,28 +15,26 @@
     .filter-cell{display:inline-block;padding-left:5px;}
 </style>
 
-<div class="dataList">
-    <h1>AdminLteDataListView</h1>
+<div class="dataList box">
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/footable/footable.min.js?build=<fmt:message key="build.number"/>"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/footable/responsiveTable.js?build=<fmt:message key="build.number"/>"></script>
-    <!--<link rel="stylesheet" href="${pageContext.request.contextPath}/js/footable/footable.core.min.css?build=<fmt:message key="build.number"/>" />-->
-
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/js/footable/footable.core.min.css?build=<fmt:message key="build.number"/>" />    
+    
     <c:set var="isQuickEditEnabled" value="<%= AppUtil.isQuickEditEnabled() %>"/>
     <c:if test="${isQuickEditEnabled}">
     <div class="quickEdit" style="display: none">
         <a href="<c:out value="${pageContext.request.contextPath}/web/console/app/${appId}/${appVersion}/datalist/builder/${dataList.id}"/>" target="_blank"><i class="icon-edit"></i>  <fmt:message key="adminBar.label.list"/>: <c:out value="${dataList.name}"/></a>
     </div>
     </c:if>
-
+    
     <c:catch var="dataListException">
-
+        
         <c:set var="actionResult" value="${dataList.actionResult}" />
         <c:set var="redirected" value="false" />
         <c:if test="${!empty actionResult}">
             <c:if test="${!empty actionResult.message}">
                 <script>
-                    $('#alert-modal').find('.message').html("<c:out value="${actionResult.message}"/>");
-                    $('#alert-modal').modal('show');
+                    alert("<c:out value="${actionResult.message}"/>");
                 </script>
             </c:if>
             <c:choose>
@@ -52,8 +50,8 @@
                         location.href = "<c:out value="${actionResult.url}"/>";
                     </script>
                 </c:when>
-                <c:otherwise>
-
+                <c:otherwise>   
+                        
                 </c:otherwise>
             </c:choose>
         </c:if>
@@ -94,9 +92,9 @@
             </c:if>
             <c:if test="${!empty dataList.binder && !empty dataList.binder.properties.errorMsg}">
                 <div class="datalist-error"><c:out value="${dataList.binder.properties.errorMsg}"/></div>
-            </c:if>
+            </c:if>   
 
-            <!-- Display Filters -->
+            <!-- Display Filters -->        
             <c:if test="${fn:length(dataList.filterTemplates) gt 1}">
                 <form name="filters_${dataListId}" id="filters_${dataListId}" action="?" method="POST">
                     <div class="filters">
@@ -106,7 +104,7 @@
                             </span>
                         </c:forEach>
                          <span class="filter-cell">
-                             <input type="submit" value="<fmt:message key="general.method.label.show"/>" class="btn btn-primary"/>
+                             <input type="submit" value="<fmt:message key="general.method.label.show"/>"/>
                          </span>
                     </div>
                 </form>
@@ -116,7 +114,7 @@
             <form name="form_${dataListId}" action="?<c:out value="${queryString}" escapeXml="true"/>" method="POST">
                 <!-- Display Buttons -->
                 <c:if test="${buttonPosition eq 'topLeft' || buttonPosition eq 'topRight' || buttonPosition eq 'bothLeft' || buttonPosition eq 'bothRight'}">
-                    <div class="actions bottom ${buttonFloat} col-sm-12">
+                    <div class="actions bottom ${buttonFloat}">
                         <c:forEach items="${dataList.actions}" var="action">
                             <c:if test="${action.permitted}">
                                 <c:if test="${!(empty dataListRows[0] || checkboxPosition eq 'no') || action.visibleOnNoRecord}">
@@ -124,7 +122,7 @@
                                     <c:if test="${!empty action.confirmation}">
                                         <c:set var="buttonConfirmation" value=" onclick=\"return showConfirm(this, '${fn:escapeXml(action.confirmation)}')\""/>
                                     </c:if>
-                                    <button name="${dataList.actionParamName}" class="btn btn-primary" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
+                                    <button name="${dataList.actionParamName}" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
                                 </c:if>
                             </c:if>
                         </c:forEach>
@@ -135,11 +133,11 @@
                     <button class="collapseAll"><i></i> <fmt:message key="dbuilder.collapseAll"/></button>
                     <span class="search_trigger"><fmt:message key="general.method.label.search"/> <i></i></span>
                 </div>
-                <display:table id="${dataListId}" uid="${dataListId}" name="dataListRows" pagesize="${dataListPageSize}" class="table table-bordered" export="true" decorator="decorator" excludedParams="${dataList.binder.primaryKeyColumnName}" requestURI="?" sort="external" partialList="true" size="dataListSize">
+                <display:table id="${dataListId}" uid="${dataListId}" name="dataListRows" pagesize="${dataListPageSize}" class="xrounded_shadowed" export="true" decorator="decorator" excludedParams="${dataList.binder.primaryKeyColumnName}" requestURI="?" sort="external" partialList="true" size="dataListSize">
                     <c:if test="${checkboxPosition eq 'left' || checkboxPosition eq 'both'}">
                         <c:choose>
                             <c:when test="${selectionType eq 'single'}">
-                                <display:column headerClass="select_radio" class="select_radio" property="radio" media="html" title="" />
+                                <display:column headerClass="select_radio" class="ace select_radio" property="radio" media="html" title="" />
                             </c:when>
                             <c:otherwise>
                                 <display:column headerClass="select_checkbox" class="select_checkbox" property="checkbox" media="html" title="<input type='checkbox' onclick='toggleAll(this)' style='float:left;'/>" />
@@ -206,64 +204,31 @@
                                     <c:if test="${!empty action.confirmation}">
                                         <c:set var="buttonConfirmation" value=" onclick=\"return showConfirm(this, '${fn:escapeXml(action.confirmation)}')\""/>
                                     </c:if>
-                                    <button name="${dataList.actionParamName}" class="btn btn-primary" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
+                                    <button name="${dataList.actionParamName}" value="${action.properties.id}" ${buttonConfirmation}><c:out value="${action.linkLabel}" escapeXml="true"/></button>
                                 </c:if>
                             </c:if>
                         </c:forEach>
                     </div>
                 </c:if>
             </form>
-        </c:if>
+        </c:if>    
     </c:catch>
 
     ${dataListException}
     <c:if test="${!empty dataListException}">
-<pre>
+<pre>        
 <%
-Throwable t =(Throwable)pageContext.findAttribute("dataListException");
+Throwable t =(Throwable)pageContext.findAttribute("dataListException");      
 t.printStackTrace(new java.io.PrintWriter(out));
-%>
+%>                
 </pre>
     </c:if>
-
+    
 </div>
 
-<div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-label" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close dismiss" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="confirm-label">Confirmation</h4>
-      </div>
-      <div class="modal-body">
-        <p class="message"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default dismiss" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary confirm" data-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="alert-label" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="confirm-label">Alert</h4>
-      </div>
-      <div class="modal-body">
-        <p class="message"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script>
     var popupActionDialog = null;
-
+    
     DataListUtil = {
         submitForm: function(form) {
             var params = $(form).serialize();
@@ -279,11 +244,6 @@ t.printStackTrace(new java.io.PrintWriter(out));
             e.preventDefault();
             DataListUtil.submitForm(this);
         });
-        $('.pagelinks').html($('.pagelinks').html().replace(/,/g,''));
-        $('.first.pc').html('&laquo; &laquo;');
-        $('.prev.pc').html('&laquo;');
-        $('.next.pc').html('&raquo;');
-        $('.last.pc').html('&raquo; &raquo;');
     });
     function toggleAll(element) {
         var table = $(element).parent().parent().parent().parent();
@@ -295,72 +255,44 @@ t.printStackTrace(new java.io.PrintWriter(out));
     }
     function dlPopupAction(element, message) {
         var url = $(element).attr("href");
+        var showPopup = true;
         if (message != "") {
-            $('#confirmation-modal').confirm(message).on({
-              confirm: function () {
-                if (popupActionDialog == null) {
-                    popupActionDialog = new PopupDialog(url);
-                } else {
-                    popupActionDialog.src = url;
-                }
-                popupActionDialog.init();
-              }
-            });
+            showPopup = confirm(message);
+        }
+        if (showPopup) {
+            if (popupActionDialog == null) {
+                popupActionDialog = new PopupDialog(url);
+            } else {
+                popupActionDialog.src = url;
+            }
+            popupActionDialog.init();
         }
         return false;
     }
     function dlPostAction(element, message) {
         var url = $(element).attr("href");
+        var showPopup = true;
         if (message != "") {
-            $('#confirmation-modal').confirm(message).on({
-              confirm: function () {
-                var  orgAction = $(element).closest("form").attr("action");
-                $(element).closest("form").find("input[type=checkbox]").removeAttr("checked");
-                $(element).closest("form").attr("action", $(element).attr("href"));
-                $(element).closest("form").submit();
-
-                //reset the action
-                $(element).closest("form").attr("action", orgAction);
-              }
-            });
+            showPopup = confirm(message);
+        }
+        if (showPopup) {
+            var  orgAction = $(element).closest("form").attr("action");
+            $(element).closest("form").find("input[type=checkbox]").removeAttr("checked");
+            $(element).closest("form").attr("action", $(element).attr("href"));
+            $(element).closest("form").submit();
+            
+            //reset the action
+            $(element).closest("form").attr("action", orgAction);
         }
         return false;
     }
-    var confirm = false;
     function showConfirm(element, message) {
         var table = $(element).parent().parent().find('table');
         if ($(table).find("input[type=checkbox][name|=d]:checked").length > 0) {
-            if(confirm) return true;
-            $('#confirmation-modal').confirm(message).on({
-              confirm: function () {
-                confirm=true;
-                $(element).trigger('click');
-              }
-            });
-            return false;
+            return confirm(message);
         } else {
-            $('#alert-modal').find('.message').html("<fmt:message key="dbuilder.alert.noRecordSelected"/>");
-            $('#alert-modal').modal('show');
+            alert("<fmt:message key="dbuilder.alert.noRecordSelected"/>");
             return false;
         }
     }
-    $.fn.confirm = function (message) {
-      return this.each(function () {
-        var element = this;
-        $('.message', this).html(message);
-        $(this).on('click', '.confirm', function (event) {
-          $(element).data('confirm', true);
-        });
-        $(this).on('hide.bs.modal', function (event) {
-          if ($(this).data('confirm')) {
-            $(this).trigger('confirm', event);
-            $(this).removeData('confirm');
-          } else {
-            $(this).trigger('dismiss', event);
-          }
-          $(this).off('confirm dismiss');
-        });
-        $(this).modal('show');
-      });
-    };
 </script>
