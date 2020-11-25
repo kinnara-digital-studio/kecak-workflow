@@ -208,10 +208,11 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
               <ui:stripTag html="${html}"/>
         </title>
 		${userview.setting.theme.css}
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/form.css?build=<fmt:message key="build.number"/>" />
         <jsp:include page="/WEB-INF/jsp/includes/scripts.jsp" />
         ${oauth2LogoutScript}
 
-            <style type="text/css">
+        <style type="text/css">
             .quickEdit, #form-canvas .quickEdit {
                 display: none;
             }
