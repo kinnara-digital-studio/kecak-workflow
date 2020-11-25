@@ -1,12 +1,19 @@
 package org.joget.apps.form.lib;
 
 import java.util.Map;
+import java.util.Optional;
+
+import EnhydraShark.App;
+import org.hibernate.jdbc.Work;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormBuilderPaletteElement;
 import org.joget.apps.form.model.FormBuilderPalette;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormUtil;
+import org.joget.workflow.model.WorkflowAssignment;
+import org.joget.workflow.model.service.WorkflowManager;
+import org.springframework.context.ApplicationContext;
 
 public class HiddenField extends Element implements FormBuilderPaletteElement {
 
@@ -27,20 +34,7 @@ public class HiddenField extends Element implements FormBuilderPaletteElement {
         String template = "hiddenField.ftl";
 
         // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
-        String priority = getPropertyString("useDefaultWhenEmpty");
-        
-        if (priority != null && !priority.isEmpty()) {
-            if (("true".equals(priority) && (value == null || value.isEmpty()))
-                    || "valueOnly".equals(priority)) {
-                value = getPropertyString("value");
-            }
-        } else {
-            if (getPropertyString("value") != null && !getPropertyString("value").isEmpty()) {
-                value = getPropertyString("value");
-            }
-        } 
-
+        String value = getElementValue(formData);
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
@@ -73,5 +67,25 @@ public class HiddenField extends Element implements FormBuilderPaletteElement {
 
     public String getFormBuilderIcon() {
         return "/plugin/org.joget.apps.form.lib.HiddenField/images/textField_icon.gif";
+    }
+
+    @Override
+    public String getElementValue(FormData formData) {
+        String value = super.getElementValue(formData);
+
+        String priority = getPropertyString("useDefaultWhenEmpty");
+
+        if (priority != null && !priority.isEmpty()) {
+            if (("true".equals(priority) && (value == null || value.isEmpty()))
+                    || "valueOnly".equals(priority)) {
+                value = getPropertyString("value");
+            }
+        } else {
+            if (getPropertyString("value") != null && !getPropertyString("value").isEmpty()) {
+                value = getPropertyString("value");
+            }
+        }
+
+        return value;
     }
 }
