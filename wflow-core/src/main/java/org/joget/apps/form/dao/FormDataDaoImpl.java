@@ -293,7 +293,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         try {
             String query = "SELECT e FROM " + tableName + " e ";
-            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (loadDeleted != null && loadDeleted ? " 1 = 1 " : (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null ")) + ")" ;
+            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (loadDeleted != null && loadDeleted ? " 1 = 1 " : (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)"));
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
