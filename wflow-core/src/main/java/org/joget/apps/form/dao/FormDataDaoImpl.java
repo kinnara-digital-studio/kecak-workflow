@@ -225,9 +225,29 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         final String entityName = getFormEntityName(formDefId);
         final String newTableName = getFormTableName(formDefId, tableName);
 
-        return internalFind(entityName, newTableName, condition, params, sort, desc, start, rows);
+        return internalFind(entityName, newTableName, condition, params, sort, desc, start, rows, false);
     }
-    
+
+    /**
+     * Query to find a list of matching form rows.
+     * @param formDefId
+     * @param tableName
+     * @param condition
+     * @param params
+     * @param sort
+     * @param desc
+     * @param start
+     * @param rows
+     * @param loadDeleted
+     * @return
+     */
+    public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+        final String entityName = getFormEntityName(formDefId);
+        final String newTableName = getFormTableName(formDefId, tableName);
+
+        return internalFind(entityName, newTableName, condition, params, sort, desc, start, rows, loadDeleted);
+    }
+
     /**
      * Query to find a list of matching form rows.
      * @param form
@@ -243,9 +263,16 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         final String entityName = getFormEntityName(form);
         final String tableName = getFormTableName(form);
 
-        return internalFind(entityName, tableName, condition, params, sort, desc, start, rows);
+        return internalFind(entityName, tableName, condition, params, sort, desc, start, rows, false);
     }
-    
+
+    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+        final String entityName = getFormEntityName(form);
+        final String tableName = getFormTableName(form);
+
+        return internalFind(entityName, tableName, condition, params, sort, desc, start, rows, loadDeleted);
+    }
+
     /**
      * Query to find a list of matching form rows.
      * @param entityName
@@ -256,20 +283,21 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param desc
      * @param start
      * @param rows
+     * @param loadDeleted  load soft deleted rows
      * @return
      */
     @SuppressWarnings("unchecked")
-	protected FormRowSet internalFind(final String entityName, final String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows) {
+	protected FormRowSet internalFind(final String entityName, final String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
         // get hibernate template
         Session session = getHibernateSession(tableName, tableName, null, ACTION_TYPE_LOAD);
 
         try {
             String query = "SELECT e FROM " + tableName + " e ";
-            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)");
+            query += (condition != null && !condition.isEmpty() ? (condition + " AND ") : " WHERE ") + "(" + (loadDeleted != null && loadDeleted ? " 1 = 1 " : (FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)"));
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
-                if (!FormUtil.PROPERTY_ID.equals(sortProperty) 
+                if (!FormUtil.PROPERTY_ID.equals(sortProperty)
                 		&& !FormUtil.PROPERTY_DATE_CREATED.equals(sortProperty) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(sortProperty)
                 		&& !FormUtil.PROPERTY_CREATED_BY.equals(sortProperty) && !FormUtil.PROPERTY_MODIFIED_BY.equals(sortProperty)
                 		&& !FormUtil.PROPERTY_DELETED.equals(sortProperty)) {
@@ -321,7 +349,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param tableName
      * @param condition
      * @param params
-     * @return 
+     * @return
      */
     public Long count(String formDefId, String tableName, final String condition, final Object[] params) {
 
@@ -330,7 +358,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         return internalCount(entityName, newTableName, condition, params);
     }
-    
+
     /**
      * Query total row count for a form.
      * @param form
@@ -345,7 +373,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         return internalCount(entityName, tableName, condition, params);
     }
-    
+
     /**
      * Query total row count for a form.
      * @param entityName
@@ -389,7 +417,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         return internalFindPrimaryKey(entityName, tableName, fieldName, value);
     }
-    
+
     /**
      * Query to find find primary key based on a field name and it's value.
      * @param formDefId
@@ -404,7 +432,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
         return internalFindPrimaryKey(entityName, newTableName, fieldName, value);
     }
-    
+
     /**
      * Query to find find primary key based on a field name and it's value.
      * @param entityName
@@ -447,7 +475,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 //        }
         internalSaveOrUpdate(entityName, tableName, rowSet);
     }
-    
+
     /**
      * Saves (creates or updates) form data
      * @param formDefId
@@ -467,7 +495,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * Saves (creates or updates) form data
      * @param entityName
      * @param tableName
-     * @param rowSet 
+     * @param rowSet
      */
     protected void internalSaveOrUpdate(String entityName, String tableName, FormRowSet rowSet) {
         // get hibernate template
@@ -493,7 +521,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         String entityName = getFormEntityName(form);
         String tableName = getFormTableName(form);
         Session session = getHibernateSession(entityName, tableName, rowSet, ACTION_TYPE_STORE);
-        
+
         closeSession(session);
     }
 
@@ -507,7 +535,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         String entityName = getFormEntityName(formDefId);
         String newTableName = getFormTableName(formDefId, tableName);
         Session session = getHibernateSession(entityName, newTableName, rowSet, ACTION_TYPE_STORE);
-        
+
         closeSession(session);
     }
 
@@ -518,7 +546,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
                     .map(s -> "?")
                     .collect(Collectors.joining(", ", "where id in (", ")"));
 
-            FormRowSet rowSet = Optional.ofNullable(internalFind(entityName,tableName, condition, primaryKeyValues,null,null,null,null))
+            FormRowSet rowSet = Optional.ofNullable(internalFind(entityName,tableName, condition, primaryKeyValues,null,null,null,null, false))
                     .map(Collection::stream)
                     .orElseGet(Stream::empty)
                     .peek(row -> {
