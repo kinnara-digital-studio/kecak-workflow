@@ -1,10 +1,11 @@
 package org.joget.apps.workflow.security;
-import java.util.*;
 
 import org.apache.commons.codec.binary.Hex;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.commons.util.CsvUtil;
 import org.joget.commons.util.HostManager;
 import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.SetupManager;
 import org.joget.directory.dao.RoleDao;
 import org.joget.directory.dao.UserDao;
 import org.joget.directory.dao.UserTokenDao;
@@ -13,8 +14,10 @@ import org.joget.directory.model.User;
 import org.joget.directory.model.UserToken;
 import org.joget.directory.model.service.DirectoryManager;
 import org.joget.plugin.base.PluginManager;
+import org.joget.plugin.property.model.PropertyEditable;
+import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.dao.WorkflowHelper;
-import org.kecak.oauth.model.Oauth2ClientPlugin;
+import org.kecak.oauth.model.AbstractOauth2Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -32,34 +35,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
 
 public class WorkflowAuthenticationProvider implements AuthenticationProvider, MessageSourceAware {
-
-    transient
-    @Autowired
-    @Qualifier("main")
     private DirectoryManager directoryManager;
-
-    @Autowired
     private PluginManager pluginManager;
-
-    @Autowired
-    private UserDao userDao;
-    @Autowired
     private UserTokenDao userTokenDao;
-    @Autowired
-    private RoleDao roleDao;
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public DirectoryManager getDirectoryManager() {
-        return directoryManager;
-    }
-
-    public void setDirectoryManager(DirectoryManager directoryManager) {
-        this.directoryManager = directoryManager;
-    }
-
+    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // reset profile and set hostname
         HostManager.initHost();
@@ -73,8 +58,16 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         // check credentials
         boolean validLogin = false;
         try {
-            Oauth2ClientPlugin oauth2ClientPlugin = (Oauth2ClientPlugin) pluginManager.getPlugin(username);
-            if(oauth2ClientPlugin != null){
+            AbstractOauth2Client oauth2ClientPlugin = (AbstractOauth2Client) pluginManager.getPlugin(username);
+            String properties = SetupManager.getSettingValue(username);
+            if(oauth2ClientPlugin != null && !properties.isEmpty()){
+                Map propertyMap;
+                if (!(oauth2ClientPlugin instanceof PropertyEditable)) {
+                    propertyMap = CsvUtil.getPluginPropertyMap(properties);
+                } else {
+                    propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
+                }
+                oauth2ClientPlugin.setProperties(propertyMap);
                 User u = oauth2ClientPlugin.getUser(password);
                 if (u != null) {
                     username = u.getUsername();
@@ -109,7 +102,7 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
 
         // get authorities
         Collection<Role> roles = directoryManager.getUserRoles(username);
-        List<GrantedAuthority> gaList = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> gaList = new ArrayList<>();
         if (roles != null && !roles.isEmpty()) {
             for (Role role : roles) {
                 GrantedAuthority ga = new SimpleGrantedAuthority(role.getId());
@@ -125,6 +118,7 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         return result;
     }
 
+    @Override
     public boolean supports(@SuppressWarnings("rawtypes") Class authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
@@ -138,5 +132,17 @@ public class WorkflowAuthenticationProvider implements AuthenticationProvider, M
         SecretKeySpec secret_key = new SecretKeySpec(key, "HmacSHA256");
         sha256_HMAC.init(secret_key);
         return Hex.encodeHexString(sha256_HMAC.doFinal(data.getBytes()));
+    }
+
+    public void setDirectoryManager(DirectoryManager directoryManager) {
+        this.directoryManager = directoryManager;
+    }
+
+    public void setPluginManager(PluginManager pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
+    public void setUserTokenDao(UserTokenDao userTokenDao) {
+        this.userTokenDao = userTokenDao;
     }
 }
