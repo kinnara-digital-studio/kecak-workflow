@@ -28,7 +28,7 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
 
     protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
 
-        String value = FormUtil.getElementPropertyValue(this, formData);
+        String value = getElementValue(formData);
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);

@@ -71,7 +71,7 @@
             },
             {
                 name : 'foreignKey',
-                label : '@@form.mulitrowformbinder.foreignKey@@',
+                label : '@@form.gridformbinder.foreignKey@@',
                 type : 'textfield',
                 required : 'True'
             }

@@ -1,13 +1,10 @@
 package org.joget.apps.form.model;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.TimeZoneUtil;
+
+import java.util.*;
 
 /**
  * Represents a row of form data
@@ -143,17 +140,17 @@ public class FormRow extends Properties {
         }
 	}
 
-	public Boolean getDeleted() {
-    	String obj = getProperty(FormUtil.PROPERTY_DELETED);
+	public boolean getDeleted() {
+    	Object obj = get(FormUtil.PROPERTY_DELETED);
     	if (obj != null) {
-    		return Boolean.getBoolean(obj);
+    		return Boolean.parseBoolean(String.valueOf(obj));
     	}
     	return false;
 	}
 
 	public void setDeleted(Boolean deleted) {
 		if (deleted != null) {
-            setProperty(FormUtil.PROPERTY_DELETED, Boolean.toString(deleted));
+		    put(FormUtil.PROPERTY_DELETED, String.valueOf(deleted));
         } else {
             remove(FormUtil.PROPERTY_DELETED);
         }

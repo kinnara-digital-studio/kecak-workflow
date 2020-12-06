@@ -154,49 +154,50 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/json/formUtil.js?build=<fmt:message key="build.number"/>"></script>
     </head>
     <body class="ui-mobile-viewport">
-
         <div id="userview" data-role="page" data-url="userview" tabindex="0" style="min-height: 377px; ">
-
-            <div data-role="header" data-position="fixed" role="banner" style="top: 0px; ">
-                <c:if test="${!empty menuId && menuId != landingPage}">
-                    <a href="${pageContext.request.contextPath}/web/mobile/${appId}/${userview.properties.id}/<c:out value="${key}"/>/${landingPage}" data-icon="home" data-direction="reverse"><fmt:message key="console.header.menu.label.home"/></a>
-                </c:if>
-                <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">
-                <c:choose>
-                    <c:when test="${!empty userview.setting.theme.header}">
-                        <ui:stripTag html="${userview.setting.theme.header}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:out value="${userview.properties.name}"/>
-                    </c:otherwise>
-                </c:choose>                    
-                </h1>
-                <c:if test="${empty menuId || menuId == landingPage}">    
+            <c:if test="${!embed}">
+                <div data-role="header" data-position="fixed" role="banner" style="top: 0px; ">
+                    <c:if test="${!empty menuId && menuId != landingPage}">
+                        <a href="${pageContext.request.contextPath}/web/mobile/${appId}/${userview.properties.id}/<c:out value="${key}"/>/${landingPage}" data-icon="home" data-direction="reverse"><fmt:message key="console.header.menu.label.home"/></a>
+                    </c:if>
+                    <h1 class="ui-title" tabindex="0" role="heading" aria-level="1">
                     <c:choose>
-                        <c:when test="${isAnonymous}">
-                            <a href="${pageContext.request.contextPath}/web/mlogin/${appId}/${userview.properties.id}/<c:out value="${key}"/>" data-icon="gear" data-theme="a"><span id="loginText"><fmt:message key="console.login.label.login"/></span></a>
+                        <c:when test="${!empty userview.setting.theme.header}">
+                            <ui:stripTag html="${userview.setting.theme.header}"/>
                         </c:when>
                         <c:otherwise>
-                            <a href="#" onclick="return Mobile.logout()" data-icon="back" data-theme="a" data-direction="reverse" rel="external"><span id="logoutText"><c:out value="${userview.properties.logoutText}"/></span></a>
+                            <c:out value="${userview.properties.name}"/>
                         </c:otherwise>
                     </c:choose>
-                    <c:choose>
-                        <c:when test="${showDesktopButton ne 'false' && showAllAppsButton eq 'true'}">
-                            <div data-type="horizontal" data-role="controlgroup" class="ui-btn-right"> 
-                                <a href="${pageContext.request.contextPath}/web/mobile" id="all-apps" data-role="button" data-icon="grid"><fmt:message key="mobile.apps.allApps"/></a>
+                    </h1>
+                    <c:if test="${empty menuId || menuId == landingPage}">
+                        <c:choose>
+                            <c:when test="${isAnonymous}">
+                                <a href="${pageContext.request.contextPath}/web/mlogin/${appId}/${userview.properties.id}/<c:out value="${key}"/>" data-icon="gear" data-theme="a"><span id="loginText"><fmt:message key="console.login.label.login"/></span></a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="#" onclick="return Mobile.logout()" data-icon="back" data-theme="a" data-direction="reverse" rel="external"><span id="logoutText"><c:out value="${userview.properties.logoutText}"/></span></a>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:choose>
+                            <c:when test="${showDesktopButton ne 'false' && showAllAppsButton eq 'true'}">
+                                <div data-type="horizontal" data-role="controlgroup" class="ui-btn-right">
+                                    <a href="${pageContext.request.contextPath}/web/mobile" id="all-apps" data-role="button" data-icon="grid"><fmt:message key="mobile.apps.allApps"/></a>
+                                    <a href="#" onclick="return desktopSite()" id="desktop-site" data-role="button" data-icon="home" rel="external"><fmt:message key="mobile.apps.desktop"/></a>
+                                </div>
+                            </c:when>
+                            <c:when test="${showDesktopButton ne 'false'}">
                                 <a href="#" onclick="return desktopSite()" id="desktop-site" data-role="button" data-icon="home" rel="external"><fmt:message key="mobile.apps.desktop"/></a>
-                            </div>
-                        </c:when>
-                        <c:when test="${showDesktopButton ne 'false'}">
-                            <a href="#" onclick="return desktopSite()" id="desktop-site" data-role="button" data-icon="home" rel="external"><fmt:message key="mobile.apps.desktop"/></a>
-                        </c:when>
-                        <c:when test="${showAllAppsButton eq 'true'}">
-                            <a href="${pageContext.request.contextPath}/web/mobile/apps" id="all-apps" data-role="button" data-icon="grid"><fmt:message key="mobile.apps.allApps"/></a>
-                        </c:when>
-                    </c:choose>
-                </c:if>
-            </div>
-            <div id="logo"></div>
+                            </c:when>
+                            <c:when test="${showAllAppsButton eq 'true'}">
+                                <a href="${pageContext.request.contextPath}/web/mobile/apps" id="all-apps" data-role="button" data-icon="grid"><fmt:message key="mobile.apps.allApps"/></a>
+                            </c:when>
+                        </c:choose>
+                    </c:if>
+                </div>
+                <div id="logo"></div>
+            </c:if>
+
             <div data-role="content" class="ui-content" role="main">
                 <c:choose>
                     <c:when test="${empty menuId || menuId == landingPage}">

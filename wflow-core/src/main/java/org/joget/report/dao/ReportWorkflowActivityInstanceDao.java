@@ -3,7 +3,6 @@ package org.joget.report.dao;
 import org.joget.report.model.ReportWorkflowActivityInstance;
 
 import java.util.Collection;
-import org.joget.report.model.ReportWorkflowActivityInstance;
 
 public interface ReportWorkflowActivityInstanceDao {
 

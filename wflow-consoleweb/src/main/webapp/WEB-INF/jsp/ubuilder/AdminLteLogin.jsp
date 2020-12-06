@@ -4,7 +4,6 @@
 <%@ page import="org.joget.apps.userview.model.Userview"%>
 <%@ page import="org.joget.directory.model.service.DirectoryUtil"%>
 <%@page contentType="text/html" pageEncoding="windows-1252"%>
-<%@ page import="org.joget.commons.util.SetupManager"%>
 
 <%
     String rightToLeft = WorkflowUtil.getSystemSetupValue("rightToLeft");
@@ -47,25 +46,6 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-            <meta name="google-signin-client_id" content="${SetupManager.getSettingValue('googleClientId')}">
-            <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-            <script type="text/javascript">
-                function onSignIn(googleUser) {
-                    var id_token = googleUser.getAuthResponse().id_token;
-                    $('#googleForm #auth_type').val('GOOGLE_AUTH');
-                    $('#googleForm #id_token').val(id_token);
-                    $('#googleForm').submit();
-                }
-                function onLoad() {
-                    <c:if test="${!empty param.login_error}">
-                      gapi.load('auth2', function() {
-                        gapi.auth2.init().then(function(){
-                            gapi.auth2.getAuthInstance().signOut();
-                        });
-                      });
-                    </c:if>
-                }
-            </script>
         <title>
             <c:set var="html">
                 ${userview.properties.name} &nbsp;&gt;&nbsp;
@@ -133,14 +113,17 @@
               <div class="row">
                 <div class="col-xs-12">
                   <button type="submit" class="btn btn-primary btn-block btn-flat"><fmt:message key="ubuilder.login" /></button>
+                    <label class="inline">
+                        <%= DirectoryUtil.getLoginFormFooter() %>
+                    </label>
                 </div>
                 <!-- /.col -->
               </div>
             </form>
-                <br>
-                <div class="oauth2_login_container">
-                    ${oauth2PluginButton}
-                </div>
+            <br>
+            <div class="oauth2_login_container">
+                ${oauth2PluginButton}
+            </div>
           </div>
           <!-- /.login-box-body -->
           <div class="center" style="margin-top:10px;">
@@ -159,5 +142,6 @@
               ${userview.setting.properties.loginPageBottom}
           </c:if>
         </div>
+        <%= AppUtil.getSystemAlert() %>
     </body>
 </html>

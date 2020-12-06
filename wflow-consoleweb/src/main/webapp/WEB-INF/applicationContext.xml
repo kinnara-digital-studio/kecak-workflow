@@ -20,6 +20,7 @@
 
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider ref="authenticationProvider" />
+        <security:authentication-provider ref="jwtAuthenticationProvider" />
     </security:authentication-manager>
 
     <!-- Open paths -->
@@ -161,12 +162,12 @@
         <property name="userTokenDao" ref="userTokenDao"/>
     </bean>
 
-<!--    <bean id="jwtAuthenticationProvider" class="org.kecak.apps.workflow.security.JwtTokenAuthenticationProvider">-->
-<!--        <property name="directoryManager" ref="directoryManager"/>-->
-<!--        <property name="authTokenService" ref="authTokenService" />-->
-<!--        <property name="workflowUserManager" ref="workflowUserManager" />-->
-<!--        <property name="workflowHelper" ref="workflowHelper" />-->
-<!--    </bean>-->
+    <bean id="jwtAuthenticationProvider" class="org.kecak.apps.workflow.security.JwtTokenAuthenticationProvider">
+        <property name="directoryManager" ref="directoryManager"/>
+        <property name="authTokenService" ref="authTokenService" />
+        <property name="workflowUserManager" ref="workflowUserManager" />
+        <property name="workflowHelper" ref="workflowHelper" />
+    </bean>
 
     <bean id="oauth2Handler" class="org.kecak.oauth2.Oauth2Handler">
         <property name="clientAppDao" ref="clientAppDao" />
@@ -189,6 +190,14 @@
         <property name="localeResolver" ref="localeResolver"/>
         <property name="auditTrailManager" ref="auditTrailManager"/>
         <property name="allowSessionCreation" value="true" />
+    </bean>
+
+    <bean id="jwtTokenProcessingFilter" class="org.kecak.apps.workflow.security.JwtTokenProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager" />
+        <property name="workflowUserManager" ref="workflowUserManager"/>
+        <property name="directoryManager" ref="directoryManager"/>
+        <property name="localeResolver" ref="localeResolver"/>
+        <property name="auditTrailManager" ref="auditTrailManager"/>
     </bean>
 
     <bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">

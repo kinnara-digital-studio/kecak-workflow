@@ -222,6 +222,7 @@
                     <doUpdate>false</doUpdate>
                     <revisionOnScmFailure>0</revisionOnScmFailure>
                     <shortRevisionLength>8</shortRevisionLength>
+                    <timestampFormat>{0,date,yyyy}</timestampFormat>
                 </configuration>
             </plugin>
             <plugin>
@@ -286,7 +287,6 @@
                     <executable>bower</executable>
                     <arguments>
                         <argument>install</argument>
-<!--                        <argument>-f</argument>-->
                     </arguments>
                     <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
                 </configuration>

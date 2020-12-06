@@ -1,30 +1,42 @@
 package org.joget.apps.app.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.xpath.operations.Bool;
+import org.hibernate.jdbc.Work;
 import org.joget.apps.app.dao.UserviewDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.UserviewDefinition;
 import org.joget.apps.app.service.AppService;
+import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.userview.model.Userview;
 import org.joget.apps.userview.service.UserviewService;
 import org.joget.apps.userview.service.UserviewThemeProcesser;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.SecurityUtil;
-import org.joget.commons.util.SetupManager;
-import org.joget.commons.util.StringUtil;
+import org.joget.commons.util.*;
 import org.joget.directory.dao.ClientAppDao;
+import org.joget.directory.model.ClientApp;
 import org.joget.directory.model.User;
+import org.joget.plugin.base.ExtDefaultPlugin;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
+import org.joget.plugin.base.PluginProperty;
+import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
+import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONObject;
 import org.kecak.oauth.model.AbstractOauth2Client;
+import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -32,12 +44,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.io.DataInput;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -69,15 +82,15 @@ public class LoginWebController {
 
         //add oauth button on login view
         Collection<Plugin> pluginList = pluginManager.list(AbstractOauth2Client.class);
-        String oauth2PluginButton = "";
+        StringBuilder oauth2PluginButton = new StringBuilder();
         for (Plugin plugin : pluginList){
             AbstractOauth2Client oauthPlugin = (AbstractOauth2Client) pluginManager.getPlugin(plugin.getClass().getName());
             String properties = SetupManager.getSettingValue(plugin.getClass().getName());
             if(!properties.isEmpty()) {
-                Map propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
+                Map<String, Object> propertyMap = PropertyUtil.getPropertiesValueFromJson(properties);
                 oauthPlugin.setProperties(propertyMap);
                 if (oauthPlugin.isEnabled()){
-                    oauth2PluginButton += oauthPlugin.renderHtmlLoginButton();
+                    oauth2PluginButton.append(oauthPlugin.renderHtmlLoginButton());
                 }
             }
         }
@@ -177,7 +190,7 @@ public class LoginWebController {
             map.addAttribute("key", key);
             map.addAttribute("menuId", menuId);
             map.addAttribute("embed", embed);
-            map.addAttribute("oauth2PluginButton",oauth2PluginButton);
+            map.addAttribute("oauth2PluginButton", oauth2PluginButton.toString());
             UserviewDefinition userview = userviewDefinitionDao.loadById(userviewId, appDef);
             if (userview != null) {
                 String json = userview.getJson();
@@ -259,7 +272,7 @@ public class LoginWebController {
         } else if (savedUrl.contains(request.getContextPath() + "/mobile")) {
             return "mobile/mLogin";
         }
-        map.addAttribute("oauth2PluginButton",oauth2PluginButton);
+        map.addAttribute("oauth2PluginButton", oauth2PluginButton.toString());
         return "login";
     }
 

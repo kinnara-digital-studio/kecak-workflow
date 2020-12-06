@@ -25,8 +25,11 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Endpoint
 public class SoapFormEndpoint {
@@ -97,24 +100,26 @@ public class SoapFormEndpoint {
     public @ResponsePayload Element handleFormSubmitRequest(@RequestPayload Element formSubmitElement) {
         LogUtil.info(getClass().getName(), "Executing SOAP Web Service : User [" + WorkflowUtil.getCurrentUsername() + "] is executing [" + formSubmitElement.getName() + "]");
 
-        Element response = new Element("FormSubmitResponse");
+        Element response = new Element("FormSubmitResponse",namespace);
+
         try {
-            @Nonnull final String appId = appIdExpression.evaluate(formSubmitElement).get(0).getValue();
-            @Nonnull final Long appVersion = appVersionExpression == null
-                    || appVersionExpression.evaluate(formSubmitElement) == null
-                    || appVersionExpression.evaluate(formSubmitElement).get(0) == null
-                    ? 0L : Long.parseLong(appVersionExpression.evaluate(formSubmitElement).get(0).getValue());
-            @Nonnull final String formDefId = formDefIdExpression.evaluate(formSubmitElement).get(0).getValue();
+            @Nonnull final String appId = evaluateValue(formSubmitElement, appIdExpression, "");
+
+            @Nonnull final long appVersion = Optional.ofNullable(evaluateValue(formSubmitElement, appVersionExpression))
+                    .map(Long::parseLong)
+                    .orElse(appDefinitionDao.getPublishedVersion(appId));
+
+            @Nonnull final String formDefId = evaluateValue(formSubmitElement, formDefIdExpression, "");
 
             // get current App
-            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, appVersion == 0 ? appDefinitionDao.getPublishedVersion(appId) : appVersion);
+            AppDefinition appDefinition = appDefinitionDao.loadVersion(appId, appVersion);
             if (appDefinition == null) {
                 // check if app valid
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid application [" + appId + "] version [" + appVersion + "]");
             }
 
             // get process form
-            Form form = appService.viewDataForm(appId, appVersion.toString(), formDefId, null, null, null, null, null, null);
+            Form form = appService.viewDataForm(appId, Long.toString(appVersion), formDefId, null, null, null, null, null, null);
 
             // construct form data
             final FormData formData = (form == null) ? null : fieldsExpression.evaluate(formSubmitElement).stream()
@@ -132,12 +137,47 @@ public class SoapFormEndpoint {
                             fd.addRequestParameterValues(FormUtil.getElementParameterName(element), new String[]{value});
                     }, (fd1, fd2) -> fd2.getRequestParams().forEach(fd1::addRequestParameterValues));
 
-            appService.submitForm(appId, appVersion.toString(), formDefId, formData, false);
 
-            response.addContent(new Element("id", namespace).setText(String.valueOf(formData.getPrimaryKeyValue())));
+            FormData resultFormData = appService.submitForm(appId, Long.toString(appVersion), formDefId, formData, false);
+            Optional.ofNullable(resultFormData.getFormErrors()).ifPresent(m -> {
+                final Element elementValidationError = new Element("validationError",namespace);
+                m.forEach((key, value) -> {
+                    Element elementField = new Element(key);
+                    elementField.addContent(value);
+                    elementValidationError.addContent(elementField);
+                });
+                response.addContent(elementValidationError);
+            });
+
+            Optional.ofNullable(resultFormData.getFormResults()).ifPresent(m -> {
+                final Element elementResult = new Element("result",namespace);
+                m.forEach((key, value) -> {
+                    Element elementField = new Element(key);
+                    elementField.addContent(value);
+                    elementResult.addContent(elementField);
+                });
+                response.addContent(elementResult);
+            });
+
+            Optional.ofNullable(resultFormData.getPrimaryKeyValue())
+                    .map(s -> appService.loadFormData(form, s))
+                    .map(Collection::stream)
+                    .orElseGet(Stream::empty)
+                    .findFirst()
+                    .ifPresent(row -> {
+                        final Element elementData = new Element("data",namespace);
+                        row.forEach((key, value) -> {
+                            Element elementField = new Element(String.valueOf(key));
+                            elementField.addContent(String.valueOf(value));
+                            elementData.addContent(elementField);
+                        });
+
+                        response.addContent(elementData);
+                    });
+
         } catch (Exception e) {
-//            LogUtil.warn(getClass().getName(), e.getMessage());
             LogUtil.error(getClass().getName(), e, e.getMessage());
+            response.addContent(e.getMessage());
         }
 
         return response;
@@ -199,5 +239,17 @@ public class SoapFormEndpoint {
         } catch (ApiException e) {
             LogUtil.warn(getClass().getName(), e.getMessage());
         }
+    }
+
+
+    private String evaluateValue(Element element, XPathExpression<Element> expression) {
+        return evaluateValue(element, expression, null);
+    }
+
+    private String evaluateValue(Element element, XPathExpression<Element> expression, String defaultValue) {
+        return Optional.ofNullable(element)
+                .map(expression::evaluateFirst)
+                .map(Element::getValue)
+                .orElse(defaultValue);
     }
 }

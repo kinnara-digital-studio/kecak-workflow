@@ -55,7 +55,8 @@
             	<div class="oauth2_login_container">
                     ${oauth2PluginButton}
                 </div>
-            	<p class="m-t"><small>@Copyright TAP PT. TIMAH 2019</small> </p>
+
+            	<p class="m-t"><small>@Copyright PT. TIMAH <fmt:message key="build.year" /> - Build <fmt:message key="build.number" /></small></p>
         	</div>
     	</div>
     	<script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>

@@ -3,6 +3,7 @@ package org.kecak.apps.email;
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.joget.apps.app.dao.AppDefinitionDao;
+import org.joget.workflow.model.dao.WorkflowHelper;
 import org.kecak.apps.app.model.EmailProcessorPlugin;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
@@ -16,12 +17,11 @@ import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 
+import javax.annotation.Nonnull;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -38,6 +38,7 @@ public class EmailProcessor {
     private DirectoryManager directoryManager;
     private PluginManager pluginManager;
     private AppDefinitionDao appDefinitionDao;
+    private WorkflowHelper workflowHelper;
 
     /**
      *
@@ -47,9 +48,8 @@ public class EmailProcessor {
     public void parseEmail(@Body final String body, final Exchange exchange) {
         // get sender email address
         final String from = exchange.getIn().getHeader(FROM).toString();
-        String fromEmail = from.replaceAll("^.*<|>.*$", "");
-        String username = getUsername(fromEmail);
-        workflowUserManager.setCurrentThreadUser(username);
+        final String fromEmail = from.replaceAll("^.*<|>.*$", "");
+        final Set<String> usernames = getUsername(fromEmail);
 
         final String subject = exchange.getIn().getHeader(SUBJECT).toString().replace("\t", "__").replace("\n", "__").replace(" ", "__");
 
@@ -80,16 +80,22 @@ public class EmailProcessor {
                                     parameterProperties.put(EmailProcessorPlugin.PROPERTY_BODY, body);
                                     parameterProperties.put(EmailProcessorPlugin.PROPERTY_EXCHANGE, exchange);
 
-                                    try {
-                                        if (((EmailProcessorPlugin) p).filter(parameterProperties)) {
-                                            LogUtil.info(getClass().getName(), "Processing Email Plugin [" + p.getName() + "] for application [" + appDefinition.getAppId() + "]");
-                                            ((EmailProcessorPlugin) p).parse(parameterProperties);
-                                        } else {
-                                            LogUtil.debug(getClass().getName(), "Skipping Email Plugin [" + p.getName() + "] : Not meeting filter condition");
+                                    usernames.forEach(username -> {
+                                        workflowUserManager.setCurrentThreadUser(username);
+
+                                        try {
+                                            if (((EmailProcessorPlugin) p).filter(parameterProperties)) {
+                                                LogUtil.info(getClass().getName(), "Processing Email Plugin [" + p.getName() + "] for application [" + appDefinition.getAppId() + "] as [" + username + "]");
+                                                workflowHelper.addAuditTrail(this.getClass().getName(), "parseEmail", subject, new Class[]{String.class}, new Object[]{subject}, false);
+
+                                                ((EmailProcessorPlugin) p).parse(parameterProperties);
+                                            } else {
+                                                LogUtil.debug(getClass().getName(), "Skipping Email Plugin [" + p.getName() + "] : Not meeting filter condition");
+                                            }
+                                        } catch (Exception e) {
+                                            ((EmailProcessorPlugin) p).onError(parameterProperties, e);
                                         }
-                                    } catch (Exception e) {
-                                        ((EmailProcessorPlugin) p).onError(parameterProperties, e);
-                                    }
+                                    });
                                 })));
     }
 
@@ -98,7 +104,8 @@ public class EmailProcessor {
      * @param sender
      * @return
      */
-    private String getUsername(String sender) {
+    @Nonnull
+    private Set<String> getUsername(String sender) {
         // get sender
         InternetAddress ia = null;
         try {
@@ -109,71 +116,51 @@ public class EmailProcessor {
 
         if (ia == null) {
             LogUtil.warn(getClass().getName(), "Address not found for sender [" + sender + "]");
-            return null;
+            return Collections.EMPTY_SET;
         }
 
         String email = ia.getAddress();
-//            directoryManager = (DirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
 
-        String username = directoryManager.getUserList(email, null, null, 0, 1)
-                .stream()
-                .findFirst()
+        Set<String> usernames = Optional.of(email)
+                .map(s -> directoryManager.getUserList(s, null, null, 0, null))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
                 .map(User::getUsername)
-                // get data based on email without domain address
-                .orElseGet(() -> directoryManager.getUserList(email.replaceAll("@.+", ""), null, null, null, null)
-                        .stream()
-                        .filter(u -> email.equalsIgnoreCase(u.getEmail()))
-                        .findFirst()
-                        .map(User::getUsername)
-                        .orElse(DirectoryUtil.ROLE_ANONYMOUS));
+                .collect(Collectors.toSet());
 
-        LogUtil.info(getClass().getName(), "Processing email from [" + email + "] recognized as [" + username + "]");
+        if(usernames.isEmpty()) {
+            usernames.add(getDefaultUser(email));
+        }
 
-        return username;
+        LogUtil.info(getClass().getName(), "Email from [" + email + "] is recognized as [" + String.join(";", usernames) + "]");
+
+        return usernames;
     }
 
-//    public EmailApprovalContentDao getEmailApprovalContentDao() {
-//        return emailApprovalContentDao;
-//    }
-//
-//    public void setEmailApprovalContentDao(EmailApprovalContentDao emailApprovalContentDao) {
-//        this.emailApprovalContentDao = emailApprovalContentDao;
-//    }
 
-    public WorkflowManager getWorkflowManager() {
-        return workflowManager;
+    private String getDefaultUser(String email) {
+        return directoryManager.getUserList(email.replaceAll("@.+", ""), null, null, null, null)
+                .stream()
+                .filter(u -> email.equalsIgnoreCase(u.getEmail()))
+                .findFirst()
+                .map(User::getUsername)
+                .orElse(DirectoryUtil.ROLE_ANONYMOUS);
     }
 
     public void setWorkflowManager(WorkflowManager workflowManager) {
         this.workflowManager = workflowManager;
     }
 
-    public AppService getAppService() {
-        return appService;
-    }
-
     public void setAppService(AppService appService) {
         this.appService = appService;
-    }
-
-    public WorkflowUserManager getWorkflowUserManager() {
-        return workflowUserManager;
     }
 
     public void setWorkflowUserManager(WorkflowUserManager workflowUserManager) {
         this.workflowUserManager = workflowUserManager;
     }
 
-    public DirectoryManager getDirectoryManager() {
-        return directoryManager;
-    }
-
     public void setDirectoryManager(DirectoryManager directoryManager) {
         this.directoryManager = directoryManager;
-    }
-
-    public PluginManager getPluginManager() {
-        return pluginManager;
     }
 
     public void setPluginManager(PluginManager pluginManager) {
@@ -182,5 +169,9 @@ public class EmailProcessor {
 
     public void setAppDefinitionDao(AppDefinitionDao appDefinitionDao) {
         this.appDefinitionDao = appDefinitionDao;
+    }
+
+    public void setWorkflowHelper(WorkflowHelper workflowHelper) {
+        this.workflowHelper = workflowHelper;
     }
 }
