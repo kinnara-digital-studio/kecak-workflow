@@ -228,7 +228,7 @@
 			<nav id="sidebar" class="sidebar">
 				<div class="sidebar-content js-simplebar">
 					<a class="sidebar-brand" href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/">
-          				<span class="align-middle">${userview.properties.name}</span>
+          				${navigationBarHeader}
         			</a>
 				<c:if test="${category.properties.hide != 'yes'}">
 					<ul class="sidebar-nav">
