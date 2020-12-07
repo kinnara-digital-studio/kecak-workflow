@@ -269,9 +269,7 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
 
         <div class="navbar-header pull-left">
           <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="navbar-brand">
-            <small>
-              ${userview.properties.name}
-            </small>
+            ${navigationBarHeader}
           </a>
         </div>
 

@@ -79,4 +79,12 @@ public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implem
             return menu.getDecoratedMenu();
         }
     }
+
+    @Override
+    public String getNavigationBarHeader() {
+        return "<!-- mini logo for sidebar mini 50x50 pixels -->\n" +
+                " <span class=\"logo-mini\"><b>A</b>LT</span>\n" +
+                " <!-- logo for regular state and mobile devices -->\n" +
+                " <span class=\"logo-lg\">" + getUserview().getPropertyString("name") + "</span>";
+    }
 }
