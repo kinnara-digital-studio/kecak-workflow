@@ -417,7 +417,6 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
     <!-- REQUIRED JS SCRIPTS -->
  	${userview.setting.theme.javascript}
     <!-- Bootstrap 3.3.7 -->
-    <script src="${pageContext.request.contextPath}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     
     <script src="${pageContext.request.contextPath}/js/vueJs/vue.min.js"></script>
     <script>
