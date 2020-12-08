@@ -78,4 +78,10 @@ public abstract class AbstractAdminKitUserviewTheme extends UserviewTheme implem
             return menu.getDecoratedMenu();
         }
     }
+
+    @Override
+    public String getNavigationBarHeader() {
+
+        return "<span class=\"align-middle\">" + userview.getPropertyString("name") + "</span>";
+    }
 }

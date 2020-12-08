@@ -1852,11 +1852,8 @@ public class DataJsonController implements Declutter {
 
         // persist old values
         String uploadPath = getUploadFilePath();
-        FormData oldFormData = new FormData();
-        oldFormData.setPrimaryKeyValue(formData.getPrimaryKeyValue());
-        oldFormData.setActivityId(formData.getActivityId());
-        oldFormData.setProcessId(formData.getProcessId());
-        FormUtil.executeLoadBinders(form, oldFormData);
+
+        FormUtil.executeLoadBinders(form, formData);
         elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(throwableConsumer(e -> {
@@ -1866,7 +1863,7 @@ public class DataJsonController implements Declutter {
                     if (parameterValue == null) {
                         // get old data value
                         Optional.of(e)
-                                .map(oldFormData::getLoadBinderData)
+                                .map(formData::getLoadBinderData)
                                 .ifPresent(rowSet -> {
                                     // ordinary element
                                     if (e.getStoreBinder() == null) {
@@ -2080,8 +2077,10 @@ public class DataJsonController implements Declutter {
     private FormRow convertJsonObjectToFormRow(@Nullable final Form form, @Nullable FormData formData, @Nullable final JSONObject json) {
         return jsonStream(json)
                 .collect(FormRow::new, throwableBiConsumer((row, key) -> {
+                    String name = getElementParameterName(key, form, formData);
                     String value = extractStringValue(form, formData, json, key);
-                    row.put(key, value);
+
+                    row.put(name, value);
                 }), FormRow::putAll);
     }
 
@@ -2108,6 +2107,14 @@ public class DataJsonController implements Declutter {
         result.setMultiRow(true);
 
         return result;
+    }
+
+    @Nonnull
+    private String getElementParameterName(String fieldId, Form form, FormData formData) {
+        return Optional.of(fieldId)
+                .map(s -> FormUtil.findElement(s, form, formData, true))
+                .map(FormUtil::getElementParameterName)
+                .orElse(fieldId);
     }
 
     @Nonnull

@@ -15,7 +15,7 @@
     .filter-cell{display:inline-block;padding-left:5px;}
 </style>
 
-<div class="dataList">
+<div class="dataList row-fluid">
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/footable/footable.min.js?build=<fmt:message key="build.number"/>"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/js/footable/responsiveTable.js?build=<fmt:message key="build.number"/>"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/js/footable/footable.core.min.css?build=<fmt:message key="build.number"/>" />    
@@ -133,67 +133,22 @@
                     <button class="collapseAll"><i></i> <fmt:message key="dbuilder.collapseAll"/></button>
                     <span class="search_trigger"><fmt:message key="general.method.label.search"/> <i></i></span>
                 </div>
-                <display:table id="${dataListId}" uid="${dataListId}" name="dataListRows" pagesize="${dataListPageSize}" class="xrounded_shadowed" export="true" decorator="decorator" excludedParams="${dataList.binder.primaryKeyColumnName}" requestURI="?" sort="external" partialList="true" size="dataListSize">
-                    <c:if test="${checkboxPosition eq 'left' || checkboxPosition eq 'both'}">
-                        <c:choose>
-                            <c:when test="${selectionType eq 'single'}">
-                                <display:column headerClass="select_radio" class="ace select_radio" property="radio" media="html" title="" />
-                            </c:when>
-                            <c:otherwise>
-                                <display:column headerClass="select_checkbox" class="select_checkbox" property="checkbox" media="html" title="<input type='checkbox' onclick='toggleAll(this)' style='float:left;'/>" />
-                            </c:otherwise>
-                        </c:choose>
-                    </c:if>
-                    <c:forEach items="${dataList.columns}" var="column">
-                        <c:if test="${column.permitted}">
-                            <c:set var="columnLabel"><c:out value="${column.label}"/></c:set>
-                            <c:set var="columnHiddenCss" value=""/>
-                            <c:set var="columnMedia" value="all"/>
-                            <c:choose>
-                                <c:when test="${column.hidden}">
-                                    <c:set var="columnHiddenCss" value=" column-hidden"/>
-                                    <c:if test="${column.properties.include_export ne 'true'}">
-                                        <c:set var="columnMedia" value="html"/>
-                                    </c:if>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:if test="${column.properties.exclude_export eq 'true'}">
-                                        <c:set var="columnMedia" value="html"/>
-                                    </c:if>
-                                </c:otherwise>
-                            </c:choose>
-                            <display:column
-                                property="column(${column.name})"
-                                title="${columnLabel}"
-                                sortable="${column.sortable}"
-                                headerClass="column_${column.name} ${columnHiddenCss}"
-                                class="column_${column.name} ${columnHiddenCss}"
-                                style="${column.style}"
-                                media="${columnMedia}"
-                                />
-                        </c:if>
-                    </c:forEach>
-                    <c:if test="${!empty dataList.rowActions[0]}">
-                        <c:set var="actionTitle" value="" />
-                        <c:forEach items="${dataList.rowActions}" var="rowAction" begin="1">
-                            <c:if test="${rowAction.permitted}">
-                                <c:set var="actionTitle" value="${actionTitle}</th><th class=\"row_action\">" />
-                            </c:if>
-                        </c:forEach>
-                        <display:column headerClass="row_action" class="row_action" property="actions" media="html" title="${actionTitle}"/>
-                    </c:if>
-                    <c:if test="${checkboxPosition eq 'right' || checkboxPosition eq 'both'}">
-                        <c:choose>
-                            <c:when test="${selectionType eq 'single'}">
-                                <display:column headerClass="select_radio" class="select_radio" property="radio" media="html" title="" />
-                            </c:when>
-                            <c:otherwise>
-                                <display:column headerClass="select_checkbox" class="select_checkbox" property="checkbox" media="html" title="<input type='checkbox' onclick='toggleAll(this)' style='float:left;'/>" />
-                            </c:otherwise>
-                        </c:choose>
-                    </c:if>
-                </display:table>
-
+				<div class="span12">	
+					<div class="row-fluid">
+						<div class="span12">
+							<table id="${dataListId}" class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+									<c:forEach items="${dataList.columns}" var="column">
+										<th>${column.label}</th>
+									</c:forEach>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
                 <!-- Display Buttons -->
                 <c:if test="${buttonPosition eq 'bottomLeft' || buttonPosition eq 'bottomRight' || buttonPosition eq 'bothLeft' || buttonPosition eq 'bothRight'}">
                     <div class="actions bottom ${buttonFloat}">
@@ -225,8 +180,17 @@ t.printStackTrace(new java.io.PrintWriter(out));
     </c:if>
     
 </div>
-
+<script src="${pageContext.request.contextPath}/js/datatables/datatables.min.js"></script>
 <script>
+	console.log("${pageContext.request.contextPath}/web/json/data/app/${appId}/${appVersion}/datatablelist/${dataList.id}");
+	var table = $("#${dataListId}").DataTable({
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": "${pageContext.request.contextPath}/web/json/data/app/${appId}/${appVersion}/datatablelist/${dataList.id}",
+			"type": "POST"
+		}
+	});
     var popupActionDialog = null;
     
     DataListUtil = {
