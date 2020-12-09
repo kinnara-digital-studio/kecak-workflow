@@ -79,4 +79,9 @@ public abstract class AbstractAceUserviewTheme extends UserviewTheme implements 
             return menu.getDecoratedMenu();
         }
     }
+
+    @Override
+    public String getNavigationBarHeader() {
+        return "<small>" + getUserview().getPropertyString("name") + "</small>";
+    }
 }

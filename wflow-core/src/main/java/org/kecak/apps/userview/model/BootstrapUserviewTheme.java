@@ -64,4 +64,10 @@ public interface BootstrapUserviewTheme extends BootstrapUserview {
      * @return
      */
     String getBootstrapDecoratedMenu(UserviewMenu menu);
+
+    /**
+     * Get navigation bar header
+     * @return
+     */
+    String getNavigationBarHeader();
 }

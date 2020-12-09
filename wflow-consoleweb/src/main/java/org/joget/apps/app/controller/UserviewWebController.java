@@ -21,8 +21,8 @@ import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 import org.kecak.oauth.model.AbstractOauth2Client;
-import org.kecak.oauth.model.Oauth2ClientPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -143,6 +143,10 @@ public class UserviewWebController {
                 oauth2LogoutScript += oauthPlugin.renderHtmlLogoutScript();
             }
             map.addAttribute("oauth2LogoutScript",oauth2LogoutScript);
+            if(userviewObject.getSetting().getTheme() instanceof BootstrapUserviewTheme) {
+                map.addAttribute("navigationBarHeader", ((BootstrapUserviewTheme) userviewObject.getSetting().getTheme()).getNavigationBarHeader());
+            }
+
             String view = processer.getView();
             if (view != null) {
                 if (view.startsWith("redirect:")) {

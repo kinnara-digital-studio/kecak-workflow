@@ -79,9 +79,7 @@ public class UserviewThemeProcesser {
     }
 
     public String getView() {
-
         if (userview.getSetting().getTheme() != null && !(userview.getSetting().getTheme() instanceof UserviewV5Theme)) {
-//            if(userview.getSetting().getPropertyString("useNewLayout").equals("true")) {
             if(userview.getSetting().getTheme() instanceof BootstrapUserviewTheme) {
                 return ((BootstrapUserviewTheme)userview.getSetting().getTheme()).getUserviewJsp();
             } else {
