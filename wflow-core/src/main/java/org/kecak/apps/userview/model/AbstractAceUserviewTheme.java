@@ -26,7 +26,8 @@ public abstract class AbstractAceUserviewTheme extends UserviewTheme implements 
 
     @Override
     public final String getDataListJsp() {
-        return "userview/plugin/AceDataList.jsp";
+//        return "userview/plugin/AceDataList.jsp";
+        return "userview/plugin/datalist.jsp";
     }
 
     @Override

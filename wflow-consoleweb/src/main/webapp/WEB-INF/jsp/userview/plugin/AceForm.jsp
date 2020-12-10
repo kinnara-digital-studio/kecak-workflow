@@ -83,7 +83,7 @@
 
 <div style="clear:both;"></div>
 
-<a class="print-button btn btn-primary" href="#" onclick="userviewPrint();return false;"><fmt:message key="general.method.label.print" /></a>
+<a class="print-button btn btn-primary" style="height: auto !important;" href="#" onclick="userviewPrint();return false;"><fmt:message key="general.method.label.print" /></a>
 <script type="text/javascript">
     $(function(){
         $('.print-button').appendTo('#section-actions .form-column');
