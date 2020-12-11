@@ -4,6 +4,7 @@ package org.kecak.apps.scheduler.dao;
 import org.joget.commons.spring.model.AbstractSpringDao;
 import org.kecak.apps.scheduler.model.SchedulerLog;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +16,14 @@ public class SchedulerLogDao extends AbstractSpringDao<SchedulerLog> {
 	
 	
 	public void saveOrUpdate(SchedulerLog schedulerLog) {
+		Date now = new Date();
+
+		if(schedulerLog.getDateCreated() == null) {
+			schedulerLog.setDateCreated(now);
+		}
+
+		schedulerLog.setDateModified(now);
+
 		super.saveOrUpdate(ENTITY_NAME, schedulerLog);
 	}
 
