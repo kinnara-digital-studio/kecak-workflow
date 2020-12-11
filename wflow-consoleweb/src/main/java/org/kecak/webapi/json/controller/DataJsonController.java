@@ -979,7 +979,7 @@ public class DataJsonController implements Declutter {
 
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
-            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(null, null, jsonBody));
+            final FormData formData = formService.retrieveFormDataFromRequestMap(null, convertJsonObjectToFormRow(form, null, jsonBody));
             fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             // check form permission
@@ -2076,8 +2076,8 @@ public class DataJsonController implements Declutter {
         }
     }
 
-    @Nullable
-    private FormRow convertJsonObjectToFormRow(@Nullable final Form form, @Nullable FormData formData, @Nullable final JSONObject json) {
+    @Nonnull
+    private FormRow convertJsonObjectToFormRow(@Nonnull final Form form, @Nullable FormData formData, @Nullable final JSONObject json) {
         return jsonStream(json)
                 .collect(FormRow::new, throwableBiConsumer((row, key) -> {
                     String name = getElementParameterName(key, form, formData);
@@ -2088,21 +2088,19 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private FormRowSet convertJsonObjectToRowSet(@Nullable Form form, @Nonnull FormData formData, @Nullable JSONObject json) {
+    private FormRowSet convertJsonObjectToRowSet(@Nonnull Form form, @Nonnull FormData formData, @Nullable JSONObject json) {
         FormRowSet result = new FormRowSet();
 
         if (json != null) {
             FormRow row = convertJsonObjectToFormRow(form, formData, json);
-            if (row != null) {
-                result.add(row);
-            }
+            result.add(row);
         }
 
         return result;
     }
 
     @Nonnull
-    private FormRowSet convertJsonArrayToRowSet(@Nullable Form form, @Nonnull FormData formData, @Nonnull JSONArray jsonArray) {
+    private FormRowSet convertJsonArrayToRowSet(@Nonnull Form form, @Nonnull FormData formData, @Nonnull JSONArray jsonArray) {
         FormRowSet result = this.<JSONObject>jsonStream(jsonArray)
                 .map(j -> convertJsonObjectToFormRow(form, formData, j))
                 .collect(Collectors.toCollection(FormRowSet::new));
@@ -2113,7 +2111,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private String getElementParameterName(String fieldId, Form form, FormData formData) {
+    private String getElementParameterName(@Nonnull String fieldId, @Nonnull Form form, FormData formData) {
         return Optional.of(fieldId)
                 .map(s -> FormUtil.findElement(s, form, formData, true))
                 .map(FormUtil::getElementParameterName)
