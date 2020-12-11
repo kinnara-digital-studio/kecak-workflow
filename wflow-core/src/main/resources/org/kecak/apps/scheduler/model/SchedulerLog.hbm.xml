@@ -13,6 +13,7 @@
 		
 		<property name="jobName" type="string" column="job_name" />
 		<property name="jobClassName" type="string" column="job_class_name" />
+		<property name="startTime" type="timestamp" />
 		<property name="finishTime" type="timestamp" />
 		<property name="jobStatus" column="job_status">
 		    <type name="org.hibernate.type.EnumType">

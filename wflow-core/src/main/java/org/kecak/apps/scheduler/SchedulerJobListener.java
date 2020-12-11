@@ -67,6 +67,7 @@ public class SchedulerJobListener implements JobListener {
 			message = message.substring(0, SchedulerLog.MESSAGE_MAX_LENGTH);
 		}
 		SchedulerLog schedulerLog  = new SchedulerLog();
+		schedulerLog.setStartTime(context.getFireTime());
 		schedulerLog.setFinishTime(finishTime);
 		schedulerLog.setJobClassName(jobClassName);
 		schedulerLog.setJobStatus(status);
