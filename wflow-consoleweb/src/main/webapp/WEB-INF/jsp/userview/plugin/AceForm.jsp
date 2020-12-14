@@ -87,5 +87,6 @@
 <script type="text/javascript">
     $(function(){
         $('.print-button').appendTo('#section-actions .form-column');
+        $('.print-button').parent().attr('style','width:100%');
     });
 </script>

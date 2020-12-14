@@ -13,6 +13,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.hibernate.Hibernate;
 import org.joget.apps.app.dao.*;
 import org.joget.apps.app.model.*;
 import org.joget.apps.app.service.AppService;
@@ -87,6 +88,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.rowset.serial.SerialBlob;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
@@ -97,6 +100,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Blob;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1238,12 +1242,29 @@ public class ConsoleWebController {
     @RequestMapping("/console/profile")
     public String profile(ModelMap map, HttpServletResponse response) throws IOException {
         User user = userDao.getUser(workflowUserManager.getCurrentUsername());
-
+        String profilePicture = "";
         if (user == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-
+        
+        if(user.getProfilePicture()==null || user.getProfilePicture().equals("")) {
+        	map.addAttribute("profilePicture",AppUtil.getRequestContextPath()+"/images/default-avatar.png");
+        }else {
+        	Blob blob = user.getProfilePicture();
+        	try(InputStream in = blob.getBinaryStream();
+        			ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+        		BufferedImage image = ImageIO.read(in);
+        		ImageIO.write(image, "jpg", baos);
+        		baos.flush();
+        		byte[] imageInByteArray = baos.toByteArray();
+        		String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(imageInByteArray);
+        		map.addAttribute("profilePicture","data:image/jpg;base64,"+b64);
+        	}catch (Exception e) {
+				LogUtil.error(getClass().getName(), e, e.getMessage());
+			}
+        }
+        
         map.addAttribute("user", user);
         map.addAttribute("timezones", TimeZoneUtil.getList());
 
@@ -1280,7 +1301,7 @@ public class ConsoleWebController {
 
     @SuppressWarnings({"unused", "unchecked", "rawtypes"})
     @RequestMapping(value = "/console/profile/submit", method = RequestMethod.POST)
-    public String profileSubmit(ModelMap model, HttpServletRequest request, HttpServletResponse response, @ModelAttribute("user") User user, BindingResult result) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public String profileSubmit(ModelMap model, HttpServletRequest request, HttpServletResponse response, @RequestParam("fileProfilePic") MultipartFile fileProfilePic, @ModelAttribute("user") User user, BindingResult result) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         User currentUser = userDao.getUser(workflowUserManager.getCurrentUsername());
 
         if (currentUser == null) {
@@ -1378,6 +1399,17 @@ public class ConsoleWebController {
                 }
                 currentUser.setConfirmPassword(user.getPassword());
             }
+            
+            LogUtil.info(getClass().getName(), "[PROFILE PIC] "+fileProfilePic.getName());
+            byte[] bytes = fileProfilePic.getBytes();
+            try{
+            	Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+            	currentUser.setProfilePicture(blob);
+            }catch (Exception e) {
+				LogUtil.error(getClass().getName(), e, e.getMessage());
+			}
+                
+            
             userDao.updateUser(currentUser);
             userSaltDao.updateUserSalt(userSalt);
             if (us != null) {
