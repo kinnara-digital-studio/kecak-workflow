@@ -7,7 +7,7 @@
     </div>
 
     <div id="main-body-content">
-        <form:form id="profile" action="${pageContext.request.contextPath}/web/console/profile/submit" method="POST" commandName="user" cssClass="form">
+        <form:form id="profile" action="${pageContext.request.contextPath}/web/console/profile/submit" method="POST" commandName="user" cssClass="form" enctype="multipart/form-data">
             <form:hidden path="id"/>
             <form:hidden path="username"/>
 
@@ -40,6 +40,14 @@
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.directory.user.common.label.telephoneNumber"/></label>
                     <span class="form-input"><form:input path="telephoneNumber" cssErrorClass="form-input-error" /></span>
+                </div>
+                <div class="form-row">
+                    <label for="field1">&nbsp;</label>
+                    <span class="form-input"><img src="${profilePicture}" height="50px;"/></span>
+                </div>
+                <div class="form-row">
+                    <label for="field1"><fmt:message key="console.directory.user.common.label.profilePicture"/></label>
+                    <span class="form-input"><input type="file" name="fileProfilePic"/></span>
                 </div>
                 <div class="form-row">
                     <label for="field1"><fmt:message key="console.directory.user.common.label.timeZone"/></label>
