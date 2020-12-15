@@ -669,7 +669,7 @@ public class DataJsonController implements Declutter {
             // construct response
 
             @Nonnull
-            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formRows);
+            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formRows, false);
 
             @Nullable
             String currentDigest = getDigest(jsonArrayData);
@@ -2942,7 +2942,9 @@ public class DataJsonController implements Declutter {
      * @param formData
      */
     @Nonnull
-    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final boolean asOptions) throws ApiException {
+    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
+        final boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false);
+
         // check result size
         Optional.of(form)
                 .map(formData::getLoadBinderData)
@@ -2954,8 +2956,6 @@ public class DataJsonController implements Declutter {
         Optional.of(formData)
                 .map(fd -> elementStream(form, fd))
                 .orElseGet(Stream::empty)
-//                .filter(e -> e.getLoadBinder() != null)
-//                .filter(e -> formData.getLoadBinderData(e) != null)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(throwableConsumer(e -> {
                     final String elementId = e.getPropertyString("id");
@@ -2968,11 +2968,11 @@ public class DataJsonController implements Declutter {
                     // Element with load binder, set as child object
                     if(e.getLoadBinder() != null) {
                         if (rowSet.isMultiRow()) {
-                            JSONArray data = collectGridElement((GridElement) e, rowSet);
+                            JSONArray data = collectGridElement((GridElement) e, rowSet, retrieveOptionsData);
                             parentJson.put(elementId, data);
                         } else {
                             FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
-                            JSONObject data = collectGridElement((GridElement) e, row);
+                            JSONObject data = collectGridElement((GridElement) e, row, retrieveOptionsData);
                             parentJson.put(elementId, data);
                         }
                     }
@@ -2980,7 +2980,7 @@ public class DataJsonController implements Declutter {
                     else {
                         FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
 
-                        if(asOptions && e instanceof FormOptionsElement) {
+                        if(retrieveOptionsData && e instanceof FormOptionsElement) {
                             final FormRowSet options = FormUtil.getElementPropertyOptionsMap(e, formData);
 
                             JSONArray values = Optional.of(elementId)
@@ -3135,11 +3135,11 @@ public class DataJsonController implements Declutter {
      */
     @Deprecated
     @Nonnull
-    private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet) {
+    private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet, final boolean asOptions) {
         return Optional.ofNullable(rowSet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
-                .map(r -> convertFromRowToJsonObject(element, formData, r))
+                .map(r -> convertFromRowToJsonObject(element, formData, r, asOptions))
                 .collect(jsonCollector());
     }
 
@@ -3150,9 +3150,9 @@ public class DataJsonController implements Declutter {
      * @param rowSet
      * @return
      */
-    private JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet) {
+    private JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet, final boolean asOptions) {
         return rowSet.stream()
-                .map(r -> collectGridElement(gridElement, r))
+                .map(r -> collectGridElement(gridElement, r, asOptions))
                 .collect(jsonCollector());
     }
 
@@ -3163,7 +3163,7 @@ public class DataJsonController implements Declutter {
      * @param row
      * @return
      */
-    private JSONObject collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRow row) {
+    private JSONObject collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRow row, boolean asOptions) {
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         final Map<String, String>[] columnProperties = gridElement.getColumnProperties();
 
@@ -3173,16 +3173,33 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonObject = Optional.ofNullable(columnProperties)
                     .map(Arrays::stream)
                     .orElseGet(Stream::empty)
-                    .collect(jsonCollector(gridElement::getField, m -> {
-                        String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
-                        String columnName = Optional.of(m)
+                    .collect(jsonCollector(gridElement::getField, props -> {
+                        final String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
+                        final String columnName = Optional.of(props)
                                 .map(gridElement::getField)
+                                .orElse("");
+                        final String columnType = Optional.of(props)
+                                .map(m -> m.getOrDefault("formatType", ""))
                                 .orElse("");
 
                         return Optional.of(columnName)
                                 .filter(this::isNotEmpty)
                                 .map(row::getProperty)
-                                .map(s -> gridElement.formatColumn(columnName, m, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), ""))
+                                .map(value -> {
+                                    String formattedValue = gridElement.formatColumn(columnName, props, primaryKey, value, appDefinition.getAppId(), appDefinition.getVersion(), "");
+                                    if(asOptions && "options".equals(columnType)) {
+                                        try {
+                                            JSONObject json = new JSONObject();
+                                            json.put(FormUtil.PROPERTY_VALUE, value);
+                                            json.put(FormUtil.PROPERTY_LABEL, formattedValue);
+                                            return json;
+                                        } catch (JSONException e) {
+                                            return formattedValue;
+                                        }
+                                    } else {
+                                        return formattedValue;
+                                    }
+                                })
                                 .orElse(null);
                     }));
 
@@ -3280,9 +3297,9 @@ public class DataJsonController implements Declutter {
      */
     @Deprecated
     @Nonnull
-    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row) {
+    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row, final boolean asOptions) {
         if (element instanceof GridElement) {
-            return collectGridElement((GridElement) element, row);
+            return collectGridElement((GridElement) element, row, asOptions);
         } else if (element instanceof FormContainer) {
             return collectContainerElement((FormContainer) element, formData, row);
         } else {
