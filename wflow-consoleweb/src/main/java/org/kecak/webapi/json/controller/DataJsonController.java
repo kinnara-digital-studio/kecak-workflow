@@ -410,6 +410,40 @@ public class DataJsonController implements Declutter {
     }
 
     /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @param asLabel
+     * @param asAttachmentUrl
+     * @param asOptions
+     * @param digest
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.GET)
+    public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
+                            @RequestParam("appId") final String appId,
+                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                            @RequestParam("formDefId") final String formDefId,
+                            @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                            @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
+                            @RequestParam(value = "asOptions", defaultValue="false") final Boolean asOptions,
+                            @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException, JSONException {
+
+        try {
+            String primaryKey = getRequiredParameter(request, "id");
+            getFormData(request, response, appId, appVersion, formDefId, primaryKey, asLabel, asAttachmentUrl, asOptions, digest);
+        } catch (ApiException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+    /**
      * Get Form Data
      *
      * @param request    HTTP Request
@@ -3185,21 +3219,27 @@ public class DataJsonController implements Declutter {
                         return Optional.of(columnName)
                                 .filter(this::isNotEmpty)
                                 .map(row::getProperty)
-                                .map(value -> {
-                                    String formattedValue = gridElement.formatColumn(columnName, props, primaryKey, value, appDefinition.getAppId(), appDefinition.getVersion(), "");
-                                    if(asOptions && "options".equals(columnType)) {
-                                        try {
-                                            JSONObject json = new JSONObject();
-                                            json.put(FormUtil.PROPERTY_VALUE, value);
-                                            json.put(FormUtil.PROPERTY_LABEL, formattedValue);
-                                            return json;
-                                        } catch (JSONException e) {
-                                            return formattedValue;
-                                        }
-                                    } else {
-                                        return formattedValue;
-                                    }
-                                })
+                                .map(s -> Optional.of(";")
+                                        .map(s::split)
+                                        .map(Arrays::stream)
+                                        .orElseGet(Stream::empty)
+                                        .filter(Objects::nonNull)
+                                        .map(value -> {
+                                            String formattedValue = gridElement.formatColumn(columnName, props, primaryKey, value, appDefinition.getAppId(), appDefinition.getVersion(), "");
+                                            if(asOptions && "options".equals(columnType)) {
+                                                try {
+                                                    JSONObject json = new JSONObject();
+                                                    json.put(FormUtil.PROPERTY_VALUE, value);
+                                                    json.put(FormUtil.PROPERTY_LABEL, formattedValue);
+                                                    return json;
+                                                } catch (JSONException e) {
+                                                    return formattedValue;
+                                                }
+                                            } else {
+                                                return formattedValue;
+                                            }
+                                        })
+                                        .collect(jsonCollector()))
                                 .orElse(null);
                     }));
 
@@ -3435,5 +3475,11 @@ public class DataJsonController implements Declutter {
     private boolean isAuthorize(@Nonnull Form form, FormData formData) {
         return (form.getProperty("permission") != null || !WorkflowUtil.isCurrentUserAnonymous())
                 && form.isAuthorize(formData);
+    }
+
+    protected String getRequiredParameter(HttpServletRequest request, String parameterName) throws ApiException {
+        return Optional.of(parameterName)
+                .map(request::getParameter)
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter [" + parameterName + "] is not supplied"));
     }
 }
