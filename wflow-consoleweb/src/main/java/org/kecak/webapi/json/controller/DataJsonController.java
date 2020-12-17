@@ -3219,27 +3219,29 @@ public class DataJsonController implements Declutter {
                         return Optional.of(columnName)
                                 .filter(this::isNotEmpty)
                                 .map(row::getProperty)
-                                .map(s -> Optional.of(";")
-                                        .map(s::split)
-                                        .map(Arrays::stream)
-                                        .orElseGet(Stream::empty)
-                                        .filter(Objects::nonNull)
-                                        .map(value -> {
-                                            String formattedValue = gridElement.formatColumn(columnName, props, primaryKey, value, appDefinition.getAppId(), appDefinition.getVersion(), "");
-                                            if(asOptions && "options".equals(columnType)) {
-                                                try {
-                                                    JSONObject json = new JSONObject();
-                                                    json.put(FormUtil.PROPERTY_VALUE, value);
-                                                    json.put(FormUtil.PROPERTY_LABEL, formattedValue);
-                                                    return json;
-                                                } catch (JSONException e) {
-                                                    return formattedValue;
-                                                }
-                                            } else {
-                                                return formattedValue;
-                                            }
-                                        })
-                                        .collect(jsonCollector()))
+                                .map(s -> {
+                                    if (asOptions && "options".equals(columnType)) {
+                                        return Optional.of(";")
+                                                .map(s::split)
+                                                .map(Arrays::stream)
+                                                .orElseGet(Stream::empty)
+                                                .filter(Objects::nonNull)
+                                                .map(value -> {
+                                                    String formattedValue = gridElement.formatColumn(columnName, props, primaryKey, value, appDefinition.getAppId(), appDefinition.getVersion(), "");
+                                                    try {
+                                                        JSONObject json = new JSONObject();
+                                                        json.put(FormUtil.PROPERTY_VALUE, value);
+                                                        json.put(FormUtil.PROPERTY_LABEL, formattedValue);
+                                                        return json;
+                                                    } catch (JSONException e) {
+                                                        return formattedValue;
+                                                    }
+                                                })
+                                                .collect(jsonCollector());
+                                    } else {
+                                        return gridElement.formatColumn(columnName, props, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), "");
+                                    }
+                                })
                                 .orElse(null);
                     }));
 
