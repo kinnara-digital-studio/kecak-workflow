@@ -47,6 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -1745,7 +1746,7 @@ public class DataJsonController implements Declutter {
      * @return
      * @throws ApiException
      */
-    private JSONObject internalDeleteAssignmentData(WorkflowAssignment assignment) throws ApiException {
+    protected JSONObject internalDeleteAssignmentData(WorkflowAssignment assignment) throws ApiException {
         // set current app definition
         AppDefinition appDefinition = getApplicationDefinition(assignment);
 
@@ -1778,7 +1779,7 @@ public class DataJsonController implements Declutter {
      * @return
      * @throws ApiException
      */
-    private JSONObject internalGetAssignmentJsonData(@Nonnull WorkflowAssignment assignment, boolean asLabel, boolean asOptions, boolean asAttachmentUrl) throws ApiException {
+    protected JSONObject internalGetAssignmentJsonData(@Nonnull WorkflowAssignment assignment, boolean asLabel, boolean asOptions, boolean asAttachmentUrl) throws ApiException {
         AppDefinition appDefinition = getApplicationDefinition(assignment);
 
         // retrieve data
@@ -1810,7 +1811,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment) {
+    protected FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment) {
         return getAssignmentFormData(assignment, false);
     }
 
@@ -1822,7 +1823,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment, boolean asAttachmentUrl) {
+    protected FormData getAssignmentFormData(@Nonnull WorkflowAssignment assignment, boolean asAttachmentUrl) {
         Map<String, String> parameterMap = new HashMap<>();
         parameterMap.put("activityId", assignment.getActivityId());
         FormData formData = formService.retrieveFormDataFromRequestMap(new FormData(), parameterMap);
@@ -1848,7 +1849,7 @@ public class DataJsonController implements Declutter {
      *
      * @param assignment
      */
-    private void abortProcess(@Nonnull WorkflowAssignment assignment) throws ApiException {
+    protected void abortProcess(@Nonnull WorkflowAssignment assignment) throws ApiException {
         if (!workflowManager.processAbort(assignment.getProcessId()))
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Failed to abort assignment [" + assignment + "]");
     }
@@ -1866,7 +1867,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
+    protected FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws IOException, JSONException, ApiException {
         if (form == null) {
             return formData;
         }
@@ -1944,7 +1945,7 @@ public class DataJsonController implements Declutter {
                                 .map(f -> FileManager.storeFile(f, uploadPath))
                                 .toArray(String[]::new);
 
-                        formData.addRequestParameterValues(parameterName, filePaths.length > 0 ? filePaths : new String[]{""});
+                        formData.addRequestParameterValues(parameterName, filePaths);
                     }
                 }));
 
@@ -1957,7 +1958,7 @@ public class DataJsonController implements Declutter {
      * @param assignment
      * @return
      */
-    private String getValueForHiddenField(Element element, FormRow row, WorkflowAssignment assignment) {
+    protected String getValueForHiddenField(Element element, FormRow row, WorkflowAssignment assignment) {
         String elementId = getStringProperty(element, FormUtil.PROPERTY_ID);
         String defaultValue = AppUtil.processHashVariable(getStringProperty(element, "value"), assignment, null, null);
         String databaseValue = row.getProperty(elementId);
@@ -1976,7 +1977,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private String getStringProperty(Element element, String propertyName) {
+    protected String getStringProperty(Element element, String propertyName) {
         return ifNullThen(element.getPropertyString(propertyName), "");
     }
 
@@ -1985,7 +1986,7 @@ public class DataJsonController implements Declutter {
      *
      * @return
      */
-    private String getUploadFilePath() {
+    protected String getUploadFilePath() {
         String basePath = SetupManager.getBaseDirectory();
         String dataFileBasePath = setupManager.getSettingValue("dataFileBasePath");
         if (isNotEmpty(dataFileBasePath)) {
@@ -2000,7 +2001,7 @@ public class DataJsonController implements Declutter {
      * @param value
      * @return
      */
-    private String[] handleEncodedFile(String value) {
+    protected String[] handleEncodedFile(String value) {
         try {
             JSONArray jsonArray = new JSONArray(value);
             return this.<String>jsonStream(jsonArray)
@@ -2018,7 +2019,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      * @return
      */
-    private String getDefaultValue(@Nonnull Element element, @Nonnull FormData formData) {
+    protected String getDefaultValue(@Nonnull Element element, @Nonnull FormData formData) {
         String defaultValue = element.getPropertyString(FormUtil.PROPERTY_VALUE);
         if (isNotEmpty(defaultValue)) {
             try {
@@ -2038,7 +2039,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      * @throws ApiException
      */
-    private void processStoreBinder(@Nonnull Element element, @Nonnull final FormData formData) throws ApiException {
+    protected void processStoreBinder(@Nonnull Element element, @Nonnull final FormData formData) throws ApiException {
         FormStoreBinder storeBinder = element.getStoreBinder();
         assert storeBinder != null;
 
@@ -2093,7 +2094,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nullable
-    private String determinePrimaryKey(@Nonnull JSONObject jsonBody, @Nonnull FormData formData, boolean isAssignment) {
+    protected String determinePrimaryKey(@Nonnull JSONObject jsonBody, @Nonnull FormData formData, boolean isAssignment) {
         // handle start process or assingment complete process
         if (isAssignment) {
             formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{AssignmentCompleteButton.DEFAULT_ID});
@@ -2119,7 +2120,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private FormRow convertJsonObjectToFormRow(@Nullable final Form form, @Nullable FormData formData, @Nullable final JSONObject json) {
+    protected FormRow convertJsonObjectToFormRow(@Nullable final Form form, @Nullable FormData formData, @Nullable final JSONObject json) {
         return jsonStream(json)
                 .collect(FormRow::new, throwableBiConsumer((row, key) -> {
                     String name = getElementParameterName(key, form, formData);
@@ -2130,7 +2131,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private FormRowSet convertJsonObjectToRowSet(@Nonnull Form form, @Nonnull FormData formData, @Nullable JSONObject json) {
+    protected FormRowSet convertJsonObjectToRowSet(@Nonnull Form form, @Nonnull FormData formData, @Nullable JSONObject json) {
         FormRowSet result = new FormRowSet();
 
         if (json != null) {
@@ -2142,7 +2143,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private FormRowSet convertJsonArrayToRowSet(@Nullable Form form, @Nonnull FormData formData, @Nonnull JSONArray jsonArray) {
+    protected FormRowSet convertJsonArrayToRowSet(@Nullable Form form, @Nonnull FormData formData, @Nonnull JSONArray jsonArray) {
         FormRowSet result = this.<JSONObject>jsonStream(jsonArray)
                 .map(j -> convertJsonObjectToFormRow(form, formData, j))
                 .collect(Collectors.toCollection(FormRowSet::new));
@@ -2153,7 +2154,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private String getElementParameterName(@Nonnull String fieldId, @Nonnull Form form, FormData formData) {
+    protected String getElementParameterName(@Nonnull String fieldId, @Nonnull Form form, FormData formData) {
         return Optional.of(fieldId)
                 .map(s -> FormUtil.findElement(s, form, formData, true))
                 .map(FormUtil::getElementParameterName)
@@ -2161,7 +2162,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private String extractStringValue(@Nullable Form form, @Nullable FormData formData, JSONObject json, String fieldName) throws JSONException {
+    protected String extractStringValue(@Nullable Form form, @Nullable FormData formData, JSONObject json, String fieldName) throws JSONException {
         if (form == null) {
             return json.getString(fieldName);
         }
@@ -2184,7 +2185,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private JSONObject getRequestPayload(HttpServletRequest request) {
+    protected JSONObject getRequestPayload(HttpServletRequest request) {
         try {
             String payload = request.getReader().lines().collect(Collectors.joining());
             return new JSONObject(this.ifEmptyThen(payload, "{}"));
@@ -2200,7 +2201,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      */
     @Nullable
-    private MultipartFile addFileRequestParameter(@Nullable String value, Element element, FormData formData) {
+    protected MultipartFile addFileRequestParameter(@Nullable String value, Element element, FormData formData) {
         if (value == null) {
             return null;
         }
@@ -2239,7 +2240,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nullable
-    private MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException {
+    protected MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException {
         if (bse64EncodedFile.isEmpty())
             return null;
 
@@ -2254,7 +2255,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      * @throws ApiException
      */
-    private void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
+    protected void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
         formDataDao.delete(form, new String[]{formData.getPrimaryKeyValue()});
 
         // delete sub data
@@ -2281,7 +2282,7 @@ public class DataJsonController implements Declutter {
      * @param primaryKey
      * @return
      */
-    private FormRow getFormRow(@Nonnull Form form, String primaryKey) {
+    protected FormRow getFormRow(@Nonnull Form form, String primaryKey) {
         return Optional.ofNullable(appService.loadFormData(form, primaryKey))
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
@@ -2301,7 +2302,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nullable
-    private MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
+    protected MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
         String[] split = value.split(";");
         if (split.length > 0) {
             String fileName = split[0];
@@ -2608,7 +2609,7 @@ public class DataJsonController implements Declutter {
 
 
     @Nonnull
-    private DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionType, int actionIndex) throws ApiException {
+    protected DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionType, int actionIndex) throws ApiException {
         // validate action type
         if (!actionType.matches("rowAction|action")) {
             throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "Action type [" + actionType + "] not found");
@@ -2646,7 +2647,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private Collection<WorkflowAssignment> getAssignmentList(@Nonnull final List<String> processIds, @Nonnull final List<String> activityDefIds, String sort, Boolean desc, Integer start, Integer size) {
+    protected Collection<WorkflowAssignment> getAssignmentList(@Nonnull final List<String> processIds, @Nonnull final List<String> activityDefIds, String sort, Boolean desc, Integer start, Integer size) {
         @Nonnull final AppDefinition appDef = AppUtil.getCurrentAppDefinition();
         @Nonnull final ApplicationContext ac = AppUtil.getApplicationContext();
         @Nonnull final WorkflowManager workflowManager = (WorkflowManager) ac.getBean("workflowManager");
@@ -2689,7 +2690,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private Form getAssignmentForm(@Nonnull AppDefinition appDefinition, @Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
+    protected Form getAssignmentForm(@Nonnull AppDefinition appDefinition, @Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
         return Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
@@ -2701,11 +2702,11 @@ public class DataJsonController implements Declutter {
      * @param json JSON array object
      * @return digest value
      */
-    private String getDigest(JSONArray json) {
+    protected String getDigest(JSONArray json) {
         return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
     }
 
-    private String getDigest(Object value) {
+    protected String getDigest(Object value) {
         return value == null ? null : DigestUtils.sha256Hex(String.valueOf(value));
     }
 
@@ -2715,7 +2716,7 @@ public class DataJsonController implements Declutter {
      * @param json JSON object
      * @return digest value
      */
-    private String getDigest(JSONObject json) {
+    protected String getDigest(JSONObject json) {
         return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
     }
 
@@ -2723,7 +2724,7 @@ public class DataJsonController implements Declutter {
      * @param requestParameters I, Request parameter
      * @param dataList          I/O, DataList
      */
-    private void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
+    protected void getCollectFilters(@Nonnull final Map<String, String[]> requestParameters, @Nonnull final DataList dataList) {
         Optional.of(dataList)
                 .map(DataList::getFilters)
                 .map(Arrays::stream)
@@ -2757,7 +2758,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private String formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
+    protected String formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
         String value = Optional.of(field)
                 .map(row::get)
                 .map(String::valueOf)
@@ -2782,7 +2783,7 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    private Map<String, Object> formatRow(@Nonnull DataList dataList, @Nonnull Map<String, Object> row) {
+    protected Map<String, Object> formatRow(@Nonnull DataList dataList, @Nonnull Map<String, Object> row) {
         Map<String, Object> formattedRow = Optional.of(dataList)
                 .map(DataList::getColumns)
                 .map(Arrays::stream)
@@ -2809,7 +2810,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private String validateAndDetermineProcessDefId(@Nonnull AppDefinition appDefinition, @Nonnull String processId) throws ApiException {
+    protected String validateAndDetermineProcessDefId(@Nonnull AppDefinition appDefinition, @Nonnull String processId) throws ApiException {
         return Optional.of(processId)
                 .map(s -> appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), s))
                 .map(WorkflowProcess::getId)
@@ -2824,7 +2825,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
+    protected Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
         return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
             Element element = FormUtil.findElement(e.getKey(), form, formData, true);
             if (Objects.isNull(element))
@@ -2846,7 +2847,7 @@ public class DataJsonController implements Declutter {
      * @param originalPids
      * @return
      */
-    private DataList addFilterById(DataList dataList, List<String> originalPids) {
+    protected DataList addFilterById(DataList dataList, List<String> originalPids) {
         DataListFilterQueryObject filterQueryObject = new DataListFilterQueryObject();
         filterQueryObject.setOperator("AND");
 
@@ -2876,7 +2877,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private WorkflowAssignment getAssignment(@Nonnull String activityId) throws ApiException {
+    protected WorkflowAssignment getAssignment(@Nonnull String activityId) throws ApiException {
         return Optional.of(activityId)
                 .map(throwableFunction(workflowManager::getAssignment))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + activityId + "] not available"));
@@ -2890,7 +2891,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private WorkflowAssignment getAssignmentByProcess(@Nonnull String processId) throws ApiException {
+    protected WorkflowAssignment getAssignmentByProcess(@Nonnull String processId) throws ApiException {
         return Optional.of(processId)
                 .map(workflowProcessLinkDao::getLinks)
                 .map(Collection::stream)
@@ -2910,7 +2911,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private WorkflowAssignment getAssignmentByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
+    protected WorkflowAssignment getAssignmentByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
         return Optional.of(processId)
                 .map(workflowProcessLinkDao::getLinks)
                 .map(Collection::stream)
@@ -2940,7 +2941,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private AppDefinition getApplicationDefinition(@Nonnull WorkflowAssignment assignment) throws ApiException {
+    protected AppDefinition getApplicationDefinition(@Nonnull WorkflowAssignment assignment) throws ApiException {
         final String activityId = assignment.getActivityId();
         final String processId = assignment.getProcessId();
 
@@ -2965,7 +2966,7 @@ public class DataJsonController implements Declutter {
      * @return
      * @throws ApiException
      */
-    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData) throws ApiException {
+    protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData) throws ApiException {
         return getData(form, formData, false);
     }
 
@@ -2976,7 +2977,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      */
     @Nonnull
-    private JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
+    protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
         final boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false);
 
         // check result size
@@ -3036,12 +3037,11 @@ public class DataJsonController implements Declutter {
                     }
                 }));
 
-        try {
-            parentJson.putOpt("activityId", formData.getActivityId());
-            parentJson.putOpt("processId", formData.getProcessId());
-        } catch (JSONException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
+        // get form data metadata
+        collectRowMetaData(form, formData, parentJson);
+
+        // get process metadata
+        collectProcessMetaData(formData, parentJson);
 
         return parentJson;
     }
@@ -3055,7 +3055,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private DataList getDataList(@Nonnull AppDefinition appDefinition, @Nonnull String dataListId) throws ApiException {
+    protected DataList getDataList(@Nonnull AppDefinition appDefinition, @Nonnull String dataListId) throws ApiException {
         // get dataList definition
         DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(dataListId, appDefinition);
         if (datalistDefinition == null) {
@@ -3083,7 +3083,7 @@ public class DataJsonController implements Declutter {
      * @param form
      * @param formData
      */
-    private FormData validateFormData(Form form, FormData formData) {
+    protected FormData validateFormData(Form form, FormData formData) {
         Optional.of(formData)
                 .map(FormData::getRequestParams)
                 .map(Map::entrySet)
@@ -3105,7 +3105,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private AppDefinition getApplicationDefinition(@Nonnull String appId, long version) throws ApiException {
+    protected AppDefinition getApplicationDefinition(@Nonnull String appId, long version) throws ApiException {
         return Optional.ofNullable(appDefinitionDao.getPublishedVersion(appId))
                 .map(it -> version == 0 ? it : version)
                 .map(it -> appDefinitionDao.loadVersion(appId, it))
@@ -3126,13 +3126,13 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    private Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData) throws ApiException {
+    protected Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData) throws ApiException {
         return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
     }
 
     @Nonnull
-    private Form setReadonly(@Nonnull Form form, FormData formData) {
+    protected Form setReadonly(@Nonnull Form form, FormData formData) {
         elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(element -> {
@@ -3152,7 +3152,7 @@ public class DataJsonController implements Declutter {
      * @param formErrors
      * @return
      */
-    private JSONObject createErrorObject(Map<String, String> formErrors) {
+    protected JSONObject createErrorObject(Map<String, String> formErrors) {
         final JSONObject result = new JSONObject();
 
         // show error message
@@ -3169,7 +3169,7 @@ public class DataJsonController implements Declutter {
      */
     @Deprecated
     @Nonnull
-    private JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet, final boolean asOptions) {
+    protected JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet, final boolean asOptions) {
         return Optional.ofNullable(rowSet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
@@ -3184,7 +3184,7 @@ public class DataJsonController implements Declutter {
      * @param rowSet
      * @return
      */
-    private JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet, final boolean asOptions) {
+    protected JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet, final boolean asOptions) {
         return rowSet.stream()
                 .map(r -> collectGridElement(gridElement, r, asOptions))
                 .collect(jsonCollector());
@@ -3197,7 +3197,7 @@ public class DataJsonController implements Declutter {
      * @param row
      * @return
      */
-    private JSONObject collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRow row, boolean asOptions) {
+    protected JSONObject collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRow row, boolean asOptions) {
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         final Map<String, String>[] columnProperties = gridElement.getColumnProperties();
 
@@ -3258,7 +3258,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      * @return
      */
-    private JSONObject collectContainerElement(@Nonnull final FormContainer containerElement, @Nonnull final FormData formData, @Nonnull final FormRow row) {
+    protected JSONObject collectContainerElement(@Nonnull final FormContainer containerElement, @Nonnull final FormData formData, @Nonnull final FormRow row) {
         assert containerElement instanceof Element;
 
         final JSONObject jsonObject = elementStream((Element) containerElement, formData)
@@ -3278,7 +3278,7 @@ public class DataJsonController implements Declutter {
      * @param row
      * @return
      */
-    private JSONObject collectElement(@Nonnull final Element element, @Nonnull final FormRow row) {
+    protected JSONObject collectElement(@Nonnull final Element element, @Nonnull final FormRow row) {
         Objects.requireNonNull(element);
 
         final JSONObject jsonObject = row.entrySet().stream()
@@ -3296,19 +3296,49 @@ public class DataJsonController implements Declutter {
      * @param rowSet
      * @return
      */
-    private JSONArray collectElement(@Nonnull final Element element, @Nonnull final FormRowSet rowSet) {
+    protected JSONArray collectElement(@Nonnull final Element element, @Nonnull final FormRowSet rowSet) {
         return rowSet.stream()
                 .map(r -> collectElement(element, r))
                 .collect(jsonCollector());
     }
 
     /**
+     * Collect process metadata
+     *
+     * @param formData Input FormData
+     * @param jsonObject Input/Output JSONObject
+     */
+    protected void collectProcessMetaData(@Nonnull FormData formData, @Nonnull JSONObject jsonObject) {
+        try {
+            jsonObject.putOpt("activityId", formData.getActivityId());
+            jsonObject.putOpt("processId", formData.getProcessId());
+        } catch (JSONException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+        }
+    }
+
+    /**
      * Collect metadata
      *
-     * @param row
-     * @param jsonObject I/O
+     * @param form Form
+     * @param formData FormData
+     * @param jsonObject I/O JSONObject
      */
-    private void collectRowMetaData(@Nonnull final FormRow row, @Nonnull final JSONObject jsonObject) {
+    protected void collectRowMetaData(@Nonnull final Form form, @Nonnull FormData formData, @Nonnull final JSONObject jsonObject) {
+        Optional.ofNullable(formData.getLoadBinderData(form))
+                .map(Collection::stream)
+                .orElseGet(Stream::empty)
+                .findFirst()
+                .ifPresent(r -> collectRowMetaData(r, jsonObject));
+    }
+
+    /**
+     * Collect metadata
+     *
+     * @param row FormRow
+     * @param jsonObject I/O JSONObject
+     */
+    protected void collectRowMetaData(@Nonnull final FormRow row, @Nonnull final JSONObject jsonObject) {
         jsonPutOnce("_" + FormUtil.PROPERTY_ID, row.getId(), jsonObject);
         jsonPutOnce("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated(), jsonObject);
         jsonPutOnce("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy(), jsonObject);
@@ -3322,7 +3352,7 @@ public class DataJsonController implements Declutter {
      * @param value I
      * @param json  I/O
      */
-    private void jsonPutOnce(@Nonnull String key, Object value, @Nonnull final JSONObject json) {
+    protected void jsonPutOnce(@Nonnull String key, Object value, @Nonnull final JSONObject json) {
         try {
             if (!json.has(key))
                 json.put(key, value);
@@ -3339,7 +3369,7 @@ public class DataJsonController implements Declutter {
      */
     @Deprecated
     @Nonnull
-    private JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row, final boolean asOptions) {
+    protected JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row, final boolean asOptions) {
         if (element instanceof GridElement) {
             return collectGridElement((GridElement) element, row, asOptions);
         } else if (element instanceof FormContainer) {
@@ -3356,7 +3386,7 @@ public class DataJsonController implements Declutter {
      * @return sorted list
      */
     @Nonnull
-    private List<String> convertMultiValueParameterToList(@Nullable String[] parameter) {
+    protected List<String> convertMultiValueParameterToList(@Nullable String[] parameter) {
         return Optional.ofNullable(parameter)
                 .map(Arrays::stream)
                 .orElse(Stream.of(""))
@@ -3375,7 +3405,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private String getPrimaryKeyColumn(@Nonnull final DataList dataList) {
+    protected String getPrimaryKeyColumn(@Nonnull final DataList dataList) {
         return Optional.of(dataList)
                 .map(DataList::getBinder)
                 .map(DataListBinder::getPrimaryKeyColumnName)
@@ -3389,7 +3419,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nullable
-    private WorkflowAssignment getAssignment(@Nonnull FormData formData) {
+    protected WorkflowAssignment getAssignment(@Nonnull FormData formData) {
         return Optional.of(formData)
                 // try load addignment from activity ID
                 .map(FormData::getActivityId)
@@ -3410,7 +3440,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nullable
-    private WorkflowAssignment getAssignmentFromProcessIdMap(final Map<String, Collection<String>> mapPrimaryKeyToProcessId, String primaryKey) {
+    protected WorkflowAssignment getAssignmentFromProcessIdMap(final Map<String, Collection<String>> mapPrimaryKeyToProcessId, String primaryKey) {
         return Optional.ofNullable(primaryKey)
                 .map(mapPrimaryKeyToProcessId::get)
                 .map(Collection::stream)
@@ -3428,7 +3458,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private Map<String, String> getFormErrors(FormData formData) {
+    protected Map<String, String> getFormErrors(FormData formData) {
         return Optional.ofNullable(formData)
                 .map(FormData::getFormErrors)
                 .orElseGet(HashMap::new);
@@ -3441,7 +3471,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    private Object assignValue(@Nonnull Object value) {
+    protected Object assignValue(@Nonnull Object value) {
         String stringValue = value.toString();
         try {
             return new JSONArray(stringValue);
@@ -3461,7 +3491,7 @@ public class DataJsonController implements Declutter {
      * @param dataList
      * @return
      */
-    private boolean isAuthorize(@Nonnull DataList dataList) {
+    protected boolean isAuthorize(@Nonnull DataList dataList) {
         return (dataList.getPermission() != null || !WorkflowUtil.isCurrentUserAnonymous())
                 && dataListService.isAuthorize(dataList);
     }
@@ -3474,7 +3504,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      * @return
      */
-    private boolean isAuthorize(@Nonnull Form form, FormData formData) {
+    protected boolean isAuthorize(@Nonnull Form form, FormData formData) {
         return (form.getProperty("permission") != null || !WorkflowUtil.isCurrentUserAnonymous())
                 && form.isAuthorize(formData);
     }
