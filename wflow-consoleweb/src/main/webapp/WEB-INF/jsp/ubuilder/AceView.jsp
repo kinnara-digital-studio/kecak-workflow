@@ -276,6 +276,14 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
           <ul class="nav ace-nav">
             <li class="light-blue dropdown-modal">
               <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+              	<c:choose>
+                  <c:when test="${!empty profilePicture}">
+                        <c:set var="defaultAvatar" value="data:image/jpeg;base64,${profilePicture}" />
+                  </c:when>
+                  <c:otherwise>
+                        <c:set var="defaultAvatar"><c:url value="/images/default-avatar.png" /></c:set>
+                  </c:otherwise>
+              	</c:choose>
                 <img src="${defaultAvatar}" class="nav-user-photo" alt="User Image" onerror="this.src='<c:url value="/images/default-avatar.png" />'">
                 <span class="user-info">
                   <small>Welcome,</small>
