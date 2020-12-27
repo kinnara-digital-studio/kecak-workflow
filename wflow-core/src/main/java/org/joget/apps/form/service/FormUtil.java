@@ -50,6 +50,7 @@ public class FormUtil implements ApplicationContextAware {
     public static final String PROPERTY_FORM_DEF_ID = "formdefid";
     public static final String PROPERTY_VALUE = "value";
     public static final String PROPERTY_LABEL = "label";
+    public static final String PROPERTY_PLACEHOLDER = "placeholder";
     public static final String PROPERTY_OPTIONS = "options";
     public static final String PROPERTY_SELECTED = "selected";
     public static final String PROPERTY_GROUPING = "grouping";
