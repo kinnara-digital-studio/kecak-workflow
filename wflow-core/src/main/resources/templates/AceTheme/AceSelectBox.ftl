@@ -70,7 +70,7 @@
 
                     <#if element.properties.lazyLoading! == 'true' >
                         ,ajax: {
-                            url: '${request.contextPath}/web/json/plugin/${className}/service',
+                            url: '${request.contextPath}/web/json/app/${appId!}/${appVersion!}/plugin/${className}/service',
                             delay : 500,
                             dataType: 'json',
                             data : function(params) {
@@ -89,6 +89,30 @@
                         }
                     </#if>
                 });
+
+                <#-- fetch preselected data -->
+                <#if element.properties.lazyLoading! == 'true' >
+                    let $selectBox = $('#${elementParamName!}${element.properties.elementUniqueKey!}');
+                    $.ajax({
+                        type: 'GET',
+                        url: '${request.contextPath}/web/json/app/${appId!}/${appVersion!}/plugin/${className}/service',
+                        data: {
+                            values : '${values!}'
+                        }
+                    }).then(function (data) {
+                        // create the option and append to Select2
+                        var option = new Option(data.full_name, data.id, true, true);
+                        studentSelect.append(option).trigger('change');
+
+                        // manually trigger the `select2:select` event
+                        studentSelect.trigger({
+                            type: 'select2:select',
+                            params: {
+                                data: data
+                            }
+                        });
+                    });
+                </#if>
             });
         </script>
     </#if>

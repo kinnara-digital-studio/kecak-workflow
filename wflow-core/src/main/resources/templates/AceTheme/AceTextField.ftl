@@ -11,7 +11,7 @@
 	        </div>
 	        <input id="${elementParamName!}" name="${elementParamName!}" type="hidden" value="${value!?html}" class="form-control" />
 	    <#else>
-	        <input id="${elementParamName!}" name="${elementParamName!}" type="text" class="form-control" size="${element.properties.size!}" placeholder="${elementParamName!}" value="${value!?html}" maxlength="${element.properties.maxlength!}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'>readonly</#if> />
+	        <input id="${elementParamName!}" name="${elementParamName!}" type="text" class="form-control" size="${element.properties.size!}" placeholder="${element.properties.placeholder!}" value="${value!?html}" maxlength="${element.properties.maxlength!}" <#if error??>class="form-error-cell"</#if> <#if element.properties.readonly! == 'true'>readonly</#if> />
 	    </#if>
 	    <#if error??> <span class="form-error-message help-block">${error}</span></#if>
     </div>

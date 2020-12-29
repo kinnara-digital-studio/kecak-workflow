@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -264,103 +265,10 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     @Override
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            if ("GET".equals(request.getMethod())) {
-                final String formDefId = getRequiredParameter(request, "formDefId");
-                final String[] fieldIds = getRequiredParameters(request, "fieldId");
-                final String search = getOptionalParameter(request, "search", "");
-                final Pattern searchPattern = Pattern.compile(search.isEmpty() ? "" : search, Pattern.CASE_INSENSITIVE);
-                final long page = Long.parseLong(getOptionalParameter(request, "page", "1"));
-                final String grouping = getOptionalParameter(request, "grouping", "");
-                final String value = getOptionalParameter(request, "value", "");
-
-                final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-
-                final FormData formData = new FormData();
-                final Form form = generateForm(appDefinition, formDefId);
-
-                final JSONArray jsonResults = new JSONArray();
-                for (String fieldId : fieldIds) {
-                    Element element = FormUtil.findElement(fieldId, form, formData);
-
-                    if (element == null)
-                        continue;
-
-                    FormUtil.executeOptionBinders(element, formData);
-                    FormRowSet optionsRowSet = FormUtil.getElementPropertyOptionsMap(element, formData);
-
-                    if(value.isEmpty()) {
-                        int skip = (int) ((page - 1) * PAGE_SIZE);
-                        int pageSize = (int) PAGE_SIZE;
-                        for (int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
-                            FormRow formRow = optionsRowSet.get(i);
-                            if (searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find() && (
-                                    grouping == null
-                                            || grouping.isEmpty()
-                                            || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))) {
-
-                                if (skip > 0) {
-                                    skip--;
-                                } else {
-                                    try {
-                                        JSONObject jsonResult = new JSONObject();
-                                        jsonResult.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
-                                        jsonResult.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
-                                        jsonResults.put(jsonResult);
-                                        pageSize--;
-                                    } catch (JSONException ignored) {
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        for (FormRow formRow : optionsRowSet) {
-                            if(formRow.getProperty(FormUtil.PROPERTY_VALUE).equals(value)) {
-                                try {
-                                    JSONObject jsonResult = new JSONObject();
-                                    jsonResult.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
-                                    jsonResult.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
-                                    jsonResults.put(jsonResult);
-                                    break;
-                                } catch (JSONException ignored) {}
-                            }
-                        }
-                    }
-                }
-
-                // I wonder why these codes don't work; they got some NULL POINTER EXCEPTION
-                //        JSONArray jsonResults = new JSONArray((optionsRowSet).stream()
-                //                .filter(Objects::nonNull)
-                //                .filter(formRow -> searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find())
-                //                .filter(formRow -> grouping == null
-                //                        || formRow.getProperty(FormUtil.PROPERTY_GROUPING) == null
-                //                        || grouping.isEmpty()
-                //                        || formRow.getProperty(FormUtil.PROPERTY_GROUPING).isEmpty()
-                //                        || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))
-                //                .skip((page - 1) * PAGE_SIZE)
-                //                .limit(PAGE_SIZE)
-                //                .map(formRow -> {
-                //                    final Map<String, String> map = new HashMap<>();
-                //                    map.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
-                //                    map.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
-                //                    return map;
-                //                })
-                //                .collect(Collectors.toList()));
-
-                try {
-                    JSONObject jsonPagination = new JSONObject();
-                    jsonPagination.put("more", jsonResults.length() >= PAGE_SIZE);
-
-                    JSONObject jsonData = new JSONObject();
-                    jsonData.put("results", jsonResults);
-                    jsonData.put("pagination", jsonPagination);
-
-                    response.setContentType("application/json");
-                    response.getWriter().write(jsonData.toString());
-                } catch (JSONException e) {
-                    throw new SelectBoxException(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-                }
+            if("GET".equals(request.getMethod())) {
+                handleGet(request, response);
             } else {
-                throw new SelectBoxException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method ["+request.getMethod()+"] is not supported");
+                throw new SelectBoxException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method [" + request.getMethod() + "] is not supported");
             }
         } catch (SelectBoxException e) {
             LogUtil.error(getClassName(), e, e.getMessage());
@@ -462,6 +370,96 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     }
 
     /**
+     * Handle method GET
+     *
+     * @param request
+     * @param response
+     * @throws SelectBoxException
+     */
+    protected void handleGet(HttpServletRequest request, HttpServletResponse response) throws SelectBoxException {
+        final String formDefId = getOptionalParameter(request, "formDefId", "");
+        final String[] fieldIds = getOptionalParameterValues(request, "fieldId", new String[0]);
+        final String search = getOptionalParameter(request, "search", "");
+        final Pattern searchPattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+        final long page = Long.parseLong(getOptionalParameter(request, "page", "1"));
+        final String grouping = getOptionalParameter(request, "grouping", "");
+        final String[] values = getOptionalParameterValues(request, "value", new String[0]);
+
+        final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
+
+        final FormData formData = new FormData();
+        final Form form = generateForm(appDefinition, formDefId);
+
+        final JSONArray jsonResults = new JSONArray();
+        for (String fieldId : fieldIds) {
+            Element element = FormUtil.findElement(fieldId, form, formData);
+
+            if (element == null)
+                continue;
+
+            FormUtil.executeOptionBinders(element, formData);
+            FormRowSet optionsRowSet = FormUtil.getElementPropertyOptionsMap(element, formData);
+            if (values.length > 0) {
+                for (FormRow row : optionsRowSet) {
+                    boolean found = false;
+                    for (String value : values) {
+                        if (found = value.equals(row.getProperty(FormUtil.PROPERTY_VALUE))) {
+                            break;
+                        }
+                    }
+
+                    if (found) {
+                        try {
+                            JSONObject jsonRow = new JSONObject();
+                            jsonRow.put("id", row.getProperty(FormUtil.PROPERTY_VALUE));
+                            jsonRow.put("text", row.getProperty(FormUtil.PROPERTY_LABEL));
+                            jsonResults.put(jsonRow);
+                        } catch (JSONException ignored) {
+                        }
+                    }
+                }
+            } else {
+                int skip = (int) ((page - 1) * PAGE_SIZE);
+                int pageSize = (int) PAGE_SIZE;
+                for (int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
+                    FormRow formRow = optionsRowSet.get(i);
+                    if (searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find() && (
+                            grouping.isEmpty()
+                                    || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))) {
+
+                        if (skip > 0) {
+                            skip--;
+                        } else {
+                            try {
+                                JSONObject jsonRow = new JSONObject();
+                                jsonRow.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
+                                jsonRow.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
+                                jsonResults.put(jsonRow);
+                                pageSize--;
+                            } catch (JSONException ignored) {
+                            }
+                        }
+                    }
+                }
+            }
+
+            try {
+                JSONObject jsonPagination = new JSONObject();
+                jsonPagination.put("more", jsonResults.length() >= PAGE_SIZE);
+
+                JSONObject jsonData = new JSONObject();
+                jsonData.put("results", jsonResults);
+                jsonData.put("pagination", jsonPagination);
+
+                response.setContentType("application/json");
+                response.getWriter().write(jsonData.toString());
+            } catch (JSONException | IOException e) {
+                throw new SelectBoxException(HttpServletResponse.SC_BAD_REQUEST, e);
+            }
+        }
+    }
+
+    /**
      * Should this element be shown as readonly label
      *
      * @param formData
@@ -491,6 +489,40 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     protected String getOptionalParameter(HttpServletRequest request, String parameterName, String defaultValue) {
         String value = request.getParameter(parameterName);
         return value == null || value.isEmpty() ? defaultValue : value;
+    }
+
+    protected String[] getOptionalParameterValues(HttpServletRequest request, String parameterName, String[] defaultValues) {
+        return Optional.of(parameterName)
+                .map(new Function<String, String>() {
+                    @Override
+                    public String apply(String s) {
+                        return request.getParameter(s);
+                    }
+                })
+                .map(new Function<String, String[]>() {
+                    @Override
+                    public String[] apply(String s) {
+                        return s.split(";");
+                    }
+                })
+                .map(new Function<String[], Stream<String>>() {
+                    @Override
+                    public Stream<String> apply(String[] array) {
+                        return Arrays.stream(array);
+                    }
+                })
+                .orElseGet(new Supplier<Stream<String>>() {
+                    @Override
+                    public Stream<String> get() {
+                        return Stream.empty();
+                    }
+                })
+                .toArray(new IntFunction<String[]>() {
+                    @Override
+                    public String[] apply(int value) {
+                        return new String[value];
+                    }
+                });
     }
 
     /**

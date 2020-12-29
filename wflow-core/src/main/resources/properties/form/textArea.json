@@ -13,6 +13,12 @@
         label : '@@form.textarea.label@@',
         type : 'textfield',
         value : 'TextArea'
+    },
+    {
+        name : 'placeholder',
+        label : '@@form.textarea.placeholder@@',
+        type : 'textfield',
+        value : 'TextArea'
     }]
 },
 {

@@ -14,6 +14,12 @@
         type : 'textfield',
         required : 'True',
         value : 'TextField'
+    },
+    {
+        name : 'placeholder',
+        label : '@@form.textfield.placeholder@@',
+        type : 'textfield',
+        value : 'TextField'
     }]
 },
 {
