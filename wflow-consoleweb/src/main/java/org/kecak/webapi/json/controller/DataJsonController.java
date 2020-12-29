@@ -3527,49 +3527,4 @@ public class DataJsonController implements Declutter {
 				.map(request::getParameter)
 				.orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter [" + parameterName + "] is not supplied"));
 	}
-
-
-	/**
-	 * Get Assignment Count
-	 *
-	 * @param request    HTTP Request
-	 * @param response   HTTP Response
-	 * @param appId      Application ID
-	 * @param appVersion Application version
-	 * @param processId  Process Definition ID
-	 * @throws ApiException 
-	 */
-	@RequestMapping(value = "/json/data/profile/current", method = RequestMethod.GET)
-	public void getCurrentProfile(final HttpServletRequest request, final HttpServletResponse response) throws ApiException  {
-
-		LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-		User user = userDao.getUser(workflowUserManager.getCurrentUsername());
-		if (user == null) {
-			throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User doesn't have permission");
-		}
-		JSONObject jsonResponse = new JSONObject();
-		try {
-			jsonResponse.put("username", user.getUsername());
-			Blob blob = user.getProfilePicture();
-			try(InputStream in = blob.getBinaryStream();
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();){
-				BufferedImage image = ImageIO.read(in);
-				ImageIO.write(image, "jpg", baos);
-				baos.flush();
-				byte[] imageInByteArray = baos.toByteArray();
-				String b64 = javax.xml.bind.DatatypeConverter.printBase64Binary(imageInByteArray);
-				jsonResponse.put("profilePicture","data:image/jpg;base64,"+b64);
-				response.getWriter().write(jsonResponse.toString());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}catch (Exception e){
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }
