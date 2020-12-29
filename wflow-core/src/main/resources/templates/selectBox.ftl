@@ -74,7 +74,7 @@
 
                     <#if element.properties.lazyLoading! == 'true' >
                         ,ajax: {
-                            url: '${request.contextPath}/web/json/plugin/${className}/service',
+                            url: '${request.contextPath}/web/json/app/${appId!}/${appVersion!}/plugin/${className}/service',
                             delay : 500,
                             dataType: 'json',
                             data : function(params) {
