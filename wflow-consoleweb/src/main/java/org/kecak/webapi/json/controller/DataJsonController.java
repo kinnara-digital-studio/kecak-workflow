@@ -1934,11 +1934,11 @@ public class DataJsonController implements Declutter {
                                 });
                     }
 
-                    // parameter value is not null and it is a FileDownloadSecurity
-                    else if (e instanceof FileDownloadSecurity) {
-                        String[] filePaths = handleEncodedFile(parameterValue);
-                        formData.addRequestParameterValues(parameterName, filePaths);
-                    }
+//                    // parameter value is not null and it is a FileDownloadSecurity
+//                    else if (e instanceof FileDownloadSecurity) {
+//                        String[] filePaths = handleEncodedFile(parameterValue);
+//                        formData.addRequestParameterValues(parameterName, filePaths);
+//                    }
                 }));
 
         return formData;
