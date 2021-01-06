@@ -290,11 +290,16 @@ public interface StreamHelper {
             };
         }
 
+
         /**
+         *
+         * T value
+         * R return value
+         *
          * @param f
          * @return
          */
-        default Function<T, R> onException(BiFunction<? super T, ? super E, ? extends R> f) {
+        default Function<T, R> onException(BiFunction<T, ? super E, ? extends R> f) {
             return (T a) -> {
                 try {
                     return (R) applyThrowable(a);

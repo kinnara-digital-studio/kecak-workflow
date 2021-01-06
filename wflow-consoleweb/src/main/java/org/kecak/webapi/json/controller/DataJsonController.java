@@ -19,10 +19,7 @@ import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
-import org.joget.commons.util.FileManager;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.SetupManager;
-import org.joget.commons.util.UuidGenerator;
+import org.joget.commons.util.*;
 import org.joget.directory.dao.UserDao;
 import org.joget.workflow.model.*;
 import org.joget.workflow.model.dao.WorkflowHelper;
@@ -1988,6 +1985,32 @@ public class DataJsonController implements Declutter {
     }
 
     /**
+     * Generate mock MultipartFile
+     *
+     * @param element
+     * @param value
+     * @return file names
+     */
+    protected String[] holdFiles(Element element, String value) {
+        String parameterName = FormUtil.getElementParameterName(element);
+        MultipartFile[] files = Optional.of(value)
+                .map(throwableFunction(s -> {
+                    JSONArray jsonArray = new JSONArray(s);
+                    return this.<String>jsonStream(jsonArray).toArray(String[]::new);
+                }, (String s, JSONException e) -> new String[]{ s }))
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .map(this::decodeFile)
+                .toArray(MultipartFile[]::new);
+
+        FileStore.getFileMap().put(parameterName, files);
+
+        return Arrays.stream(files)
+                .map(MultipartFile::getOriginalFilename)
+                .toArray(String[]::new);
+    }
+
+    /**
      * DAMN IM TOO CONFUSED TO THINK ABOUT A BETTER NAME
      *
      * @param value
@@ -2215,13 +2238,15 @@ public class DataJsonController implements Declutter {
 		if (element instanceof FileDownloadSecurity) {
 			String encodedFile = json.getString(fieldName);
 
-			String[] tempPath = handleEncodedFile(encodedFile);
-			tempFilePath.put(fieldName, tempPath);
+//			String[] tempPath = handleEncodedFile(encodedFile);
+//			tempFilePath.put(fieldName, tempPath);
+//
+//			return Arrays.stream(tempPath)
+//                    .map(FileManager::getFileByPath)
+//                    .map(File::getName)
+//                    .collect(Collectors.joining(";"));
 
-			return Arrays.stream(tempPath)
-                    .map(FileManager::getFileByPath)
-                    .map(File::getName)
-                    .collect(Collectors.joining(";"));
+            return String.join(";", holdFiles(element, encodedFile));
 		} else {
 			return json.getString(fieldName);
 		}
