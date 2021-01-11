@@ -269,6 +269,11 @@
             <version>20080701</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.kinnarastudio</groupId>
+            <artifactId>kinnara-commons-declutter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>
 

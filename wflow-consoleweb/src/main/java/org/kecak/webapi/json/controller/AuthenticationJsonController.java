@@ -1,6 +1,7 @@
 package org.kecak.webapi.json.controller;
 
 
+import com.kinnarastudio.commons.Declutter;
 import org.joget.apps.app.service.AuthTokenService;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
@@ -9,7 +10,6 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.commons.util.StreamHelper;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Controller
-public class AuthenticationJsonController implements StreamHelper {
+public class AuthenticationJsonController implements Declutter {
     private final String loginHeader = "Authorization";
     private final String refreshHeader = "REF_TOKEN";
     public final static String NEW_TOKEN = "NEW_TOKEN";
@@ -144,7 +144,7 @@ public class AuthenticationJsonController implements StreamHelper {
 
     private Map<String, Object> parseClaimFromRequestPayload(JSONObject requestPayload) {
         return jsonStream(requestPayload)
-                .collect(Collectors.toMap(k -> k, throwableFunction(requestPayload::get)));
+                .collect(Collectors.toMap(k -> k, tryFunction(requestPayload::get)));
     }
 
     @RequestMapping(value = "json/authentication/refresh", method = RequestMethod.POST)

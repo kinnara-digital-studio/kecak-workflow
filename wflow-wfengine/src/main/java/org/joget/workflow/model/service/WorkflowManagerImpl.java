@@ -1,5 +1,6 @@
 package org.joget.workflow.model.service;
 
+import com.kinnarastudio.commons.Declutter;
 import com.lutris.dods.builder.generator.query.DataObjectException;
 import com.lutris.dods.builder.generator.query.NonUniqueQueryException;
 import com.lutris.dods.builder.generator.query.QueryBuilder;
@@ -24,7 +25,10 @@ import org.enhydra.shark.instancepersistence.data.ProcessStateQuery;
 import org.enhydra.shark.utilities.MiscUtilities;
 import org.enhydra.shark.utilities.WMEntityUtilities;
 import org.enhydra.shark.xpdl.XMLUtil;
-import org.joget.commons.util.*;
+import org.joget.commons.util.DynamicDataSourceManager;
+import org.joget.commons.util.LogUtil;
+import org.joget.commons.util.PagedList;
+import org.joget.commons.util.SetupManager;
 import org.joget.workflow.model.*;
 import org.joget.workflow.model.dao.WorkflowHelper;
 import org.joget.workflow.model.dao.WorkflowProcessLinkDao;
@@ -32,7 +36,6 @@ import org.joget.workflow.shark.JSPClientUtilities;
 import org.joget.workflow.shark.model.dao.WorkflowAssignmentDao;
 import org.joget.workflow.util.DeadlineThreadManager;
 import org.joget.workflow.util.WorkflowUtil;
-import org.kecak.commons.util.StreamHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.jta.JtaTransactionManager;
@@ -49,7 +52,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class WorkflowManagerImpl implements WorkflowManager, StreamHelper {
+public class WorkflowManagerImpl implements WorkflowManager, Declutter {
 
     static boolean initialized = false;
     private WorkflowUserManager userManager;
@@ -5561,7 +5564,7 @@ public class WorkflowManagerImpl implements WorkflowManager, StreamHelper {
                 workflowProcess.setRequesterId(getUserByProcessIdAndActivityDefId(workflowProcess.getId(), workflowProcess.getInstanceId(), WorkflowUtil.ACTIVITY_DEF_ID_RUN_PROCESS));
 
                 Optional.of(wfProcess)
-                        .map(throwableFunction(WfExecutionObject::key, e -> {
+                        .map(tryFunction(WfExecutionObject::key, e -> {
                             LogUtil.warn(getClass().getName(), e.getMessage());
                             return null;
                         }))
