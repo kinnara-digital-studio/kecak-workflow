@@ -1,6 +1,11 @@
 package org.kecak.webapi.json.controller;
 
+import com.kinnarastudio.commons.Declutter;
+import com.kinnarastudio.commons.jsonstream.JSONCollectors;
+import com.kinnarastudio.commons.jsonstream.JSONObjectEntry;
+import com.kinnarastudio.commons.jsonstream.JSONStream;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.dao.PackageDefinitionDao;
@@ -14,7 +19,6 @@ import org.joget.apps.app.service.AuditTrailManager;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.dao.FormDataDao;
-import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
@@ -30,6 +34,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.form.model.DataJsonControllerRequestParameterHandler;
 import org.kecak.apps.form.model.GridElement;
 import org.kecak.utils.StreamHelper;
 import org.kecak.webapi.exception.ApiException;
@@ -49,6 +54,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,7 +65,7 @@ import java.util.stream.Stream;
  * Automatic API generation using Kecak UI builder
  */
 @Controller
-public class DataJsonController implements StreamHelper {
+public class DataJsonController implements StreamHelper, Declutter {
     private final static String FIELD_MESSAGE = "message";
     private final static String FIELD_DATA = "data";
     private final static String FIELD_VALIDATION_ERROR = "validation_error";
@@ -106,14 +113,14 @@ public class DataJsonController implements StreamHelper {
      * @param appVersion put 0 for current published app
      * @param formDefId  Form ID
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
                                @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                @RequestParam("formDefId") final String formDefId)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -122,21 +129,15 @@ public class DataJsonController implements StreamHelper {
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
-            FormData formData = new FormData();
-            formData.setPrimaryKeyValue(jsonBody.optString("id"));
+            final FormData formData = new FormData();
+//            formData.setPrimaryKeyValue(jsonBody.optString("id"));
 
             Form form = getForm(appDefinition, formDefId, formData);
-            formData = formService.retrieveFormDataFromRequestMap(formData, convertJsonObjectToFormRow(form, formData, jsonBody));
 
             fillStoreBinderInFormData(jsonBody, form, formData, false);
 
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
             // submit form
-            final FormData result = appService.submitForm(form, formData, false);
+            final FormData result = submitForm(form, formData, false);
 
             // construct response
             final JSONObject jsonResponse = new JSONObject();
@@ -165,6 +166,298 @@ public class DataJsonController implements StreamHelper {
     }
 
     /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public void postFormSubmitMultipart(final HttpServletRequest request, final HttpServletResponse response,
+                               @RequestParam("appId") final String appId,
+                               @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                               @RequestParam("formDefId") final String formDefId)
+            throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get current App Definition
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            FormData formData = new FormData();
+            Form form = getForm(appDefinition, formDefId, formData);
+            elementStream(form, formData)
+                    .filter(e -> !(e instanceof FormContainer))
+                    .forEach(e -> {
+                        String parameterName = FormUtil.getElementParameterName(e);
+
+                        // get multipart data
+                        String[] values = e.handleMultipartRequest(request.getParameterMap(), e, formData);
+                        formData.addRequestParameterValues(parameterName, values);
+                    });
+
+            // submit form
+            final FormData result = submitForm(form, formData, false);
+
+            // construct response
+            final JSONObject jsonResponse = new JSONObject();
+            Map<String, String> formErrors = getFormErrors(result);
+            if (!formErrors.isEmpty()) {
+                final JSONObject jsonError = createErrorObject(formErrors);
+                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+            } else {
+                // set current data as response
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                FormUtil.executeLoadBinders(form, result);
+                JSONObject jsonData = getData(form, result);
+
+                jsonResponse.put(FIELD_DATA, jsonData);
+                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+                jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
+            }
+
+            response.getWriter().write(jsonResponse.toString());
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @param primaryKey
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public void postTempFileUploadForm(final HttpServletRequest request, final HttpServletResponse response,
+                                   @RequestParam("appId") final String appId,
+                                   @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                   @RequestParam("formDefId") final String formDefId,
+                                   @RequestParam(value = "primaryKey", required = false) final String primaryKey) throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get current App Definition
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // read request body and convert request body to json
+            final FormData formData = new FormData();
+            if(primaryKey != null) {
+                formData.setPrimaryKeyValue(primaryKey);
+            }
+
+            final Form form = getForm(appDefinition, formDefId, formData);
+
+            Pair<Integer, JSONObject> uploadResponse = postTempFileUpload(form, formData);
+
+            response.setStatus(uploadResponse.getLeft());
+            response.getWriter().write(uploadResponse.getRight().toString());
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public void postTempFileUploadAssignment(final HttpServletRequest request, final HttpServletResponse response,
+                                       @RequestParam("appId") final String appId,
+                                       @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                       @RequestParam("assignmentId") final String assignmentId) throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get assignment
+            WorkflowAssignment assignment = getAssignment(assignmentId);
+
+            // get application definition
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+            FormData formData = new FormData();
+            formData.setActivityId(assignment.getActivityId());
+            formData.setProcessId(assignment.getProcessId());
+
+            // get assignment form
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
+
+            Pair<Integer, JSONObject> uploadResult = postTempFileUpload(form, formData);
+
+            response.setStatus(uploadResult.getLeft());
+            response.getWriter().write(uploadResult.getRight().toString());
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @throws IOException
+     * @throws JSONException
+     */
+    @RequestMapping(value = "/json/data/assignment/process/(*:processId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public void postTempFileUploadAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
+                                             @RequestParam("appId") final String appId,
+                                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                             @RequestParam("processId") final String processId) throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get assignment
+            WorkflowAssignment assignment = getAssignmentByProcess(processId);
+
+            // get application definition
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+            FormData formData = new FormData();
+            formData.setActivityId(assignment.getActivityId());
+            formData.setProcessId(assignment.getProcessId());
+
+            // get assignment form
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
+
+            Pair<Integer, JSONObject> uploadResult = postTempFileUpload(form, formData);
+
+            response.setStatus(uploadResult.getLeft());
+            response.getWriter().write(uploadResult.getRight().toString());
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Temporary File Upload for Process Start
+     *
+     * @param request    HTTP Request, request body contains form field values
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion put 0 for current published app
+     * @param processId  Process ID
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public void postTempFileUploadProcessStart(final HttpServletRequest request, final HttpServletResponse response,
+                                 @RequestParam("appId") String appId,
+                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                 @RequestParam("processId") String processId)
+            throws IOException, JSONException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // get processDefId
+            String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
+                    .map(WorkflowProcess::getId)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + processId + "] in application [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "]"));
+
+            // check for permission
+            if (!workflowManager.isUserInWhiteList(processDefId)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not allowed to start process [" + processDefId + "]");
+            }
+
+            // get process form
+            PackageActivityForm packageActivityForm = Optional.ofNullable(appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, ""))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form"));
+
+            Form form = Optional.of(packageActivityForm)
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
+
+            FormData formData = new FormData();
+
+            // check form permission
+            if (!isAuthorize(form, formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            Pair<Integer, JSONObject> uploadResult = postTempFileUpload(form, formData);
+
+            response.setStatus(uploadResult.getLeft());
+            response.getWriter().write(uploadResult.getRight().toString());
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Post file to temp upload folder
+     *
+     * @param form
+     * @param formData
+     * @throws JSONException
+     */
+    protected Pair<Integer, JSONObject> postTempFileUpload(Form form, FormData formData) throws JSONException {
+        final JSONObject jsonData = elementStream(form, formData)
+                .filter(e -> e instanceof FileDownloadSecurity)
+                .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> {
+                    String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
+                    String parameterName = FormUtil.getElementParameterName(e);
+                    String[] filePaths = Optional.of(elementId)
+                            .map(tryFunction(FileStore::getFiles))
+                            .map(Arrays::stream)
+                            .orElseGet(Stream::empty)
+                            .map(FileManager::storeFile)
+                            .toArray(String[]::new);
+
+                    formData.addRequestParameterValues(parameterName, filePaths);
+
+                    return filePaths;
+                }));
+
+        // validate fields
+        final FormData result = validateFormData(form, formData);
+
+        // construct response
+        final JSONObject jsonResponse = new JSONObject();
+        Map<String, String> formErrors = getFormErrors(result);
+        if (!formErrors.isEmpty()) {
+            final JSONObject jsonError = createErrorObject(formErrors);
+            jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+        } else {
+            jsonResponse.put(FIELD_DATA, jsonData);
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
+        }
+
+        return Pair.of(HttpServletResponse.SC_OK, jsonResponse);
+    }
+
+    /**
      * Check form permission
      *
      * @param request
@@ -175,13 +468,13 @@ public class DataJsonController implements StreamHelper {
      * @throws IOException
      * @throws JSONException
      */
-    @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postCheckFormPermission(final HttpServletRequest request, final HttpServletResponse response,
                                         @RequestParam("appId") final String appId,
                                         @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                         @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // read request body and convert request body to json
@@ -194,11 +487,6 @@ public class DataJsonController implements StreamHelper {
 
             Form form = getForm(appDefinition, formDefId, formData);
             formData = formService.retrieveFormDataFromRequestMap(formData, convertJsonObjectToFormRow(form, formData, jsonBody));
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
 
             // construct response
             JSONObject jsonResponse = new JSONObject();
@@ -226,14 +514,14 @@ public class DataJsonController implements StreamHelper {
      * @throws IOException
      * @throws JSONException
      */
-    @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/permission/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postCheckFormElementPermission(final HttpServletRequest request, final HttpServletResponse response,
                                                @RequestParam("appId") final String appId,
                                                @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                                @RequestParam("formDefId") final String formDefId,
                                                @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -280,7 +568,7 @@ public class DataJsonController implements StreamHelper {
      * @throws JSONException
      */
     @Deprecated
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/validate", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)/validate", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postFormValidationDeprecated(final HttpServletRequest request, final HttpServletResponse response,
                                              @RequestParam("appId") final String appId,
                                              @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
@@ -290,14 +578,14 @@ public class DataJsonController implements StreamHelper {
         postFormValidation(request, response, appId, appVersion, formDefId, elementId);
     }
 
-    @RequestMapping(value = "/json/data/validate/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/validate/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postFormValidation(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
                                    @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                    @RequestParam("formDefId") final String formDefId,
                                    @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -311,11 +599,6 @@ public class DataJsonController implements StreamHelper {
             JSONObject jsonBody = getRequestPayload(request);
 
             formData = formService.retrieveFormDataFromRequestMap(formData, convertJsonObjectToFormRow(form, formData, jsonBody));
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
 
             // validate form
             FormData result = validateFormData(form, formData);
@@ -353,7 +636,7 @@ public class DataJsonController implements StreamHelper {
      * @throws IOException
      * @throws JSONException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT, headers = "content-type=application/json")
     public void putFormData(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
@@ -361,7 +644,7 @@ public class DataJsonController implements StreamHelper {
                             @RequestParam("primaryKey") final String primaryKey)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
 
@@ -379,13 +662,8 @@ public class DataJsonController implements StreamHelper {
 
             fillStoreBinderInFormData(jsonBody, form, formData, false);
 
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
             // submit form
-            final FormData result = appService.submitForm(form, formData, false);
+            final FormData result = submitForm(form, formData, false);
 
             // construct response
             final JSONObject jsonResponse = new JSONObject();
@@ -471,7 +749,7 @@ public class DataJsonController implements StreamHelper {
                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -488,11 +766,6 @@ public class DataJsonController implements StreamHelper {
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
-            }
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
             // construct response
@@ -538,7 +811,7 @@ public class DataJsonController implements StreamHelper {
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -549,11 +822,6 @@ public class DataJsonController implements StreamHelper {
 
             @Nonnull
             Form form = getForm(appDefinition, formDefId, formData);
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
 
             // construct response
             JSONObject jsonData = getData(form, formData);
@@ -610,7 +878,7 @@ public class DataJsonController implements StreamHelper {
                                @RequestParam(value = "asOptions", defaultValue = "false") final Boolean asOptions)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -629,17 +897,12 @@ public class DataJsonController implements StreamHelper {
                 FormUtil.setReadOnlyProperty(form, true, true);
             }
 
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
-
             // construct response
             JSONObject jsonData = getData(form, formData, asOptions);
-            Object fieldData = jsonStream(jsonData)
-                    .filter(elementId::equals)
+            Object fieldData = JSONStream.of(jsonData, JSONObject::opt)
+                    .filter(e -> elementId.equals(e.getKey()))
                     .findFirst()
-                    .map(tryFunction(jsonData::get))
+                    .map(JSONObjectEntry::getValue)
                     .orElse(null);
 
             String currentDigest = getDigest(fieldData);
@@ -674,7 +937,7 @@ public class DataJsonController implements StreamHelper {
                                       @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -683,11 +946,6 @@ public class DataJsonController implements StreamHelper {
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             Form form = getForm(appDefinition, formDefId, formData);
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
 
             Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
             if (element == null) {
@@ -747,7 +1005,7 @@ public class DataJsonController implements StreamHelper {
                              @RequestParam("dataListId") final String dataListId)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -801,7 +1059,7 @@ public class DataJsonController implements StreamHelper {
                         @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -835,7 +1093,7 @@ public class DataJsonController implements StreamHelper {
                         .map(row -> formatRow(dataList, row))
 
                         // collect as JSON
-                        .collect(jsonCollector());
+                        .collect(JSONCollectors.toJSONArray());
 
                 String currentDigest = getDigest(jsonData);
 
@@ -892,7 +1150,7 @@ public class DataJsonController implements StreamHelper {
                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -949,7 +1207,7 @@ public class DataJsonController implements StreamHelper {
                         .filter(Objects::nonNull)
 
                         // collect as JSON
-                        .collect(jsonCollector());
+                        .collect(JSONCollectors.toJSONArray());
 
                 String currentDigest = getDigest(jsonData);
 
@@ -983,14 +1241,14 @@ public class DataJsonController implements StreamHelper {
      * @param appVersion put 0 for current published app
      * @param processId  Process ID
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
                                  @RequestParam("appId") String appId,
                                  @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                  @RequestParam("processId") String processId)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -1103,12 +1361,12 @@ public class DataJsonController implements StreamHelper {
      * @param response     HTTP Response
      * @param assignmentId Assignment ID
      */
-    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT})
+    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=application/json")
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
                                        @RequestParam("assignmentId") String assignmentId)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -1126,14 +1384,9 @@ public class DataJsonController implements StreamHelper {
 
             // get assignment form
             Form form = getAssignmentForm(appDefinition, assignment, formData);
-            formData = formService.retrieveFormDataFromRequestMap(formData, convertJsonObjectToFormRow(form, formData, jsonBody));
+//            formData = formService.retrieveFormDataFromRequestMap(formData, convertJsonObjectToFormRow(form, formData, jsonBody));
 
             fillStoreBinderInFormData(jsonBody, form, formData, true);
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
 
             Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
 
@@ -1193,13 +1446,13 @@ public class DataJsonController implements StreamHelper {
      * @param response  HTTP Response
      * @param processId Assingment Process ID
      */
-    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT})
+    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=application/json")
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                                 @RequestParam("processId") String processId,
                                                 @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -1221,11 +1474,6 @@ public class DataJsonController implements StreamHelper {
             formData = formService.retrieveFormDataFromRequestMap(formData, convertJsonObjectToFormRow(form, formData, jsonBody));
 
             fillStoreBinderInFormData(jsonBody, form, formData, true);
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-            }
 
             Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
 
@@ -1295,7 +1543,7 @@ public class DataJsonController implements StreamHelper {
                               @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
@@ -1342,7 +1590,7 @@ public class DataJsonController implements StreamHelper {
                                        @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
@@ -1392,7 +1640,7 @@ public class DataJsonController implements StreamHelper {
                                        @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
@@ -1405,11 +1653,6 @@ public class DataJsonController implements StreamHelper {
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
-            }
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
             try {
@@ -1461,7 +1704,7 @@ public class DataJsonController implements StreamHelper {
                                                 @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
@@ -1474,11 +1717,6 @@ public class DataJsonController implements StreamHelper {
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
-            }
-
-            // check form permission
-            if (!isAuthorize(form, formData)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
             try {
@@ -1523,7 +1761,7 @@ public class DataJsonController implements StreamHelper {
                                     @RequestParam(value = "version", required = false, defaultValue = "0") final Long appVersion,
                                     @RequestParam(value = "processId", required = false) final String processId) throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
@@ -1572,7 +1810,7 @@ public class DataJsonController implements StreamHelper {
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
@@ -1602,11 +1840,6 @@ public class DataJsonController implements StreamHelper {
 
                         // get form
                         Form form = getAssignmentForm(assignmentAppDefinition, assignment, formData);
-
-                        // check form permission
-                        if (!isAuthorize(form, formData)) {
-                            return null;
-                        }
 
                         FormRow row = getFormRow(form, formData.getPrimaryKeyValue());
                         row.setProperty("activityId", assignment.getActivityId());
@@ -1666,7 +1899,7 @@ public class DataJsonController implements StreamHelper {
                                      @RequestParam("assignmentId") final String assignmentId,
                                      @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
@@ -1710,7 +1943,7 @@ public class DataJsonController implements StreamHelper {
                                               @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
                                               @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
@@ -1758,11 +1991,6 @@ public class DataJsonController implements StreamHelper {
         // generate form
         Form form = getAssignmentForm(appDefinition, assignment, formData);
 
-        // check form permission
-        if (!isAuthorize(form, formData)) {
-            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
-        }
-
         JSONObject jsonData = getData(form, formData);
 
         abortProcess(assignment);
@@ -1795,11 +2023,6 @@ public class DataJsonController implements StreamHelper {
 
         if (asLabel) {
             FormUtil.setReadOnlyProperty(form, true, true);
-        }
-
-        // check form permission
-        if (!isAuthorize(form, formData)) {
-            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
 
         JSONObject jsonData = getData(form, formData, asOptions);
@@ -1876,67 +2099,77 @@ public class DataJsonController implements StreamHelper {
         String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
         formData.setPrimaryKeyValue(primaryKey);
 
-        WorkflowAssignment assignment = isAssignment ? getAssignment(formData) : null;
-
-        elementStream(form, formData)
-                .filter(e -> !(e instanceof Form || e instanceof Section || e instanceof Column))
-                .filter(e -> e.getStoreBinder() != null)
-
-                // handle store binder
-                .forEach(tryConsumer(element -> processStoreBinder(element, formData)));
-
-        // handle files; no need to reupload the file if you still need to keep the old one,
-        // simply don't send the field
-
-        FormUtil.executeLoadBinders(form, formData);
         elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(tryConsumer(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
-                    String parameterValue = formData.getRequestParameter(parameterName);
 
-                    if (parameterValue == null) {
-                        // get old data value
-                        Optional.of(e)
-                                .map(formData::getLoadBinderData)
-                                .ifPresent(rowSet -> {
-                                    // ordinary element
-                                    if (e.getStoreBinder() == null) {
-                                        String elementId = e.getPropertyString("id");
-                                        Optional.of(rowSet)
-                                                .map(Collection::stream)
-                                                .orElseGet(Stream::empty)
-                                                .findFirst()
-                                                .ifPresent(row -> {
-                                                    String elementValue;
-
-                                                    // hidden field, special case
-                                                    if (e instanceof HiddenField) {
-                                                        elementValue = getValueForHiddenField(e, row, assignment);
-                                                    }
-
-                                                    // other Element types
-                                                    else {
-                                                        elementValue = row.getProperty(elementId);
-                                                    }
-
-                                                    formData.addRequestParameterValues(parameterName, new String[]{elementValue});
-                                                });
-                                    }
-
-                                    // any other element with store binder
-                                    else {
-                                        formData.setStoreBinderData(e.getStoreBinder(), rowSet);
-                                    }
-                                });
-                    }
-
-//                    // parameter value is not null and it is a FileDownloadSecurity
-//                    else if (e instanceof FileDownloadSecurity) {
-//                        String[] filePaths = handleEncodedFile(parameterValue);
-//                        formData.addRequestParameterValues(parameterName, filePaths);
-//                    }
+                    // get multipart data
+                    String[] values = e.handleJsonRequest(jsonBody.toString(), e, formData);
+                    formData.addRequestParameterValues(parameterName, values);
                 }));
+
+        // TODO : delete code below
+//        WorkflowAssignment assignment = isAssignment ? getAssignment(formData) : null;
+//        elementStream(form, formData)
+//                .filter(e -> !(e instanceof Form || e instanceof Section || e instanceof Column))
+//                .filter(e -> e.getStoreBinder() != null)
+//
+//                // handle store binder
+//                .forEach(tryConsumer(element -> processStoreBinder(element, formData)));
+//
+//        // handle files; no need to reupload the file if you still need to keep the old one,
+//        // simply don't send the field
+//
+//        FormUtil.executeLoadBinders(form, formData);
+//        elementStream(form, formData)
+//                .filter(e -> !(e instanceof FormContainer))
+//                .forEach(tryConsumer(e -> {
+//                    String parameterName = FormUtil.getElementParameterName(e);
+//                    String parameterValue = formData.getRequestParameter(parameterName);
+//
+//                    if (parameterValue == null) {
+//                        // get old data value
+//                        Optional.of(e)
+//                                .map(formData::getLoadBinderData)
+//                                .ifPresent(rowSet -> {
+//                                    // ordinary element
+//                                    if (e.getStoreBinder() == null) {
+//                                        String elementId = e.getPropertyString("id");
+//                                        Optional.of(rowSet)
+//                                                .map(Collection::stream)
+//                                                .orElseGet(Stream::empty)
+//                                                .findFirst()
+//                                                .ifPresent(row -> {
+//                                                    String elementValue;
+//
+//                                                    // hidden field, special case
+//                                                    if (e instanceof HiddenField) {
+//                                                        elementValue = getValueForHiddenField(e, row, assignment);
+//                                                    }
+//
+//                                                    // other Element types
+//                                                    else {
+//                                                        elementValue = row.getProperty(elementId);
+//                                                    }
+//
+//                                                    formData.addRequestParameterValues(parameterName, new String[]{elementValue});
+//                                                });
+//                                    }
+//
+//                                    // any other element with store binder
+//                                    else {
+//                                        formData.setStoreBinderData(e.getStoreBinder(), rowSet);
+//                                    }
+//                                });
+//                    }
+//
+////                    // parameter value is not null and it is a FileDownloadSecurity
+////                    else if (e instanceof FileDownloadSecurity) {
+////                        String[] filePaths = handleEncodedFile(parameterValue);
+////                        formData.addRequestParameterValues(parameterName, filePaths);
+////                    }
+//                }));
 
         return formData;
     }
@@ -1947,6 +2180,7 @@ public class DataJsonController implements StreamHelper {
      * @param assignment
      * @return
      */
+    @Deprecated
     protected String getValueForHiddenField(Element element, FormRow row, WorkflowAssignment assignment) {
         String elementId = getStringProperty(element, FormUtil.PROPERTY_ID);
         String defaultValue = AppUtil.processHashVariable(getStringProperty(element, "value"), assignment, null, null);
@@ -1984,6 +2218,35 @@ public class DataJsonController implements StreamHelper {
         return basePath;
     }
 
+    @Nonnull
+    protected MultipartFile[] decodeFile(@Nonnull String[] fileUri) {
+        Pattern p = Pattern.compile("data:(?<mime>[\\w/\\-\\.]+);(?<properties>(\\w+=\\w+;)*)base64,(?<data>.*)");
+
+        return Arrays.stream(fileUri)
+                .map(uri -> {
+                    Matcher m = p.matcher(uri);
+
+                    String contentType = m.group("mime");
+                    String fileName = Optional.of(m.group("properties"))
+                            .map(s -> s.split(";"))
+                            .map(Arrays::stream)
+                            .orElseGet(Stream::empty)
+                            .filter(this::isNotEmpty)
+                            .map(s -> {
+                                String[] split = s.split(";", 2);
+                                return Pair.of(split[0], split[1]);
+                            })
+                            .filter(pair -> "filename".equalsIgnoreCase(pair.getLeft()))
+                            .map(Pair::getRight)
+                            .findFirst()
+                            .orElse(UUID.randomUUID().toString() + "." + contentType.split("/", 2)[1]);
+                    String base64 = m.group("data");
+
+                    return decodeFile(fileName, contentType, base64);
+                })
+                .toArray(MultipartFile[]::new);
+    }
+
     /**
      * Generate mock MultipartFile
      *
@@ -1996,7 +2259,7 @@ public class DataJsonController implements StreamHelper {
         MultipartFile[] files = Optional.of(value)
                 .map(tryFunction(s -> {
                     JSONArray jsonArray = new JSONArray(s);
-                    return this.<String>jsonStream(jsonArray).toArray(String[]::new);
+                    return JSONStream.of(jsonArray, JSONArray::optString).toArray(String[]::new);
                 }, (String s, JSONException e) -> new String[]{ s }))
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
@@ -2039,7 +2302,7 @@ public class DataJsonController implements StreamHelper {
 		return Optional.of(value)
 				.map(tryFunction(s -> {
 					JSONArray jsonArray = new JSONArray(s);
-					return this.<String>jsonStream(jsonArray).toArray(String[]::new);
+					return JSONStream.of(jsonArray, JSONArray::optString).toArray(String[]::new);
 				}, (String errorValue, JSONException e) -> {
 					LogUtil.error(getClass().getName(), e, e.getMessage());
 					return new String[]{errorValue};
@@ -2170,9 +2433,10 @@ public class DataJsonController implements StreamHelper {
     }
 
     @Nonnull
+    @Deprecated
     protected FormRow convertJsonObjectToFormRow(@Nullable final Form form, @Nullable FormData formData, @Nullable final JSONObject json) {
-        return jsonStream(json)
-				.map(jsonKey -> FormUtil.findElement(jsonKey, form, formData, true))
+        return JSONStream.of(json, JSONObject::opt)
+				.map(entry -> FormUtil.findElement(entry.getKey(), form, formData, true))
                 .collect(() -> {
                     FormRow row = new FormRow();
                     row.setTempFilePathMap(new HashMap<>());
@@ -2305,7 +2569,7 @@ public class DataJsonController implements StreamHelper {
             formData.addRequestParameterValues(paramName, new String[]{String.join(";", values)});
 
             // determine file path
-            MultipartFile file = decodeFile(filename, encodedFile);
+            MultipartFile file = decodeFile(filename, null, encodedFile);
             //            FileUtil.storeFile(file, element, element.getPrimaryKeyValue(formData));
             return file;
         }
@@ -2317,16 +2581,17 @@ public class DataJsonController implements StreamHelper {
      * Decode base64 to file
      *
      * @param filename
-     * @param bse64EncodedFile
+     * @param contentType
+     * @param base64EncodedFile
      * @return
      */
     @Nullable
-    protected MultipartFile decodeFile(@Nonnull String filename, @Nonnull String bse64EncodedFile) throws IllegalArgumentException {
-        if (bse64EncodedFile.isEmpty())
+    protected MultipartFile decodeFile(@Nonnull String filename, String contentType, @Nonnull String base64EncodedFile) throws IllegalArgumentException {
+        if (base64EncodedFile.isEmpty())
             return null;
 
-        byte[] data = Base64.getDecoder().decode(bse64EncodedFile);
-        return new MockMultipartFile(filename, filename, null, data);
+        byte[] data = Base64.getDecoder().decode(base64EncodedFile);
+        return new MockMultipartFile(filename, filename, contentType, data);
     }
 
     /**
@@ -2389,7 +2654,7 @@ public class DataJsonController implements StreamHelper {
             String fileName = split[0];
             if (split.length > 1) {
                 String encodedFile = split[1];
-                return decodeFile(fileName, encodedFile);
+                return decodeFile(fileName, null, encodedFile);
             }
             return null;
         } else {
@@ -2468,7 +2733,7 @@ public class DataJsonController implements StreamHelper {
                                        @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -2534,10 +2799,7 @@ public class DataJsonController implements StreamHelper {
                                 FormData formData = new FormData();
                                 formData.setPrimaryKeyValue(primaryKey);
                                 Form form = getAssignmentForm(appDefinition, workflowAssignment, formData);
-
-                                if (isAuthorize(form, formData)) {
-                                    row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
-                                }
+                                row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
                             }
 
                             jsonArray.put(row);
@@ -2606,7 +2868,7 @@ public class DataJsonController implements StreamHelper {
                                             @RequestParam(value = "activityId", required = false) final String[] activityId)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -2653,7 +2915,7 @@ public class DataJsonController implements StreamHelper {
         }
     }
 
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST)
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postDataListAction(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
                                    @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
@@ -2772,9 +3034,16 @@ public class DataJsonController implements StreamHelper {
      */
     @Nonnull
     protected Form getAssignmentForm(@Nonnull AppDefinition appDefinition, @Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
-        return Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
+        final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
+
+        // check form permission
+        if (!isAuthorize(form, formData)) {
+            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+        }
+
+        return form;
     }
 
     /**
@@ -3108,7 +3377,7 @@ public class DataJsonController implements StreamHelper {
                                             .findFirst()
                                             .orElseGet(FormRow::new))
                                     .map(JSONObject::new)
-                                    .collect(jsonCollector());
+                                    .collect(JSONCollectors.toJSONArray());
 
                             jsonPutOnce(elementId, values, parentJson);
                         } else {
@@ -3156,7 +3425,6 @@ public class DataJsonController implements StreamHelper {
         return dataList;
     }
 
-
     /**
      * Validate Form Data
      *
@@ -3169,7 +3437,7 @@ public class DataJsonController implements StreamHelper {
                 .map(Map::entrySet)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
-                .map(e -> FormUtil.findElement(e.getKey(), form, formData))
+                .map(e -> FormUtil.findElement(e.getKey(), form, formData, true))
                 .forEach(e -> FormUtil.executeValidators(e, formData));
 
         return formData;
@@ -3207,8 +3475,15 @@ public class DataJsonController implements StreamHelper {
      */
     @Nonnull
     protected Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData) throws ApiException {
-        return Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
+        final Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
+
+        // check form permission
+        if (!isAuthorize(form, formData)) {
+            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+        }
+
+        return form;
     }
 
     @Nonnull
@@ -3254,7 +3529,7 @@ public class DataJsonController implements StreamHelper {
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
                 .map(r -> convertFromRowToJsonObject(element, formData, r, asOptions))
-                .collect(jsonCollector());
+                .collect(JSONCollectors.toJSONArray());
     }
 
     /**
@@ -3267,7 +3542,7 @@ public class DataJsonController implements StreamHelper {
     protected JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet, final boolean asOptions) {
         return rowSet.stream()
                 .map(r -> collectGridElement(gridElement, r, asOptions))
-                .collect(jsonCollector());
+                .collect(JSONCollectors.toJSONArray());
     }
 
     /**
@@ -3287,7 +3562,7 @@ public class DataJsonController implements StreamHelper {
             final JSONObject jsonObject = Optional.ofNullable(columnProperties)
                     .map(Arrays::stream)
                     .orElseGet(Stream::empty)
-                    .collect(jsonCollector(gridElement::getField, props -> {
+                    .collect(JSONCollectors.toJSONObject(gridElement::getField, props -> {
                         final String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
                         final String columnName = Optional.of(props)
                                 .map(gridElement::getField)
@@ -3317,7 +3592,7 @@ public class DataJsonController implements StreamHelper {
                                                         return formattedValue;
                                                     }
                                                 })
-                                                .collect(jsonCollector());
+                                                .collect(JSONCollectors.toJSONArray());
                                     } else {
                                         return gridElement.formatColumn(columnName, props, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), "");
                                     }
@@ -3343,7 +3618,7 @@ public class DataJsonController implements StreamHelper {
 
         final JSONObject jsonObject = elementStream((Element) containerElement, formData)
                 .filter(e -> !(e instanceof FormContainer))
-                .collect(jsonCollector(e -> e.getPropertyString(FormUtil.PROPERTY_ID),
+                .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID),
                         e -> e.getElementValue(formData)));
 
         collectRowMetaData(row, jsonObject);
@@ -3362,7 +3637,7 @@ public class DataJsonController implements StreamHelper {
         Objects.requireNonNull(element);
 
         final JSONObject jsonObject = row.entrySet().stream()
-                .collect(jsonCollector(e -> e.getKey().toString(), Map.Entry::getValue));
+                .collect(JSONCollectors.toJSONObject(e -> e.getKey().toString(), Map.Entry::getValue));
 
         collectRowMetaData(row, jsonObject);
 
@@ -3379,7 +3654,7 @@ public class DataJsonController implements StreamHelper {
     protected JSONArray collectElement(@Nonnull final Element element, @Nonnull final FormRowSet rowSet) {
         return rowSet.stream()
                 .map(r -> collectElement(element, r))
-                .collect(jsonCollector());
+                .collect(JSONCollectors.toJSONArray());
     }
 
     /**
@@ -3576,6 +3851,21 @@ public class DataJsonController implements StreamHelper {
     }
 
     /**
+     * Wrap {@link AppService#submitForm(Form, FormData, boolean)}
+     *
+     * @param form
+     * @param formData
+     * @param ignoreValidation
+     * @return
+     */
+    protected FormData submitForm(Form form, FormData formData, boolean ignoreValidation) {
+        String paramName = FormUtil.getElementParameterName(form);
+        formData.addRequestParameterValues(paramName + "_SUBMITTED", new String[]{"true"});
+
+        return appService.submitForm(form, formData, ignoreValidation);
+    }
+
+    /**
      * Check form authorization
      * Restrict if no permission is set and user is anonymous
      *
@@ -3592,5 +3882,23 @@ public class DataJsonController implements StreamHelper {
         return Optional.of(parameterName)
                 .map(request::getParameter)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter [" + parameterName + "] is not supplied"));
+    }
+
+    /**
+     *
+     * @param jsonBody
+     * @param element
+     * @return
+     */
+    protected String[] getJsonRequestValues(JSONObject jsonBody, Element element, FormData formData) throws JSONException {
+        if(element instanceof DataJsonControllerRequestParameterHandler) {
+            String[] values = element.handleJsonRequest(jsonBody.toString(), element, formData);
+            if(values != null) {
+                return values;
+            }
+        }
+
+        String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
+        return new String[] { jsonBody.getString(elementId) };
     }
 }

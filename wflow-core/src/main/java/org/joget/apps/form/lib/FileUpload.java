@@ -6,20 +6,32 @@ import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.FileManager;
+import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
+
+    private final static Pattern DATA_PATTERN = Pattern.compile("data:(?<mime>[\\w/\\-\\.]+);(?<properties>(\\w+=[^;]+;)*)base64,(?<data>.*)");
 
     public String getName() {
         return "File Upload";
@@ -368,5 +380,111 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     private boolean asAttachment(FormData formData) {
         return Boolean.parseBoolean(getPropertyString("attachment"))
                 || "true".equalsIgnoreCase(formData.getRequestParameter(PARAMETER_AS_LINK));
+    }
+
+    @Override
+    public String[] handleMultipartRequest(Map<String, String[]> data, Element element, FormData formData) {
+        return null;
+    }
+
+    @Override
+    public String[] handleJsonRequest(String bodyPayload, Element element, FormData formData) {
+        try {
+            String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
+
+            JSONObject jsonBody = new JSONObject(bodyPayload);
+
+            String value = jsonBody.optString(elementId);
+            if(value == null)
+                return null;
+
+            JSONArray jsonValue;
+            try {
+                jsonValue = new JSONArray(value);
+            } catch (JSONException e) {
+                jsonValue = new JSONArray();
+                jsonValue.put(value);
+            }
+
+            List<String> result = new ArrayList<>();
+            for(int i = 0, size = jsonValue.length(); i < size; i++) {
+                try {
+                    String uri = jsonValue.getString(i);
+                    Matcher m = DATA_PATTERN.matcher(uri);
+                    if(m.find()) {
+                        String contentType = m.group("mime");
+                        String extension = contentType.split("/")[1];
+                        String fileName = getFileName(m.group("properties"), extension);
+                        String base64 = m.group("data");
+
+                        MultipartFile multipartFile = decodeFile(fileName, contentType, base64.trim());
+                        result.add(FileManager.storeFile(multipartFile));
+                    }
+                } catch (JSONException e) {
+                    LogUtil.error(getClassName(), e, e.getMessage());
+                }
+            }
+
+            return result.toArray(new String[0]);
+        } catch (JSONException e) {
+            LogUtil.error(getClassName(), e, e.getMessage());
+            return new String[0];
+        }
+    }
+
+    /**
+     * Decode base64 to file
+     *
+     * @param uri
+     * @return
+     */
+    @Nullable
+    protected MultipartFile decodeFile(@Nonnull String uri) throws IllegalArgumentException {
+        Matcher m = DATA_PATTERN.matcher(uri);
+
+        if(m.find()) {
+            String contentType = m.group("mime");
+            String extension = contentType.split("/")[1];
+            String fileName = getFileName(m.group("properties"), extension);
+            String base64 = m.group("data");
+
+            return decodeFile(fileName, contentType, base64.trim());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param properties
+     * @param extension
+     * @return
+     */
+    protected String getFileName(String properties, String extension) {
+        for(String prop : properties.split(";")) {
+            String[] keyValue = prop.split("=", 2);
+            if(keyValue.length > 1 && keyValue[0].equalsIgnoreCase("filename")) {
+                return keyValue[1];
+            }
+        }
+
+        return "file." + extension;
+    }
+
+    /**
+     * Decode base64 to file
+     *
+     * @param filename
+     * @param contentType
+     * @param base64EncodedFile
+     * @return
+     */
+    @Nullable
+    protected MultipartFile decodeFile(@Nonnull String filename, String contentType, @Nonnull String base64EncodedFile) throws IllegalArgumentException {
+        if (base64EncodedFile.isEmpty())
+            return null;
+
+        byte[] data = Base64.getDecoder().decode(base64EncodedFile);
+        return new MockMultipartFile(filename, filename, contentType, data);
     }
 }

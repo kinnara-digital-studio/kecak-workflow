@@ -15,6 +15,7 @@ import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.kecak.apps.form.model.BootstrapFormElement;
+import org.kecak.apps.form.model.DataJsonControllerRequestParameterHandler;
 import org.kecak.apps.userview.model.*;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.Map;
  * All forms, containers and form fields must extend this class.
  * 
  */
-public abstract class Element extends ExtDefaultPlugin implements PropertyEditable{
+public abstract class Element extends ExtDefaultPlugin implements PropertyEditable, DataJsonControllerRequestParameterHandler {
 
     private Collection<Element> children = new ArrayList<Element>();
     private Element parent;

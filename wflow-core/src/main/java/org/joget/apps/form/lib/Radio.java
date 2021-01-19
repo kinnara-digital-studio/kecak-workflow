@@ -1,10 +1,10 @@
 package org.joget.apps.form.lib;
 
-import java.util.Collection;
-import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
+
+import java.util.Map;
 
 public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 
@@ -59,7 +59,7 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFo
         return renderTemplate(template, formData, dataModel);
     }
 
-    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    public String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value

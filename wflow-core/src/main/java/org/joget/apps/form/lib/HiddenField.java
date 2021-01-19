@@ -1,21 +1,18 @@
 package org.joget.apps.form.lib;
 
-import java.util.Map;
-import java.util.Optional;
-
-import EnhydraShark.App;
-import org.hibernate.jdbc.Work;
+import com.kinnarastudio.commons.Declutter;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
-import org.springframework.context.ApplicationContext;
 
-public class HiddenField extends Element implements FormBuilderPaletteElement {
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+public class HiddenField extends Element implements FormBuilderPaletteElement, Declutter {
 
     public String getName() {
         return "Hidden Field";
@@ -87,5 +84,37 @@ public class HiddenField extends Element implements FormBuilderPaletteElement {
         }
 
         return value;
+    }
+
+    @Override
+    public String[] handleMultipartRequest(Map<String, String[]> data, Element element, FormData formData) {
+        return handleDataRequestParameter(element, formData);
+    }
+
+    @Override
+    public String[] handleJsonRequest(String bodyPayload, Element element, FormData formData) {
+        return handleDataRequestParameter(element, formData);
+    }
+
+    protected String[] handleDataRequestParameter(Element element, FormData formData) {
+        WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
+        WorkflowAssignment assignment = workflowManager.getAssignment(formData.getActivityId());
+
+        String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
+        String defaultValue = AppUtil.processHashVariable(element.getPropertyString(FormUtil.PROPERTY_VALUE), assignment, null, null);
+        FormRowSet rows = formData.getLoadBinderData(element);
+        if(rows == null || rows.isEmpty()) {
+            return new String[] { defaultValue };
+        }
+
+        String databaseValue = rows.get(0).getProperty(elementId, "");
+
+        String priority = element.getPropertyString("useDefaultWhenEmpty");
+
+        if (isNotEmpty(priority) && (("true".equals(priority) && isEmpty(databaseValue)) || "valueOnly".equals(priority))) {
+            return new String[] { defaultValue };
+        }
+
+        return new String[] { ifEmptyThen(databaseValue, defaultValue) };
     }
 }

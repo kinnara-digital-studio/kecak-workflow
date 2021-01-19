@@ -147,7 +147,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         return renderTemplate(template, formData, dataModel);
     }
 
-    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    public String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value

@@ -1,6 +1,5 @@
 package org.kecak.utils;
 
-import com.kinnarastudio.commons.Declutter;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 
@@ -12,7 +11,7 @@ import java.util.stream.Stream;
  *
  * Common library to handle repetition code
  */
-public interface StreamHelper extends Declutter {
+public interface StreamHelper {
     /**
      * Stream element children
      *

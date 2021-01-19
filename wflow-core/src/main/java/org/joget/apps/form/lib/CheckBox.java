@@ -49,8 +49,8 @@ public class CheckBox extends SelectBox implements FormBuilderPaletteElement, Ac
                 rowSet = new FormRowSet();
                 rowSet.add(result);
             }
-        }
 
+        }
         return rowSet;
     }
 
@@ -61,7 +61,7 @@ public class CheckBox extends SelectBox implements FormBuilderPaletteElement, Ac
         return renderTemplate(template, formData, dataModel);
     }
 
-    protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
+    public String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         dynamicOptions(formData);
 
         // set value
