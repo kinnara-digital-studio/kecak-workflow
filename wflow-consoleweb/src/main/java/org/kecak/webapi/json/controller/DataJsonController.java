@@ -34,7 +34,6 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.apps.form.model.DataJsonControllerRequestParameterHandler;
 import org.kecak.apps.form.model.GridElement;
 import org.kecak.utils.StreamHelper;
 import org.kecak.webapi.exception.ApiException;
@@ -53,8 +52,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -137,25 +134,9 @@ public class DataJsonController implements StreamHelper, Declutter {
             // submit form
             final FormData result = submitForm(form, formData, false);
 
+
             // construct response
-            final JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(result);
-            if (!formErrors.isEmpty()) {
-                final JSONObject jsonError = createErrorObject(formErrors);
-                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
-            } else {
-                // set current data as response
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                FormUtil.executeLoadBinders(form, result);
-                JSONObject jsonData = getData(form, result);
-
-                jsonResponse.put(FIELD_DATA, jsonData);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
-            }
-
+            final JSONObject jsonResponse = getJsonResponseResult(form, result);
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -188,38 +169,14 @@ public class DataJsonController implements StreamHelper, Declutter {
 
             FormData formData = new FormData();
             Form form = getForm(appDefinition, formDefId, formData);
-            elementStream(form, formData)
-                    .filter(e -> !(e instanceof FormContainer))
-                    .forEach(e -> {
-                        String parameterName = FormUtil.getElementParameterName(e);
 
-                        // get multipart data
-                        String[] values = e.handleMultipartRequest(request.getParameterMap(), e, formData);
-                        formData.addRequestParameterValues(parameterName, values);
-                    });
+            FormData readyToSubmitFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
 
             // submit form
-            final FormData result = submitForm(form, formData, false);
+            final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
-            final JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(result);
-            if (!formErrors.isEmpty()) {
-                final JSONObject jsonError = createErrorObject(formErrors);
-                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
-            } else {
-                // set current data as response
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                FormUtil.executeLoadBinders(form, result);
-                JSONObject jsonData = getData(form, result);
-
-                jsonResponse.put(FIELD_DATA, jsonData);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
-            }
-
+            final JSONObject jsonResponse = getJsonResponseResult(form, result);
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -418,7 +375,7 @@ public class DataJsonController implements StreamHelper, Declutter {
      * @param formData
      * @throws JSONException
      */
-    protected Pair<Integer, JSONObject> postTempFileUpload(Form form, FormData formData) throws JSONException {
+    protected Pair<Integer, JSONObject> postTempFileUpload(Form form, FormData formData) throws JSONException, ApiException {
         final JSONObject jsonData = elementStream(form, formData)
                 .filter(e -> e instanceof FileDownloadSecurity)
                 .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> {
@@ -440,18 +397,7 @@ public class DataJsonController implements StreamHelper, Declutter {
         final FormData result = validateFormData(form, formData);
 
         // construct response
-        final JSONObject jsonResponse = new JSONObject();
-        Map<String, String> formErrors = getFormErrors(result);
-        if (!formErrors.isEmpty()) {
-            final JSONObject jsonError = createErrorObject(formErrors);
-            jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
-        } else {
-            jsonResponse.put(FIELD_DATA, jsonData);
-            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-            jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
-        }
-
+        final JSONObject jsonResponse = getJsonResponseResult(form, formData);
         return Pair.of(HttpServletResponse.SC_OK, jsonResponse);
     }
 
@@ -478,6 +424,18 @@ public class DataJsonController implements StreamHelper, Declutter {
         postFormValidation(request, response, appId, appVersion, formDefId, elementId);
     }
 
+    /**
+     * Post from for validation
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @param elementId
+     * @throws IOException
+     * @throws JSONException
+     */
     @RequestMapping(value = "/json/data/validate/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:elementId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postFormValidation(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
@@ -557,29 +515,50 @@ public class DataJsonController implements StreamHelper, Declutter {
             formData.setPrimaryKeyValue(primaryKey);
 
             Form form = getForm(appDefinition, formDefId, formData);
-            fillStoreBinderInFormData(jsonBody, form, formData, false);
+            FormData readyToSubmitFormData = fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // submit form
-            final FormData result = submitForm(form, formData, false);
+            final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
-            final JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(result);
-            if (!formErrors.isEmpty()) {
-                final JSONObject jsonError = createErrorObject(formErrors);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
-                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-            } else {
-                // set current data as response
-                response.setStatus(HttpServletResponse.SC_OK);
+            final JSONObject jsonResponse = getJsonResponseResult(form, result);
+            response.getWriter().write(jsonResponse.toString());
 
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
 
-                JSONObject jsonData = getData(form, result);
-                jsonResponse.put(FIELD_DATA, jsonData);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, getDigest(jsonData));
-            }
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT, headers = "content-type=multipart/form-data")
+    public void putFormDataMultipart(final HttpServletRequest request, final HttpServletResponse response,
+                            @RequestParam("appId") final String appId,
+                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                            @RequestParam("formDefId") final String formDefId,
+                            @RequestParam("primaryKey") final String primaryKey)
+            throws IOException, JSONException {
 
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // read request body and convert request body to json
+            JSONObject jsonBody = getRequestPayload(request);
+
+            FormData formData = new FormData();
+            formData.setPrimaryKeyValue(primaryKey);
+
+            Form form = getForm(appDefinition, formDefId, formData);
+            FormData readyToSubmitFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
+
+            // submit form
+            final FormData result = submitForm(form, readyToSubmitFormData, false);
+
+            // construct response
+            final JSONObject jsonResponse = getJsonResponseResult(form, result);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -602,10 +581,11 @@ public class DataJsonController implements StreamHelper, Declutter {
      * @throws JSONException
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.GET)
-    public void getFormData(final HttpServletRequest request, final HttpServletResponse response,
+    public void getFormDataWithIdAsParameter(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                             @RequestParam("formDefId") final String formDefId,
+                            @RequestParam(value = "primaryKey") final String primaryKey,
                             @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                             @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                             @RequestParam(value = "asOptions", defaultValue = "false") final Boolean asOptions,
@@ -613,11 +593,10 @@ public class DataJsonController implements StreamHelper, Declutter {
             throws IOException, JSONException {
 
         try {
-            String primaryKey = getRequiredParameter(request, "id");
             getFormData(request, response, appId, appVersion, formDefId, primaryKey, asLabel, asAttachmentUrl, asOptions, digest);
-        } catch (ApiException e) {
+        } catch (IOException | JSONException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
-            response.sendError(e.getErrorCode(), e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -1171,76 +1150,76 @@ public class DataJsonController implements StreamHelper, Declutter {
 
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
-            final FormData formData = new FormData();
-            fillStoreBinderInFormData(jsonBody, form, formData, true);
+            final FormData formData = fillStoreBinderInFormData(jsonBody, form, null, true);
 
             // check form permission
             if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
-            JSONObject jsonResponse = new JSONObject();
-
-            Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
-
             // trigger run process
-            WorkflowProcessResult processResult = appService.submitFormToStartProcess(packageActivityForm, formData, workflowVariables, null);
+            WorkflowProcessResult processResult = submitFormToStartProcess(packageActivityForm, formData);
 
-            Map<String, String> formErrors = getFormErrors(formData);
-            if (!formErrors.isEmpty()) {
-                JSONObject jsonError = new JSONObject(formErrors);
-                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
-            } else {
-                response.setStatus(HttpServletResponse.SC_OK);
+            JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult);
+            response.getWriter().write(jsonResponse.toString());
 
-                FormUtil.executeLoadBinders(form, formData);
-                JSONObject jsonData = getData(form, formData);
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
 
-                jsonResponse.put(FIELD_DATA, jsonData);
+    /**
+     * Start new process
+     *
+     * @param request    HTTP Request, request body contains form field values
+     * @param response   HTTP Response
+     * @param appId      Application ID
+     * @param appVersion put 0 for current published app
+     * @param processId  Process ID
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
+    public void postProcessStartMultipart(final HttpServletRequest request, final HttpServletResponse response,
+                                 @RequestParam("appId") String appId,
+                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                 @RequestParam("processId") String processId)
+            throws IOException, JSONException {
 
-                // construct response
-                //                FormRow row = loadFormData(form, formData.getPrimaryKeyValue());
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
-                //                final JSONObject jsonData = new JSONObject(row);
+        try {
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-                Optional.ofNullable(processResult)
-                        .map(WorkflowProcessResult::getProcess)
-                        .map(WorkflowProcess::getInstanceId)
-                        .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(nextAssignment -> {
-                            try {
-                                JSONObject jsonProcess = new JSONObject();
-                                jsonProcess.put("processId", nextAssignment.getProcessId());
-                                jsonProcess.put("activityId", nextAssignment.getActivityId());
-                                jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                                jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                                jsonProcess.put("priority", nextAssignment.getPriority());
-                                jsonProcess.put("assigneeList", Optional.of(nextAssignment)
-                                        .map(WorkflowAssignment::getAssigneeList)
-                                        .map(Collection::stream)
-                                        .orElseGet(Stream::empty)
-                                        .collect(Collectors.joining(";")));
-                                jsonProcess.put("assigneeId", nextAssignment.getAssigneeId());
-                                jsonProcess.put("assigneeName", nextAssignment.getAssigneeName());
+            // get processDefId
+            String processDefId = Optional.ofNullable(appService.getWorkflowProcessForApp(appDefinition.getAppId(), appDefinition.getVersion().toString(), processId))
+                    .map(WorkflowProcess::getId)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Invalid process [" + processId + "] in application [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "]"));
 
-                                Collection<WorkflowActivity> processActivities = processResult.getActivities();
-                                if (isNotEmpty(processActivities)) {
-                                    jsonProcess.put("activityIds", new JSONArray(processActivities.stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
-                                }
-
-                                jsonResponse.put("process", jsonProcess);
-                            } catch (JSONException e) {
-                                LogUtil.error(getClass().getName(), e, e.getMessage());
-                            }
-                        });
-
-                String digest = getDigest(jsonData);
-                jsonResponse.put(FIELD_DATA, jsonData);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, digest);
+            // check for permission
+            if (!workflowManager.isUserInWhiteList(processDefId)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] is not allowed to start process [" + processDefId + "]");
             }
 
+            // get process form
+            PackageActivityForm packageActivityForm = Optional.ofNullable(appService.viewStartProcessForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), processDefId, null, ""))
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Start Process [" + processDefId + "] has not been mapped to form"));
+
+            Form form = Optional.of(packageActivityForm)
+                    .map(PackageActivityForm::getForm)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
+
+            final FormData formData = addRequestParameterForMultipart(form, new FormData(), request.getParameterMap());
+
+            // check form permission
+            if (!isAuthorize(form, formData)) {
+                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
+            }
+
+            // trigger run process
+            WorkflowProcessResult processResult = submitFormToStartProcess(packageActivityForm, formData);
+
+            JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1275,55 +1254,62 @@ public class DataJsonController implements StreamHelper, Declutter {
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
-            FormData formData = new FormData();
+            final FormData formData = new FormData();
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
-            fillStoreBinderInFormData(jsonBody, form, formData, true);
-
-            Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
-
-            FormData resultFormData = appService.completeAssignmentForm(form, assignment, formData, workflowVariables);
+            final Form form = getAssignmentForm(appDefinition, assignment, formData);
+            final FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
+            final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
             // return processResult
-            JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(formData);
-            ;
-            if (!formErrors.isEmpty()) {
-                JSONObject jsonError = new JSONObject(formErrors);
-                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
+            response.getWriter().write(jsonResponse.toString());
 
-            } else {
-                Optional.ofNullable(resultFormData)
-                        .map(FormData::getProcessId)
-                        .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(tryConsumer(nextAssignment -> {
-                            JSONObject jsonProcess = new JSONObject();
-                            jsonProcess.put("processId", nextAssignment.getProcessId());
-                            jsonProcess.put("activityId", nextAssignment.getActivityId());
-                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                            jsonProcess.put("priority", nextAssignment.getPriority());
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
 
-                            jsonResponse.put("process", jsonProcess);
-                        }));
+    /**
+     * Post Assignment Complete
+     * <p>
+     * Complete assignment form
+     *
+     * @param request      HTTP Request, request body contains form field values
+     * @param response     HTTP Response
+     * @param assignmentId Assignment ID
+     */
+    @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=multipart/form-data")
+    public void postAssignmentCompleteMultipart(final HttpServletRequest request, final HttpServletResponse response,
+                                       @RequestParam("assignmentId") String assignmentId)
+            throws IOException, JSONException {
 
-                response.setStatus(HttpServletResponse.SC_OK);
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
-                // construct response
-                FormUtil.executeLoadBinders(form, resultFormData);
-                JSONObject jsonData = getData(form, resultFormData);
+        try {
+            // get assignment
+            WorkflowAssignment assignment = getAssignment(assignmentId);
 
-                String digest = getDigest(jsonData);
+            // get application definition
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-                jsonResponse.put(FIELD_DATA, jsonData);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, digest);
-            }
+            // read request body and convert request body to json
+            final JSONObject jsonBody = getRequestPayload(request);
 
+            final FormData formData = new FormData();
+            formData.setActivityId(assignment.getActivityId());
+            formData.setProcessId(assignment.getProcessId());
+
+            // get assignment form
+            final Form form = getAssignmentForm(appDefinition, assignment, formData);
+            final FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
+            final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
+
+            // return processResult
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1365,48 +1351,59 @@ public class DataJsonController implements StreamHelper, Declutter {
 
             // get assignment form
             Form form = getAssignmentForm(appDefinition, assignment, formData);
-            fillStoreBinderInFormData(jsonBody, form, formData, true);
+            FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
 
-            Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
-
-            FormData resultFormData = appService.completeAssignmentForm(form, assignment, formData, workflowVariables);
+            FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
             // return processResult
-            JSONObject jsonResponse = new JSONObject();
-            Map<String, String> formErrors = getFormErrors(resultFormData);
-            if (!formErrors.isEmpty()) {
-                JSONObject jsonError = new JSONObject(formErrors);
-                jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
+            response.getWriter().write(jsonResponse.toString());
 
-            } else {
-                Optional.ofNullable(resultFormData)
-                        .map(FormData::getProcessId)
-                        .map(workflowManager::getAssignmentByProcess)
-                        .ifPresent(tryConsumer(nextAssignment -> {
-                            JSONObject jsonProcess = new JSONObject();
-                            jsonProcess.put("processId", nextAssignment.getProcessId());
-                            jsonProcess.put("activityId", nextAssignment.getActivityId());
-                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                            jsonProcess.put("priority", nextAssignment.getPriority());
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+        }
+    }
 
-                            jsonResponse.put("process", jsonProcess);
-                        }));
+    /**
+     * Post Assignment Complete by assignment process id
+     * <p>
+     * Complete assignment form
+     *
+     * @param request   HTTP Request, request body contains form field values
+     * @param response  HTTP Response
+     * @param processId Assingment Process ID
+     */
+    @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=multipart/form-data")
+    public void postAssignmentCompleteByProcessMultipart(final HttpServletRequest request, final HttpServletResponse response,
+                                                @RequestParam("processId") String processId,
+                                                @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId)
+            throws IOException, JSONException {
 
-                response.setStatus(HttpServletResponse.SC_OK);
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
-                // construct response
-                FormUtil.executeLoadBinders(form, resultFormData);
-                JSONObject jsonData = getData(form, resultFormData);
+        try {
+            // get assignment
+            WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
 
-                String digest = getDigest(jsonData);
+            // get application definition
+            AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-                jsonResponse.put(FIELD_DATA, jsonData);
-                jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
-                jsonResponse.put(FIELD_DIGEST, digest);
-            }
+            // read request body and convert request body to json
+            final JSONObject jsonBody = getRequestPayload(request);
 
+            FormData formData = new FormData();
+            formData.setActivityId(assignment.getActivityId());
+            formData.setProcessId(assignment.getProcessId());
+
+            // get assignment form
+            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
+
+            FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
+
+            // return processResult
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -2100,43 +2097,6 @@ public class DataJsonController implements StreamHelper, Declutter {
     }
 
     /**
-     * @param value    follow this format : "[file name];[base64 encoded file]
-     * @param element
-     * @param formData
-     */
-    @Nullable
-    protected MultipartFile addFileRequestParameter(@Nullable String value, Element element, FormData formData) {
-        if (value == null) {
-            return null;
-        }
-
-        String[] fileParts = value.split(";");
-        String filename = fileParts[0];
-
-        if (fileParts.length > 1) {
-            String encodedFile = fileParts[1];
-
-            String paramName = FormUtil.getElementParameterName(element);
-            List<String> values = Optional.ofNullable(formData.getRequestParameterValues(paramName))
-                    .map(Arrays::stream)
-                    .orElseGet(Stream::empty)
-                    .map(v -> v.split(";"))
-                    .flatMap(Arrays::stream)
-                    .collect(Collectors.toList());
-            values.add(filename);
-
-            formData.addRequestParameterValues(paramName, new String[]{String.join(";", values)});
-
-            // determine file path
-            MultipartFile file = decodeFile(filename, null, encodedFile);
-            //            FileUtil.storeFile(file, element, element.getPrimaryKeyValue(formData));
-            return file;
-        }
-
-        return null;
-    }
-
-    /**
      * Decode base64 to file
      *
      * @param filename
@@ -2197,28 +2157,6 @@ public class DataJsonController implements StreamHelper, Declutter {
                 .orElseGet(Stream::empty)
                 .filter(this::isNotEmpty)
                 .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
-    }
-
-
-    /**
-     * Decode base64 to file
-     *
-     * @param value
-     * @return
-     */
-    @Nullable
-    protected MultipartFile decodeFile(@Nonnull String value) throws IllegalArgumentException {
-        String[] split = value.split(";");
-        if (split.length > 0) {
-            String fileName = split[0];
-            if (split.length > 1) {
-                String encodedFile = split[1];
-                return decodeFile(fileName, null, encodedFile);
-            }
-            return null;
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -3464,5 +3402,133 @@ public class DataJsonController implements StreamHelper, Declutter {
         return Optional.of(parameterName)
                 .map(request::getParameter)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Parameter [" + parameterName + "] is not supplied"));
+    }
+
+    /**
+     *
+     * @param form
+     * @param formData
+     * @param data
+     * @return result
+     */
+    protected FormData addRequestParameterForMultipart(Form form, FormData formData, Map<String, String[]> data) {
+        elementStream(form, formData)
+                .filter(e -> !(e instanceof FormContainer))
+                .forEach(e -> {
+                    String parameterName = FormUtil.getElementParameterName(e);
+
+                    // get multipart data
+                    String[] values = e.handleMultipartRequest(data, e, formData);
+                    if(values != null) {
+                        formData.addRequestParameterValues(parameterName, values);
+                    }
+                });
+
+        return formData;
+    }
+
+    /**
+     *
+     * @param packageActivityForm
+     * @param formData
+     * @return
+     */
+    protected WorkflowProcessResult submitFormToStartProcess(PackageActivityForm packageActivityForm, FormData formData) {
+        Map<String, String> workflowVariables = generateWorkflowVariable(packageActivityForm.getForm(), formData);
+        formData.addRequestParameterValues(AssignmentCompleteButton.DEFAULT_ID, new String[]{AssignmentCompleteButton.DEFAULT_ID});
+        return appService.submitFormToStartProcess(packageActivityForm, formData, workflowVariables, null);
+    }
+
+    /**
+     *
+     * @param form
+     * @param formData
+     * @param processResult
+     * @return
+     * @throws JSONException
+     * @throws ApiException
+     */
+    protected JSONObject getJsonResponseResult(Form form, FormData formData, WorkflowProcessResult processResult) throws JSONException, ApiException {
+        JSONObject jsonResponse = new JSONObject();
+        Map<String, String> formErrors = getFormErrors(formData);
+        if (!formErrors.isEmpty()) {
+            JSONObject jsonError = new JSONObject(formErrors);
+            jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
+        } else {
+            FormUtil.executeLoadBinders(form, formData);
+            JSONObject jsonData = getData(form, formData);
+
+            jsonResponse.put(FIELD_DATA, jsonData);
+
+            Optional<String> optProcessId;
+            if(processResult != null) {
+                optProcessId = Optional.of(processResult)
+                        .map(WorkflowProcessResult::getProcess)
+                        .map(WorkflowProcess::getInstanceId);
+            } else {
+                optProcessId = Optional.of(formData).map(FormData::getProcessId);
+            }
+
+            optProcessId.map(workflowManager::getAssignmentByProcess)
+                    .ifPresent(nextAssignment -> {
+                        try {
+                            JSONObject jsonProcess = new JSONObject();
+                            jsonProcess.put("processId", nextAssignment.getProcessId());
+                            jsonProcess.put("activityId", nextAssignment.getActivityId());
+                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                            jsonProcess.put("priority", nextAssignment.getPriority());
+                            jsonProcess.put("assigneeList", Optional.of(nextAssignment)
+                                    .map(WorkflowAssignment::getAssigneeList)
+                                    .map(Collection::stream)
+                                    .orElseGet(Stream::empty)
+                                    .collect(Collectors.joining(";")));
+                            jsonProcess.put("assigneeId", nextAssignment.getAssigneeId());
+                            jsonProcess.put("assigneeName", nextAssignment.getAssigneeName());
+
+                            Collection<WorkflowActivity> processActivities = processResult.getActivities();
+                            if (isNotEmpty(processActivities)) {
+                                jsonProcess.put("activityIds", new JSONArray(processActivities.stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
+                            }
+
+                            jsonResponse.put("process", jsonProcess);
+                        } catch (JSONException e) {
+                            LogUtil.error(getClass().getName(), e, e.getMessage());
+                        }
+                    });
+
+            String digest = getDigest(jsonData);
+            jsonResponse.put(FIELD_DATA, jsonData);
+            jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
+            jsonResponse.put(FIELD_DIGEST, digest);
+        }
+
+        return jsonResponse;
+    }
+
+    /**
+     *
+     * @param form
+     * @param formData
+     * @return
+     * @throws JSONException
+     * @throws ApiException
+     */
+    protected JSONObject getJsonResponseResult(Form form, FormData formData) throws JSONException, ApiException {
+        return getJsonResponseResult(form, formData, null);
+    }
+
+    /**
+     *
+     * @param form
+     * @param assignment
+     * @param formData
+     * @return
+     */
+    protected FormData completeAssignmentForm(Form form, WorkflowAssignment assignment, FormData formData) {
+        Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
+        FormData resultFormData = appService.completeAssignmentForm(form, assignment, formData, workflowVariables);
+        return resultFormData;
     }
 }

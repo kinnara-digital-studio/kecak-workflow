@@ -5,7 +5,9 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.UserviewPermission;
+import org.joget.commons.util.FileLimitException;
 import org.joget.commons.util.FileManager;
+import org.joget.commons.util.FileStore;
 import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
@@ -28,6 +30,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
@@ -384,7 +387,26 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
 
     @Override
     public String[] handleMultipartRequest(Map<String, String[]> data, Element element, FormData formData) {
-        return null;
+        final String elementId = element.getPropertyString("id");
+
+        List<String> originalFilenames = new ArrayList<>();
+        List<String> filePathList = new ArrayList<>();
+
+        try {
+            for (MultipartFile file : FileStore.getFiles(elementId)) {
+                final String filePath = FileManager.storeFile(file);
+                filePathList.add(filePath);
+                originalFilenames.add(file.getOriginalFilename());
+            }
+        } catch (FileLimitException e) {
+            LogUtil.error(getClassName(), e, e.getMessage());
+        }
+
+        if(filePathList.isEmpty()) {
+            return new String[0];
+        } else {
+            return filePathList.toArray(new String[0]);
+        }
     }
 
     @Override
@@ -396,7 +418,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
 
             String value = jsonBody.optString(elementId);
             if(value == null)
-                return null;
+                return new String[0];
 
             JSONArray jsonValue;
             try {
