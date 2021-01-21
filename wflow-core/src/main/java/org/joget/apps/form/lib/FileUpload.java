@@ -30,7 +30,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
@@ -389,14 +388,15 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     public String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
         final String elementId = element.getPropertyString("id");
 
-        List<String> originalFilenames = new ArrayList<>();
         List<String> filePathList = new ArrayList<>();
 
         try {
-            for (MultipartFile file : FileStore.getFiles(elementId)) {
-                final String filePath = FileManager.storeFile(file);
-                filePathList.add(filePath);
-                originalFilenames.add(file.getOriginalFilename());
+            MultipartFile[] fileStore = FileStore.getFiles(elementId);
+            if(fileStore != null) {
+                for (MultipartFile file : fileStore) {
+                    final String filePath = FileManager.storeFile(file);
+                    filePathList.add(filePath);
+                }
             }
         } catch (FileLimitException e) {
             LogUtil.error(getClassName(), e, e.getMessage());
