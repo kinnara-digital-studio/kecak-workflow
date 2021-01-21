@@ -128,13 +128,11 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonBody = getRequestPayload(request);
 
             final FormData formData = new FormData();
-//            formData.setPrimaryKeyValue(jsonBody.optString("id"));
-
-            Form form = getForm(appDefinition, formDefId, formData);
-            fillStoreBinderInFormData(jsonBody, form, formData, false);
+            final Form form = getForm(appDefinition, formDefId, formData);
+            final FormData readyToSubmitFormData = fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // submit form
-            final FormData result = submitForm(form, formData, false);
+            final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
             final JSONObject jsonResponse = getJsonResponseResult(form, result);
@@ -352,6 +350,7 @@ public class DataJsonController implements Declutter {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
 
             FormData formData = new FormData();
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
             // check form permission
             if (!isAuthorize(form, formData)) {
@@ -2573,6 +2572,8 @@ public class DataJsonController implements Declutter {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
 
+        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
+
         return form;
     }
 
@@ -2978,6 +2979,8 @@ public class DataJsonController implements Declutter {
         if (!isAuthorize(form, formData)) {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
+
+        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
         return form;
     }
