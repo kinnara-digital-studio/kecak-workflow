@@ -34,8 +34,8 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.apps.form.model.GridElement;
-import org.kecak.utils.StreamHelper;
+import org.kecak.apps.form.model.DataJsonControllerHandler;
+import org.kecak.apps.form.service.FormDataUtil;
 import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -57,11 +57,13 @@ import java.util.stream.Stream;
 
 /**
  * @author aristo
- * <p>
- * Automatic API generation using Kecak UI builder
+ *
+ * Automatic API generation using Kecak UI builder.
+ *
+ * @see DataJsonControllerHandler
  */
 @Controller
-public class DataJsonController implements StreamHelper, Declutter {
+public class DataJsonController implements Declutter {
     private final static String FIELD_MESSAGE = "message";
     private final static String FIELD_DATA = "data";
     private final static String FIELD_VALIDATION_ERROR = "validation_error";
@@ -133,7 +135,6 @@ public class DataJsonController implements StreamHelper, Declutter {
 
             // submit form
             final FormData result = submitForm(form, formData, false);
-
 
             // construct response
             final JSONObject jsonResponse = getJsonResponseResult(form, result);
@@ -376,7 +377,7 @@ public class DataJsonController implements StreamHelper, Declutter {
      * @throws JSONException
      */
     protected Pair<Integer, JSONObject> postTempFileUpload(Form form, FormData formData) throws JSONException, ApiException {
-        final JSONObject jsonData = elementStream(form, formData)
+        final JSONObject jsonData = FormDataUtil.elementStream(form, formData)
                 .filter(e -> e instanceof FileDownloadSecurity)
                 .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> {
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
@@ -840,7 +841,7 @@ public class DataJsonController implements StreamHelper, Declutter {
             // construct response
 
             @Nonnull
-            JSONArray jsonArrayData = convertFormRowSetToJsonArray(element, formData, formRows, false);
+            JSONArray jsonArrayData = FormDataUtil.convertFormRowSetToJsonArray(element, formData, formRows, false);
 
             @Nullable
             String currentDigest = getDigest(jsonArrayData);
@@ -1121,7 +1122,8 @@ public class DataJsonController implements StreamHelper, Declutter {
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
                                  @RequestParam("appId") String appId,
                                  @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                 @RequestParam("processId") String processId)
+                                 @RequestParam("processId") String processId,
+                                 @RequestParam(value = "asOptions", required = false, defaultValue = "false") Boolean asOptions)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1152,6 +1154,10 @@ public class DataJsonController implements StreamHelper, Declutter {
             JSONObject jsonBody = getRequestPayload(request);
             final FormData formData = fillStoreBinderInFormData(jsonBody, form, null, true);
 
+            if(isNotEmpty(asOptions)) {
+                formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] {"true"});
+            }
+
             // check form permission
             if (!isAuthorize(form, formData)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
@@ -1180,9 +1186,10 @@ public class DataJsonController implements StreamHelper, Declutter {
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postProcessStartMultipart(final HttpServletRequest request, final HttpServletResponse response,
-                                 @RequestParam("appId") String appId,
-                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                 @RequestParam("processId") String processId)
+                                          @RequestParam("appId") String appId,
+                                          @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                          @RequestParam("processId") String processId,
+                                          @RequestParam(value = "asOptions", defaultValue = "false") Boolean asOptions)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1210,6 +1217,9 @@ public class DataJsonController implements StreamHelper, Declutter {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
 
             final FormData formData = addRequestParameterForMultipart(form, new FormData(), request.getParameterMap());
+            if(asOptions) {
+                formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] {"true"});
+            }
 
             // check form permission
             if (!isAuthorize(form, formData)) {
@@ -1987,13 +1997,13 @@ public class DataJsonController implements StreamHelper, Declutter {
         String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
         formData.setPrimaryKeyValue(primaryKey);
 
-        elementStream(form, formData)
+        FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(tryConsumer(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
 
                     // get multipart data
-                    String[] values = e.handleJsonRequest(jsonBody.toString(), e, formData);
+                    String[] values = e.handleJsonDataRequest(jsonBody.toString(), e, formData);
                     formData.addRequestParameterValues(parameterName, values);
                 }));
 
@@ -2849,7 +2859,10 @@ public class DataJsonController implements StreamHelper, Declutter {
      */
     @Nonnull
     protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
-        final boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false);
+        boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false); 
+        if(retrieveOptionsData) {
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] { "true" });
+        }
 
         // check result size
         Optional.of(form)
@@ -2858,59 +2871,22 @@ public class DataJsonController implements StreamHelper, Declutter {
                 .filter(i -> i > 0)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Data [" + formData.getPrimaryKeyValue() + "] in form [" + form.getPropertyString(FormUtil.PROPERTY_ID) + "] not found"));
 
-        JSONObject parentJson = new JSONObject();
+        final JSONObject parentJson = new JSONObject();
         Optional.of(formData)
-                .map(fd -> elementStream(form, fd))
+                .map(fd -> FormDataUtil.elementStream(form, fd))
                 .orElseGet(Stream::empty)
-                .filter(e -> !(e instanceof FormContainer))
+                .filter(e -> !(e instanceof FormContainer) && formData.getLoadBinderData(e) != null)
                 .forEach(tryConsumer(e -> {
                     final String elementId = e.getPropertyString("id");
-                    final FormRowSet rowSet = formData.getLoadBinderData(e);
-
-                    if (rowSet == null) {
-                        return;
-                    }
-
-                    // Element with load binder, set as child object
-                    if (e.getLoadBinder() != null) {
-                        if (rowSet.isMultiRow()) {
-                            JSONArray data = collectGridElement((GridElement) e, rowSet, retrieveOptionsData);
-                            parentJson.put(elementId, data);
-                        } else {
-                            FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
-                            JSONObject data = collectGridElement((GridElement) e, row, retrieveOptionsData);
-                            parentJson.put(elementId, data);
-                        }
-                    } else {
-                        FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
-
-                        if (retrieveOptionsData && e instanceof FormOptionsElement) {
-                            final FormRowSet options = FormUtil.getElementPropertyOptionsMap(e, formData);
-
-                            JSONArray values = Optional.of(elementId)
-                                    .map(row::getProperty)
-                                    .map(s -> s.split(";"))
-                                    .map(Arrays::stream)
-                                    .orElseGet(Stream::empty)
-                                    .map(s -> options.stream()
-                                            .filter(r -> s.equals(r.getProperty(FormUtil.PROPERTY_VALUE)))
-                                            .findFirst()
-                                            .orElseGet(FormRow::new))
-                                    .map(JSONObject::new)
-                                    .collect(JSONCollectors.toJSONArray());
-
-                            jsonPutOnce(elementId, values, parentJson);
-                        } else {
-                            jsonPutOnce(elementId, e.getElementValue(formData), parentJson);
-                        }
-                    }
+                    Object value = e.handleElementValueResponse(e, formData);
+                    FormDataUtil.jsonPutOnce(elementId, value, parentJson);
                 }));
 
         // get form data metadata
-        collectRowMetaData(form, formData, parentJson);
+        FormDataUtil.collectRowMetaData(form, formData, parentJson);
 
         // get process metadata
-        collectProcessMetaData(formData, parentJson);
+        FormDataUtil.collectProcessMetaData(formData, parentJson);
 
         return parentJson;
     }
@@ -3008,16 +2984,9 @@ public class DataJsonController implements StreamHelper, Declutter {
 
     @Nonnull
     protected Form setReadonly(@Nonnull Form form, FormData formData) {
-        elementStream(form, formData)
+        FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
-                .forEach(element -> {
-                    String parameterName = FormUtil.getElementParameterName(element);
-                    String parameterValue = formData.getRequestParameter(parameterName);
-                    FormUtil.setReadOnlyProperty(element);
-                    //                    if(Objects.isNull(parameterValue)) {
-                    //                        FormUtil.setReadOnlyProperty(element);
-                    //                    }
-                });
+                .forEach(FormUtil::setReadOnlyProperty);
         return form;
     }
 
@@ -3034,223 +3003,6 @@ public class DataJsonController implements StreamHelper, Declutter {
         formErrors.forEach(tryBiConsumer(result::put));
 
         return result;
-    }
-
-    /**
-     * Convert {@link FormRowSet} to {@link JSONArray}
-     *
-     * @param rowSet
-     * @return
-     */
-    @Deprecated
-    @Nonnull
-    protected JSONArray convertFormRowSetToJsonArray(@Nonnull final Element element, @Nonnull final FormData formData, @Nullable final FormRowSet rowSet, final boolean asOptions) {
-        return Optional.ofNullable(rowSet)
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .map(r -> convertFromRowToJsonObject(element, formData, r, asOptions))
-                .collect(JSONCollectors.toJSONArray());
-    }
-
-    /**
-     * Collect grid element
-     *
-     * @param gridElement
-     * @param rowSet
-     * @return
-     */
-    protected JSONArray collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRowSet rowSet, final boolean asOptions) {
-        return rowSet.stream()
-                .map(r -> collectGridElement(gridElement, r, asOptions))
-                .collect(JSONCollectors.toJSONArray());
-    }
-
-    /**
-     * Collect grid element
-     *
-     * @param gridElement
-     * @param row
-     * @return
-     */
-    protected JSONObject collectGridElement(@Nonnull final GridElement gridElement, @Nonnull final FormRow row, boolean asOptions) {
-        final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
-        final Map<String, String>[] columnProperties = gridElement.getColumnProperties();
-
-        if (columnProperties == null && gridElement instanceof Element) {
-            return collectElement((Element) gridElement, row);
-        } else {
-            final JSONObject jsonObject = Optional.ofNullable(columnProperties)
-                    .map(Arrays::stream)
-                    .orElseGet(Stream::empty)
-                    .collect(JSONCollectors.toJSONObject(gridElement::getField, props -> {
-                        final String primaryKey = Optional.of(row).map(FormRow::getId).orElse("");
-                        final String columnName = Optional.of(props)
-                                .map(gridElement::getField)
-                                .orElse("");
-                        final String columnType = Optional.of(props)
-                                .map(m -> m.getOrDefault("formatType", ""))
-                                .orElse("");
-
-                        return Optional.of(columnName)
-                                .filter(this::isNotEmpty)
-                                .map(row::getProperty)
-                                .map(s -> {
-                                    if (asOptions && "options".equals(columnType)) {
-                                        return Optional.of(";")
-                                                .map(s::split)
-                                                .map(Arrays::stream)
-                                                .orElseGet(Stream::empty)
-                                                .filter(Objects::nonNull)
-                                                .map(value -> {
-                                                    String formattedValue = gridElement.formatColumn(columnName, props, primaryKey, value, appDefinition.getAppId(), appDefinition.getVersion(), "");
-                                                    try {
-                                                        JSONObject json = new JSONObject();
-                                                        json.put(FormUtil.PROPERTY_VALUE, value);
-                                                        json.put(FormUtil.PROPERTY_LABEL, formattedValue);
-                                                        return json;
-                                                    } catch (JSONException e) {
-                                                        return formattedValue;
-                                                    }
-                                                })
-                                                .collect(JSONCollectors.toJSONArray());
-                                    } else {
-                                        return gridElement.formatColumn(columnName, props, primaryKey, s, appDefinition.getAppId(), appDefinition.getVersion(), "");
-                                    }
-                                })
-                                .orElse(null);
-                    }));
-
-            collectRowMetaData(row, jsonObject);
-
-            return jsonObject;
-        }
-    }
-
-    /**
-     * Collect container element
-     *
-     * @param containerElement
-     * @param formData
-     * @return
-     */
-    protected JSONObject collectContainerElement(@Nonnull final FormContainer containerElement, @Nonnull final FormData formData, @Nonnull final FormRow row) {
-        assert containerElement instanceof Element;
-
-        final JSONObject jsonObject = elementStream((Element) containerElement, formData)
-                .filter(e -> !(e instanceof FormContainer))
-                .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID),
-                        e -> e.getElementValue(formData)));
-
-        collectRowMetaData(row, jsonObject);
-
-        return jsonObject;
-    }
-
-    /**
-     * Collect element
-     *
-     * @param element
-     * @param row
-     * @return
-     */
-    protected JSONObject collectElement(@Nonnull final Element element, @Nonnull final FormRow row) {
-        Objects.requireNonNull(element);
-
-        final JSONObject jsonObject = row.entrySet().stream()
-                .collect(JSONCollectors.toJSONObject(e -> e.getKey().toString(), Map.Entry::getValue));
-
-        collectRowMetaData(row, jsonObject);
-
-        return jsonObject;
-    }
-
-    /**
-     * Collect element
-     *
-     * @param element
-     * @param rowSet
-     * @return
-     */
-    protected JSONArray collectElement(@Nonnull final Element element, @Nonnull final FormRowSet rowSet) {
-        return rowSet.stream()
-                .map(r -> collectElement(element, r))
-                .collect(JSONCollectors.toJSONArray());
-    }
-
-    /**
-     * Collect process metadata
-     *
-     * @param formData   Input FormData
-     * @param jsonObject Input/Output JSONObject
-     */
-    protected void collectProcessMetaData(@Nonnull FormData formData, @Nonnull JSONObject jsonObject) {
-        try {
-            jsonObject.putOpt("activityId", formData.getActivityId());
-            jsonObject.putOpt("processId", formData.getProcessId());
-        } catch (JSONException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
-    }
-
-    /**
-     * Collect metadata
-     *
-     * @param form       Form
-     * @param formData   FormData
-     * @param jsonObject I/O JSONObject
-     */
-    protected void collectRowMetaData(@Nonnull final Form form, @Nonnull FormData formData, @Nonnull final JSONObject jsonObject) {
-        Optional.ofNullable(formData.getLoadBinderData(form))
-                .map(Collection::stream)
-                .orElseGet(Stream::empty)
-                .findFirst()
-                .ifPresent(r -> collectRowMetaData(r, jsonObject));
-    }
-
-    /**
-     * Collect metadata
-     *
-     * @param row        FormRow
-     * @param jsonObject I/O JSONObject
-     */
-    protected void collectRowMetaData(@Nonnull final FormRow row, @Nonnull final JSONObject jsonObject) {
-        jsonPutOnce("_" + FormUtil.PROPERTY_ID, row.getId(), jsonObject);
-        jsonPutOnce("_" + FormUtil.PROPERTY_DATE_CREATED, row.getDateCreated(), jsonObject);
-        jsonPutOnce("_" + FormUtil.PROPERTY_CREATED_BY, row.getCreatedBy(), jsonObject);
-        jsonPutOnce("_" + FormUtil.PROPERTY_DATE_MODIFIED, row.getDateModified(), jsonObject);
-        jsonPutOnce("_" + FormUtil.PROPERTY_MODIFIED_BY, row.getModifiedBy(), jsonObject);
-    }
-
-    /**
-     * @param key   I
-     * @param value I
-     * @param json  I/O
-     */
-    protected void jsonPutOnce(@Nonnull String key, Object value, @Nonnull final JSONObject json) {
-        try {
-            if (!json.has(key))
-                json.put(key, value);
-        } catch (JSONException e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
-    }
-
-    /**
-     * Convert {@link FormRow} to {@link JSONObject}
-     *
-     * @param row
-     * @return
-     */
-    @Deprecated
-    @Nonnull
-    protected JSONObject convertFromRowToJsonObject(@Nonnull final Element element, @Nonnull final FormData formData, @Nonnull final FormRow row, final boolean asOptions) {
-        if (element instanceof GridElement) {
-            return collectGridElement((GridElement) element, row, asOptions);
-        } else if (element instanceof FormContainer) {
-            return collectContainerElement((FormContainer) element, formData, row);
-        } else {
-            return collectElement(element, row);
-        }
     }
 
     /**
@@ -3412,13 +3164,13 @@ public class DataJsonController implements StreamHelper, Declutter {
      * @return result
      */
     protected FormData addRequestParameterForMultipart(Form form, FormData formData, Map<String, String[]> data) {
-        elementStream(form, formData)
+        FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
 
                     // get multipart data
-                    String[] values = e.handleMultipartRequest(data, e, formData);
+                    String[] values = e.handleMultipartDataRequest(data, e, formData);
                     if(values != null) {
                         formData.addRequestParameterValues(parameterName, values);
                     }

@@ -1,5 +1,6 @@
 package org.joget.apps.form.lib;
 
+import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
@@ -523,6 +524,38 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
                         return new String[value];
                     }
                 });
+    }
+
+    @Override
+    public Object handleElementValueResponse(Element element, FormData formData) {
+        final boolean retrieveOptionsData = formData.getRequestParameter(PARAMETER_AS_OPTIONS) != null;
+        final FormRowSet rowSet = formData.getLoadBinderData(element);
+
+        if (retrieveOptionsData ) {
+            final String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
+
+
+
+            FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
+
+            final FormRowSet options = FormUtil.getElementPropertyOptionsMap(element, formData);
+
+            JSONArray values = Optional.of(elementId)
+                    .map(row::getProperty)
+                    .map(s -> s.split(";"))
+                    .map(Arrays::stream)
+                    .orElseGet(Stream::empty)
+                    .map(s -> options.stream()
+                            .filter(r -> s.equals(r.getProperty(FormUtil.PROPERTY_VALUE)))
+                            .findFirst()
+                            .orElseGet(FormRow::new))
+                    .map(JSONObject::new)
+                    .collect(JSONCollectors.toJSONArray());
+
+            return values;
+        } else {
+            return super.handleElementValueResponse(element, formData);
+        }
     }
 
     /**

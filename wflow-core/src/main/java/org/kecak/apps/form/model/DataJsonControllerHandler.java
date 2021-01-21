@@ -14,31 +14,48 @@ import java.util.Map;
  *
  * Implement in {@link Element}. How the element will handle json data
  */
-public interface DataJsonControllerRequestParameterHandler {
+public interface DataJsonControllerHandler {
+    String PARAMETER_AS_OPTIONS = "_AS_OPTIONS";
 
     /**
      *
-     * @param data
+     * @param requestParameterData
      * @param element
      * @param formData
      * @return data that will be passed to request parameter
      */
-    default String[] handleMultipartRequest(Map<String, String[]> data, Element element, FormData formData) {
+    default String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
         String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
-        return data.get(elementId);
+        return requestParameterData.get(elementId);
     }
 
     /**
      *
-     * @param bodyPayload
+     * @param requestBodyPayload
      * @param element
      * @param formData
      * @return data that will be passed to request parameter
      */
-    default String[] handleJsonRequest(String bodyPayload, Element element, FormData formData) throws JSONException {
+    default String[] handleJsonDataRequest(String requestBodyPayload, Element element, FormData formData) throws JSONException {
         String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
 
-        JSONObject jsonBody = new JSONObject(bodyPayload);
+        JSONObject jsonBody = new JSONObject(requestBodyPayload);
         return new String[] { jsonBody.getString(elementId) };
+    }
+
+    /**
+     * Handle values that will be thrown as response in DataJsonController
+     *
+     * @param element
+     * @param formData
+     * @value that will be shown as response
+     */
+    default Object handleElementValueResponse(Element element, FormData formData) {
+        String[] values = element.getElementValues(formData);
+        if(values != null) {
+            return String.join(";", values);
+        } else {
+            return null;
+        }
     }
 }

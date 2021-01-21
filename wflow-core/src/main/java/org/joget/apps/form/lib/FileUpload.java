@@ -57,7 +57,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
 
         // set value
-        String[] values = FormUtil.getElementPropertyValues(this, formData);
+        String[] values = getElementValues(formData);
 
         //check is there a stored value
         String storedValue = formData.getStoreBinderDataProperty(this);
@@ -173,7 +173,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
         // get value
         String id = getPropertyString(FormUtil.PROPERTY_ID);
         if (id != null) {
-            String[] values = FormUtil.getElementPropertyValues(this, formData);
+            String[] values = getElementValues(formData);
             if (values != null && values.length > 0) {
                 // set value into Properties and FormRowSet object
                 FormRow result = new FormRow();
@@ -223,7 +223,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     private String getFileDownloadLink(FormData formData) {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         // set value
-        String[] values = FormUtil.getElementPropertyValues(this, formData);
+        String[] values = getElementValues(formData);
         return Arrays.stream(values)
                 .filter(Objects::nonNull)
                 .map(fileName -> {
@@ -386,7 +386,7 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     }
 
     @Override
-    public String[] handleMultipartRequest(Map<String, String[]> data, Element element, FormData formData) {
+    public String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
         final String elementId = element.getPropertyString("id");
 
         List<String> originalFilenames = new ArrayList<>();
@@ -410,11 +410,11 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
     }
 
     @Override
-    public String[] handleJsonRequest(String bodyPayload, Element element, FormData formData) {
+    public String[] handleJsonDataRequest(String requestBodyPayload, Element element, FormData formData) {
         try {
             String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
 
-            JSONObject jsonBody = new JSONObject(bodyPayload);
+            JSONObject jsonBody = new JSONObject(requestBodyPayload);
 
             String value = jsonBody.optString(elementId);
             if(value == null)

@@ -15,8 +15,8 @@ import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.kecak.apps.form.model.BootstrapFormElement;
-import org.kecak.apps.form.model.DataJsonControllerRequestParameterHandler;
-import org.kecak.apps.userview.model.*;
+import org.kecak.apps.form.model.DataJsonControllerHandler;
+import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ import java.util.Map;
  * All forms, containers and form fields must extend this class.
  * 
  */
-public abstract class Element extends ExtDefaultPlugin implements PropertyEditable, DataJsonControllerRequestParameterHandler {
+public abstract class Element extends ExtDefaultPlugin implements PropertyEditable, DataJsonControllerHandler {
 
     private Collection<Element> children = new ArrayList<Element>();
     private Element parent;
@@ -208,6 +208,17 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
      */
     public String getElementValue(FormData formData) {
         return FormUtil.getElementPropertyValue(this, formData);
+    }
+
+    /**
+     * Method to retrieve element value from form data ready to be shown to UI.
+     * You can override this to use your own value formatting.
+     *
+     * @param formData
+     * @return
+     */
+    public String[] getElementValues(FormData formData) {
+        return FormUtil.getElementPropertyValues(this, formData);
     }
 
     /**

@@ -87,12 +87,12 @@ public class HiddenField extends Element implements FormBuilderPaletteElement, D
     }
 
     @Override
-    public String[] handleMultipartRequest(Map<String, String[]> data, Element element, FormData formData) {
+    public String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
         return handleDataRequestParameter(element, formData);
     }
 
     @Override
-    public String[] handleJsonRequest(String bodyPayload, Element element, FormData formData) {
+    public String[] handleJsonDataRequest(String requestBodyPayload, Element element, FormData formData) {
         return handleDataRequestParameter(element, formData);
     }
 
