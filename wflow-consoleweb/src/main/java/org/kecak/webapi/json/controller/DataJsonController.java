@@ -545,9 +545,6 @@ public class DataJsonController implements Declutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            // read request body and convert request body to json
-            JSONObject jsonBody = getRequestPayload(request);
-
             FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
@@ -1305,9 +1302,6 @@ public class DataJsonController implements Declutter {
             // get application definition
             AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            // read request body and convert request body to json
-            final JSONObject jsonBody = getRequestPayload(request);
-
             final FormData formData = new FormData();
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
@@ -1397,9 +1391,6 @@ public class DataJsonController implements Declutter {
 
             // get application definition
             AppDefinition appDefinition = getApplicationDefinition(assignment);
-
-            // read request body and convert request body to json
-            final JSONObject jsonBody = getRequestPayload(request);
 
             FormData formData = new FormData();
             formData.setActivityId(assignment.getActivityId());
