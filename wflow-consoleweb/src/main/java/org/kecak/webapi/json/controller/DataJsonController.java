@@ -2277,8 +2277,7 @@ public class DataJsonController implements Declutter {
                         // reformat content value
                         .map(row -> formatRow(dataList, row))
 
-                        // collect as JSON
-                        .collect(JSONArray::new, tryBiConsumer((jsonArray, row) -> {
+                        .map(tryFunction(row -> {
                             String primaryKeyColumn = getPrimaryKeyColumn(dataList);
                             String primaryKey = String.valueOf(row.get(primaryKeyColumn));
 
@@ -2295,19 +2294,16 @@ public class DataJsonController implements Declutter {
 
                                 FormData formData = new FormData();
                                 formData.setPrimaryKeyValue(primaryKey);
-                                Form form = getAssignmentForm(appDefinition, workflowAssignment, formData);
-                                row.put("formId", form.getPropertyString(FormUtil.PROPERTY_ID));
+
+                                retrieveMappedFormId(appDefinition, workflowAssignment, formData)
+                                        .ifPresent(s -> row.put("formId", s));
                             }
 
-                            jsonArray.put(row);
-                        }), (a1, a2) -> {
-                            for (int i = 0, size = a2.length(); i < size; i++) {
-                                try {
-                                    a1.put(a2.get(i));
-                                } catch (JSONException ignored) {
-                                }
-                            }
-                        });
+                            return new JSONObject(row);
+                        }))
+
+                        // collect as JSON
+                        .collect(JSONCollectors.toJSONArray());
 
                 String currentDigest = getDigest(jsonData);
 
@@ -2566,6 +2562,19 @@ public class DataJsonController implements Declutter {
         formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
         return form;
+    }
+
+    /**
+     *
+     * @param appDefinition
+     * @param assignment
+     * @param formData
+     * @return
+     * @throws ApiException
+     */
+    protected Optional<String> retrieveMappedFormId(@Nonnull AppDefinition appDefinition, @Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
+        return Optional.ofNullable(appService.retrieveMappedForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), assignment.getProcessDefId(), assignment.getActivityDefId()))
+                .map(PackageActivityForm::getFormId);
     }
 
     /**
