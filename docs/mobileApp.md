@@ -4,5 +4,5 @@
   - [Submission](mobileApps_submission.md)
   - [Approval](mobileApps_approval.md)
   - [Datalist](mobileApps_datalist.md)
-  - [Form Elements](mobile/mobileApp_form_elements)
-- [Kecak Mobile API](https://kinnara-digital-studio.github.io/kecak-workflow/#/mobileApp_kecak)
+  - [Form Elements](mobile/mobileApp_form_elements.md)
+- [Kecak Mobile API](mobileApp_kecak.md)
