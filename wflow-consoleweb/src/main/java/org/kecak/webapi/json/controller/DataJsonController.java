@@ -530,6 +530,17 @@ public class DataJsonController implements Declutter {
         }
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param formDefId
+     * @param primaryKey
+     * @throws IOException
+     * @throws JSONException
+     */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT, headers = "content-type=multipart/form-data")
     public void putFormDataMultipart(final HttpServletRequest request, final HttpServletResponse response,
                             @RequestParam("appId") final String appId,
@@ -582,7 +593,7 @@ public class DataJsonController implements Declutter {
                             @RequestParam("appId") final String appId,
                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                             @RequestParam("formDefId") final String formDefId,
-                            @RequestParam(value = "primaryKey") final String primaryKey,
+                            @RequestParam(value = "id") final String id,
                             @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
                             @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
                             @RequestParam(value = "asOptions", defaultValue = "false") final Boolean asOptions,
@@ -590,7 +601,7 @@ public class DataJsonController implements Declutter {
             throws IOException, JSONException {
 
         try {
-            getFormData(request, response, appId, appVersion, formDefId, primaryKey, asLabel, asAttachmentUrl, asOptions, digest);
+            getFormData(request, response, appId, appVersion, formDefId, id, asLabel, asAttachmentUrl, asOptions, digest);
         } catch (IOException | JSONException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
