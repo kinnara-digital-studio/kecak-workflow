@@ -20,6 +20,7 @@ public class UserToken implements Serializable, Auditable{
     private String createdBy;
     private String modifiedBy;
     private Boolean deleted;
+    private Date expirationDate;
 
     public String getId() {
         return id;
@@ -104,5 +105,13 @@ public class UserToken implements Serializable, Auditable{
     @Override
     public String getAuditTrailId() {
         return id;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

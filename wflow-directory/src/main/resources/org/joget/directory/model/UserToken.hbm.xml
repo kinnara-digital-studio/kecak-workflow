@@ -8,6 +8,7 @@
     <property name="createdBy" type="string"/>
     <property name="modifiedBy" type="string"/>
     <property name="deleted" type="boolean"/>
+    <property name="expirationDate" type="timestamp"/>
     <property column="userId" name="userId" type="string" index="IDX_USER_ID_TOKEN"/>
     <property column="platformId" name="platformId" type="string" index="IDX_PLATFORM_ID_TOKEN"/>
     <property column="token" name="token" type="text"/>
