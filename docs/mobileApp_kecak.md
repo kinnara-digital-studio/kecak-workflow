@@ -12,5 +12,5 @@
 - [Kecak Mobile Refresh Token API](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_KecakMobile_refreshTokenAPI)
 - [Kecak Mobile Run Process API](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_KecakMobile_runProcessPageAPI)
 - [Kecak Mobile Store Binder Edit Profile Picture API](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_KecakMobile_storeBinder_editProfilePictureAPI)
-- [Kecak Mobile Store Binder File Upload API](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_KecakMobile_StoreBinder-FileUploadAPI)
-- [Kecak Mobile Userview UI API](https://kinnara-digital-studio.github.io/kecak-workflow/#/PluginsList_KecakMobile_userviewUiAPI)
+- [Kecak Mobile Store Binder File Upload API](PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
+- [Kecak Mobile Userview UI API](PluginsList_KecakMobile_userviewUiAPI.md)
