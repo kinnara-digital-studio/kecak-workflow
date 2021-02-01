@@ -97,15 +97,15 @@
                         type: 'GET',
                         url: '${request.contextPath}/web/json/app/${appId!}/${appVersion!}/plugin/${className}/service',
                         data: {
-                            values : '${values!}'
+                            values : '${values?join(";")}'
                         }
                     }).then(function (data) {
                         // create the option and append to Select2
-                        var option = new Option(data.full_name, data.id, true, true);
-                        studentSelect.append(option).trigger('change');
+                        var option = new Option(data.id, data.text, true, true);
+                        $selectBox.append(option).trigger('change');
 
                         // manually trigger the `select2:select` event
-                        studentSelect.trigger({
+                        $selectBox.trigger({
                             type: 'select2:select',
                             params: {
                                 data: data
