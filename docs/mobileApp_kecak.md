@@ -12,5 +12,5 @@
 - [Kecak Mobile Refresh Token API](https://docs.kecak.org/#/PluginsList_KecakMobile_refreshTokenAPI)
 - [Kecak Mobile Run Process API](https://docs.kecak.org/#/PluginsList_KecakMobile_runProcessPageAPI)
 - [Kecak Mobile Store Binder Edit Profile Picture API](https://docs.kecak.org/#/PluginsList_KecakMobile_storeBinder_editProfilePictureAPI)
-- [Kecak Mobile Store Binder File Upload API](https://docs.kecak.org/#/PluginsList_KecakMobile_StoreBinder-FileUploadAPI.md)
-- [Kecak Mobile Userview UI API](https://docs.kecak.org/#/PluginsList_KecakMobile_userviewUiAPI.md)
+- [Kecak Mobile Store Binder File Upload API](https://docs.kecak.org/#/PluginsList_KecakMobile_StoreBinder-FileUploadAPI)
+- [Kecak Mobile Userview UI API](https://docs.kecak.org/#/PluginsList_KecakMobile_userviewUiAPI)
