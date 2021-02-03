@@ -3,7 +3,7 @@
 ## Form Element - TextField ##
 A text field lets the user enter text, either with hardware keyboard or with an onscreen keyboard.
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/mobile-form-elemnts/textfield/texfield.png" alt="" />
+<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/mobile-form-elemnts/textfield/texfield.png" alt="Textfield Image" />
 
 ## Features
 
