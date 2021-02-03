@@ -40,6 +40,17 @@ HTTP POST
 `https://sandbox.kecak.org/web/json/plugin/com.kinnara.kecakplugins.mobileapi.LoginApi/service`
 
 ### Use of API Plugin ###
+- Add Token
+![auth](https://user-images.githubusercontent.com/63091778/106728909-86794780-663f-11eb-9ddd-bf9c99ee99c0.png)
+
+- Headers
+![auth_autofill](https://user-images.githubusercontent.com/63091778/106729081-b9bbd680-663f-11eb-8a14-b975ca195326.png)
+
+- Body
+ ![body](https://user-images.githubusercontent.com/63091778/106729244-dc4def80-663f-11eb-8658-b7fd40c523e2.png)
+ 
+- Result
+![result](https://user-images.githubusercontent.com/63091778/106729331-ee2f9280-663f-11eb-9196-3ad9a76bcd91.png)
 
 
 
