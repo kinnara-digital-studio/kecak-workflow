@@ -15,4 +15,6 @@ A text field lets the user enter text, either with hardware keyboard or with an 
 
 4. DefaultValue
 
+6. Live Validation
+
 5. MaxLength (onProgress)
