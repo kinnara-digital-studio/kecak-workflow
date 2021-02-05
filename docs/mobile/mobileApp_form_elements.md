@@ -13,3 +13,5 @@
 - [Subform](https://docs.kecak.org/#/mobile/mobileApp_form_element_subform)
 - [Signature Pad](https://docs.kecak.org/#/mobile/mobileApp_form_element_signaturepad)
 - [Autofill SelectBox](https://docs.kecak.org/#/mobile/mobileApp_form_element_autofill)
+- [Form Grid](https://docs.kecak.org/#/mobile/mobileApp_form_element_formgrid)
+- [PDF Viewer](https://docs.kecak.org/#/mobile/mobileApp_form_element_pdfviewer)
