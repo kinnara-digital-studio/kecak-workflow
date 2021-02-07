@@ -2,9 +2,6 @@ package org.joget.apps.app.controller;
 
 import java.io.IOException;
 
-import org.joget.commons.util.FileLimitException;
-import org.joget.commons.util.FileStore;
-import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.apps.app.model.EmailProcessorPlugin;
 import org.kecak.apps.app.model.SchedulerPlugin;
 import org.joget.plugin.base.Plugin;
@@ -33,14 +30,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kecak.oauth.model.Oauth2ClientPlugin;
-import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class PluginJsonController {

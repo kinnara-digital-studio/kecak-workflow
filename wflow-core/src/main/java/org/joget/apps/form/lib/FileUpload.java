@@ -12,17 +12,24 @@ import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.PluginManager;
+import org.joget.plugin.base.PluginWebSupport;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.exception.ApiException;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -31,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class FileUpload extends Element implements FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
+public class FileUpload extends Element implements PluginWebSupport, FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
 
     private final static Pattern DATA_PATTERN = Pattern.compile("data:(?<mime>[\\w/\\-\\.]+);(?<properties>(\\w+=[^;]+;)*)base64,(?<data>.*)");
 
@@ -508,5 +515,23 @@ public class FileUpload extends Element implements FormBuilderPaletteElement, Fi
 
         byte[] data = Base64.getDecoder().decode(base64EncodedFile);
         return new MockMultipartFile(filename, filename, contentType, data);
+    }
+
+    @Override
+    public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            String method = request.getMethod();
+            if(!method.equalsIgnoreCase("POST")) {
+                throw new ApiException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method ["+method+"] is not supported");
+            }
+
+
+
+        } catch (ApiException e) {
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+
     }
 }

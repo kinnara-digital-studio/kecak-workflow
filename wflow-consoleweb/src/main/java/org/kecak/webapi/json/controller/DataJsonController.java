@@ -5,7 +5,6 @@ import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import com.kinnarastudio.commons.jsonstream.JSONObjectEntry;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
 import org.joget.apps.app.dao.PackageDefinitionDao;
@@ -34,9 +33,9 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.exception.ApiException;
 import org.kecak.apps.form.model.DataJsonControllerHandler;
 import org.kecak.apps.form.service.FormDataUtil;
-import org.kecak.webapi.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockMultipartFile;
@@ -190,15 +189,13 @@ public class DataJsonController implements Declutter {
      * @param appId
      * @param appVersion
      * @param formDefId
-     * @param primaryKey
      * @throws IOException
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadForm(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
                                    @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                   @RequestParam("formDefId") final String formDefId,
-                                   @RequestParam(value = "primaryKey", required = false) final String primaryKey) throws IOException, JSONException {
+                                   @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
@@ -208,16 +205,12 @@ public class DataJsonController implements Declutter {
 
             // read request body and convert request body to json
             final FormData formData = new FormData();
-            if(primaryKey != null) {
-                formData.setPrimaryKeyValue(primaryKey);
-            }
 
             final Form form = getForm(appDefinition, formDefId, formData);
 
-            Pair<Integer, JSONObject> uploadResponse = postTempFileUpload(form, formData);
-
-            response.setStatus(uploadResponse.getLeft());
-            response.getWriter().write(uploadResponse.getRight().toString());
+            JSONObject uploadResponse = postTempFileUpload(form, formData);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(uploadResponse.toString());
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -256,10 +249,10 @@ public class DataJsonController implements Declutter {
             // get assignment form
             Form form = getAssignmentForm(appDefinition, assignment, formData);
 
-            Pair<Integer, JSONObject> uploadResult = postTempFileUpload(form, formData);
+            JSONObject uploadResult = postTempFileUpload(form, formData);
 
-            response.setStatus(uploadResult.getLeft());
-            response.getWriter().write(uploadResult.getRight().toString());
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(uploadResult.toString());
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -298,10 +291,10 @@ public class DataJsonController implements Declutter {
             // get assignment form
             Form form = getAssignmentForm(appDefinition, assignment, formData);
 
-            Pair<Integer, JSONObject> uploadResult = postTempFileUpload(form, formData);
+            JSONObject uploadResult = postTempFileUpload(form, formData);
 
-            response.setStatus(uploadResult.getLeft());
-            response.getWriter().write(uploadResult.getRight().toString());
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(uploadResult.toString());
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -357,10 +350,10 @@ public class DataJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
             }
 
-            Pair<Integer, JSONObject> uploadResult = postTempFileUpload(form, formData);
+            JSONObject uploadResult = postTempFileUpload(form, formData);
 
-            response.setStatus(uploadResult.getLeft());
-            response.getWriter().write(uploadResult.getRight().toString());
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(uploadResult.toString());
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -375,7 +368,7 @@ public class DataJsonController implements Declutter {
      * @param formData
      * @throws JSONException
      */
-    protected Pair<Integer, JSONObject> postTempFileUpload(Form form, FormData formData) throws JSONException, ApiException {
+    protected JSONObject postTempFileUpload(Form form, FormData formData) throws JSONException, ApiException {
         final JSONObject jsonData = FormDataUtil.elementStream(form, formData)
                 .filter(e -> e instanceof FileDownloadSecurity)
                 .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> {
@@ -397,8 +390,9 @@ public class DataJsonController implements Declutter {
         final FormData result = validateFormData(form, formData);
 
         // construct response
-        final JSONObject jsonResponse = getJsonResponseResult(form, formData);
-        return Pair.of(HttpServletResponse.SC_OK, jsonResponse);
+//        final JSONObject jsonResponse = getJsonResponseResult(form, result);
+//        return Pair.of(HttpServletResponse.SC_OK, jsonResponse);
+        return jsonData;
     }
 
     /**
@@ -2871,7 +2865,7 @@ public class DataJsonController implements Declutter {
      */
     @Nonnull
     protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
-        boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false); 
+        boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false);
         if(retrieveOptionsData) {
             formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] { "true" });
         }
@@ -2946,6 +2940,7 @@ public class DataJsonController implements Declutter {
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)
                 .map(e -> FormUtil.findElement(e.getKey(), form, formData, true))
+                .filter(Objects::nonNull)
                 .forEach(e -> FormUtil.executeValidators(e, formData));
 
         return formData;
