@@ -3173,6 +3173,14 @@ public class DataJsonController implements Declutter {
      * @return result
      */
     protected FormData addRequestParameterForMultipart(Form form, FormData formData, Map<String, String[]> data) {
+        // register primary key
+        if(formData.getPrimaryKeyValue() == null && data.containsKey("id")) {
+            String[] values = data.get("id");
+            if(values != null && values.length > 0) {
+                formData.setPrimaryKeyValue(values[0]);
+            }
+        }
+
         FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .forEach(e -> {
@@ -3180,7 +3188,7 @@ public class DataJsonController implements Declutter {
 
                     // get multipart data
                     String[] values = e.handleMultipartDataRequest(data, e, formData);
-                    if(values != null) {
+                    if(values != null && values.length > 0) {
                         formData.addRequestParameterValues(parameterName, values);
                     }
                 });
