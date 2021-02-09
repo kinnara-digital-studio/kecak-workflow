@@ -1153,7 +1153,7 @@ public class DataJsonController implements Declutter {
 
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
-            final FormData formData = fillStoreBinderInFormData(jsonBody, form, null, true);
+            final FormData formData = fillStoreBinderInFormData(jsonBody, form, new FormData(), true);
 
             if(isNotEmpty(asOptions)) {
                 formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] {"true"});
@@ -1984,13 +1984,15 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    protected FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, final FormData formData, final boolean isAssignment) throws ApiException {
+    protected FormData fillStoreBinderInFormData(final JSONObject jsonBody, final Form form, @Nonnull final FormData formData, final boolean isAssignment) throws ApiException {
         if (form == null) {
             return formData;
         }
 
-        String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
-        formData.setPrimaryKeyValue(primaryKey);
+        if(formData.getPrimaryKeyValue() == null) {
+            String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
+            formData.setPrimaryKeyValue(primaryKey);
+        }
 
         FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer))
