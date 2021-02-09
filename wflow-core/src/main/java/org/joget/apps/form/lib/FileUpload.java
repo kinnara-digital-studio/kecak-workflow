@@ -3,6 +3,7 @@ package org.joget.apps.form.lib;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
+import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.FileLimitException;
@@ -431,6 +432,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
             try {
                 jsonValue = new JSONArray(value);
             } catch (JSONException e) {
+                // handle if it is not an array
                 jsonValue = new JSONArray();
                 jsonValue.put(value);
             }
@@ -438,17 +440,36 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
             List<String> result = new ArrayList<>();
             for(int i = 0, size = jsonValue.length(); i < size; i++) {
                 try {
-                    String uri = jsonValue.getString(i);
-                    Matcher m = DATA_PATTERN.matcher(uri);
+                    String data = jsonValue.getString(i);
+                    Matcher m = DATA_PATTERN.matcher(data);
+
+                    String tempFilePath;
+
+                    // as data uri
                     if(m.find()) {
                         String contentType = m.group("mime");
                         String extension = contentType.split("/")[1];
                         String fileName = getFileName(m.group("properties"), extension);
                         String base64 = m.group("data");
 
+                        // store in app_tempupload
                         MultipartFile multipartFile = decodeFile(fileName, contentType, base64.trim());
-                        result.add(FileManager.storeFile(multipartFile));
+                        tempFilePath = FileManager.storeFile(multipartFile);
                     }
+
+                    // already a path to app_tempupload
+                    else {
+                        tempFilePath = data;
+                    }
+
+                    // check if file really exist in app_tempupload
+                    File file = FileManager.getFileByPath(tempFilePath);
+                    if (file != null) {
+                        result.add(tempFilePath);
+                    } else {
+                        LogUtil.warn(getClassName(), "File [" + tempFilePath + "] not found");
+                    }
+
                 } catch (JSONException e) {
                     LogUtil.error(getClassName(), e, e.getMessage());
                 }
