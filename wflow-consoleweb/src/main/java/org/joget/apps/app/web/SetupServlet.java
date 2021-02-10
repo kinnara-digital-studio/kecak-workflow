@@ -247,19 +247,19 @@ public class SetupServlet extends HttpServlet {
 
 	                //Initialize Scheduler Job
                     SchedulerDetails schedulerDetails = new SchedulerDetails();
-                    schedulerDetails.setJobName("SchedulerJob");
+                    schedulerDetails.setJobName("SchedulerPluginJob");
                     schedulerDetails.setJobClassName(SchedulerPluginJob.class.getName());
 //                    schedulerDetails.setCronExpression("0 0/1 * * * ? *"); // run every 1 minute
                     schedulerDetails.setCronExpression("0 0/5 * * * ? *"); // run every 5 minutes
-                    schedulerDetails.setGroupJobName("SchedulerJob");
-                    schedulerDetails.setGroupTriggerName("SchedulerJob");
+                    schedulerDetails.setGroupJobName("SchedulerPluginJob");
+                    schedulerDetails.setGroupTriggerName("SchedulerPluginJob");
                     Date now = new Date();
                     schedulerDetails.setDateCreated(now);
                     schedulerDetails.setCreatedBy("admin");
                     schedulerDetails.setDateModified(now);
                     schedulerDetails.setModifiedBy("admin");
                     schedulerDetails.setTriggerTypes(TriggerTypes.CRON);
-                    schedulerDetails.setTriggerName("SchedulerJob");
+                    schedulerDetails.setTriggerName("SchedulerPluginJob");
                     SchedulerManager schedulerManager = (SchedulerManager) AppUtil.getApplicationContext().getBean("schedulerManager");
                     schedulerManager.saveOrUpdateJobDetails(schedulerDetails);
 	            }
