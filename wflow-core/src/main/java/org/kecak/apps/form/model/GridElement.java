@@ -1,6 +1,5 @@
 package org.kecak.apps.form.model;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -8,6 +7,7 @@ import java.util.Map;
  *
  * Indicator for Grid Element
  */
+@Deprecated
 public interface GridElement {
 
     /**
