@@ -2,12 +2,8 @@ package org.kecak.apps.form.model;
 
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.service.FormUtil;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 /**
  * Handler for DataJsonController, this interface will be called
@@ -37,7 +33,7 @@ public interface DataJsonControllerHandler {
      * @param formData
      * @return data that will be passed to request parameter
      */
-    default String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, FormData formData) throws JSONException {
+    default String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, @Nonnull FormData formData) {
         return new String[] { String.valueOf(value) };
     }
 
@@ -48,7 +44,7 @@ public interface DataJsonControllerHandler {
      * @param formData
      * @value that will be shown as response
      */
-    default Object handleElementValueResponse(Element element, FormData formData) {
+    default Object handleElementValueResponse(@Nonnull Element element, @Nonnull FormData formData) {
         String[] values = element.getElementValues(formData);
         if(values != null) {
             return String.join(";", values);

@@ -2052,11 +2052,10 @@ public class DataJsonController implements Declutter {
                 .forEach(tryConsumer(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
-                    Object elementValue = jsonBody.opt(elementId);
-                    if(elementValue != null) {
-                        String[] values = e.handleJsonDataRequest(elementValue, e, formData);
-                        formData.addRequestParameterValues(parameterName, values);
-                    }
+                    Optional.of(elementId)
+                            .map(jsonBody::opt)
+                            .map(s -> e.handleJsonDataRequest(s, e, formData))
+                            .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
                 }));
 
         return formData;
@@ -3322,15 +3321,10 @@ public class DataJsonController implements Declutter {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
 
-                    String[] elementValues = data.get(elementId);
-                    if(elementValues != null) {
-                        // get multipart data
-                        String[] values = e.handleMultipartDataRequest(elementValues, e, formData);
-                        if(values != null && values.length > 0) {
-                            formData.addRequestParameterValues(parameterName, values);
-                        }
-                    }
-
+                    Optional.of(elementId)
+                            .map(data::get)
+                            .map(s -> e.handleMultipartDataRequest(s, e, formData))
+                            .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
                 });
 
         return formData;
