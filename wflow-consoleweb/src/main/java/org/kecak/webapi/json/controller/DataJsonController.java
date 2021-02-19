@@ -117,7 +117,8 @@ public class DataJsonController implements Declutter {
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
                                @RequestParam("appId") final String appId,
                                @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                               @RequestParam("formDefId") final String formDefId)
+                               @RequestParam("formDefId") final String formDefId,
+                               @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -142,7 +143,7 @@ public class DataJsonController implements Declutter {
             final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
-            final JSONObject jsonResponse = getJsonResponseResult(form, result);
+            final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -162,9 +163,10 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postFormSubmitMultipart(final HttpServletRequest request, final HttpServletResponse response,
-                               @RequestParam("appId") final String appId,
-                               @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                               @RequestParam("formDefId") final String formDefId)
+                                        @RequestParam("appId") final String appId,
+                                        @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                        @RequestParam("formDefId") final String formDefId,
+                                        @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -188,7 +190,7 @@ public class DataJsonController implements Declutter {
             final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
-            final JSONObject jsonResponse = getJsonResponseResult(form, result);
+            final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -507,7 +509,8 @@ public class DataJsonController implements Declutter {
                             @RequestParam("appId") final String appId,
                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                             @RequestParam("formDefId") final String formDefId,
-                            @RequestParam("primaryKey") final String primaryKey)
+                            @RequestParam("primaryKey") final String primaryKey,
+                            @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -530,7 +533,7 @@ public class DataJsonController implements Declutter {
             final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
-            final JSONObject jsonResponse = getJsonResponseResult(form, result);
+            final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -552,10 +555,11 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/(*:primaryKey)", method = RequestMethod.PUT, headers = "content-type=multipart/form-data")
     public void putFormDataMultipart(final HttpServletRequest request, final HttpServletResponse response,
-                            @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                            @RequestParam("formDefId") final String formDefId,
-                            @RequestParam("primaryKey") final String primaryKey)
+                                     @RequestParam("appId") final String appId,
+                                     @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                     @RequestParam("formDefId") final String formDefId,
+                                     @RequestParam("primaryKey") final String primaryKey,
+                                     @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -575,7 +579,7 @@ public class DataJsonController implements Declutter {
             final FormData result = submitForm(form, readyToSubmitFormData, false);
 
             // construct response
-            final JSONObject jsonResponse = getJsonResponseResult(form, result);
+            final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1148,6 +1152,7 @@ public class DataJsonController implements Declutter {
                                  @RequestParam("appId") String appId,
                                  @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                  @RequestParam("processId") String processId,
+                                 @RequestParam(value = "minify", defaultValue = "false") Boolean minify,
                                  @RequestParam(value = "asOptions", required = false, defaultValue = "false") Boolean asOptions)
             throws IOException, JSONException {
 
@@ -1191,7 +1196,7 @@ public class DataJsonController implements Declutter {
             // trigger run process
             WorkflowProcessResult processResult = submitFormToStartProcess(packageActivityForm, formData);
 
-            JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult);
+            JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1212,8 +1217,9 @@ public class DataJsonController implements Declutter {
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postProcessStartMultipart(final HttpServletRequest request, final HttpServletResponse response,
                                           @RequestParam("appId") String appId,
-                                          @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                          @RequestParam(value = "appVersion", defaultValue = "0") Long appVersion,
                                           @RequestParam("processId") String processId,
+                                          @RequestParam(value = "minify", defaultValue = "false") Boolean minify,
                                           @RequestParam(value = "asOptions", defaultValue = "false") Boolean asOptions)
             throws IOException, JSONException {
 
@@ -1254,7 +1260,7 @@ public class DataJsonController implements Declutter {
             // trigger run process
             WorkflowProcessResult processResult = submitFormToStartProcess(packageActivityForm, formData);
 
-            JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult);
+            JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1274,7 +1280,8 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=application/json")
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
-                                       @RequestParam("assignmentId") String assignmentId)
+                                       @RequestParam("assignmentId") String assignmentId,
+                                       @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1300,7 +1307,7 @@ public class DataJsonController implements Declutter {
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
             // return processResult
-            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1320,7 +1327,8 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=multipart/form-data")
     public void postAssignmentCompleteMultipart(final HttpServletRequest request, final HttpServletResponse response,
-                                       @RequestParam("assignmentId") String assignmentId)
+                                                @RequestParam("assignmentId") String assignmentId,
+                                                @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1343,7 +1351,7 @@ public class DataJsonController implements Declutter {
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
             // return processResult
-            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1364,7 +1372,8 @@ public class DataJsonController implements Declutter {
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=application/json")
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
                                                 @RequestParam("processId") String processId,
-                                                @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId)
+                                                @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId,
+                                                @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1390,7 +1399,7 @@ public class DataJsonController implements Declutter {
             FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
             // return processResult
-            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -1410,8 +1419,9 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=multipart/form-data")
     public void postAssignmentCompleteByProcessMultipart(final HttpServletRequest request, final HttpServletResponse response,
-                                                @RequestParam("processId") String processId,
-                                                @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId)
+                                                         @RequestParam("processId") String processId,
+                                                         @RequestParam(value = "activityDefId", defaultValue = "") String activityDefId,
+                                                         @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1434,7 +1444,7 @@ public class DataJsonController implements Declutter {
             FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
             // return processResult
-            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData);
+            JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
         } catch (ApiException e) {
@@ -3351,7 +3361,7 @@ public class DataJsonController implements Declutter {
      * @throws JSONException
      * @throws ApiException
      */
-    protected JSONObject getJsonResponseResult(Form form, FormData formData, WorkflowProcessResult processResult) throws JSONException, ApiException {
+    protected JSONObject getJsonResponseResult(final Form form, final FormData formData, final WorkflowProcessResult processResult, final boolean minify) throws JSONException, ApiException {
         JSONObject jsonResponse = new JSONObject();
         Map<String, String> formErrors = getFormErrors(formData);
         if (!formErrors.isEmpty()) {
@@ -3359,10 +3369,15 @@ public class DataJsonController implements Declutter {
             jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
             jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
         } else {
-            FormUtil.executeLoadBinders(form, formData);
-
             @Nonnull
-            JSONObject jsonData = getData(form, formData);
+            final JSONObject jsonData;
+            if(minify) {
+                jsonData = new JSONObject();
+                jsonData.put("_" + FormUtil.PROPERTY_ID, formData.getPrimaryKeyValue());
+            } else {
+                FormUtil.executeLoadBinders(form, formData);
+                jsonData = getData(form, formData);
+            }
 
             jsonResponse.put(FIELD_DATA, jsonData);
 
@@ -3420,8 +3435,8 @@ public class DataJsonController implements Declutter {
      * @throws JSONException
      * @throws ApiException
      */
-    protected JSONObject getJsonResponseResult(Form form, FormData formData) throws JSONException, ApiException {
-        return getJsonResponseResult(form, formData, null);
+    protected JSONObject getJsonResponseResult(Form form, FormData formData, boolean minify) throws JSONException, ApiException {
+        return getJsonResponseResult(form, formData, null, minify);
     }
 
     /**
