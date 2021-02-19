@@ -1,6 +1,7 @@
 package org.kecak.webapi.json.controller;
 
 import com.kinnarastudio.commons.Declutter;
+import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import com.kinnarastudio.commons.jsonstream.JSONObjectEntry;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
@@ -392,7 +393,7 @@ public class DataJsonController implements Declutter {
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
                     String parameterName = FormUtil.getElementParameterName(e);
                     String[] filePaths = Optional.of(elementId)
-                            .map(tryFunction(FileStore::getFiles))
+                            .map(Try.onFunction(FileStore::getFiles))
                             .map(Arrays::stream)
                             .orElseGet(Stream::empty)
                             .map(FileManager::storeFile)
@@ -403,12 +404,6 @@ public class DataJsonController implements Declutter {
                     return filePaths;
                 }));
 
-        // validate fields
-        final FormData result = validateFormData(form, formData);
-
-        // construct response
-//        final JSONObject jsonResponse = getJsonResponseResult(form, result);
-//        return Pair.of(HttpServletResponse.SC_OK, jsonResponse);
         return jsonData;
     }
 
