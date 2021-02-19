@@ -393,7 +393,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
     }
 
     @Override
-    public String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
+    public String[] handleMultipartDataRequest(String[] values, Element element, FormData formData) {
         final String elementId = element.getPropertyString("id");
 
         List<String> filePathList = new ArrayList<>();
@@ -411,75 +411,64 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
         }
 
         if(filePathList.isEmpty()) {
-            return new String[0];
+            return getElementValues(formData);
         } else {
             return filePathList.toArray(new String[0]);
         }
     }
 
     @Override
-    public String[] handleJsonDataRequest(String requestBodyPayload, Element element, FormData formData) {
+    public String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, FormData formData) {
+        String stringValue = value.toString();
+
+        JSONArray jsonValue;
         try {
-            String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
-
-            JSONObject jsonBody = new JSONObject(requestBodyPayload);
-
-            String value = jsonBody.optString(elementId);
-            if(value == null)
-                return new String[0];
-
-            JSONArray jsonValue;
-            try {
-                jsonValue = new JSONArray(value);
-            } catch (JSONException e) {
-                // handle if it is not an array
-                jsonValue = new JSONArray();
-                jsonValue.put(value);
-            }
-
-            List<String> result = new ArrayList<>();
-            for(int i = 0, size = jsonValue.length(); i < size; i++) {
-                try {
-                    String data = jsonValue.getString(i);
-                    Matcher m = DATA_PATTERN.matcher(data);
-
-                    String tempFilePath;
-
-                    // as data uri
-                    if(m.find()) {
-                        String contentType = m.group("mime");
-                        String extension = contentType.split("/")[1];
-                        String fileName = getFileName(m.group("properties"), extension);
-                        String base64 = m.group("data");
-
-                        // store in app_tempupload
-                        MultipartFile multipartFile = decodeFile(fileName, contentType, base64.trim());
-                        tempFilePath = FileManager.storeFile(multipartFile);
-                    }
-
-                    // already a path to app_tempupload
-                    else {
-                        tempFilePath = data;
-                    }
-
-                    // check if file really exist in app_tempupload
-                    File file = FileManager.getFileByPath(tempFilePath);
-                    if (file != null) {
-                        result.add(tempFilePath);
-                    } else {
-                        LogUtil.warn(getClassName(), "File [" + tempFilePath + "] not found");
-                    }
-
-                } catch (JSONException e) {
-                    LogUtil.error(getClassName(), e, e.getMessage());
-                }
-            }
-
-            return result.toArray(new String[0]);
+            jsonValue = new JSONArray(stringValue);
         } catch (JSONException e) {
-            LogUtil.error(getClassName(), e, e.getMessage());
-            return new String[0];
+            // handle if it is not an array
+            jsonValue = new JSONArray();
+            jsonValue.put(stringValue);
         }
+
+        List<String> result = new ArrayList<>();
+        for(int i = 0, size = jsonValue.length(); i < size; i++) {
+            try {
+                String data = jsonValue.getString(i);
+                Matcher m = DATA_PATTERN.matcher(data);
+
+                String tempFilePath;
+
+                // as data uri
+                if(m.find()) {
+                    String contentType = m.group("mime");
+                    String extension = contentType.split("/")[1];
+                    String fileName = getFileName(m.group("properties"), extension);
+                    String base64 = m.group("data");
+
+                    // store in app_tempupload
+                    MultipartFile multipartFile = decodeFile(fileName, contentType, base64.trim());
+                    tempFilePath = FileManager.storeFile(multipartFile);
+                }
+
+                // already a path to app_tempupload
+                else {
+                    tempFilePath = data;
+                }
+
+                // check if file really exist in app_tempupload
+                File file = FileManager.getFileByPath(tempFilePath);
+                if (file != null) {
+                    result.add(tempFilePath);
+                } else {
+                    LogUtil.warn(getClassName(), "File [" + tempFilePath + "] not found");
+                }
+
+            } catch (JSONException e) {
+                LogUtil.error(getClassName(), e, e.getMessage());
+            }
+        }
+
+        return result.toArray(new String[0]);
     }
 
     /**
@@ -547,8 +536,6 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
             if(!method.equalsIgnoreCase("POST")) {
                 throw new ApiException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method ["+method+"] is not supported");
             }
-
-
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());

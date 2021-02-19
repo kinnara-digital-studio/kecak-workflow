@@ -6,6 +6,7 @@ import org.joget.apps.form.service.FormUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -20,28 +21,24 @@ public interface DataJsonControllerHandler {
 
     /**
      *
-     * @param requestParameterData
+     * @param values
      * @param element
      * @param formData
      * @return data that will be passed to request parameter
      */
-    default String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
-        String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
-        return requestParameterData.get(elementId);
+    default String[] handleMultipartDataRequest(@Nonnull String[] values, @Nonnull Element element, FormData formData) {
+        return values;
     }
 
     /**
      *
-     * @param requestBodyPayload
+     * @param value can be one of JSONObject, JSONArray, String or primitives
      * @param element
      * @param formData
      * @return data that will be passed to request parameter
      */
-    default String[] handleJsonDataRequest(String requestBodyPayload, Element element, FormData formData) throws JSONException {
-        String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
-
-        JSONObject jsonBody = new JSONObject(requestBodyPayload);
-        return new String[] { jsonBody.getString(elementId) };
+    default String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, FormData formData) throws JSONException {
+        return new String[] { String.valueOf(value) };
     }
 
     /**
