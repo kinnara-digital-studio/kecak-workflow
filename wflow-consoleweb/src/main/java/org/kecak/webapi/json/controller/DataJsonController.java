@@ -1,6 +1,7 @@
 package org.kecak.webapi.json.controller;
 
 import com.kinnarastudio.commons.Declutter;
+import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import com.kinnarastudio.commons.jsonstream.JSONObjectEntry;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
@@ -2883,8 +2884,8 @@ public class DataJsonController implements Declutter {
         Optional.of(formData)
                 .map(fd -> FormDataUtil.elementStream(form, fd))
                 .orElseGet(Stream::empty)
-                .filter(e -> !(e instanceof FormContainer) && formData.getLoadBinderData(e) != null)
-                .forEach(tryConsumer(e -> {
+                .filter(e -> !(e instanceof FormContainer))
+                .forEach(Try.onConsumer(e -> {
                     final String elementId = e.getPropertyString("id");
                     Object value = e.handleElementValueResponse(e, formData);
                     FormDataUtil.jsonPutOnce(elementId, value, parentJson);
