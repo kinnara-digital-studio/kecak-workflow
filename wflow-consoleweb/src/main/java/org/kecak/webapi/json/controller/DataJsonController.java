@@ -2884,8 +2884,8 @@ public class DataJsonController implements Declutter {
         Optional.of(formData)
                 .map(fd -> FormDataUtil.elementStream(form, fd))
                 .orElseGet(Stream::empty)
-                .filter(e -> !(e instanceof FormContainer))
-                .forEach(Try.onConsumer(e -> {
+                .filter(e -> !(e instanceof FormContainer) && formData.getLoadBinderData(e) != null)
+                .forEach(tryConsumer(e -> {
                     final String elementId = e.getPropertyString("id");
                     Object value = e.handleElementValueResponse(e, formData);
                     FormDataUtil.jsonPutOnce(elementId, value, parentJson);
