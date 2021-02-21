@@ -7,6 +7,7 @@ import org.joget.apps.form.service.FormUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -87,12 +88,12 @@ public class HiddenField extends Element implements FormBuilderPaletteElement, D
     }
 
     @Override
-    public String[] handleMultipartDataRequest(Map<String, String[]> requestParameterData, Element element, FormData formData) {
+    public String[] handleMultipartDataRequest(String[] values, Element element, FormData formData) {
         return handleDataRequestParameter(element, formData);
     }
 
     @Override
-    public String[] handleJsonDataRequest(String requestBodyPayload, Element element, FormData formData) {
+    public String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, @Nonnull FormData formData) {
         return handleDataRequestParameter(element, formData);
     }
 

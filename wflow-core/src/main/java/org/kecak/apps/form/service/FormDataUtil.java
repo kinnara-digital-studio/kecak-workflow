@@ -13,15 +13,60 @@ import org.kecak.apps.form.model.GridElement;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 @Service("formDataUtil")
 public class FormDataUtil implements ApplicationContextAware  {
+
+    public final static Pattern DATA_PATTERN = Pattern.compile("data:(?<mime>[\\w/\\-\\.]+);(?<properties>(\\w+=[^;]+;)*)base64,(?<data>.*)");
+
+    /**
+     * Decode base64 to file
+     *
+     * @param uri
+     * @return
+     */
+    @Nullable
+    public static MultipartFile decodeFile(@Nonnull String uri) throws IllegalArgumentException {
+        Matcher m = DATA_PATTERN.matcher(uri);
+
+        if(m.find()) {
+            String contentType = m.group("mime");
+            String extension = contentType.split("/")[1];
+            String fileName = getFileName(m.group("properties"), extension);
+            String base64 = m.group("data");
+
+            return decodeFile(fileName, contentType, base64.trim());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param properties
+     * @param extension
+     * @return
+     */
+    public static String getFileName(String properties, String extension) {
+        for(String prop : properties.split(";")) {
+            String[] keyValue = prop.split("=", 2);
+            if(keyValue.length > 1 && keyValue[0].equalsIgnoreCase("filename")) {
+                return keyValue[1];
+            }
+        }
+
+        return "file." + extension;
+    }
 
     /**
      * Collect grid element
@@ -239,6 +284,23 @@ public class FormDataUtil implements ApplicationContextAware  {
         collectRowMetaData(row, jsonObject);
 
         return jsonObject;
+    }
+
+    /**
+     * Decode base64 to file
+     *
+     * @param filename
+     * @param contentType
+     * @param base64EncodedFile
+     * @return
+     */
+    @Nullable
+    public static MultipartFile decodeFile(@Nonnull String filename, String contentType, @Nonnull String base64EncodedFile) throws IllegalArgumentException {
+        if (base64EncodedFile.isEmpty())
+            return null;
+
+        byte[] data = Base64.getDecoder().decode(base64EncodedFile);
+        return new MockMultipartFile(filename, filename, contentType, data);
     }
 
     /**
