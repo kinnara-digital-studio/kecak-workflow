@@ -113,6 +113,7 @@ public class DataJsonController implements Declutter {
      * @param appId      Application ID
      * @param appVersion put 0 for current published app
      * @param formDefId  Form ID
+     * @param minify     Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postFormSubmit(final HttpServletRequest request, final HttpServletResponse response,
@@ -154,11 +155,12 @@ public class DataJsonController implements Declutter {
 
     /**
      *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param formDefId
+     * @param request    Request
+     * @param response   Response
+     * @param appId      Application ID
+     * @param appVersion Application version
+     * @param formDefId  Form definition ID
+     * @param minify     Response only returns primaryKey
      * @throws IOException
      * @throws JSONException
      */
@@ -496,6 +498,7 @@ public class DataJsonController implements Declutter {
      * @param appVersion Application version
      * @param formDefId  Form Definition ID
      * @param primaryKey Primary Key
+     * @param minify     Response only returns primaryKey
      * @throws IOException
      * @throws JSONException
      */
@@ -1141,6 +1144,7 @@ public class DataJsonController implements Declutter {
      * @param appId      Application ID
      * @param appVersion put 0 for current published app
      * @param processId  Process ID
+     * @param minify     Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postProcessStart(final HttpServletRequest request, final HttpServletResponse response,
@@ -1208,6 +1212,7 @@ public class DataJsonController implements Declutter {
      * @param appId      Application ID
      * @param appVersion put 0 for current published app
      * @param processId  Process ID
+     * @param minify     Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postProcessStartMultipart(final HttpServletRequest request, final HttpServletResponse response,
@@ -1272,6 +1277,7 @@ public class DataJsonController implements Declutter {
      * @param request      HTTP Request, request body contains form field values
      * @param response     HTTP Response
      * @param assignmentId Assignment ID
+     * @param minify       Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=application/json")
     public void postAssignmentComplete(final HttpServletRequest request, final HttpServletResponse response,
@@ -1319,6 +1325,7 @@ public class DataJsonController implements Declutter {
      * @param request      HTTP Request, request body contains form field values
      * @param response     HTTP Response
      * @param assignmentId Assignment ID
+     * @param minify       Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=multipart/form-data")
     public void postAssignmentCompleteMultipart(final HttpServletRequest request, final HttpServletResponse response,
@@ -1362,7 +1369,8 @@ public class DataJsonController implements Declutter {
      *
      * @param request   HTTP Request, request body contains form field values
      * @param response  HTTP Response
-     * @param processId Assingment Process ID
+     * @param processId Assignment Process ID
+     * @param minify    Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=application/json")
     public void postAssignmentCompleteByProcess(final HttpServletRequest request, final HttpServletResponse response,
@@ -1408,9 +1416,11 @@ public class DataJsonController implements Declutter {
      * <p>
      * Complete assignment form
      *
-     * @param request   HTTP Request, request body contains form field values
-     * @param response  HTTP Response
-     * @param processId Assingment Process ID
+     * @param request       HTTP Request, request body contains form field values
+     * @param response      HTTP Response
+     * @param processId     Assignment Process ID
+     * @param activityDefId Assignment Activity Definition ID
+     * @param minify        Response only returns primaryKey
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = {RequestMethod.POST, RequestMethod.PUT}, headers = "content-type=multipart/form-data")
     public void postAssignmentCompleteByProcessMultipart(final HttpServletRequest request, final HttpServletResponse response,
@@ -3349,12 +3359,13 @@ public class DataJsonController implements Declutter {
 
     /**
      *
-     * @param form
-     * @param formData
-     * @param processResult
-     * @return
-     * @throws JSONException
-     * @throws ApiException
+     * @param form           Form
+     * @param formData       Form data
+     * @param processResult  Process result
+     * @param minify         Response only returns primaryKey
+     * @return               JSONObject
+     * @throws JSONException Json exception
+     * @throws ApiException  API exception
      */
     protected JSONObject getJsonResponseResult(final Form form, final FormData formData, final WorkflowProcessResult processResult, final boolean minify) throws JSONException, ApiException {
         JSONObject jsonResponse = new JSONObject();
@@ -3373,8 +3384,6 @@ public class DataJsonController implements Declutter {
                 FormUtil.executeLoadBinders(form, formData);
                 jsonData = getData(form, formData);
             }
-
-            jsonResponse.put(FIELD_DATA, jsonData);
 
             Optional<String> optProcessId;
             if(processResult != null) {
@@ -3424,8 +3433,9 @@ public class DataJsonController implements Declutter {
 
     /**
      *
-     * @param form
-     * @param formData
+     * @param form      Form
+     * @param formData  Form data
+     * @param minify    Response only returns primaryKey
      * @return
      * @throws JSONException
      * @throws ApiException
