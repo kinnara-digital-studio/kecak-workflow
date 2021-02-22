@@ -694,6 +694,7 @@ public class DataJsonController implements Declutter {
      * @param appVersion Application version
      * @param formDefId  Form Definition ID
      * @param primaryKey Primary Key
+     * @param minify     Response only returns primaryKey
      * @throws IOException
      * @throws JSONException
      */
@@ -705,6 +706,7 @@ public class DataJsonController implements Declutter {
                                @RequestParam("primaryKey") final String primaryKey,
                                @RequestParam(value = "abort", defaultValue = "false") final Boolean abort,
                                @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
+                               @RequestParam(value = "minify", defaultValue = "false") final Boolean minify,
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
@@ -722,7 +724,12 @@ public class DataJsonController implements Declutter {
 
             // construct response
             @Nonnull
-            JSONObject jsonData = getData(form, formData);
+            JSONObject jsonData;
+            if(minify) {
+                jsonData = getMinifiedData(formData);
+            } else {
+                jsonData = getData(form, formData, false);
+            }
 
             String currentDigest = getDigest(jsonData);
 
@@ -1825,16 +1832,21 @@ public class DataJsonController implements Declutter {
     /**
      * Delete assignment data and abort process
      *
-     * @param request
-     * @param response
-     * @param assignmentId
+     * @param request      Request
+     * @param response     Response
+     * @param assignmentId Assignment ID
+     * @param force        Abort process as admin
+     * @param terminate    Terminate process
+     * @param minify       Response only returns primaryKey
+     * @param digest       Data's Digest
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)", method = RequestMethod.DELETE)
     public void abortAssignment(final HttpServletRequest request, final HttpServletResponse response,
-                                     @RequestParam("assignmentId") final String assignmentId,
-                                     @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
-                                     @RequestParam(value = "force", defaultValue = "false") final Boolean force,
-                                     @RequestParam(value = "digest", required = false) final String digest) throws IOException {
+                                @RequestParam("assignmentId") final String assignmentId,
+                                @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
+                                @RequestParam(value = "force", defaultValue = "false") final Boolean force,
+                                @RequestParam(value = "minify", defaultValue = "false") final Boolean minify,
+                                @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
@@ -1846,7 +1858,7 @@ public class DataJsonController implements Declutter {
                 assignment = getAssignment(assignmentId);
             }
 
-            JSONObject jsonData = internalDeleteAssignmentData(assignment, terminate);
+            JSONObject jsonData = internalDeleteAssignmentData(assignment, terminate, minify);
 
             try {
                 String currentDigest = getDigest(jsonData);
@@ -1885,6 +1897,7 @@ public class DataJsonController implements Declutter {
                                               @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
                                               @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
                                               @RequestParam(value = "force", defaultValue = "false") final Boolean force,
+                                              @RequestParam(value = "minify", defaultValue = "false") final Boolean minify,
                                               @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -1897,7 +1910,7 @@ public class DataJsonController implements Declutter {
                 assignment = getAssignmentByProcess(processId, activityDefId);
             }
 
-            JSONObject jsonData = internalDeleteAssignmentData(assignment, terminate);
+            JSONObject jsonData = internalDeleteAssignmentData(assignment, terminate, minify);
 
             try {
                 String currentDigest = getDigest(jsonData);
@@ -1933,7 +1946,7 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    protected JSONObject internalDeleteAssignmentData(@Nonnull WorkflowAssignment assignment, boolean terminate) throws ApiException {
+    protected JSONObject internalDeleteAssignmentData(@Nonnull WorkflowAssignment assignment, boolean terminate, boolean minify) throws ApiException {
         // set current app definition
         @Nonnull
         AppDefinition appDefinition = getApplicationDefinition(assignment);
@@ -1947,7 +1960,12 @@ public class DataJsonController implements Declutter {
         Form form = getAssignmentForm(appDefinition, assignment, formData);
 
         @Nonnull
-        JSONObject jsonData = getData(form, formData);
+        JSONObject jsonData;
+        if(minify) {
+            jsonData = getMinifiedData(formData);
+        } else {
+            jsonData = getData(form, formData, false);
+        }
 
         abortProcess(assignment, terminate);
 
@@ -2969,19 +2987,6 @@ public class DataJsonController implements Declutter {
      *
      * @param form
      * @param formData
-     * @return
-     * @throws ApiException
-     */
-    @Nonnull
-    protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData) throws ApiException {
-        return getData(form, formData, false);
-    }
-
-    /**
-     * Load form data
-     *
-     * @param form
-     * @param formData
      */
     @Nonnull
     protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
@@ -3002,7 +3007,7 @@ public class DataJsonController implements Declutter {
                 .map(fd -> FormDataUtil.elementStream(form, fd))
                 .orElseGet(Stream::empty)
                 .filter(e -> !(e instanceof FormContainer) && formData.getLoadBinderData(e) != null)
-                .forEach(tryConsumer(e -> {
+                .forEach(Try.onConsumer(e -> {
                     final String elementId = e.getPropertyString("id");
                     Object value = e.handleElementValueResponse(e, formData);
                     FormDataUtil.jsonPutOnce(elementId, value, parentJson);
@@ -3015,6 +3020,16 @@ public class DataJsonController implements Declutter {
         FormDataUtil.collectProcessMetaData(formData, parentJson);
 
         return parentJson;
+    }
+
+    protected JSONObject getMinifiedData(FormData formData) throws ApiException {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("_" + FormUtil.PROPERTY_ID, formData.getPrimaryKeyValue());
+            return data;
+        } catch (JSONException e) {
+            throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+        }
     }
 
     /**
@@ -3378,11 +3393,10 @@ public class DataJsonController implements Declutter {
             @Nonnull
             final JSONObject jsonData;
             if(minify) {
-                jsonData = new JSONObject();
-                jsonData.put("_" + FormUtil.PROPERTY_ID, formData.getPrimaryKeyValue());
+                jsonData = getMinifiedData(formData);
             } else {
                 FormUtil.executeLoadBinders(form, formData);
-                jsonData = getData(form, formData);
+                jsonData = getData(form, formData, false);
             }
 
             Optional<String> optProcessId;
