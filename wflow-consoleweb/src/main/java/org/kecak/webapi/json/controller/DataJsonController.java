@@ -5,7 +5,6 @@ import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import com.kinnarastudio.commons.jsonstream.JSONObjectEntry;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
-import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
@@ -1974,7 +1973,6 @@ public class DataJsonController implements Declutter {
             deleteData(form, formData, true);
         }
 
-
         return new AbstractMap.SimpleEntry<>(form, formData);
     }
 
@@ -2887,7 +2885,7 @@ public class DataJsonController implements Declutter {
         if(WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
             final String username = WorkflowUtil.getCurrentUsername();
 
-            return Optional.of(processId)
+            final Set<WorkflowAssignment> assignments = Optional.of(processId)
                     .map(workflowProcessLinkDao::getLinks)
                     .map(Collection::stream)
                     .orElseGet(Stream::empty)
@@ -2897,6 +2895,12 @@ public class DataJsonController implements Declutter {
                     .flatMap(Collection::stream)
                     .peek(a -> workflowManager.assignmentReassign(a.getProcessDefId(), a.getProcessId(), a.getActivityId(), username, a.getAssigneeName()))
                     .collect(Collectors.toSet());
+
+            if(assignments.isEmpty()) {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment process [" + processId + "] is not available");
+            }
+
+            return assignments;
         }
         throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "User [" + WorkflowUtil.getCurrentUsername() + "] is not admin, not allowed to takeover assignment");
     }
