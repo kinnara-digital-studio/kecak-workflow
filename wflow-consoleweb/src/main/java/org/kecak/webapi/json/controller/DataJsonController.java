@@ -5,6 +5,7 @@ import com.kinnarastudio.commons.Try;
 import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import com.kinnarastudio.commons.jsonstream.JSONObjectEntry;
 import com.kinnarastudio.commons.jsonstream.JSONStream;
+import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.DatalistDefinitionDao;
@@ -258,15 +259,12 @@ public class DataJsonController implements Declutter {
             // get assignment
             WorkflowAssignment assignment = getAssignment(assignmentId);
 
-            // get application definition
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
-
             FormData formData = new FormData();
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            Form form = getForm(assignment, formData);
 
             JSONObject uploadResult = postTempFileUpload(form, formData);
 
@@ -300,16 +298,13 @@ public class DataJsonController implements Declutter {
             // get assignment
             WorkflowAssignment assignment = getAssignmentByProcess(processId);
 
-            // get application definition
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
-
             FormData formData = new FormData();
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
             @Nonnull
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            Form form = getForm(assignment, formData);
 
             JSONObject uploadResult = postTempFileUpload(form, formData);
 
@@ -1298,9 +1293,6 @@ public class DataJsonController implements Declutter {
             // get assignment
             WorkflowAssignment assignment = getAssignment(assignmentId);
 
-            // get application definition
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
-
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
@@ -1310,7 +1302,7 @@ public class DataJsonController implements Declutter {
 
             // get assignment form
             @Nonnull
-            final Form form = getAssignmentForm(appDefinition, assignment, formData);
+            final Form form = getForm(assignment, formData);
             final FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
@@ -1355,7 +1347,7 @@ public class DataJsonController implements Declutter {
 
             // get assignment form
             @Nonnull
-            final Form form = getAssignmentForm(appDefinition, assignment, formData);
+            final Form form = getForm(assignment, formData);
             final FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
@@ -1392,9 +1384,6 @@ public class DataJsonController implements Declutter {
             // get assignment
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
 
-            // get application definition
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
-
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
 
@@ -1403,7 +1392,7 @@ public class DataJsonController implements Declutter {
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            Form form = getForm(assignment, formData);
             FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
@@ -1442,15 +1431,12 @@ public class DataJsonController implements Declutter {
             // get assignment
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
 
-            // get application definition
-            AppDefinition appDefinition = getApplicationDefinition(assignment);
-
             FormData formData = new FormData();
             formData.setActivityId(assignment.getActivityId());
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getAssignmentForm(appDefinition, assignment, formData);
+            Form form = getForm(assignment, formData);
             FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
 
             FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
@@ -1775,13 +1761,10 @@ public class DataJsonController implements Declutter {
                     .map(workflowManager::getAssignment)
                     .filter(Objects::nonNull)
                     .map(tryFunction(assignment -> {
-                        // get application definition
-                        AppDefinition assignmentAppDefinition = getApplicationDefinition(assignment);
-
                         FormData formData = new FormData();
 
                         // get form
-                        Form form = getAssignmentForm(assignmentAppDefinition, assignment, formData);
+                        Form form = getForm(assignment, formData);
 
                         FormRow row = getFormRow(form, formData.getPrimaryKeyValue());
                         row.setProperty("activityId", assignment.getActivityId());
@@ -1846,7 +1829,8 @@ public class DataJsonController implements Declutter {
                                 @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
                                 @RequestParam(value = "force", defaultValue = "false") final Boolean force,
                                 @RequestParam(value = "minify", defaultValue = "false") final Boolean minify,
-                                @RequestParam(value = "digest", required = false) final String digest) throws IOException {
+                                @RequestParam(value = "statusField", defaultValue = "") final String statusField,
+                                @RequestParam(value = "digest", required = false) final String digest) throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
@@ -1858,7 +1842,14 @@ public class DataJsonController implements Declutter {
                 assignment = getAssignment(assignmentId);
             }
 
-            JSONObject jsonData = internalDeleteAssignmentData(assignment, terminate, minify);
+            Map.Entry<Form, FormData> result = internalDeleteAssignmentData(assignment, terminate, statusField);
+            JSONObject jsonData;
+            if(minify) {
+                jsonData = new JSONObject();
+                jsonData.put("_" + FormUtil.PROPERTY_ID, result.getValue().getPrimaryKeyValue());
+            } else {
+                jsonData = getData(result.getKey(), result.getValue(), false);
+            }
 
             try {
                 String currentDigest = getDigest(jsonData);
@@ -1892,33 +1883,50 @@ public class DataJsonController implements Declutter {
      * @param processId
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)", method = RequestMethod.DELETE)
-    public void abortAssignmentDataByProcess(final HttpServletRequest request, final HttpServletResponse response,
-                                              @RequestParam("processId") final String processId,
-                                              @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
-                                              @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
-                                              @RequestParam(value = "force", defaultValue = "false") final Boolean force,
-                                              @RequestParam(value = "minify", defaultValue = "false") final Boolean minify,
-                                              @RequestParam(value = "digest", required = false) final String digest) throws IOException {
+    public void abortAssignmentsByProcess(final HttpServletRequest request, final HttpServletResponse response,
+                                          @RequestParam("processId") final String processId,
+                                          @RequestParam(value = "activityDefId", defaultValue = "") final String activityDefId,
+                                          @RequestParam(value = "terminate", defaultValue = "false") final Boolean terminate,
+                                          @RequestParam(value = "force", defaultValue = "false") final Boolean force,
+                                          @RequestParam(value = "minify", defaultValue = "false") final Boolean minify,
+                                          @RequestParam(value = "statusField", defaultValue = "") final String statusField,
+                                          @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
-            WorkflowAssignment assignment;
+            Collection<WorkflowAssignment> assignments;
             if(force) {
-                assignment = takeoverAssignmentByProcess(processId, activityDefId);
+                assignments = takeoverAssignmentsByProcess(processId, activityDefId);
             } else {
-                assignment = getAssignmentByProcess(processId, activityDefId);
+                assignments = getAssignmentsByProcess(processId, activityDefId);
             }
 
-            JSONObject jsonData = internalDeleteAssignmentData(assignment, terminate, minify);
+            JSONArray jsonListData = assignments.stream()
+                    .map(Try.onFunction(a -> internalDeleteAssignmentData(a, terminate, statusField)))
+                    .collect(JSONCollectors.toJSONArray(JSONArray::new, Try.onFunction(p -> {
+                        FormData formData = p.getValue();
+
+                        if(minify) {
+                            // return as array of String
+                            return formData.getPrimaryKeyValue();
+                        }
+                        else {
+                            Form form = p.getKey();
+                            JSONObject jsonData = getData(form, formData, false);
+
+                            // return as array of JSONObject
+                            return jsonData;
+                        }
+                    }), jsonArray -> jsonArray));
 
             try {
-                String currentDigest = getDigest(jsonData);
+                String currentDigest = getDigest(jsonListData);
 
                 JSONObject jsonResponse = new JSONObject();
 
                 if (!Objects.equals(currentDigest, digest))
-                    jsonResponse.put(FIELD_DATA, jsonData);
+                    jsonResponse.put(FIELD_DATA, jsonListData);
 
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
@@ -1946,32 +1954,28 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    protected JSONObject internalDeleteAssignmentData(@Nonnull WorkflowAssignment assignment, boolean terminate, boolean minify) throws ApiException {
-        // set current app definition
-        @Nonnull
-        AppDefinition appDefinition = getApplicationDefinition(assignment);
-
+    protected Map.Entry<Form, FormData> internalDeleteAssignmentData(@Nonnull WorkflowAssignment assignment, boolean terminate, @Nonnull String statusField) throws ApiException {
         // retrieve data
         @Nonnull
         FormData formData = getAssignmentFormData(assignment);
 
         // generate form
         @Nonnull
-        Form form = getAssignmentForm(appDefinition, assignment, formData);
-
-        @Nonnull
-        JSONObject jsonData;
-        if(minify) {
-            jsonData = getMinifiedData(formData);
-        } else {
-            jsonData = getData(form, formData, false);
-        }
+        Form form = getForm(assignment, formData);
 
         abortProcess(assignment, terminate);
 
-        deleteData(form, formData, true);
+        if(!statusField.isEmpty()) {
+            Element element = FormUtil.findElement(statusField, form, formData, true);
+            String parameterName = FormUtil.getElementParameterName(element);
+            formData.addRequestParameterValues(parameterName, new String[] { terminate ? "terminated" : "aborted" });
+            submitForm(form, formData, true);
+        } else {
+            deleteData(form, formData, true);
+        }
 
-        return jsonData;
+
+        return new AbstractMap.SimpleEntry<>(form, formData);
     }
 
     /**
@@ -1984,8 +1988,6 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     protected JSONObject internalGetAssignmentJsonData(@Nonnull WorkflowAssignment assignment, boolean asLabel, boolean asOptions, boolean asAttachmentUrl) throws ApiException {
-        AppDefinition appDefinition = getApplicationDefinition(assignment);
-
         // retrieve data
         FormData formData = getAssignmentFormData(assignment);
         if (asAttachmentUrl) {
@@ -1993,7 +1995,7 @@ public class DataJsonController implements Declutter {
         }
 
         // get form
-        Form form = getAssignmentForm(appDefinition, assignment, formData);
+        Form form = getForm(assignment, formData);
 
         if (asLabel) {
             FormUtil.setReadOnlyProperty(form, true, true);
@@ -2638,14 +2640,16 @@ public class DataJsonController implements Declutter {
     /**
      * Get form from assignment
      *
-     * @param appDefinition I
      * @param assignment    I
      * @param formData      I/O
      * @return
      * @throws ApiException
      */
     @Nonnull
-    protected Form getAssignmentForm(@Nonnull AppDefinition appDefinition, @Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
+    protected Form getForm(@Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
+        // get application definition
+        @Nonnull AppDefinition appDefinition = getApplicationDefinition(assignment);
+
         final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment [" + assignment.getActivityId() + "] has not been mapped to form"));
@@ -2658,6 +2662,14 @@ public class DataJsonController implements Declutter {
         formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
         return form;
+    }
+
+    protected Form getForm(WorkflowAssignment assignment) throws ApiException {
+        FormData formData = new FormData();
+        formData.setActivityId(assignment.getActivityId());
+        formData.setProcessId(assignment.getProcessId());
+
+        return getForm(assignment, formData);
     }
 
     /**
@@ -2676,25 +2688,12 @@ public class DataJsonController implements Declutter {
     /**
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
      *
-     * @param json JSON array object
-     * @return digest value
+     * @param value any object
+     * @return      digest value
      */
-    protected String getDigest(JSONArray json) {
-        return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
-    }
-
     protected String getDigest(Object value) {
-        return value == null ? null : DigestUtils.sha256Hex(String.valueOf(value));
-    }
-
-    /**
-     * Calculate digest (version if I may call) but will omit "elementUniqueKey"
-     *
-     * @param json JSON object
-     * @return digest value
-     */
-    protected String getDigest(JSONObject json) {
-        return json == null || json.toString() == null ? null : DigestUtils.sha256Hex(json.toString());
+        String stringValue = String.valueOf(value);
+        return stringValue.isEmpty() ? null : DigestUtils.sha256Hex(stringValue);
     }
 
     /**
@@ -2876,26 +2875,28 @@ public class DataJsonController implements Declutter {
         throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "User [" + WorkflowUtil.getCurrentUsername() + "] is not admin, not allowed to takeover assignment");
     }
 
+    /**
+     *
+     * @param processId
+     * @param activityDefId
+     * @return
+     * @throws ApiException
+     */
     @Nonnull
-    protected WorkflowAssignment takeoverAssignmentByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
+    protected Collection<WorkflowAssignment> takeoverAssignmentsByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
         if(WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
             final String username = WorkflowUtil.getCurrentUsername();
 
-            final String runningProcessId = Optional.of(processId)
+            return Optional.of(processId)
                     .map(workflowProcessLinkDao::getLinks)
                     .map(Collection::stream)
                     .orElseGet(Stream::empty)
                     .map(WorkflowProcessLink::getProcessId)
-                    .findFirst()
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process assignment [" + processId + "] is not available"));
-
-            return Optional.ofNullable(workflowAssignmentDao.getAssignmentsByProcessIds(Collections.singleton(runningProcessId), null, "open", null, null, null, null))
-                    .map(Collection::stream)
-                    .orElseGet(Stream::empty)
-                    .filter(a -> runningProcessId.equals(a.getProcessId()) && activityDefId.equals(a.getActivityDefId()))
+                    .map(s -> workflowAssignmentDao.getAssignments(null, null, s, activityDefId, null, "open", null, null, null, null))
+                    .filter(Objects::nonNull)
+                    .flatMap(Collection::stream)
                     .peek(a -> workflowManager.assignmentReassign(a.getProcessDefId(), a.getProcessId(), a.getActivityId(), username, a.getAssigneeName()))
-                    .findFirst()
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Running process ID [" + runningProcessId + "] is not available"));
+                    .collect(Collectors.toSet());
         }
         throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "User [" + WorkflowUtil.getCurrentUsername() + "] is not admin, not allowed to takeover assignment");
     }
@@ -2929,7 +2930,21 @@ public class DataJsonController implements Declutter {
      */
     @Nonnull
     protected WorkflowAssignment getAssignmentByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
-        return Optional.of(processId)
+        return getAssignmentsByProcess(processId, activityDefId).stream()
+                .findFirst()
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] activity definition [" + activityDefId + "] not available"));
+    }
+
+    /**
+     *
+     * @param processId
+     * @param activityDefId
+     * @return
+     * @throws ApiException
+     */
+    @Nonnull
+    protected Collection<WorkflowAssignment> getAssignmentsByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
+        final List<WorkflowAssignment> assignments = Optional.of(processId)
                 .map(workflowProcessLinkDao::getLinks)
                 .map(Collection::stream)
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Process [" + processId + "] is not defined"))
@@ -2939,9 +2954,9 @@ public class DataJsonController implements Declutter {
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .peek(a -> {
-                    if(a.getActivityDefId() == null) {
+                    if (a.getActivityDefId() == null) {
                         // manually inject activityDefId
-                        a.setActivityDefId(a.getActivityId().replaceAll("^[0-9]+_"+a.getProcessId()+"_", ""));
+                        a.setActivityDefId(a.getActivityId().replaceAll("^[0-9]+_" + a.getProcessId() + "_", ""));
                     }
                 })
 
@@ -2952,8 +2967,13 @@ public class DataJsonController implements Declutter {
                         .map(WorkflowActivity::getActivityDefId)
                         .map(activityDefId::equals)
                         .orElse(false))
-                .findFirst()
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] activity definition [" + activityDefId + "] not available"));
+                .collect(Collectors.toList());
+
+        if(assignments.isEmpty()) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] activity definition [" + activityDefId + "] not available");
+        }
+
+        return assignments;
     }
 
 
