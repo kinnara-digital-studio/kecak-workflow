@@ -2087,7 +2087,7 @@ public class DataJsonController implements Declutter {
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
                     Optional.of(elementId)
                             .map(jsonBody::opt)
-                            .map(s -> e.handleJsonDataRequest(s, e, formData))
+                            .map(Try.onFunction(s -> e.handleJsonDataRequest(s, e, formData)))
                             .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
                 }));
 
@@ -3377,7 +3377,7 @@ public class DataJsonController implements Declutter {
 
                     Optional.of(elementId)
                             .map(data::get)
-                            .map(s -> e.handleMultipartDataRequest(s, e, formData))
+                            .map(Try.onFunction(s -> e.handleMultipartDataRequest(s, e, formData)))
                             .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
                 });
 
