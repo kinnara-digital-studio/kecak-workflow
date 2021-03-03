@@ -9,6 +9,8 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.json.JSONObject;
+import org.kecak.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AdminLteFormElement;
 
 public class Form extends Element implements FormBuilderEditable, FormContainer, AceFormElement, AdminLteFormElement {
 

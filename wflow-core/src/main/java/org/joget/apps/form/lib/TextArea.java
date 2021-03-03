@@ -4,6 +4,8 @@ import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
+import org.kecak.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AdminLteFormElement;
 
 public class TextArea extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 

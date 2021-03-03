@@ -3,10 +3,8 @@ package org.joget.apps.form.lib;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.EnvironmentVariableDao;
@@ -15,7 +13,8 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
-import org.springframework.context.ApplicationContext;
+import org.kecak.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AdminLteFormElement;
 
 public class IdGeneratorField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
 

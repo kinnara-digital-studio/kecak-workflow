@@ -5,6 +5,8 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
+import org.kecak.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AdminLteFormElement;
 
 public class PasswordField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
     public static final String SECURE_VALUE = "****SECURE VALUE****";  

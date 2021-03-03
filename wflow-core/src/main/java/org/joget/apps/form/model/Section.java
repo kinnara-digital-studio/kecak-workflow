@@ -4,6 +4,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.service.FormUtil;
+import org.kecak.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AdminLteFormElement;
 
 public class Section extends Element implements FormBuilderEditable, FormContainer, AceFormElement, AdminLteFormElement {
     private Boolean continueValidation = null;
