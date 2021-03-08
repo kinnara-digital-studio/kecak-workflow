@@ -16,7 +16,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getCss() {
+    @Deprecated
+    public final String getCss() {
         //is not using anymore
         return null;
     } 
@@ -26,7 +27,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getJavascript() {
+    @Deprecated
+    public final String getJavascript() {
         //is not using anymore
         return null;
     } 
@@ -36,7 +38,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getHeader() {
+    @Deprecated
+    public final String getHeader() {
         //is not using anymore
         return null;
     } 
@@ -46,7 +49,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getFooter() {
+    @Deprecated
+    public final String getFooter() {
         //is not using anymore
         return null;
     } 
@@ -56,7 +60,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getPageTop() {
+    @Deprecated
+    public final String getPageTop() {
         //is not using anymore
         return null;
     } 
@@ -66,7 +71,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getPageBottom() {
+    @Deprecated
+    public final String getPageBottom() {
         //is not using anymore
         return null;
     } 
@@ -76,7 +82,8 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * 
      * @return 
      */
-    public String getBeforeContent() {
+    @Deprecated
+    public final String getBeforeContent() {
         //is not using anymore
         return null;
     } 
@@ -153,7 +160,7 @@ public abstract class UserviewV5Theme extends UserviewTheme {
     }
 
     /**
-     * HTML template for putting javascript and css link for getHead() template
+     * HTML template for putting javascript and css link for {@link #getHead(Map)} template
      * 
      * @param data
      * @return 
@@ -163,7 +170,7 @@ public abstract class UserviewV5Theme extends UserviewTheme {
     }
 
     /**
-     * Gets dynamic generated CSS for getHead() template
+     * Gets dynamic generated CSS for {@link #getHead(Map)} template
      * 
      * @param data
      * @return 
@@ -173,7 +180,7 @@ public abstract class UserviewV5Theme extends UserviewTheme {
     }
 
     /**
-     * Gets dynamic generated javascript for getHead() template 
+     * Gets dynamic generated javascript for {@link #getHead(Map)} template
      * 
      * @param data
      * @return 
@@ -183,7 +190,7 @@ public abstract class UserviewV5Theme extends UserviewTheme {
     }
 
     /**
-     * Gets dynamic generated meta data for getHead() template 
+     * Gets dynamic generated meta data for {@link #getHead(Map)} template
      * 
      * @param data
      * @return 
@@ -199,12 +206,12 @@ public abstract class UserviewV5Theme extends UserviewTheme {
      * @param data
      * @return 
      */
-    public String getHead(Map<String, Object> data) {
+    public final String getHead(Map<String, Object> data) {
         return UserviewUtil.getTemplate(this, data, "/templates/userview/head.ftl");
     }
 
     /**
-     * Gets the fav icon relative path for getHead() template 
+     * Gets the fav icon relative path for {@link #getHead(Map)} template
      * 
      * @param data
      * @return 
