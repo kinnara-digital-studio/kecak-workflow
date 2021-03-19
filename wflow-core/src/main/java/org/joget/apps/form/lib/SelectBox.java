@@ -17,8 +17,6 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kecak.apps.form.model.AceFormElement;
-import org.kecak.apps.form.model.AdminLteFormElement;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Nonnull;
@@ -531,30 +529,35 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     @Override
     public Object handleElementValueResponse(Element element, FormData formData) {
         final boolean retrieveOptionsData = formData.getRequestParameter(PARAMETER_AS_OPTIONS) != null;
-        final FormRowSet rowSet = formData.getLoadBinderData(element);
 
-        if (retrieveOptionsData ) {
-            final String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
-
-
-
-            FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
+        if (retrieveOptionsData) {
 
             final FormRowSet options = FormUtil.getElementPropertyOptionsMap(element, formData);
 
-            JSONArray values = Optional.of(elementId)
-                    .map(row::getProperty)
-                    .map(s -> s.split(";"))
-                    .map(Arrays::stream)
-                    .orElseGet(Stream::empty)
-                    .map(s -> options.stream()
-                            .filter(r -> s.equals(r.getProperty(FormUtil.PROPERTY_VALUE)))
-                            .findFirst()
-                            .orElseGet(FormRow::new))
-                    .map(JSONObject::new)
-                    .collect(JSONCollectors.toJSONArray());
+            String[] values = FormUtil.getElementPropertyValues(element, formData);
+            JSONArray jsonResult = new JSONArray();
 
-            return values;
+            Comparator<FormRow> rowComparator = Comparator.comparing(new Function<FormRow, String>() {
+                @Override
+                public String apply(FormRow r) {
+                    return r.getProperty(FormUtil.PROPERTY_VALUE);
+                }
+            });
+
+            options.sort(rowComparator);
+
+            for (String value : values) {
+                FormRow keyRow = new FormRow();
+                keyRow.setProperty(FormUtil.PROPERTY_VALUE, value);
+
+                int index = Collections.binarySearch(options, keyRow, rowComparator);
+                if (index >= 0) {
+                    FormRow searchResult = options.get(index);
+                    jsonResult.put(new JSONObject(searchResult));
+                }
+            }
+
+            return jsonResult;
         } else {
             return super.handleElementValueResponse(element, formData);
         }
