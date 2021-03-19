@@ -45,7 +45,7 @@ public interface DataJsonControllerHandler {
      * @param formData
      * @value that will be shown as response
      */
-    default Object handleElementValueResponse(@Nonnull Element element, @Nonnull FormData formData) {
+    default Object handleElementValueResponse(@Nonnull Element element, @Nonnull FormData formData) throws JSONException {
         String[] values = element.getElementValues(formData);
         if(values != null) {
             return String.join(";", values);

@@ -1,6 +1,5 @@
 package org.joget.apps.form.lib;
 
-import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
@@ -527,7 +526,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     }
 
     @Override
-    public Object handleElementValueResponse(Element element, FormData formData) {
+    public Object handleElementValueResponse(Element element, FormData formData) throws JSONException {
         final boolean retrieveOptionsData = formData.getRequestParameter(PARAMETER_AS_OPTIONS) != null;
 
         if (retrieveOptionsData) {
@@ -551,10 +550,15 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
                 keyRow.setProperty(FormUtil.PROPERTY_VALUE, value);
 
                 int index = Collections.binarySearch(options, keyRow, rowComparator);
+                JSONObject jsonOption = new JSONObject();
                 if (index >= 0) {
                     FormRow searchResult = options.get(index);
-                    jsonResult.put(new JSONObject(searchResult));
+                    jsonOption = new JSONObject(searchResult);
+                } else {
+                    jsonOption.put(FormUtil.PROPERTY_VALUE, value);
                 }
+
+                jsonResult.put(jsonOption);
             }
 
             return jsonResult;
