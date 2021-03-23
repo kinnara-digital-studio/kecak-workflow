@@ -39,7 +39,7 @@ public interface DataJsonControllerHandler {
      */
     default String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, @Nonnull FormData formData) throws JSONException {
         if(value instanceof Double) {
-            return new String[] { String.format("%.12f", value).replaceAll("0*$", "") };
+            return new String[] { String.format("%f", value).replaceAll("(?<!\\.)0+$", "") };
         } else {
             return new String[]{ String.valueOf(value) };
         }
