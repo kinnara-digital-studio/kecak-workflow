@@ -14,6 +14,9 @@ import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.plugin.property.service.PropertyUtil;
 import org.joget.workflow.model.service.WorkflowUserManager;
+import org.kecak.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AdminKitFormElement;
+import org.kecak.apps.form.model.AdminLteFormElement;
 import org.kecak.apps.form.model.BootstrapFormElement;
 import org.kecak.apps.form.model.DataJsonControllerHandler;
 import org.kecak.apps.userview.model.BootstrapUserviewTheme;
@@ -27,7 +30,7 @@ import java.util.Map;
  * All forms, containers and form fields must extend this class.
  * 
  */
-public abstract class Element extends ExtDefaultPlugin implements PropertyEditable, DataJsonControllerHandler {
+public abstract class Element extends ExtDefaultPlugin implements PropertyEditable, DataJsonControllerHandler, AceFormElement, AdminLteFormElement, AdminKitFormElement {
 
     private Collection<Element> children = new ArrayList<Element>();
     private Element parent;
@@ -460,6 +463,21 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
         }
         
         return isAuthorize;
+    }
+
+    @Override
+    public String renderAceTemplate(FormData formData, Map dataModel) {
+        return renderTemplate(formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminLteTemplate(FormData formData, Map dataModel) {
+        return renderTemplate(formData, dataModel);
+    }
+
+    @Override
+    public String renderAdminKitTemplate(FormData formData, Map dataModel) {
+        return renderTemplate(formData, dataModel);
     }
 
     public UserviewTheme getTheme() {
