@@ -5,6 +5,9 @@ import org.joget.apps.form.model.FormData;
 import org.json.JSONException;
 
 import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * Handler for DataJsonController, this interface will be called
@@ -35,7 +38,11 @@ public interface DataJsonControllerHandler {
      * @return data that will be passed to request parameter
      */
     default String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, @Nonnull FormData formData) throws JSONException {
-        return new String[] { String.valueOf(value) };
+        if(value instanceof Double) {
+            return new String[] { String.format("%.12f", value).replaceAll("0*$", "") };
+        } else {
+            return new String[]{ String.valueOf(value) };
+        }
     }
 
     /**
