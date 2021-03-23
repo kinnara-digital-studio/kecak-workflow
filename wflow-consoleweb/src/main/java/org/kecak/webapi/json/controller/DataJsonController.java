@@ -2181,17 +2181,11 @@ public class DataJsonController implements Declutter {
      */
     @Nonnull
     protected JSONObject getRequestPayload(HttpServletRequest request) throws ApiException {
-        String payload;
         try {
-            payload = request.getReader().lines().collect(Collectors.joining());
-        } catch (IOException e) {
-            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e);
-        }
-
-        try {
+            String payload = request.getReader().lines().collect(Collectors.joining());
             return new JSONObject(this.ifEmptyThen(payload, "{}"));
-        } catch (JSONException e) {
-            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e.getMessage() + ", payload : " + payload);
+        } catch (IOException | JSONException e) {
+            throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e);
         }
     }
 
