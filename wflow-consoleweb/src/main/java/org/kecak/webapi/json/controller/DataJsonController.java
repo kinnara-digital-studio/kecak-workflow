@@ -3144,6 +3144,17 @@ public class DataJsonController implements Declutter {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
 
+        FormRowSet rowSet = appService.loadFormData(form, formData.getPrimaryKeyValue());
+        if(rowSet != null) {
+            rowSet.forEach(row -> row.forEach((key, value) -> {
+                Element element = FormUtil.findElement(String.valueOf(key), form, formData);
+                if(element != null) {
+                    String parameterName = FormUtil.getElementParameterName(element);
+                    formData.addRequestParameterValues(parameterName, new String[] { String.valueOf(value) });
+                }
+            }));
+        }
+
         formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
         return form;
