@@ -9,6 +9,7 @@ import org.joget.apps.form.service.FormUtil;
  *
  * Indicator for element that has multi values
  */
+@Deprecated
 public interface MultiValueElement {
     /**
      * Method to retrieve element value from form data ready to be shown to UI.

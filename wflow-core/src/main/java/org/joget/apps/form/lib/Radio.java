@@ -3,12 +3,10 @@ package org.joget.apps.form.lib;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
-import org.kecak.apps.form.model.AceFormElement;
-import org.kecak.apps.form.model.AdminLteFormElement;
 
 import java.util.Map;
 
-public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+public class Radio extends SelectBox implements FormBuilderPaletteElement {
 
     @Override
     public String getName() {

@@ -1,14 +1,13 @@
 package org.joget.apps.form.model;
 
-import java.util.Map;
 import org.joget.apps.form.service.FormUtil;
-import org.kecak.apps.form.model.AceFormElement;
-import org.kecak.apps.form.model.AdminLteFormElement;
+
+import java.util.Map;
 
 /**
  * Abstract base class for buttons in a form.
  */
-public abstract class FormButton extends Element implements FormAction, AceFormElement, AdminLteFormElement {
+public abstract class FormButton extends Element implements FormAction {
 
     public static final String DEFAULT_ID = "submit";
 

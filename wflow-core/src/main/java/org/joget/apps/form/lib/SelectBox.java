@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
+public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport {
     private final Map<String, Form> formCache = new HashMap<>();
 
     private Element controlElement;
@@ -118,26 +118,6 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         }
 
         return rowSet;
-    }
-
-    @Override
-    public String getElementValue(FormData formData) {
-        String originalValue = super.getElementValue(formData);
-        if(asLabel(formData)) {
-            return getValueLabel(originalValue, formData);
-        } else {
-            return originalValue;
-        }
-    }
-
-    @Override
-    public String[] getElementValues(FormData formData) {
-        String[] originalValues = FormUtil.getElementPropertyValues(this, formData);
-        if(asLabel(formData)) {
-            return getValueLabels(originalValues, formData);
-        } else {
-            return originalValues;
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -529,12 +509,11 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     public Object handleElementValueResponse(Element element, FormData formData) throws JSONException {
         final boolean retrieveOptionsData = formData.getRequestParameter(PARAMETER_AS_OPTIONS) != null;
 
+        final String[] values = FormUtil.getElementPropertyValues(element, formData);
+        final JSONArray jsonResult = new JSONArray();
+
         if (retrieveOptionsData) {
-
             final FormRowSet options = FormUtil.getElementPropertyOptionsMap(element, formData);
-
-            String[] values = FormUtil.getElementPropertyValues(element, formData);
-            JSONArray jsonResult = new JSONArray();
 
             Comparator<FormRow> rowComparator = Comparator.comparing(new Function<FormRow, String>() {
                 @Override
@@ -563,8 +542,13 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
 
             return jsonResult;
         } else {
-            return super.handleElementValueResponse(element, formData);
+            for(String value : values) {
+                for(String aValue : value.split(";")) {
+                    jsonResult.put(aValue);
+                }
+            }
         }
+        return jsonResult;
     }
 
     /**

@@ -2,12 +2,10 @@ package org.kecak.apps.form.model;
 
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
+import org.joget.apps.form.service.FormUtil;
 import org.json.JSONException;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * Handler for DataJsonController, this interface will be called
@@ -53,11 +51,7 @@ public interface DataJsonControllerHandler {
      * @value that will be shown as response
      */
     default Object handleElementValueResponse(@Nonnull Element element, @Nonnull FormData formData) throws JSONException {
-        String[] values = element.getElementValues(formData);
-        if(values != null) {
-            return String.join(";", values);
-        } else {
-            return null;
-        }
+        String[] values = FormUtil.getElementPropertyValues(element, formData);
+        return String.join(";", values);
     }
 }

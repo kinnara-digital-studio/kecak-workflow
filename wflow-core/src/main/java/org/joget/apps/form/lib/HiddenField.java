@@ -6,6 +6,7 @@ import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
+import org.json.JSONException;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -32,7 +33,7 @@ public class HiddenField extends Element implements FormBuilderPaletteElement, D
         String template = "hiddenField.ftl";
 
         // set value
-        String value = getElementValue(formData);
+        String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
@@ -68,8 +69,8 @@ public class HiddenField extends Element implements FormBuilderPaletteElement, D
     }
 
     @Override
-    public String getElementValue(FormData formData) {
-        String value = super.getElementValue(formData);
+    public Object handleElementValueResponse(@Nonnull Element element, @Nonnull FormData formData) throws JSONException {
+        String value = FormUtil.getElementPropertyValue(element, formData);
 
         String priority = getPropertyString("useDefaultWhenEmpty");
 

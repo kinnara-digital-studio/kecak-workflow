@@ -1,20 +1,13 @@
 package org.joget.apps.form.lib;
 
-import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.FormBuilderPaletteElement;
-import org.joget.apps.form.model.FormBuilderPalette;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
-import org.kecak.apps.form.model.AceFormElement;
-import org.kecak.apps.form.model.AdminKitFormElement;
-import org.kecak.apps.form.model.AdminLteFormElement;
 
-public class TextField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement, AdminKitFormElement {
+import java.util.Map;
+
+public class TextField extends Element implements FormBuilderPaletteElement {
 
     public String getName() {
         return "Text Field";
@@ -35,18 +28,11 @@ public class TextField extends Element implements FormBuilderPaletteElement, Ace
         return renderTemplate(template,formData,dataModel);
     }
 
-    @Override
-    public String getElementValue(FormData formData) {
-        String value = FormUtil.getElementPropertyValue(this, formData);;
-
-        value = SecurityUtil.decrypt(value);
-
-        return value;
-    }
-
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         // set value
-        String value = getElementValue(formData);
+        String value = FormUtil.getElementPropertyValue(this, formData);
+
+        value = SecurityUtil.decrypt(value);
 
         dataModel.put("value", value);
 

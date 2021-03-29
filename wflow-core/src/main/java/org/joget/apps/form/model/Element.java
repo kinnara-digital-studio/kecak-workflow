@@ -17,8 +17,7 @@ import org.joget.workflow.model.service.WorkflowUserManager;
 import org.kecak.apps.form.model.AceFormElement;
 import org.kecak.apps.form.model.AdminKitFormElement;
 import org.kecak.apps.form.model.AdminLteFormElement;
-import org.kecak.apps.form.model.BootstrapFormElement;
-import org.kecak.apps.form.model.DataJsonControllerHandler;
+import org.kecak.apps.form.model.*;
 import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 
 import java.util.ArrayList;
@@ -200,28 +199,6 @@ public abstract class Element extends ExtDefaultPlugin implements PropertyEditab
     public Boolean selfValidate(FormData formData) {
         //do nothing
         return true;
-    }
-
-    /**
-     * Method to retrieve element value from form data ready to be shown to UI.
-     * You can override this to use your own value formatting.
-     *
-     * @param formData
-     * @return
-     */
-    public String getElementValue(FormData formData) {
-        return FormUtil.getElementPropertyValue(this, formData);
-    }
-
-    /**
-     * Method to retrieve element value from form data ready to be shown to UI.
-     * You can override this to use your own value formatting.
-     *
-     * @param formData
-     * @return
-     */
-    public String[] getElementValues(FormData formData) {
-        return FormUtil.getElementPropertyValues(this, formData);
     }
 
     /**

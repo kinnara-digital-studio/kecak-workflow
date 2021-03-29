@@ -1,13 +1,15 @@
 package org.joget.apps.form.lib;
 
-import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
-import org.joget.apps.form.model.*;
+import org.joget.apps.form.model.Element;
+import org.joget.apps.form.model.FormBuilderPalette;
+import org.joget.apps.form.model.FormBuilderPaletteElement;
+import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormUtil;
-import org.kecak.apps.form.model.AceFormElement;
-import org.kecak.apps.form.model.AdminLteFormElement;
 
-public class TextArea extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+import java.util.Map;
+
+public class TextArea extends Element implements FormBuilderPaletteElement {
 
     public String getName() {
         return "Text Area";
@@ -30,7 +32,7 @@ public class TextArea extends Element implements FormBuilderPaletteElement, AceF
 
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
         // set value
-        String value = getElementValue(formData);
+        String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
