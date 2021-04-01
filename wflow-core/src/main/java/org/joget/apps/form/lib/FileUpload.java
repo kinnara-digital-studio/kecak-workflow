@@ -57,7 +57,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
 
         // set value
-        String[] values = FormUtil.getRequestParameterValues(this, formData);
+        String[] values = FormUtil.getElementPropertyValues(this, formData);
 
         //check is there a stored value
         String storedValue = formData.getStoreBinderDataProperty(this);
@@ -170,7 +170,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
         // get value
         String id = getPropertyString(FormUtil.PROPERTY_ID);
         if (id != null) {
-            String[] values = FormUtil.getRequestParameterValues(this, formData);
+            String[] values = FormUtil.getElementPropertyValues(this, formData);
             if (values != null && values.length > 0) {
                 // set value into Properties and FormRowSet object
                 FormRow result = new FormRow();
@@ -220,7 +220,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
     private String getFileDownloadLink(FormData formData) {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         // set value
-        String[] values = FormUtil.getRequestParameterValues(this, formData);
+        String[] values = FormUtil.getElementPropertyValues(this, formData);
         return Arrays.stream(values)
                 .filter(Objects::nonNull)
                 .map(fileName -> {
