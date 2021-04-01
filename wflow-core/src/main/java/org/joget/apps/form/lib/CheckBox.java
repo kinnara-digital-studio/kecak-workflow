@@ -1,14 +1,14 @@
 package org.joget.apps.form.lib;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 
-public class CheckBox extends SelectBox implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+public class CheckBox extends SelectBox implements FormBuilderPaletteElement {
 
     @Override
     public String getName() {

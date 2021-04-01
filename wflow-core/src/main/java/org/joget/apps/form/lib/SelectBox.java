@@ -1,6 +1,5 @@
 package org.joget.apps.form.lib;
 
-import com.kinnarastudio.commons.jsonstream.JSONCollectors;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
@@ -33,7 +32,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport, AceFormElement, AdminLteFormElement {
+public class SelectBox extends Element implements FormBuilderPaletteElement, FormAjaxOptionsElement, PluginWebSupport {
     private final Map<String, Form> formCache = new HashMap<>();
 
     private Element controlElement;
@@ -119,26 +118,6 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         }
 
         return rowSet;
-    }
-
-    @Override
-    public String getElementValue(FormData formData) {
-        String originalValue = super.getElementValue(formData);
-        if(asLabel(formData)) {
-            return getValueLabel(originalValue, formData);
-        } else {
-            return originalValue;
-        }
-    }
-
-    @Override
-    public String[] getElementValues(FormData formData) {
-        String[] originalValues = FormUtil.getElementPropertyValues(this, formData);
-        if(asLabel(formData)) {
-            return getValueLabels(originalValues, formData);
-        } else {
-            return originalValues;
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -527,35 +506,49 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     }
 
     @Override
-    public Object handleElementValueResponse(Element element, FormData formData) {
+    public Object handleElementValueResponse(Element element, FormData formData) throws JSONException {
         final boolean retrieveOptionsData = formData.getRequestParameter(PARAMETER_AS_OPTIONS) != null;
-        final FormRowSet rowSet = formData.getLoadBinderData(element);
 
-        if (retrieveOptionsData ) {
-            final String elementId = element.getPropertyString(FormUtil.PROPERTY_ID);
+        final String[] values = FormUtil.getElementPropertyValues(element, formData);
+        final JSONArray jsonResult = new JSONArray();
 
-
-
-            FormRow row = rowSet.stream().findFirst().orElseGet(FormRow::new);
-
+        if (retrieveOptionsData) {
             final FormRowSet options = FormUtil.getElementPropertyOptionsMap(element, formData);
 
-            JSONArray values = Optional.of(elementId)
-                    .map(row::getProperty)
-                    .map(s -> s.split(";"))
-                    .map(Arrays::stream)
-                    .orElseGet(Stream::empty)
-                    .map(s -> options.stream()
-                            .filter(r -> s.equals(r.getProperty(FormUtil.PROPERTY_VALUE)))
-                            .findFirst()
-                            .orElseGet(FormRow::new))
-                    .map(JSONObject::new)
-                    .collect(JSONCollectors.toJSONArray());
+            Comparator<FormRow> rowComparator = Comparator.comparing(new Function<FormRow, String>() {
+                @Override
+                public String apply(FormRow r) {
+                    return r.getProperty(FormUtil.PROPERTY_VALUE);
+                }
+            });
 
-            return values;
+            options.sort(rowComparator);
+
+            for (String value : values) {
+                FormRow keyRow = new FormRow();
+                keyRow.setProperty(FormUtil.PROPERTY_VALUE, value);
+
+                int index = Collections.binarySearch(options, keyRow, rowComparator);
+                JSONObject jsonOption = new JSONObject();
+                if (index >= 0) {
+                    FormRow searchResult = options.get(index);
+                    jsonOption = new JSONObject(searchResult);
+                } else {
+                    jsonOption.put(FormUtil.PROPERTY_VALUE, value);
+                }
+
+                jsonResult.put(jsonOption);
+            }
+
+            return jsonResult;
         } else {
-            return super.handleElementValueResponse(element, formData);
+            for(String value : values) {
+                for(String aValue : value.split(";")) {
+                    jsonResult.put(aValue);
+                }
+            }
         }
+        return jsonResult;
     }
 
     /**

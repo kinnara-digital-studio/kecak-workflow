@@ -1,26 +1,43 @@
-## How To Install Docker in Linux 
+# How To Install Docker in Linux 
 
-### Docker Installation
+## Docker Installation
 
-1. Install docker by typing these on terminal
-- in ubuntu
-```html
+### 1. Install docker
+
+#### Install using script
+```Shell
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+```
+#### Install with package manager
+- Ubuntu
+```Shell
 sudo apt-get install docker
 ```
 
-- in Arch
-```html
+- Arch
+```Shell
 sudo pacman -S docker
 ```
 
-2. After installing Docker success, install docker-compose by typing these
-ubuntu
-```html
-sudo apt-get install docker-compose
+- CentOS
+```Shell
+sudo yum install docker-ce docker-ce-cli containerd.io
+````
+After install start docker
+```Shell
+sudo systemctl start docker
 ```
-Arch
-```html
-Sudo pacman -S docker-compose
+
+and then add your user to docker group
+```Shell
+sudo usermod -aG docker $(whoami)
+```
+
+### 2. After installing Docker success, install docker-compose by typing these
+```Shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 ```
 #### Terminology
 Sudo : super user do
@@ -32,20 +49,20 @@ Arch : arch linux
 
 1. Clone docker kecak workflow
 
-```html
+```Shell
 Git clone git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
 ```
 
 2. Access docker-kecak-workflow directory
 
-```html
+```Shell
 cd docker-kecak-workflow
 ```
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux.png" alt="docker linux" />
 
 3. Start docker service
 
-```html
+```Shell
 systemctl start docker
 ```
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux2.png" alt="docker linux" />

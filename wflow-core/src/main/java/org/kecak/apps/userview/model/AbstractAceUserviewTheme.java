@@ -1,12 +1,13 @@
 package org.kecak.apps.userview.model;
 
-import org.joget.apps.form.model.AceFormElement;
+import org.kecak.apps.form.model.AceFormElement;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.userview.model.UserviewTheme;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author aristo
@@ -47,11 +48,8 @@ public abstract class AbstractAceUserviewTheme extends UserviewTheme implements 
 
     @Override
     public String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel) {
-        if(element instanceof AceFormElement) {
-            return ((AceFormElement) element).renderAceTemplate(formData, dataModel);
-        } else {
-            return element.renderTemplate(formData, dataModel);
-        }
+        Objects.requireNonNull(element);
+        return ((AceFormElement) element).renderAceTemplate(formData, dataModel);
     }
 
     @Override

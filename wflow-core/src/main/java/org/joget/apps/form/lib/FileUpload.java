@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-public class FileUpload extends Element implements PluginWebSupport, FormBuilderPaletteElement, FileDownloadSecurity, AceFormElement, AdminLteFormElement {
+public class FileUpload extends Element implements PluginWebSupport, FormBuilderPaletteElement, FileDownloadSecurity {
 
     public String getName() {
         return "File Upload";
@@ -57,7 +57,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
     private String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
 
         // set value
-        String[] values = getElementValues(formData);
+        String[] values = FormUtil.getRequestParameterValues(this, formData);
 
         //check is there a stored value
         String storedValue = formData.getStoreBinderDataProperty(this);
@@ -170,7 +170,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
         // get value
         String id = getPropertyString(FormUtil.PROPERTY_ID);
         if (id != null) {
-            String[] values = getElementValues(formData);
+            String[] values = FormUtil.getRequestParameterValues(this, formData);
             if (values != null && values.length > 0) {
                 // set value into Properties and FormRowSet object
                 FormRow result = new FormRow();
@@ -209,18 +209,18 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
     }
 
     @Override
-    public String getElementValue(FormData formData) {
+    public Object handleElementValueResponse(@Nonnull Element element, @Nonnull FormData formData) throws JSONException {
         if (isReadOnlyLabel() || asAttachment(formData)) {
             return getFileDownloadLink(formData);
         } else {
-            return super.getElementValue(formData);
+            return FormUtil.getElementPropertyValue(this, formData);
         }
     }
 
     private String getFileDownloadLink(FormData formData) {
         AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
         // set value
-        String[] values = getElementValues(formData);
+        String[] values = FormUtil.getRequestParameterValues(this, formData);
         return Arrays.stream(values)
                 .filter(Objects::nonNull)
                 .map(fileName -> {
@@ -401,7 +401,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
         }
 
         if(filePathList.isEmpty()) {
-            return getElementValues(formData);
+            return FormUtil.getElementPropertyValues(element, formData);
         } else {
             return filePathList.toArray(new String[0]);
         }

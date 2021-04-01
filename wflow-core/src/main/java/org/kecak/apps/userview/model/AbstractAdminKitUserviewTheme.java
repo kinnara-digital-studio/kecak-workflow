@@ -1,12 +1,13 @@
 package org.kecak.apps.userview.model;
 
-import org.joget.apps.form.model.AdminKitFormElement;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.userview.model.UserviewTheme;
+import org.kecak.apps.form.model.AdminKitFormElement;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -45,11 +46,8 @@ public abstract class AbstractAdminKitUserviewTheme extends UserviewTheme implem
 
     @Override
     public String renderBootstrapFormElementTemplate(Element element, FormData formData, Map dataModel) {
-        if(element instanceof AdminKitFormElement) {
-            return ((AdminKitFormElement) element).renderAdminKitTemplate(formData, dataModel);
-        } else {
-            return element.renderTemplate(formData, dataModel);
-        }
+        Objects.requireNonNull(element);
+        return ((AdminKitFormElement) element).renderAdminKitTemplate(formData, dataModel);
     }
 
     @Override

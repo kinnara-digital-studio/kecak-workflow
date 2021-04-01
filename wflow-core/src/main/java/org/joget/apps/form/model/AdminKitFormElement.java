@@ -1,12 +1,9 @@
 package org.joget.apps.form.model;
 
-import org.kecak.apps.form.model.BootstrapFormElement;
-
-import java.util.Map;
-
 /**
- * Form AdminLTE Theme
+ * Deprecated, please use {@link org.kecak.apps.form.model.AdminKitFormElement} instead
  */
-public interface AdminKitFormElement extends BootstrapFormElement {
-    String renderAdminKitTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel);
+@Deprecated
+public interface AdminKitFormElement extends org.kecak.apps.form.model.AdminKitFormElement {
+
 }

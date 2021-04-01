@@ -1,10 +1,5 @@
 package org.joget.apps.form.lib;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
@@ -13,7 +8,12 @@ import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-public class DatePicker extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+
+public class DatePicker extends Element implements FormBuilderPaletteElement {
     
     public String getName() {
         return "Date Picker";
@@ -27,17 +27,6 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
         return "Date Picker Element";
     }
 
-    @Override
-    public String getElementValue(FormData formData) {
-        String displayFormat = getJavaDateFormat();
-
-        // set value
-        String value = FormUtil.getElementPropertyValue(this, formData);
-        value = formattedValue(value, displayFormat, formData);
-
-        return value;
-    }
-
     @SuppressWarnings("unchecked")
 	@Override
     public String renderTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
@@ -49,7 +38,8 @@ public class DatePicker extends Element implements FormBuilderPaletteElement, Ac
         String displayFormat = getJavaDateFormat();
 
         // set value
-        String value = getElementValue(formData);
+        String value = FormUtil.getElementPropertyValue(this, formData);
+        value = formattedValue(value, displayFormat, formData);
 
         dataModel.put("displayFormat", displayFormat.toUpperCase());
 

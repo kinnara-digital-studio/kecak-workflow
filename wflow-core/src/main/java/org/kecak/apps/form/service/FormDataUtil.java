@@ -279,7 +279,7 @@ public class FormDataUtil implements ApplicationContextAware  {
         final JSONObject jsonObject = elementStream((Element) containerElement, formData)
                 .filter(e -> !(e instanceof FormContainer))
                 .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID),
-                        e -> e.getElementValue(formData)));
+                        e -> FormUtil.getElementPropertyValue(e, formData)));
 
         collectRowMetaData(row, jsonObject);
 

@@ -1,12 +1,13 @@
 package org.joget.apps.form.lib;
 
-import java.util.Map;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.SecurityUtil;
 
-public class PasswordField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+import java.util.Map;
+
+public class PasswordField extends Element implements FormBuilderPaletteElement {
     public static final String SECURE_VALUE = "****SECURE VALUE****";  
 
     public String getName() {

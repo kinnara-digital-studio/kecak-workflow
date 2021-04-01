@@ -1,9 +1,8 @@
 package org.joget.apps.form.model;
 
-import org.kecak.apps.form.model.BootstrapFormElement;
-
-import java.util.Map;
-
-public interface AdminLteFormElement extends BootstrapFormElement {
-    String renderAdminLteTemplate(FormData formData, @SuppressWarnings("rawtypes") Map dataModel);
+/**
+ * Deprecated, please use {@link org.kecak.apps.form.model.AdminLteFormElement} instead
+ */
+@Deprecated
+public interface AdminLteFormElement extends org.kecak.apps.form.model.AdminLteFormElement {
 }

@@ -6,7 +6,7 @@ import org.joget.apps.form.service.FormUtil;
 
 import java.util.Map;
 
-public class Radio extends SelectBox implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+public class Radio extends SelectBox implements FormBuilderPaletteElement {
 
     @Override
     public String getName() {

@@ -1,13 +1,5 @@
 package org.joget.apps.form.lib;
 
-import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
 import org.joget.apps.app.dao.AppDefinitionDao;
 import org.joget.apps.app.dao.EnvironmentVariableDao;
 import org.joget.apps.app.model.AppDefinition;
@@ -15,9 +7,14 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
-import org.springframework.context.ApplicationContext;
 
-public class IdGeneratorField extends Element implements FormBuilderPaletteElement, AceFormElement, AdminLteFormElement {
+import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class IdGeneratorField extends Element implements FormBuilderPaletteElement {
 
     @SuppressWarnings("unchecked")
 	@Override
@@ -27,8 +24,7 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
     }
 
     protected String renderTemplate(String template, FormData formData, @SuppressWarnings("rawtypes") Map dataModel){
-
-        String value = getElementValue(formData);
+        String value = FormUtil.getElementPropertyValue(this, formData);
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
