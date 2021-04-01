@@ -10,6 +10,7 @@ import org.joget.plugin.property.service.PropertyUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.SimpleTrigger;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
@@ -36,6 +37,7 @@ public class SchedulerPluginJob implements Job {
         final ApplicationContext applicationContext = AppUtil.getApplicationContext();
         final PluginManager pluginManager = (PluginManager) applicationContext.getBean("pluginManager");
         final AppDefinitionDao appDefinitionDao = (AppDefinitionDao) applicationContext.getBean("appDefinitionDao");
+        final boolean manualTrigger = context.getTrigger() instanceof SimpleTrigger; // Triggered from "Fire Now"
 
         Optional.ofNullable(appDefinitionDao.findPublishedApps(null, null, null, null))
                 .map(Collection::stream)
@@ -60,7 +62,7 @@ public class SchedulerPluginJob implements Job {
                                 parameterProperties.put(SchedulerPlugin.PROPERTY_PLUGIN_MANAGER, pluginManager);
 
                                 try {
-                                    if (((SchedulerPlugin) plugin).filter(context, parameterProperties)) {
+                                    if (((SchedulerPlugin) plugin).filter(context, parameterProperties) || manualTrigger) {
                                         ((SchedulerPlugin) plugin).jobRun(context, parameterProperties);
                                     } else {
                                         LogUtil.debug(getClass().getName(), "Skipping Scheduler Job Plugin [" + plugin.getName() + "] : Not meeting filter condition");
