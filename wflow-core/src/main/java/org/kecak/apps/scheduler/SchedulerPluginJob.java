@@ -41,7 +41,7 @@ public class SchedulerPluginJob implements Job {
 
         Optional.ofNullable(appDefinitionDao.findPublishedApps(null, null, null, null))
                 .map(Collection::stream)
-                .orElse(Stream.empty())
+                .orElseGet(Stream::empty)
 
                 // set current app definition
                 .peek(AppUtil::setCurrentAppDefinition)
