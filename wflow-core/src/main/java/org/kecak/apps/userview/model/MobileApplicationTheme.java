@@ -2,8 +2,6 @@ package org.kecak.apps.userview.model;
 
 import org.joget.apps.userview.model.UserviewTheme;
 
-import java.awt.*;
-
 /**
  * @author aristo
  *
@@ -16,7 +14,7 @@ public interface MobileApplicationTheme {
      *  <li>Application Bar</li>
      *  <li>Button</li>
      */
-    Color getPrimaryColor();
+    String getMobilePrimaryColor();
 
     /**
      * Color for:
@@ -24,14 +22,14 @@ public interface MobileApplicationTheme {
      *
      * @return
      */
-    Color getAccentColor();
+    String getMobileAccentColor();
 
     /**
      * Color for app's background
      *
      * @return
      */
-    Color getBackgroundColor();
+    String getMobileBackgroundColor();
 
     /**
      * Color for text in:
@@ -40,7 +38,7 @@ public interface MobileApplicationTheme {
      *
      * @return
      */
-    Color getPrimaryFontColor();
+    String getMobilePrimaryFontColor();
 
     /**
      * Color for:
@@ -48,5 +46,5 @@ public interface MobileApplicationTheme {
      *
      * @return
      */
-    Color getSecondaryFontColor();
+    String getMobileSecondaryFontColor();
 }

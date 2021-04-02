@@ -33,10 +33,14 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
         
         //get from request parameter if exist
         HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
-        if (primaryKey == null && request != null && request.getParameter("id") != null && !request.getParameter("id").isEmpty()) {
-            primaryKey = request.getParameter("id");
+        if (primaryKey == null && request != null) {
+            if(request.getParameter("id") != null && !request.getParameter("id").isEmpty()) {
+                primaryKey = request.getParameter("id");
+            } else if(request.getParameter("primaryKey") != null && !request.getParameter("primaryKey").isEmpty()) {
+                primaryKey = request.getParameter("primaryKey");
+            }
         }
-        
+
         String temp[] = variableKey.split("\\.");
         
         String tableName = temp[0];
