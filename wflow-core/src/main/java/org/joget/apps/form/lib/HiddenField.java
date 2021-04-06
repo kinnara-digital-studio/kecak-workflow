@@ -9,10 +9,7 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.json.JSONException;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class HiddenField extends Element implements FormBuilderPaletteElement, Declutter {
 
@@ -34,6 +31,19 @@ public class HiddenField extends Element implements FormBuilderPaletteElement, D
 
         // set value
         String value = FormUtil.getElementPropertyValue(this, formData);
+        String priority = getPropertyString("useDefaultWhenEmpty");
+
+        if (priority != null && !priority.isEmpty()) {
+            if (("true".equals(priority) && (value == null || value.isEmpty()))
+                    || "valueOnly".equals(priority)) {
+                value = getPropertyString("value");
+            }
+        } else {
+            if (getPropertyString("value") != null && !getPropertyString("value").isEmpty()) {
+                value = getPropertyString("value");
+            }
+        }
+
         dataModel.put("value", value);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
