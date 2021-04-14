@@ -138,7 +138,7 @@ public class DataJsonController implements Declutter {
                 formData.setPrimaryKeyValue(primaryKey);
             }
 
-            final Form form = getForm(appDefinition, formDefId, formData);
+            final Form form = getForm(appDefinition, formDefId, formData, true);
             final FormData readyToSubmitFormData = fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // submit form
@@ -185,7 +185,7 @@ public class DataJsonController implements Declutter {
                 formData.setPrimaryKeyValue(primaryKey);
             }
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, true);
 
             FormData readyToSubmitFormData = addRequestParameterForMultipart(form, formData, data);
 
@@ -225,7 +225,7 @@ public class DataJsonController implements Declutter {
             // read request body and convert request body to json
             final FormData formData = new FormData();
 
-            final Form form = getForm(appDefinition, formDefId, formData);
+            final Form form = getForm(appDefinition, formDefId, formData, false);
 
             JSONObject uploadResponse = postTempFileUpload(form, formData);
             response.setStatus(HttpServletResponse.SC_OK);
@@ -263,7 +263,7 @@ public class DataJsonController implements Declutter {
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getForm(assignment, formData);
+            Form form = getForm(assignment, formData, false);
 
             JSONObject uploadResult = postTempFileUpload(form, formData);
 
@@ -303,7 +303,7 @@ public class DataJsonController implements Declutter {
 
             // get assignment form
             @Nonnull
-            Form form = getForm(assignment, formData);
+            Form form = getForm(assignment, formData, false);
 
             JSONObject uploadResult = postTempFileUpload(form, formData);
 
@@ -453,7 +453,7 @@ public class DataJsonController implements Declutter {
 
             FormData formData = new FormData();
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, false);
 
             // read request body and convert request body to json
             JSONObject jsonBody = getRequestPayload(request);
@@ -518,7 +518,7 @@ public class DataJsonController implements Declutter {
             FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, true);
             FormData readyToSubmitFormData = fillStoreBinderInFormData(jsonBody, form, formData, false);
 
             // submit form
@@ -564,7 +564,7 @@ public class DataJsonController implements Declutter {
             FormData formData = new FormData();
             formData.setPrimaryKeyValue(primaryKey);
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, true);
             FormData readyToSubmitFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
 
             // submit form
@@ -651,7 +651,7 @@ public class DataJsonController implements Declutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, false);
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
@@ -714,7 +714,7 @@ public class DataJsonController implements Declutter {
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             @Nonnull
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, true);
 
             // construct response
             @Nonnull
@@ -796,7 +796,7 @@ public class DataJsonController implements Declutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, false);
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
@@ -850,7 +850,7 @@ public class DataJsonController implements Declutter {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, false);
 
             Element element = FormUtil.findElement(elementId, form, formData, includeSubForm);
             if (element == null) {
@@ -1078,7 +1078,7 @@ public class DataJsonController implements Declutter {
 
             getCollectFilters(request.getParameterMap(), dataList);
 
-            Form form = getForm(appDefinition, formDefId, new FormData());
+            Form form = getForm(appDefinition, formDefId, new FormData(), false);
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
@@ -1301,7 +1301,7 @@ public class DataJsonController implements Declutter {
 
             // get assignment form
             @Nonnull
-            final Form form = getForm(assignment, formData);
+            final Form form = getForm(assignment, formData, true);
             final FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
@@ -1346,7 +1346,7 @@ public class DataJsonController implements Declutter {
 
             // get assignment form
             @Nonnull
-            final Form form = getForm(assignment, formData);
+            final Form form = getForm(assignment, formData, true);
             final FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
@@ -1391,7 +1391,7 @@ public class DataJsonController implements Declutter {
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getForm(assignment, formData);
+            Form form = getForm(assignment, formData, true);
             FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
 
             FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
@@ -1435,7 +1435,7 @@ public class DataJsonController implements Declutter {
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            Form form = getForm(assignment, formData);
+            Form form = getForm(assignment, formData, true);
             FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
 
             FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
@@ -1576,7 +1576,7 @@ public class DataJsonController implements Declutter {
 
             AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, false);
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
@@ -1640,7 +1640,7 @@ public class DataJsonController implements Declutter {
 
             AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-            Form form = getForm(appDefinition, formDefId, formData);
+            Form form = getForm(appDefinition, formDefId, formData, false);
 
             if (asLabel) {
                 FormUtil.setReadOnlyProperty(form, true, true);
@@ -1749,7 +1749,6 @@ public class DataJsonController implements Declutter {
             // get total data
             int total = workflowManager.getAssignmentSize(appId, processDefId, null);
 
-
             FormRowSet resultRowSet = Optional.of(appDefinition)
                     .map(AppDefinition::getPackageDefinition)
                     .map(PackageDefinition::getId)
@@ -1763,7 +1762,7 @@ public class DataJsonController implements Declutter {
                         FormData formData = new FormData();
 
                         // get form
-                        Form form = getForm(assignment, formData);
+                        Form form = getForm(assignment, formData, false);
 
                         FormRow row = getFormRow(form, formData.getPrimaryKeyValue());
                         row.setProperty("activityId", assignment.getActivityId());
@@ -1960,7 +1959,7 @@ public class DataJsonController implements Declutter {
 
         // generate form
         @Nonnull
-        Form form = getForm(assignment, formData);
+        Form form = getForm(assignment, formData, true);
 
         abortProcess(assignment, terminate);
 
@@ -1993,7 +1992,7 @@ public class DataJsonController implements Declutter {
         }
 
         // get form
-        Form form = getForm(assignment, formData);
+        Form form = getForm(assignment, formData, false);
 
         if (asLabel) {
             FormUtil.setReadOnlyProperty(form, true, true);
@@ -2643,9 +2642,16 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    protected Form getForm(@Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData) throws ApiException {
+    protected Form getForm(@Nonnull WorkflowAssignment assignment, @Nonnull final FormData formData, boolean optimizeReadonlyElementsDataLoading) throws ApiException {
         // get application definition
         @Nonnull AppDefinition appDefinition = getApplicationDefinition(assignment);
+
+        if(optimizeReadonlyElementsDataLoading) {
+            // optimize form loading for non-GET
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS, new String[] { "true" });
+        }
+
+        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
         final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
@@ -2656,17 +2662,7 @@ public class DataJsonController implements Declutter {
             throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User [" + WorkflowUtil.getCurrentUsername() + "] doesn't have permission to open this form");
         }
 
-        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
-
         return form;
-    }
-
-    protected Form getForm(WorkflowAssignment assignment) throws ApiException {
-        FormData formData = new FormData();
-        formData.setActivityId(assignment.getActivityId());
-        formData.setProcessId(assignment.getProcessId());
-
-        return getForm(assignment, formData);
     }
 
     /**
@@ -3135,7 +3131,14 @@ public class DataJsonController implements Declutter {
      * @throws ApiException
      */
     @Nonnull
-    protected Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData) throws ApiException {
+    protected Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData, boolean optimizeReadonlyElementsDataLoading) throws ApiException {
+
+        if(optimizeReadonlyElementsDataLoading) {
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS, new String[] { "true" });
+        }
+
+        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
+
         final Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
 
@@ -3154,8 +3157,6 @@ public class DataJsonController implements Declutter {
                 }
             }));
         }
-
-        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
 
         return form;
     }

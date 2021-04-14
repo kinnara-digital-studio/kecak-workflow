@@ -27,6 +27,7 @@ import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.kecak.apps.form.model.DataJsonControllerHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -381,6 +382,13 @@ public class FormUtil implements ApplicationContextAware {
         if (formData == null) {
             formData = new FormData();
         }
+
+        // check if executing load binder has to be optimized for JSON API
+        if(formData.getRequestParameter(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS) != null && FormUtil.isReadonly(element, formData)) {
+            // skip readonly elements
+            return formData;
+        }
+
         FormLoadBinder binder = (FormLoadBinder) element.getLoadBinder();
         if (!(element instanceof AbstractSubForm) && binder != null) {
             String primaryKeyValue = (formData != null) ? element.getPrimaryKeyValue(formData) : null;

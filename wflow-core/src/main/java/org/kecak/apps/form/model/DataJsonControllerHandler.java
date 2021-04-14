@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
  * Implement in {@link Element}. How the element will handle json data
  */
 public interface DataJsonControllerHandler {
+    String PARAMETER_OPTIMIZE_READONLY_ELEMENTS = "_OPTIMIZE_READONLY_ELEMENTS";
     String PARAMETER_DATA_JSON_CONTROLLER = "_DATA_JSON_CONTROLLER";
     String PARAMETER_AS_OPTIONS = "_AS_OPTIONS";
 
