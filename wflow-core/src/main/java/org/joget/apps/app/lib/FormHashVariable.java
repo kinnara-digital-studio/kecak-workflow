@@ -47,6 +47,17 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
         String columnName = temp[1];
         
         WorkflowAssignment wfAssignment = (WorkflowAssignment) this.getProperty("workflowAssignment");
+        if(wfAssignment == null) {
+            WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
+            String assignmentId = request.getParameter("assignmentId");
+            String activityId = request.getParameter("activityId");
+            if(assignmentId != null && !assignmentId.isEmpty()) {
+                wfAssignment = workflowManager.getAssignment(assignmentId);
+            } else if(activityId != null && !activityId.isEmpty()) {
+                wfAssignment = workflowManager.getAssignment(activityId);
+            }
+        }
+
         if ((primaryKey != null && !primaryKey.isEmpty()) || wfAssignment != null) {
             try {
                 if (tableName != null && tableName.length() != 0) {
