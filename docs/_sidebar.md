@@ -9,7 +9,6 @@
 	- [Requirement](requirement.md)
 	
  	- [Installation](installation.md)
-	
 	- [Server Maintenance](serverMaintenance.md)
 	
  - Building Flow
@@ -19,6 +18,7 @@
 	- [Plugins Architecture](buildingFlow_PluginArchitecture.md)
 	
 - Development
+	- [Setup Development Environment](developmentSetupEnvironment.md)
 	- [Compliling Core](development_compilingCore.md)
 	- [Automated Process](development_automatedProcess.md)
 	- [API](development_API.md) 

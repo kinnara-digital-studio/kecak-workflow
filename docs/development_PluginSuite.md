@@ -73,7 +73,7 @@ Userview Menu to perform CRUD (Create, Read, Update, and Delete) operation on fo
 
 ### Dashboard Report Menu 
 
-Userview menu to create charts report based on DataList
+Userview menu to create charts report based on Datalist
 
 Supports charts type:
 
@@ -98,7 +98,7 @@ Process tool to convert `.doc` and `.docx` files into `.pdf` files
 
 Directory Manager Plugins to connect to LDAP Server
 
-### Environtment Variable 
+### Environment Variable 
 
 Form Binder to load and store data to environment variable settings
 This Form Binder allows you to update environment variables by using your own form apart from using system’s default setting menu
@@ -162,7 +162,7 @@ Form Element to select field data form Datalist
 
 ### Run Process Datalist Action 
 
-Datalist Action to triger new Process form Datalist table 
+Datalist Action to trigger new Process form Datalist table 
 
 ### REST Plugins Bundle 
 
@@ -202,6 +202,6 @@ Buttons Form Element that provide custom action buttons.
 
 Process tool Manually update workflow variable.
 
-### Worokflow Components Options Binder
+### Workflow Components Options Binder
 
 Options Binder and REST API to get workflow components list.
