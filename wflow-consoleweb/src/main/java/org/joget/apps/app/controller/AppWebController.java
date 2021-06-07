@@ -376,7 +376,7 @@ public class AppWebController {
                                     compareValue = compareValue.replace(FileManager.THUMBNAIL_EXT, "");
                                 }
                                 
-                                String value = Optional.ofNullable(row.getProperty(fieldId.toString())).orElse("");
+                                String value = row.getProperty(fieldId.toString(), "");
                                 
                                 if (value.equals(compareValue)
                                         || (value.contains(";") 
