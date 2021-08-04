@@ -3449,7 +3449,7 @@ public class DataJsonController implements Declutter {
             optProcessId.map(workflowManager::getAssignmentByProcess)
                     .ifPresent(nextAssignment -> {
                         try {
-                            JSONObject jsonProcess = new JSONObject();
+                            final JSONObject jsonProcess = new JSONObject();
                             jsonProcess.put("processId", nextAssignment.getProcessId());
                             jsonProcess.put("activityId", nextAssignment.getActivityId());
                             jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
@@ -3463,10 +3463,11 @@ public class DataJsonController implements Declutter {
                             jsonProcess.put("assigneeId", nextAssignment.getAssigneeId());
                             jsonProcess.put("assigneeName", nextAssignment.getAssigneeName());
 
-                            Collection<WorkflowActivity> processActivities = processResult.getActivities();
-                            if (isNotEmpty(processActivities)) {
-                                jsonProcess.put("activityIds", new JSONArray(processActivities.stream().map(WorkflowActivity::getId).collect(Collectors.toList())));
-                            }
+                            Optional.ofNullable(processResult)
+                                    .map(WorkflowProcessResult::getActivities)
+                                    .map(l -> l.stream().map(WorkflowActivity::getId).collect(Collectors.toList()))
+                                    .map(Try.onFunction(JSONArray::new))
+                                    .ifPresent(Try.onConsumer(a -> jsonProcess.put("activityIds", a)));
 
                             jsonResponse.put("process", jsonProcess);
                         } catch (JSONException e) {
