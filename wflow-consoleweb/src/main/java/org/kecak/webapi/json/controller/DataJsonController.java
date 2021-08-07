@@ -74,6 +74,8 @@ public class DataJsonController implements Declutter {
     private final static String MESSAGE_VALIDATION_ERROR = "Validation Error";
     private final static String MESSAGE_SUCCESS = "Success";
 
+    private final static String WORKFLOW_VARIABLE_PREFIX = "wVar_";
+
     @Autowired
     private WorkflowManager workflowManager;
     @Autowired
@@ -380,9 +382,8 @@ public class DataJsonController implements Declutter {
      *
      * @param form
      * @param formData
-     * @throws JSONException
      */
-    protected JSONObject postTempFileUpload(Form form, FormData formData) throws JSONException, ApiException {
+    protected JSONObject postTempFileUpload(Form form, FormData formData) throws ApiException {
         final JSONObject jsonData = FormDataUtil.elementStream(form, formData)
                 .filter(e -> e instanceof FileDownloadSecurity)
                 .collect(JSONCollectors.toJSONObject(e -> e.getPropertyString(FormUtil.PROPERTY_ID), e -> {
@@ -2079,6 +2080,7 @@ public class DataJsonController implements Declutter {
             formData.setPrimaryKeyValue(primaryKey);
         }
 
+        // fill request parameter using fields
         FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer) && !FormUtil.isReadonly(e, formData))
                 .forEach(tryConsumer(e -> {
@@ -2089,6 +2091,11 @@ public class DataJsonController implements Declutter {
                             .map(Try.onFunction(s -> e.handleJsonDataRequest(s, e, formData)))
                             .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
                 }));
+
+        // fill request parameter using workflow variables
+        JSONStream.of(jsonBody, JSONObject::optString)
+                .filter(e -> e.getKey().startsWith(WORKFLOW_VARIABLE_PREFIX))
+                .forEach(e -> formData.addRequestParameterValues(e.getKey(), new String[] {e.getValue()}));
 
         return formData;
     }
@@ -2796,16 +2803,21 @@ public class DataJsonController implements Declutter {
     @Nonnull
     protected Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
         return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
-            Element element = FormUtil.findElement(e.getKey(), form, formData, true);
-            if (Objects.isNull(element))
-                return;
+            if(e.getKey().startsWith(WORKFLOW_VARIABLE_PREFIX)) {
+                String workflowVariable = e.getKey().replaceAll("^" + WORKFLOW_VARIABLE_PREFIX, "");
+                m.put(workflowVariable, String.join(";", e.getValue()));
+            } else {
+                Element element = FormUtil.findElement(e.getKey(), form, formData, true);
+                if (Objects.isNull(element))
+                    return;
 
-            String workflowVariable = element.getPropertyString("workflowVariable");
+                String workflowVariable = element.getPropertyString("workflowVariable");
 
-            if (isEmpty(workflowVariable))
-                return;
+                if (isEmpty(workflowVariable))
+                    return;
 
-            m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
+                m.put(element.getPropertyString("workflowVariable"), String.join(";", e.getValue()));
+            }
         }, Map::putAll);
     }
 
