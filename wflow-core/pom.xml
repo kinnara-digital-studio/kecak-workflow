@@ -251,5 +251,11 @@
 			<artifactId>woodstox-core</artifactId>
 			<version>5.0.3</version>
 		</dependency>
+        <dependency>
+            <groupId>com.kinnarastudio</groupId>
+            <artifactId>kinnara-commons</artifactId>
+            <version>1.2.5</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

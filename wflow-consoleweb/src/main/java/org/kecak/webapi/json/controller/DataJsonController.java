@@ -2083,7 +2083,7 @@ public class DataJsonController implements Declutter {
         // fill request parameter using fields
         FormDataUtil.elementStream(form, formData)
                 .filter(e -> !(e instanceof FormContainer) && !FormUtil.isReadonly(e, formData))
-                .forEach(tryConsumer(e -> {
+                .forEach(Try.onConsumer(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
                     Optional.of(elementId)

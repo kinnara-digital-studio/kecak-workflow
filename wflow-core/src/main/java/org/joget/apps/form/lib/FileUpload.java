@@ -3,6 +3,7 @@ package org.joget.apps.form.lib;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
+import org.joget.apps.form.service.FileUtil;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.FileLimitException;
@@ -390,7 +391,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
 
         try {
             MultipartFile[] fileStore = FileStore.getFiles(elementId);
-            if(fileStore != null) {
+            if (fileStore != null) {
                 for (MultipartFile file : fileStore) {
                     final String filePath = FileManager.storeFile(file);
                     filePathList.add(filePath);
@@ -400,7 +401,7 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
             LogUtil.error(getClassName(), e, e.getMessage());
         }
 
-        if(filePathList.isEmpty()) {
+        if (filePathList.isEmpty()) {
             return FormUtil.getElementPropertyValues(element, formData);
         } else {
             return filePathList.toArray(new String[0]);
@@ -421,41 +422,40 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
         }
 
         List<String> result = new ArrayList<>();
-        for(int i = 0, size = jsonValue.length(); i < size; i++) {
+        for (int i = 0, size = jsonValue.length(); i < size; i++) {
             try {
                 String data = jsonValue.getString(i);
-                Matcher m = FormDataUtil.DATA_PATTERN.matcher(data);
+                Matcher dataPattern = FormDataUtil.DATA_PATTERN.matcher(data);
 
                 String tempFilePath;
 
                 // as data uri
-                if(m.find()) {
-                    String contentType = m.group("mime");
+                if (dataPattern.find()) {
+                    String contentType = dataPattern.group("mime");
                     String extension = contentType.split("/")[1];
-                    String fileName = FormDataUtil.getFileName(m.group("properties"), extension);
-                    String base64 = m.group("data");
+                    String fileName = FormDataUtil.getFileName(dataPattern.group("properties"), extension);
+                    String base64 = dataPattern.group("data");
 
                     // store in app_tempupload
                     MultipartFile multipartFile = FormDataUtil.decodeFile(fileName, contentType, base64.trim());
                     tempFilePath = FileManager.storeFile(multipartFile);
-                }
-
-                // already a path to app_tempupload
-                else {
+                } else {
                     tempFilePath = data;
                 }
 
-                // check if file really exist in app_tempupload
-                File file = FileManager.getFileByPath(tempFilePath);
-                if (file != null) {
+                // check if file really exist in app_tempupload or in current record
+                if (FileManager.getFileByPath(tempFilePath) != null || FileUtil.getFile(tempFilePath, this, getPrimaryKeyValue(formData)).isFile()) {
                     result.add(tempFilePath);
-                } else {
-                    LogUtil.warn(getClassName(), "File [" + tempFilePath + "] not found");
                 }
 
-            } catch (JSONException e) {
+            } catch (JSONException | IOException e) {
                 LogUtil.error(getClassName(), e, e.getMessage());
             }
+        }
+
+        // clean field for empty result
+        if (result.isEmpty()) {
+            result.add("");
         }
 
         return result.toArray(new String[0]);
@@ -463,12 +463,12 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
 
     @Override
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             String method = request.getMethod();
-            if(!method.equalsIgnoreCase("POST")) {
-                throw new ApiException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method ["+method+"] is not supported");
+            if (!method.equalsIgnoreCase("POST")) {
+                throw new ApiException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method [" + method + "] is not supported");
             }
 
         } catch (ApiException e) {
