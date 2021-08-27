@@ -357,7 +357,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
      * @throws SelectBoxException
      */
     protected void handleGet(HttpServletRequest request, HttpServletResponse response) throws SelectBoxException {
-        final String formDefId = getOptionalParameter(request, "formDefId", "");
+        final String formDefId = getRequiredParameter(request, "formDefId");
         final String[] fieldIds = getOptionalParameterValues(request, "fieldId", new String[0]);
         final String search = getOptionalParameter(request, "search", "");
         final Pattern searchPattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);

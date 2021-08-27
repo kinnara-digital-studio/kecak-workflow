@@ -102,10 +102,10 @@
                     }).then(function (data) {
                         // create the option and append to Select2
                         var option = new Option(data.full_name, data.id, true, true);
-                        studentSelect.append(option).trigger('change');
+                        $selectBox.append(option).trigger('change');
 
                         // manually trigger the `select2:select` event
-                        studentSelect.trigger({
+                        $selectBox.trigger({
                             type: 'select2:select',
                             params: {
                                 data: data
