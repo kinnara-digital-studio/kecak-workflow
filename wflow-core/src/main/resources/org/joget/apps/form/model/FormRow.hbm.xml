@@ -6,7 +6,8 @@
         <property name="dateCreated" type="timestamp"/>
         <property name="dateModified" type="timestamp"/>
         <property name="createdBy" type="string"/>
-        <property name="modifiedBy" type="string"/>  
+        <property name="modifiedBy" type="string"/>
+        <property name="orgId" type="string" />
         <property name="deleted" type="boolean">
             <column name="deleted" index="IDX_FormRow_deleted" default="false" not-null="true"/>
         </property>
