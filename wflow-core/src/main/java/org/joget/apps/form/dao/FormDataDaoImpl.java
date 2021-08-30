@@ -530,7 +530,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
             // save the form data
             for (FormRow row : rowSet) {
                 if (row.getOrgId() == null) row.setOrgId(orgId);
-                if (row.getOrgId().equals(orgId)) session.saveOrUpdate(entityName, row);
+                if (row.getOrgId().equals("*") || row.getOrgId().equals(orgId)) session.saveOrUpdate(entityName, row);
             }
             session.flush();
         } finally {
