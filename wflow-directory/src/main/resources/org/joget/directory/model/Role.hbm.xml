@@ -2,9 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class entity-name="Role" name="org.joget.directory.model.Role" table="dir_role">
-        <id column="id" name="id" type="string">
-            <generator class="uuid"/>
-        </id>
+        <id column="id" name="id" type="string" />
         <property name="dateCreated" type="timestamp"/>
         <property name="dateModified" type="timestamp"/>
         <property name="createdBy" type="string"/>

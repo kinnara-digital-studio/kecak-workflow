@@ -108,7 +108,7 @@ public class RoleDaoImpl extends AbstractSpringDao implements RoleDao {
             if (filterString == null) {
                 filterString = "";
             }
-            return count("Department", "where e.name like ? or e.description like ?", new Object[]{"%" + filterString + "%", "%" + filterString + "%"});
+            return count("Role", "where e.name like ? or e.description like ?", new Object[]{"%" + filterString + "%", "%" + filterString + "%"});
         } catch (Exception e) {
             LogUtil.error(RoleDaoImpl.class.getName(), e, "Get Total Roles Error!");
         }
@@ -129,7 +129,7 @@ public class RoleDaoImpl extends AbstractSpringDao implements RoleDao {
 
     public Long getTotalUserRoles(String username) {
         try {
-            return count("Department", "INNER JOIN e.users u WHERE u.username=?", new Object[]{username});
+            return count("Role", "INNER JOIN e.users u WHERE u.username=?", new Object[]{username});
         } catch (Exception e) {
             LogUtil.error(RoleDaoImpl.class.getName(), e, "Get Total Roles Error!");
         }
