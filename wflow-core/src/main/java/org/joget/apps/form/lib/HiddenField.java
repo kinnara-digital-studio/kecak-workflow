@@ -9,6 +9,7 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.json.JSONException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class HiddenField extends Element implements FormBuilderPaletteElement, Declutter {
@@ -104,7 +105,7 @@ public class HiddenField extends Element implements FormBuilderPaletteElement, D
     }
 
     @Override
-    public String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, @Nonnull FormData formData) {
+    public String[] handleJsonDataRequest(@Nullable Object value, @Nonnull Element element, @Nonnull FormData formData) {
         return handleDataRequestParameter(element, formData);
     }
 

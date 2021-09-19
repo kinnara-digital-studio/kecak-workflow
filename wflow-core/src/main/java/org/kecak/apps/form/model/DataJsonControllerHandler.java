@@ -6,6 +6,7 @@ import org.joget.apps.form.service.FormUtil;
 import org.json.JSONException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Handler for DataJsonController, this interface will be called
@@ -36,11 +37,15 @@ public interface DataJsonControllerHandler {
      * @param formData
      * @return data that will be passed to request parameter
      */
-    default String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, @Nonnull FormData formData) throws JSONException {
-        if(value instanceof Double) {
-            return new String[] { String.format("%f", value).replaceAll("(?<!\\.)0+$", "") };
+    default String[] handleJsonDataRequest(@Nullable Object value, @Nonnull Element element, @Nonnull FormData formData) throws JSONException {
+        if(value == null) {
+            return new String[0];
+        }
+
+        if (value instanceof Double) {
+            return new String[]{String.format("%f", value).replaceAll("(?<!\\.)0+$", "")};
         } else {
-            return new String[]{ String.valueOf(value) };
+            return new String[]{String.valueOf(value)};
         }
     }
 

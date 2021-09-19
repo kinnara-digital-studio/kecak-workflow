@@ -23,6 +23,7 @@ import org.kecak.apps.form.service.FormDataUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -409,8 +410,8 @@ public class FileUpload extends Element implements PluginWebSupport, FormBuilder
     }
 
     @Override
-    public String[] handleJsonDataRequest(@Nonnull Object value, @Nonnull Element element, FormData formData) {
-        String stringValue = value.toString();
+    public String[] handleJsonDataRequest(@Nullable Object value, @Nonnull Element element, FormData formData) {
+        String stringValue = value == null ? "" : value.toString();
 
         JSONArray jsonValue;
         try {
