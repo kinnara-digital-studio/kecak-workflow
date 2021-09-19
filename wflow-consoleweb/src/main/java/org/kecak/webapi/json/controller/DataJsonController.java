@@ -2086,10 +2086,8 @@ public class DataJsonController implements Declutter {
                 .forEach(Try.onConsumer(e -> {
                     String parameterName = FormUtil.getElementParameterName(e);
                     String elementId = e.getPropertyString(FormUtil.PROPERTY_ID);
-                    Optional.of(elementId)
-                            .map(jsonBody::opt)
-                            .map(Try.onFunction(s -> e.handleJsonDataRequest(s, e, formData)))
-                            .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
+                    Optional.of(e.handleJsonDataRequest(jsonBody.opt(elementId), e, formData))
+                                    .ifPresent(s -> formData.addRequestParameterValues(parameterName, s));
                 }));
 
         // fill request parameter using workflow variables
