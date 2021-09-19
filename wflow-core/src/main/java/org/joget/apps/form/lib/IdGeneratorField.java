@@ -7,7 +7,10 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
+import org.json.JSONException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Map;
@@ -56,6 +59,16 @@ public class IdGeneratorField extends Element implements FormBuilderPaletteEleme
         }
 
         return rowSet;
+    }
+
+    @Override
+    public String[] handleJsonDataRequest(@Nullable Object value, @Nonnull Element element, @Nonnull FormData formData) throws JSONException {
+        return new String[] {getGeneratedValue(formData)};
+    }
+
+    @Override
+    public String[] handleMultipartDataRequest(@Nonnull String[] values, @Nonnull Element element, FormData formData) {
+        return new String[] {getGeneratedValue(formData)};
     }
 
     protected String getGeneratedValue(FormData formData) {
