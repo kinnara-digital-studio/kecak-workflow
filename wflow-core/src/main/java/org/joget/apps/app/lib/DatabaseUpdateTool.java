@@ -84,20 +84,9 @@ public class DatabaseUpdateTool extends DefaultApplicationPlugin {
     }
 
     protected boolean executeQuery(DataSource ds, String sql) throws SQLException {
-        Connection con = null;
-        Statement stmt = null;
-        try {
-            con = ds.getConnection();
-            stmt = con.createStatement();
-            boolean result = stmt.execute(sql);
-            return result;
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
+        try(Connection con = ds.getConnection();
+            Statement stmt = con.createStatement()) {
+            return stmt.execute(sql);
         }
     }
 
