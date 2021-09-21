@@ -787,7 +787,15 @@ public class AppServiceImpl implements AppService {
             saveButton.setProperty("label", saveButtonLabel);
             form.addAction((FormAction) saveButton);
         }
-        if (submitButtonLabel != null) {
+
+        final Map<String, Object> propCustomSubmitButton = (Map<String, Object>) form.getProperty("customSubmitButton");
+        if(propCustomSubmitButton != null && !String.valueOf(propCustomSubmitButton.getOrDefault("className", "")).isEmpty()) {
+            Element customSubmitButton = pluginManager.getPlugin(propCustomSubmitButton);
+            customSubmitButton.setProperty(FormUtil.PROPERTY_ID, "submit");
+            String label = customSubmitButton.getPropertyString("label");
+            customSubmitButton.setProperty("label", label.isEmpty() ? ResourceBundleUtil.getMessage("general.method.label.submit") : label);
+            form.addAction((FormAction) customSubmitButton);
+        } else if (submitButtonLabel != null) {
             if (submitButtonLabel.isEmpty()) {
                 submitButtonLabel = ResourceBundleUtil.getMessage("general.method.label.submit");
             }
