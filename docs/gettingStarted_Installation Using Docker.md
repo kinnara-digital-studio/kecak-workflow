@@ -1,26 +1,26 @@
-## Installed Kecak Workflow Using Docker
+## Install Kecak Workflow Using Docker
 
 ### What is Docker
 Docker is a computer program that performs operating-system-level virtualization, also known as "containerization".It was first released in 2013 and is developed by Docker, Inc.
 
 Docker is used to run software packages called "containers". Containers are isolated from each other and bundle their own application, tools, libraries and configuration files; they can communicate with each other through well-defined channels. All containers are run by a single operating-system kernel and are thus more lightweight than virtual machines. Containers are created from "images" that specify their precise contents. Images are often created by combining and modifying standard images downloaded from public repositories.
 
-## Installation Docker Workflow in Windows
+## Kecak Workflow Docker in Windows
 
-let's following this step for installation docker workflow in windows :
+follow this step for install kecak workflow using docker :
 
 ### 1. Clone docker-kecak-workflow
 Preparing your docker-kecak-workflow using git in this link
-```html
-https://gitlab.com/kinnarastudio/docker-kecak-workflow.git
+```bash
+git clone https://gitlab.com/kinnarastudio/docker-kecak-workflow.git
 ```
 or using this 
-```html
-git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
+```shell
+git clone git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
 ```
 
-### 2. Checked your docker-kecak-workflow
-after clone docker kecak workflow, checked the file in your computer. for example, see this picture (place the folder after clone) :
+### 2. Check your docker-kecak-workflow directory
+after clone docker kecak workflow, check the file in your computer. for example, see this picture (place the folder after clone) :
 
 <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-windows 1.png" alt="dockerwindows" />
 
@@ -28,8 +28,8 @@ after clone docker kecak workflow, checked the file in your computer. for exampl
 ### 3. Install Docker 
 Install Docker using docker-compose. With adding directory address in command prompt
  Using this in your Command Prompt
-```html
-docker-compose up
+```shell
+docker-compose up -d
 ```
 
 which will look like this:

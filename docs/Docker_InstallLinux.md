@@ -1,4 +1,4 @@
-# How To Install Docker in Linux 
+# How To Install Kecak Workflow with Docker in Linux 
 
 ## Docker Installation
 
@@ -15,7 +15,7 @@ sudo sh get-docker.sh
 sudo apt-get install docker
 ```
 
-- Arch
+- Arch Linux
 ```Shell
 sudo pacman -S docker
 ```
@@ -39,18 +39,13 @@ sudo usermod -aG docker $(whoami)
 sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 ```
-#### Terminology
-Sudo : super user do
-Pacman : package manager
-Arch : arch linux
-
 
 ### Running Docker Kecak Workflow
 
 1. Clone docker kecak workflow
 
 ```Shell
-Git clone git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
+git clone git@gitlab.com:kinnarastudio/docker-kecak-workflow.git
 ```
 
 2. Access docker-kecak-workflow directory
@@ -69,14 +64,19 @@ systemctl start docker
 
 4. Run docker-kecak-workflow
 
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux3.png" alt="docker linux" />
+`docker-compose up -d`
 
-5. Wait until kecak workflow running.
-<img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux4.png" alt="docker linux" />
+5. Show the logs
 
-6. Server is ready to access if message “Server startup in xxxxx ms” shown
+  `docker-compose logs -f --tail=10`
 
-7. Then open localhost:8080 to open kecak workflow
+6. Wait until kecak workflow running.
+
+  <img src="https://raw.githubusercontent.com/kinnara-digital-studio/kecak-workflow/master/docs/assets/docker-linux4.png" alt="docker linux" />
+
+7. Server is ready to access if message “Server startup in xxxxx ms” shown
+
+8. Then open localhost:8080 to open kecak workflow
 
 
 
