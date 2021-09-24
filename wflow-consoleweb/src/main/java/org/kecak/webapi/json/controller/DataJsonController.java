@@ -2763,7 +2763,6 @@ public class DataJsonController implements Declutter {
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
                 .filter(Objects::nonNull)
-                .filter(not(DataListColumn::isHidden))
                 .map(DataListColumn::getName)
                 .filter(Objects::nonNull)
                 .distinct()
