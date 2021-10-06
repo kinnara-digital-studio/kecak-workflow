@@ -47,6 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -157,7 +158,9 @@ public class DirectoryProfileJsonController implements Declutter {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Current user is not administrator");
             }
 
-            User user = userDao.getUserById(userId);
+            User user = Optional.of(userId)
+                    .map(userDao::getUserById)
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "User [" + userId + "] is not available"));
 
             JSONObject jsonBody = getRequestPayload(request);
             String password = jsonBody.getString("password");
