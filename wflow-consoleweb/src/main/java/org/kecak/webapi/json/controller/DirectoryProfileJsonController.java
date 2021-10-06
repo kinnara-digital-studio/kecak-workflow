@@ -165,7 +165,13 @@ public class DirectoryProfileJsonController implements Declutter {
             user.setPassword(password);
             user.setConfirmPassword(password);
 
-            updatePassword(user);
+            if(updatePassword(user)) {
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("message", "Password has been reset");
+                response.getWriter().write(jsonResponse.toString());
+            } else {
+                throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Password is not supplied");
+            }
         } catch (ApiException e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -194,7 +200,7 @@ public class DirectoryProfileJsonController implements Declutter {
         }
     }
 
-    protected void updatePassword(User user) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    protected boolean updatePassword(User user) throws NoSuchAlgorithmException, InvalidKeySpecException {
         UserSecurity us = DirectoryUtil.getUserSecurity();
         ApplicationContext applicationContext = AppUtil.getApplicationContext();
         UserDao userDao = (UserDao) applicationContext.getBean("userDao");
@@ -212,12 +218,17 @@ public class DirectoryProfileJsonController implements Declutter {
                 user.setPassword(hashSalt.getHash());
             }
             user.setConfirmPassword(user.getPassword());
+
+            userDao.updateUser(user);
+            userSaltDao.updateUserSalt(userSalt);
+
+            if (us != null) {
+                us.updateUserProfilePostProcessing(user);
+            }
+
+            return true;
         }
 
-        userDao.updateUser(user);
-        userSaltDao.updateUserSalt(userSalt);
-        if (us != null) {
-            us.updateUserProfilePostProcessing(user);
-        }
+        return false;
     }
 }
