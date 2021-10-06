@@ -63,7 +63,7 @@
         <security:intercept-url pattern="/web/json/app/**/form/options" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/directory/user/sso" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/directory/user/ssov2" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
-        <security:intercept-url pattern="/web/json/directory/profile" access="ROLE_ADMIN, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
+        <security:intercept-url pattern="/web/json/directory/profile/**" access="ROLE_ADMIN, ROLE_USER, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/workflow/currentUsername" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/workflow/process/start/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>
         <security:intercept-url pattern="/web/json/workflow/assignment/**" access="ROLE_ADMIN, ROLE_USER, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_MONITORING"/>

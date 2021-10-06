@@ -153,7 +153,7 @@ public class DirectoryProfileJsonController implements Declutter {
 
         try {
             String currentUser = WorkflowUtil.getCurrentUsername();
-            if(!userId.equals(currentUser) || !WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
+            if(!userId.equals(currentUser) && !WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Current user is not administrator");
             }
 
