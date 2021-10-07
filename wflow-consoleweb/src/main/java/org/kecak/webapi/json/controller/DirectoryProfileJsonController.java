@@ -110,7 +110,7 @@ public class DirectoryProfileJsonController implements Declutter {
         try {
             User user = userDao.getUser(workflowUserManager.getCurrentUsername());
             if (user == null) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "User doesn't have permission");
+                throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "User not found");
             }
 
             Blob blob = user.getProfilePicture();
