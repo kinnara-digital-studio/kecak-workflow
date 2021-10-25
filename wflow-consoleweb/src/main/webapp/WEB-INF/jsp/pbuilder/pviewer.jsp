@@ -36,52 +36,70 @@
         <script src="${pageContext.request.contextPath}/web/console/i18n/pbuilder"></script>
         <script src="${pageContext.request.contextPath}/pbuilder/js/pbuilder.js"></script>
         <script>
-            function allowDrop(ev) {
+        	var originalActId;
+			function allowDrop(ev) {
               ev.preventDefault();
-              if($(ev.target).hasClass('node_label')){
-                $(ev.target).parent().addClass('node_active');
-              } else {
-                $(ev.target).addClass('node_active');
-              }
             }
-
+            
             function leaveDropZone(ev) {
-              $(ev.target).removeClass("node_active");
-              if($(ev.target).hasClass('node_label')){
-                $(ev.target).parent().removeClass('node_active');
-              } else {
-                $(ev.target).removeClass('node_active');
-              }
+            	if($(ev.target).hasClass('node_label')){
+            		if($(ev.target).parent().hasClass('node_active')){
+            			originalActId = $(ev.target).parent().attr('id');
+        			}
+            	} else {
+            		if($(ev.target).hasClass('node_active')){
+            			originalActId = $(ev.target).attr('id');
+        			}
+            	}
             }
 
             function drag(ev) {
-              ev.dataTransfer.setData("text", ev.target.id);
+          		ev.dataTransfer.setData("text", ev.target.id);
             }
 
             function drop(ev) {
-              ev.preventDefault();
-              var data = ev.dataTransfer.getData("text");
-              var actId;
-              if($(ev.target).hasClass('node_label')){
-                $(ev.target).parent().addClass('node_active');
-                actId = $(ev.target).parent().attr('id');
-              } else {
-                $(ev.target).addClass('node_active');
-                actId = $(ev.target).attr('id');
-              }
-              actId = actId.replace('node_','');
-              $(data).removeClass('node_active');
-              $.ajax({
-                  url: "${pageContext.request.contextPath}/web/json/workflow/assignment/process/${wfProcess.instanceId}/transfer/" + actId,
-                  type:"GET",
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "json",
-                  success: function (data) {
-                    var url = document.URL;
-                    url = url.replace('${wfProcess.instanceId}',data.processId);
-                    window.location = url;
-                  }
-              });
+              	ev.preventDefault();
+				let data = ev.dataTransfer.getData("text");
+				let actId;
+  				
+  				if($(ev.target).hasClass('node_label')){
+		    		actId = $(ev.target).parent().attr('id');
+		  		} else {
+		    		actId = $(ev.target).attr('id');
+		  		}
+		  		
+		  		if(actId===originalActId){
+		  			alert("Can't choose current active activity!");
+              		return false;
+		  		}
+		  		
+		  		if($(ev.target).hasClass('node_label')){
+		    		$(ev.target).parent().addClass('node_active');
+		  		} else {
+		    		$(ev.target).addClass('node_active');
+		  		}
+		  		
+  				$("[id="+originalActId+"]").removeClass("node_active");
+              	if($("[id="+originalActId+"]").hasClass('node_label')){
+                	$("[id="+originalActId+"]").parent().removeClass('node_active');
+              	} else {
+                	$("[id="+originalActId+"]").removeClass('node_active');
+              	}
+		  		
+		  		actId = actId.replace('node_','');
+		  		$(data).removeClass('node_active');
+		  		
+		  		$.ajax({
+		      		url: "${pageContext.request.contextPath}/web/json/workflow/assignment/process/${wfProcess.instanceId}/transfer/" + actId,
+		      		type:"GET",
+		      		contentType: "application/json; charset=utf-8",
+		      		dataType: "json",
+		      		success: function (data) {
+		        		var url = document.URL;
+		        		url = url.replace('${wfProcess.instanceId}',data.processId);
+		        		window.location = url;
+		      		}
+		  		});
             }
             $(function() {
                 //init ApiClient base url (add to support different context path)
