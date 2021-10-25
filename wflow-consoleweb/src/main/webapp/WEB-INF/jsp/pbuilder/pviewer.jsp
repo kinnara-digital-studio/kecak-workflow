@@ -37,20 +37,32 @@
         <script src="${pageContext.request.contextPath}/pbuilder/js/pbuilder.js"></script>
         <script>
         	var originalActId;
+        	var isSubflow=true;
 			function allowDrop(ev) {
               ev.preventDefault();
             }
             
             function leaveDropZone(ev) {
             	if($(ev.target).hasClass('node_label')){
-            		if($(ev.target).parent().hasClass('node_active')){
-            			originalActId = $(ev.target).parent().attr('id');
+            		if($(ev.target).parent().hasClass('subflow')){
+            			isSubflow =true;
+            		}else{
+	            		if($(ev.target).parent().hasClass('node_active')){
+	            			originalActId = $(ev.target).parent().attr('id');
+	            			isSubflow=false;
+	        			}
         			}
             	} else {
-            		if($(ev.target).hasClass('node_active')){
-            			originalActId = $(ev.target).attr('id');
+            		if($(ev.target).hasClass('subflow')){
+            			isSubflow =true;
+            		}else{
+	            		if($(ev.target).hasClass('node_active')){
+	            			originalActId = $(ev.target).attr('id');
+	            			isSubflow=false;
+	        			}
         			}
             	}
+            	
             }
 
             function drag(ev) {
@@ -61,11 +73,16 @@
               	ev.preventDefault();
 				let data = ev.dataTransfer.getData("text");
 				let actId;
+				
+  				if(isSubflow){
+  					alert("Can't move a running subflow!");
+  					return false;
+  				}
   				
   				if($(ev.target).hasClass('node_label')){
-		    		actId = $(ev.target).parent().attr('id');
+	    			actId = $(ev.target).parent().attr('id');
 		  		} else {
-		    		actId = $(ev.target).attr('id');
+	    			actId = $(ev.target).attr('id');
 		  		}
 		  		
 		  		if(actId===originalActId){
