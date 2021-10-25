@@ -252,7 +252,7 @@ public class AppServiceImpl implements AppService {
             Element saveButton = (Element) pluginManager.getPlugin(SaveAsDraftButton.class.getName());
             saveButton.setProperty(FormUtil.PROPERTY_ID, "saveAsDraft");
             saveButton.setProperty("label", ResourceBundleUtil.getMessage("form.button.saveAsDraft"));
-            form.addAction((FormAction) saveButton);
+            form.addAction((FormAction) saveButton, formData);
         }
 
         Element completeButton;
@@ -272,14 +272,14 @@ public class AppServiceImpl implements AppService {
             completeButton.setProperty("label", ResourceBundleUtil.getMessage("form.button.complete"));
         }
         completeButton.setProperty(FormUtil.PROPERTY_ID, AssignmentCompleteButton.DEFAULT_ID);
-        form.addAction((FormAction) completeButton);
+        form.addAction((FormAction) completeButton, formData);
 
         if (cancelUrl != null && !cancelUrl.isEmpty()) {
             Element cancelButton = (Element) pluginManager.getPlugin(LinkButton.class.getName());
             cancelButton.setProperty(FormUtil.PROPERTY_ID, "cancel");
             cancelButton.setProperty("label", ResourceBundleUtil.getMessage("general.method.label.cancel"));
             cancelButton.setProperty("url", cancelUrl);
-            form.addAction((FormAction) cancelButton);
+            form.addAction((FormAction) cancelButton, formData);
         }
 
         form = addCustomAction(form, formData);
@@ -422,7 +422,7 @@ public class AppServiceImpl implements AppService {
                     Element submitButton = (Element) pluginManager.getPlugin(AssignmentCompleteButton.class.getName());
                     submitButton.setProperty(FormUtil.PROPERTY_ID, AssignmentCompleteButton.DEFAULT_ID);
                     submitButton.setProperty("label",  ResourceBundleUtil.getMessage("form.button.submit"));
-                    startForm.addAction((FormAction) submitButton);
+                    startForm.addAction((FormAction) submitButton, formData);
 
                     startForm = addCustomAction(startForm, formData);
 
@@ -791,7 +791,7 @@ public class AppServiceImpl implements AppService {
             Element saveButton = (Element) pluginManager.getPlugin(SaveAsDraftButton.class.getName());
             saveButton.setProperty(FormUtil.PROPERTY_ID, "saveAsDraft");
             saveButton.setProperty("label", saveButtonLabel);
-            form.addAction((FormAction) saveButton);
+            form.addAction((FormAction) saveButton, formData);
         }
 
         final Map<String, Object> propCustomSubmitButton = (Map<String, Object>) form.getProperty("customSubmitButton");
@@ -800,7 +800,7 @@ public class AppServiceImpl implements AppService {
             customSubmitButton.setProperty(FormUtil.PROPERTY_ID, "submit");
             String label = customSubmitButton.getPropertyString("label");
             customSubmitButton.setProperty("label", label.isEmpty() ? ResourceBundleUtil.getMessage("general.method.label.submit") : label);
-            form.addAction((FormAction) customSubmitButton);
+            form.addAction((FormAction) customSubmitButton, formData);
         } else if (submitButtonLabel != null) {
             if (submitButtonLabel.isEmpty()) {
                 submitButtonLabel = ResourceBundleUtil.getMessage("general.method.label.submit");
@@ -808,7 +808,7 @@ public class AppServiceImpl implements AppService {
             Element submitButton = (Element) pluginManager.getPlugin(SubmitButton.class.getName());
             submitButton.setProperty(FormUtil.PROPERTY_ID, "submit");
             submitButton.setProperty("label", submitButtonLabel);
-            form.addAction((FormAction) submitButton);
+            form.addAction((FormAction) submitButton, formData);
         }
         if (cancelButtonLabel != null) {
             if (cancelButtonLabel.isEmpty()) {
@@ -821,7 +821,7 @@ public class AppServiceImpl implements AppService {
             if (cancelButtonTarget != null) {
                 cancelButton.setProperty("target", cancelButtonTarget);
             }
-            form.addAction((FormAction) cancelButton);
+            form.addAction((FormAction) cancelButton, formData);
         }
 
         form = addCustomAction(form, formData);
@@ -1228,9 +1228,7 @@ public class AppServiceImpl implements AppService {
                 customFormButton.setProperty(FormUtil.PROPERTY_ID, "_action" + i);
                 String label = customFormButton.getPropertyString("label");
                 customFormButton.setProperty("label", label.isEmpty() ? ResourceBundleUtil.getMessage("general.method.label.action") + " " + i : label);
-                if(((FormAction) customFormButton).hasPermission(formData)) {
-                    form.addAction((FormAction) customFormButton);
-                }
+                form.addAction((FormAction) customFormButton, formData);
             }
         }
 

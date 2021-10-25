@@ -155,12 +155,15 @@ public class Form extends Element implements FormBuilderEditable, FormContainer 
     public void setActions(Collection<FormAction> actions) {
         this.actions = actions;
     }
-    
-    public void addAction(FormAction action) {
+
+    public void addAction(FormAction action, FormData formData) {
         if (this.actions == null) {
             this.actions = new ArrayList<FormAction>();
         }
-        this.actions.add(action);
+
+        if(action != null && action.hasPermission(formData)) {
+            this.actions.add(action);
+        }
     }
 
     @Override
