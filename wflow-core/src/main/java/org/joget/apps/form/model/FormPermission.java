@@ -9,23 +9,23 @@ public interface FormPermission {
      * Get current form data, null if permission is not assigned to a form
      * @return
      */
-    FormData getFormData();
+    default FormData getFormData() { return null; }
 
     /**
      * Set current form data
      * @param formData
      */
-    void setFormData(FormData formData);
+    default void setFormData(FormData formData) { }
 
     /**
      * Get current Element
      * @return
      */
-    Element getElement();
+    default Element getElement() { return null; }
 
     /**
      * Set current element
      * @param element
      */
-    void setElement(Element element);
+    default void setElement(Element element) { }
 }
