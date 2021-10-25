@@ -281,6 +281,9 @@ public class AppServiceImpl implements AppService {
             cancelButton.setProperty("url", cancelUrl);
             form.addAction((FormAction) cancelButton);
         }
+
+        form = addCustomAction(form, formData);
+
         form = decorateFormActions(form);
 
         // set to definition
@@ -420,6 +423,9 @@ public class AppServiceImpl implements AppService {
                     submitButton.setProperty(FormUtil.PROPERTY_ID, AssignmentCompleteButton.DEFAULT_ID);
                     submitButton.setProperty("label",  ResourceBundleUtil.getMessage("form.button.submit"));
                     startForm.addAction((FormAction) submitButton);
+
+                    startForm = addCustomAction(startForm, formData);
+
                     startForm = decorateFormActions(startForm);
 
                     // set to definition
@@ -817,6 +823,9 @@ public class AppServiceImpl implements AppService {
             }
             form.addAction((FormAction) cancelButton);
         }
+
+        form = addCustomAction(form, formData);
+
         form = decorateFormActions(form);
 
         return form;
@@ -1203,6 +1212,28 @@ public class AppServiceImpl implements AppService {
         } catch (Exception e) {
             LogUtil.error(getClass().getName(), e, e.getMessage());
         }
+        return form;
+    }
+
+    /**
+     * Add additional custom form
+     * @param form
+     * @return
+     */
+    protected Form addCustomAction(Form form, FormData formData) {
+        for(int i = 1; i<= 3; i++) {
+            final Map<String, Object> propCustomFormButton = (Map<String, Object>) form.getProperty("customFormButton" + i);
+            if(propCustomFormButton != null && !String.valueOf(propCustomFormButton.getOrDefault("className", "")).isEmpty()) {
+                Element customFormButton = pluginManager.getPlugin(propCustomFormButton);
+                customFormButton.setProperty(FormUtil.PROPERTY_ID, "_action" + i);
+                String label = customFormButton.getPropertyString("label");
+                customFormButton.setProperty("label", label.isEmpty() ? ResourceBundleUtil.getMessage("general.method.label.action") + " " + i : label);
+                if(((FormAction) customFormButton).hasPermission(formData)) {
+                    form.addAction((FormAction) customFormButton);
+                }
+            }
+        }
+
         return form;
     }
 

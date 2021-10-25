@@ -22,4 +22,11 @@ public interface FormAction extends PropertyEditable {
      * @return
      */
     public FormData actionPerformed(Form form, FormData formData);
+
+    /**
+     *
+     * @param formData
+     * @return
+     */
+    public boolean hasPermission(FormData formData);
 }

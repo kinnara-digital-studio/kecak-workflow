@@ -49,4 +49,9 @@ public abstract class FormButton extends Element implements FormAction {
         }
         return active;
     }
+
+    @Override
+    public boolean hasPermission(FormData formData) {
+        return true;
+    }
 }
