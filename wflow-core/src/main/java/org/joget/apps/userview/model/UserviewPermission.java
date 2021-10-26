@@ -1,8 +1,7 @@
 package org.joget.apps.userview.model;
 
-import org.joget.apps.form.model.FormData;
 import org.joget.directory.model.User;
-import org.joget.apps.form.model.Element;
+import org.kecak.apps.userview.model.Platform;
 
 /**
  * A base abstract class to develop a Userview/Form Permission plugin. 
@@ -10,6 +9,7 @@ import org.joget.apps.form.model.Element;
  */
 public abstract class UserviewPermission extends ExtElement {
     private User currentUser;
+    private Platform platform = Platform.WEB;
 
     /**
      * Gets current logged in user. 
@@ -32,4 +32,22 @@ public abstract class UserviewPermission extends ExtElement {
      * @return 
      */
     public abstract boolean isAuthorize();
+
+    /**
+     * Get current platform
+     *
+     * @return
+     */
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    /**
+     * Set current platform
+     *
+     * @param platform
+     */
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
+    }
 }
