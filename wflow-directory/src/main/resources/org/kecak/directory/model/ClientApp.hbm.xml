@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class entity-name="ClientApp" name="org.kecak.directory.model.ClientApp" table="dir_client_app">
+        <id column="id" name="id" type="string"/>
+        <property name="dateCreated" type="timestamp"/>
+        <property name="dateModified" type="timestamp"/>
+        <property name="createdBy" type="string"/>
+        <property name="modifiedBy" type="string"/>
+        <property name="deleted" type="boolean"/>
+        <property column="user_id" name="userId" type="string"/>
+        <property column="app_name" name="appName" type="string"/>
+        <property column="client_secret" name="clientSecret" type="string"/>
+        <property column="redirect_url" name="redirectUrl" type="string"/>
+        <property column="active" name="active" type="integer"/>
+    </class>
+</hibernate-mapping>

@@ -1,8 +1,8 @@
 package org.kecak.oauth2;
 
 import org.joget.apps.app.service.AuthTokenService;
-import org.joget.directory.dao.ClientAppDao;
-import org.joget.directory.model.ClientApp;
+import org.kecak.directory.dao.ClientAppDao;
+import org.kecak.directory.model.ClientApp;
 import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
