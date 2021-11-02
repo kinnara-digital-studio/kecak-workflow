@@ -1,6 +1,6 @@
 stages:
   - build
-#   - deploy
+  - deploy
 build-war:
   stage: build
   tags: 
