@@ -111,9 +111,11 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
                         return "";
                     }
                 }
-            } catch (Exception ex) {}
+            } catch (Exception ex) {
+                LogUtil.error(FormHashVariable.class.getName(), ex, ex.getMessage());
+            }
         }
-        return null;
+        return "";
     }
 
     public String getName() {
