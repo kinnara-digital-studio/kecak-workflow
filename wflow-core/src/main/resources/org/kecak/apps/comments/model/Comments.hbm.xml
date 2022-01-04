@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class entity-name="Comments" lazy="false" name="org.kecak.apps.comments.model.Comments" table="app_fd_comments">
+		<id name="id" type="string">
+			<generator class="uuid" />
+		</id>
+		<property name="dateCreated" type="timestamp" />
+		<property name="dateModified" type="timestamp" />
+		<property name="createdBy" type="string" />
+		<property name="modifiedBy" type="string" />
+		<property name="deleted" type="boolean" />
+		
+		<property name="processId" type="string" column="processId" />
+		<property name="activityId" type="string" column="activityId" />
+		<property name="comment" type="string" column="comment" />
+		<property name="attachments" type="string" column="attachments" />
+		<property name="username" type="string" column="username" />
+	</class>
+</hibernate-mapping>
