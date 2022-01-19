@@ -24,6 +24,7 @@ public class Comments implements Serializable, Auditable {
     private String attachments;
     private String username;
     private String userFullName;
+    private String userAvatar;
     
 	public String getId() {
 		return id;
@@ -104,5 +105,11 @@ public class Comments implements Serializable, Auditable {
 	public String getAuditTrailId() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public String getUserAvatar() {
+		return userAvatar;
+	}
+	public void setUserAvatar(String userAvatar) {
+		this.userAvatar = userAvatar;
 	}
 }
