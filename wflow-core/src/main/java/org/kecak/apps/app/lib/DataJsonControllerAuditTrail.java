@@ -1,4 +1,4 @@
-package org.joget.apps.app.lib;
+package org.kecak.apps.app.lib;
 
 import org.joget.apps.app.dao.AuditTrailDao;
 import org.joget.apps.app.model.AuditTrail;
@@ -15,12 +15,12 @@ public class DataJsonControllerAuditTrail extends DefaultAuditTrailPlugin {
 
     @Override
     public String getVersion() {
-        return getClass().getPackage().getImplementationVersion();
+        return "5.0.0";
     }
 
     @Override
     public String getDescription() {
-        return getClass().getPackage().getImplementationTitle();
+        return "Store audit trail of DataJsonController";
     }
 
     @Override
@@ -40,7 +40,7 @@ public class DataJsonControllerAuditTrail extends DefaultAuditTrailPlugin {
 
     @Override
     public String getLabel() {
-        return "DataJsonController Audit Trail";
+        return "Data Json API Audit Trail";
     }
 
     @Override
