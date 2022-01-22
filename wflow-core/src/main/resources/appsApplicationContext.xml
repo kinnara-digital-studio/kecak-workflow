@@ -100,7 +100,7 @@
         <property name="sessionFactory" ref="appSessionFactory"/>
     </bean>
 
-    <bean id="AuditTrailDao" class="org.joget.apps.app.dao.AuditTrailDaoImpl">
+    <bean id="auditTrailDao" class="org.joget.apps.app.dao.AuditTrailDaoImpl">
         <property name="sessionFactory" ref="appSessionFactory"/>
     </bean>
 

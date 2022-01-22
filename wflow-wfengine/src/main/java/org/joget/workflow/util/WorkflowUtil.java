@@ -359,8 +359,8 @@ public class WorkflowUtil implements ApplicationContextAware {
      */
     public static void addAuditTrail(String clazz, String method, String message, @SuppressWarnings("rawtypes") Class[] paramTypes, Object[] args, Object returnObject) {
         try {
-            WorkflowHelper workflowMapper = (WorkflowHelper) appContext.getBean("workflowHelper");
-            workflowMapper.addAuditTrail(clazz, method, message, paramTypes, args, returnObject);
+            WorkflowHelper workflowHelper = (WorkflowHelper) appContext.getBean("workflowHelper");
+            workflowHelper.addAuditTrail(clazz, method, message, paramTypes, args, returnObject);
         } catch (Exception e) {
             LogUtil.error(WorkflowUtil.class.getName(), e, "Error add audit trail");
         }
