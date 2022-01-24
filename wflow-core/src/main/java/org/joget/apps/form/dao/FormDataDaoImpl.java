@@ -525,10 +525,18 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         Session session = getHibernateSession(entityName, tableName, rowSet, ACTION_TYPE_STORE);
 
         try {
+            final String username = WorkflowUtil.getCurrentUsername();
             final String orgId = WorkflowUtil.getCurrentUserOrgId();
+            final Date now = new Date();
 
             // save the form data
             for (FormRow row : rowSet) {
+                if(row.getCreatedBy() == null) row.setCreatedBy(username);
+                if(row.getDateCreated() == null) row.setDateCreated(now);
+
+                row.setModifiedBy(username);
+                row.setDateModified(now);
+
                 if (row.getOrgId() == null) row.setOrgId(orgId);
                 if (row.getOrgId().equals("*") || row.getOrgId().equals(orgId)) session.saveOrUpdate(entityName, row);
             }
