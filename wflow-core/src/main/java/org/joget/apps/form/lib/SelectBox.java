@@ -53,18 +53,6 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     public String getDescription() {
         return "Select Box Element";
     }
-
-    /**
-     * Returns the option key=value pairs for this select box.
-     * @param formData
-     * @return
-     */
-    @Nonnull
-	public FormRowSet getOptionMap(FormData formData) {
-        FormRowSet optionMap = FormUtil.getElementPropertyOptionsMap(this, formData);
-        optionMap.setMultiRow(true);
-        return optionMap;
-    }
     
     @Override
     public FormData formatDataForValidation(FormData formData) {
