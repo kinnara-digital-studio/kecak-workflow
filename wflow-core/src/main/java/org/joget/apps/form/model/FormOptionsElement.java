@@ -17,7 +17,7 @@ public interface FormOptionsElement {
      * @return
      */
     @Nonnull
-    default FormRowSet getOptionMap(FormData formData) {
+    default FormRowSet getOptionsMap(FormData formData) {
         if(this instanceof Element) {
             FormRowSet optionMap = FormUtil.getElementPropertyOptionsMap((Element) this, formData);
             optionMap.setMultiRow(true);
