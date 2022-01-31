@@ -3675,10 +3675,15 @@ public class DataJsonController implements Declutter {
      */
     protected boolean isAuthorize(@Nonnull DataList dataList) {
         final boolean isPermissionSet = dataList.getPermission() != null;
-        return !isPermissionSet && isAdministrativeRole() || isPermissionSet && dataListService.isAuthorize(dataList);
+        return !isPermissionSet && isDefaultUserToHavePermission() || isPermissionSet && dataListService.isAuthorize(dataList);
     }
 
-    protected boolean isAdministrativeRole() {
+    /**
+     * Is default user to be able to access API when permission is not set
+     *
+     * @return
+     */
+    protected boolean isDefaultUserToHavePermission() {
         return WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN);
     }
 
@@ -3707,7 +3712,7 @@ public class DataJsonController implements Declutter {
      */
     protected boolean isAuthorize(@Nonnull Form form, FormData formData) {
         final boolean isPermissionSet = form.getProperty("permission") != null;
-        return !isPermissionSet && isAdministrativeRole() || isPermissionSet && form.isAuthorize(formData);
+        return !isPermissionSet && isDefaultUserToHavePermission() || isPermissionSet && form.isAuthorize(formData);
     }
 
     /**
