@@ -1,7 +1,9 @@
 package org.joget.apps.app.lib;
 
 import java.lang.reflect.Method;
+import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +13,8 @@ import org.joget.commons.util.LogUtil;
 import org.joget.directory.model.User;
 import org.joget.directory.model.service.DirectoryManager;
 import org.springframework.context.ApplicationContext;
+
+import com.kinnarastudio.commons.Try;
 
 public class UserHashVariable extends DefaultHashVariablePlugin {
     private Map<String, User> userCache = new HashMap<String, User>();
@@ -69,8 +73,20 @@ public class UserHashVariable extends DefaultHashVariablePlugin {
 
                 Method method = User.class.getDeclaredMethod("get" + attribute, new Class[]{});
                 String returnResult = ((Object) method.invoke(user, new Object[]{})).toString();
-                if (returnResult == null || attribute.equals("Password")) {
-                    returnResult = "";
+                
+                if(!attribute.equals("profilePicture")) {
+	                if (returnResult == null || attribute.equals("Password")) {
+	                    returnResult = "";
+	                }
+                }else {
+                	Blob blob = ((Blob) method.invoke(user, new Object[]{}));
+                	int blobLength = (int) blob.length();
+                	byte[] blobAsBytes = blob.getBytes(1, blobLength);
+                	String pp = Base64.getEncoder().encodeToString(blobAsBytes);
+                	if(pp!=null)
+    					returnResult = "data:image/jpeg;base64,"+pp;
+    				else
+    					returnResult = AppUtil.getRequestContextPath()+"/images/default-avatar.png";
                 }
 
                 attributeValue = returnResult;
@@ -101,6 +117,7 @@ public class UserHashVariable extends DefaultHashVariablePlugin {
         syntax.add("user.USERNAME.email");
         syntax.add("user.USERNAME.active");
         syntax.add("user.USERNAME.timeZone");
+        syntax.add("user.USERNAME.profilePicture");
         
         return syntax;
     }

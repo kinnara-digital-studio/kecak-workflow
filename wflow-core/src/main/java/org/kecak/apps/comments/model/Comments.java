@@ -18,6 +18,7 @@ public class Comments implements Serializable, Auditable {
     private String createdBy;
     private String modifiedBy;
     private Boolean deleted;
+    private String foreignKey;
     private String processId;
     private String activityId;
     private String comment;
@@ -61,6 +62,12 @@ public class Comments implements Serializable, Auditable {
 	}
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
+	}
+	public String getForeignKey() {
+		return foreignKey;
+	}
+	public void setForeignKey(String foreignKey) {
+		this.foreignKey = foreignKey;
 	}
 	public String getProcessId() {
 		return processId;

@@ -38,6 +38,14 @@ public interface CommentsDao {
    /**
     * Load by Process Id
     *
+    * @param foreignKey
+    * @return
+    */
+   public ArrayList<Comments> loadByForeignKey(String foreignKey);
+   
+   /**
+    * Load by Process Id
+    *
     * @param processId
     * @return
     */
