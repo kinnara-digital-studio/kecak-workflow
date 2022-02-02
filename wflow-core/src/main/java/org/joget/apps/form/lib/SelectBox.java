@@ -350,7 +350,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         final Pattern searchPattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
         final long page = Long.parseLong(getOptionalParameter(request, "page", "1"));
         final String grouping = getOptionalParameter(request, "grouping", "");
-        final String[] values = getOptionalParameterValues(request, "value", new String[0]);
+        final String[] values = getOptionalParameterValues(request, "values", new String[0]);
 
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
 

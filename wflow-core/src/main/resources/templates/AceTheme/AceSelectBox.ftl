@@ -1,3 +1,4 @@
+
 <div class="form-cell form-group control-group <#if error??>has-error</#if>" ${elementMetaData!}>
     <script type="text/javascript" src="${request.contextPath}/bower_components/select2/dist/js/select2.full.min.js"></script>
     <link rel="stylesheet" href="${request.contextPath}/bower_components/select2/dist/css/select2.min.css">
@@ -97,20 +98,18 @@
                         type: 'GET',
                         url: '${request.contextPath}/web/json/app/${appId!}/${appVersion!}/plugin/${className}/service',
                         data: {
-                            values : '${values?join(";")}'
+                            values : '${values?join(";")}',
+                            formDefId : '${formDefId!}',
+                            fieldId : '${element.properties.id!}'
                         }
                     }).then(function (data) {
                         // create the option and append to Select2
-                        var option = new Option(data.id, data.text, true, true);
-                        $selectBox.append(option).trigger('change');
-
-                        // manually trigger the `select2:select` event
-                        $selectBox.trigger({
-                            type: 'select2:select',
-                            params: {
-                                data: data
-                            }
-                        });
+                        var results = data.results;
+                        for(var i in results) {
+                            var result = results[i];
+                            var option = new Option(result.text, result.id, true, true);
+                            $selectBox.append(option).trigger('change');
+                        }
                     });
                 </#if>
             });
