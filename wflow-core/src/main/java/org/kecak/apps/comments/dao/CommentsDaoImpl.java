@@ -35,6 +35,15 @@ public class CommentsDaoImpl extends AbstractSpringDao<Comments> implements Comm
 	
 	@Override
 	@Transactional
+	public ArrayList<Comments> loadByForeignKey(String foreignKey) {
+		Comments param = new Comments();
+		param.setForeignKey(foreignKey);
+		ArrayList<Comments> comment = (ArrayList<Comments>) findByExample(ENTITY_NAME, param);
+        return comment;
+	}
+	
+	@Override
+	@Transactional
 	public ArrayList<Comments> loadByProcessId(String processId) {
 		Comments param = new Comments();
 		param.setProcessId(processId);

@@ -101,6 +101,7 @@ public class UserHashVariable extends DefaultHashVariablePlugin {
         syntax.add("user.USERNAME.email");
         syntax.add("user.USERNAME.active");
         syntax.add("user.USERNAME.timeZone");
+        syntax.add("user.USERNAME.profilePicture");
         
         return syntax;
     }

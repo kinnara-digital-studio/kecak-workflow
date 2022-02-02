@@ -10,7 +10,7 @@
 		<property name="createdBy" type="string" />
 		<property name="modifiedBy" type="string" />
 		<property name="deleted" type="boolean" />
-		
+		<property name="foreignKey" type="string" column="foreignKey" />
 		<property name="processId" type="string" column="processId" />
 		<property name="activityId" type="string" column="activityId" />
 		<property name="comment" type="string" column="comment" />
