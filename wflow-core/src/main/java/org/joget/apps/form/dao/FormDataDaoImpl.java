@@ -470,7 +470,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         // get hibernate template
         Session session = getHibernateSession(tableName, tableName, null, ACTION_TYPE_LOAD);
         try {
-            String query = "SELECT e.id FROM " + tableName + " e WHERE " + FormUtil.PROPERTY_CUSTOM_PROPERTIES + "." + fieldName + " = ? AND (" + FormUtil.PROPERTY_DELETED + " IS NULL OR " + FormUtil.PROPERTY_DELETED + " = false) AND (" + FormUtil.PROPERTY_ORG_ID + " IS NULL OR " + FormUtil.PROPERTY_ORG_ID + " IN ('" + FORM_ANY_ORG_ID + "', ?)) AND (" + FormUtil.PROPERTY_DELETED + " = false OR " + FormUtil.PROPERTY_DELETED + " is null)";
+            String query = "SELECT e.id FROM " + tableName + " e WHERE " + FormUtil.PROPERTY_CUSTOM_PROPERTIES + "." + fieldName + " = ? AND (" + FormUtil.PROPERTY_DELETED + " IS NULL OR " + FormUtil.PROPERTY_DELETED + " = false) AND (" + FormUtil.PROPERTY_ORG_ID + " IS NULL OR " + FormUtil.PROPERTY_ORG_ID + " IN ('" + FORM_ANY_ORG_ID + "', ?))";
 
             Query q = session.createQuery(query);
 
@@ -525,10 +525,18 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         Session session = getHibernateSession(entityName, tableName, rowSet, ACTION_TYPE_STORE);
 
         try {
+            final String username = WorkflowUtil.getCurrentUsername();
             final String orgId = WorkflowUtil.getCurrentUserOrgId();
+            final Date now = new Date();
 
             // save the form data
             for (FormRow row : rowSet) {
+                if(row.getCreatedBy() == null) row.setCreatedBy(username);
+                if(row.getDateCreated() == null) row.setDateCreated(now);
+
+                row.setModifiedBy(username);
+                row.setDateModified(now);
+
                 if (row.getOrgId() == null) row.setOrgId(orgId);
                 if (row.getOrgId().equals("*") || row.getOrgId().equals(orgId)) session.saveOrUpdate(entityName, row);
             }

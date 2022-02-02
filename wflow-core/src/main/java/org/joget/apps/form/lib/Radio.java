@@ -68,7 +68,7 @@ public class Radio extends SelectBox implements FormBuilderPaletteElement {
 
         // set options
         @SuppressWarnings("rawtypes")
-        FormRowSet optionMap = getOptionMap(formData);
+        FormRowSet optionMap = getOptionsMap(formData);
         dataModel.put("options", optionMap);
 
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);

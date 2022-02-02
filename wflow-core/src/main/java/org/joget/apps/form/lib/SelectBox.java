@@ -18,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,18 +51,6 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     @Override
     public String getDescription() {
         return "Select Box Element";
-    }
-
-    /**
-     * Returns the option key=value pairs for this select box.
-     * @param formData
-     * @return
-     */
-    @Nonnull
-	public FormRowSet getOptionMap(FormData formData) {
-        FormRowSet optionMap = FormUtil.getElementPropertyOptionsMap(this, formData);
-        optionMap.setMultiRow(true);
-        return optionMap;
     }
     
     @Override
@@ -136,7 +123,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         dataModel.put("values", values);
 
         // set options
-        FormRowSet optionMap = getOptionMap(formData);
+        FormRowSet optionMap = getOptionsMap(formData);
         dataModel.put("options", optionMap);
 
         dataModel.put("className", getClassName());
@@ -286,7 +273,7 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
     }
 
     protected String[] getValueLabels(String[] values, FormData formData) {
-        FormRowSet optionMap = getOptionMap(formData);
+        FormRowSet optionMap = getOptionsMap(formData);
 
         // yes, we have to use anonymous object
         Comparator<FormRow> comparator = Comparator.comparing(new Function<FormRow, String>() {

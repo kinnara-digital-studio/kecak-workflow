@@ -52,6 +52,7 @@ import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -129,7 +130,7 @@ public class DataJsonController implements Declutter {
 
         try {
             // get current App Definition
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+            final AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // read request body and convert request body to json
             final JSONObject jsonBody = getRequestPayload(request);
@@ -148,7 +149,18 @@ public class DataJsonController implements Declutter {
 
             // construct response
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
+
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("postFormSubmit", new Object[] {
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    minify
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -197,6 +209,16 @@ public class DataJsonController implements Declutter {
             // construct response
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail( "postFormSubmitMultipart", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    minify
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -232,6 +254,14 @@ public class DataJsonController implements Declutter {
             JSONObject uploadResponse = postTempFileUpload(form, formData);
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResponse.toString());
+
+            addAuditTrail("postTempFileUploadForm", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId
+            });
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -272,6 +302,14 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
+            addAuditTrail("postTempFileUploadAssignment", new Object[] {
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    assignmentId
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -311,6 +349,14 @@ public class DataJsonController implements Declutter {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
+
+            addAuditTrail("postTempFileUploadAssignmentByProcess", new Object[] {
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    processId
+            });
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -370,6 +416,14 @@ public class DataJsonController implements Declutter {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
+
+            addAuditTrail( "postTempFileUploadProcessStart", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    processId
+            });
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -478,6 +532,16 @@ public class DataJsonController implements Declutter {
                 jsonResponse.put(FIELD_MESSAGE, MESSAGE_SUCCESS);
                 response.getWriter().write(jsonResponse.toString());
             }
+
+            addAuditTrail( "postTempFileUploadProcessStart", new Object[] {
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    elementId
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -529,6 +593,16 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
+            addAuditTrail("putFormData", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    primaryKey,
+                    minify
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -574,6 +648,16 @@ public class DataJsonController implements Declutter {
             // construct response
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("putFormDataMultipart", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    primaryKey,
+                    minify
+            });
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -674,6 +758,20 @@ public class DataJsonController implements Declutter {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("getFormData", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    primaryKey,
+                    asLabel,
+                    asAttachmentUrl,
+                    asOptions,
+                    digest
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -749,6 +847,20 @@ public class DataJsonController implements Declutter {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("deleteFormData", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    primaryKey,
+                    abort,
+                    terminate,
+                    minify,
+                    digest
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -824,6 +936,22 @@ public class DataJsonController implements Declutter {
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("getElementData", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    elementId,
+                    primaryKey,
+                    includeSubForm,
+                    digest,
+                    asAttachmentUrl,
+                    asLabel,
+                    asOptions
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -888,6 +1016,20 @@ public class DataJsonController implements Declutter {
 
             response.getWriter().write(jsonResponse.toString());
 
+            addAuditTrail("getElementOptionsData",new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    formDefId,
+                    elementId,
+                    page,
+                    start,
+                    rows,
+                    includeSubForm,
+                    digest
+            });
+            
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -928,6 +1070,15 @@ public class DataJsonController implements Declutter {
                 JSONObject jsonResponse = new JSONObject();
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getListCount", new Object[]{
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        dataListId
+                });
+                
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1007,14 +1158,30 @@ public class DataJsonController implements Declutter {
 
                 jsonResponse.put(FIELD_TOTAL, dataList.getSize());
 
-                if (!Objects.equals(digest, currentDigest))
+                if (!Objects.equals(digest, currentDigest)) {
                     jsonResponse.put(FIELD_DATA, jsonData);
+                }
 
                 jsonResponse.put(FIELD_DIGEST, currentDigest);
 
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getList", new Object[]{
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        dataListId,
+                        page,
+                        start,
+                        rows,
+                        sort,
+                        desc,
+                        digest
+                });
+                
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1129,6 +1296,16 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getListForm", new Object[] {
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        dataListId,
+                        formDefId
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1200,6 +1377,16 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
+            addAuditTrail("postProcessStart", new Object[]{
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    processId,
+                    minify,
+                    asOptions
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -1265,6 +1452,16 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
+            addAuditTrail("postProcessStartMultipart", new Object[] {
+                    request,
+                    response,
+                    appId,
+                    appVersion,
+                    processId,
+                    minify,
+                    asOptions
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -1310,6 +1507,13 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
+            addAuditTrail("postAssignmentComplete", new Object[] {
+                    request,
+                    response,
+                    assignmentId,
+                    minify
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -1354,6 +1558,13 @@ public class DataJsonController implements Declutter {
             // return processResult
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("postAssignmentCompleteMultipart", new Object[] {
+                    request,
+                    response,
+                    assignmentId,
+                    minify
+            });
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1401,6 +1612,14 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
+            addAuditTrail( "postAssignmentCompleteByProcess", new Object[] {
+                    request,
+                    response,
+                    processId,
+                    activityDefId,
+                    minify
+            });
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -1444,6 +1663,14 @@ public class DataJsonController implements Declutter {
             // return processResult
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
+
+            addAuditTrail("postAssignmentCompleteByProcessMultipart", new Object[] {
+                    request,
+                    response,
+                    processId,
+                    activityDefId,
+                    minify
+            });
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1490,6 +1717,16 @@ public class DataJsonController implements Declutter {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getAssignment", new Object[] {
+                        request,
+                        response,
+                        asLabel,
+                        asOptions,
+                        asAttachmentUrl,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1537,6 +1774,18 @@ public class DataJsonController implements Declutter {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getAssignmentByProcess",new Object[] {
+                        request,
+                        response,
+                        processId,
+                        activityDefId,
+                        asLabel,
+                        asOptions,
+                        asAttachmentUrl,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1600,6 +1849,18 @@ public class DataJsonController implements Declutter {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getAssignmentUsingForm", new Object[] {
+                        request,
+                        response,
+                        formDefId,
+                        assignmentId,
+                        asLabel,
+                        asOptions,
+                        asAttachmentUrl,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e);
             }
@@ -1664,6 +1925,19 @@ public class DataJsonController implements Declutter {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getAssignmentByProcessUsingForm", new Object[] {
+                        request,
+                        response,
+                        formDefId,
+                        processId,
+                        activityDefId,
+                        asLabel,
+                        asOptions,
+                        asAttachmentUrl,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, e);
             }
@@ -1700,6 +1974,15 @@ public class DataJsonController implements Declutter {
                 JSONObject jsonResponse = new JSONObject();
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getAssignmentsCount", new Object[] {
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        processId
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1802,6 +2085,21 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getAssignments", new Object[] {
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        processId,
+                        page,
+                        start,
+                        rows,
+                        sort,
+                        desc,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1865,6 +2163,17 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("abortAssignment", new Object[] {
+                        request,
+                        response,
+                        terminate,
+                        force,
+                        minify,
+                        statusField,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1934,6 +2243,19 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("abortAssignmentsByProcess", new Object[] {
+                        request,
+                        response,
+                        processId,
+                        activityDefId,
+                        terminate,
+                        force,
+                        minify,
+                        statusField,
+                        digest
+                });
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1942,6 +2264,357 @@ public class DataJsonController implements Declutter {
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
         }
     }
+
+    /**
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityDefIds
+     * @param page
+     * @param start
+     * @param rows
+     * @param sort
+     * @param desc
+     * @param digest
+     * @throws IOException
+     * @deprecated use {@link DataJsonController#getDataListAssignments}
+     */
+    @Deprecated
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
+    public void deprecatedGetDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
+                                                 @RequestParam("appId") final String appId,
+                                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                                 @RequestParam("dataListId") final String dataListId,
+                                                 @RequestParam(value = "processId", required = false) final String[] processId,
+                                                 @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
+                                                 @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                                 @RequestParam(value = "start", required = false) final Integer start,
+                                                 @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
+                                                 @RequestParam(value = "sort", required = false) final String sort,
+                                                 @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
+                                                 @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException {
+
+        getDataListAssignments(request, response, appId, appVersion, dataListId, processId, activityDefIds, page, start, rows, sort, desc, digest);
+    }
+
+    /**
+     * Get DataList Assignments
+     * <p>
+     * Same functionality as DataList Inbox plugin
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityDefIds
+     * @param page
+     * @param start
+     * @param rows
+     * @param sort
+     * @param desc
+     * @param digest
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/assignments", method = RequestMethod.GET)
+    public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
+                                       @RequestParam("appId") final String appId,
+                                       @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                       @RequestParam("dataListId") final String dataListId,
+                                       @RequestParam(value = "processId", required = false) final String[] processId,
+                                       @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
+                                       @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+                                       @RequestParam(value = "start", required = false) final Integer start,
+                                       @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
+                                       @RequestParam(value = "sort", required = false) final String sort,
+                                       @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
+                                       @RequestParam(value = "digest", required = false) final String digest)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // get dataList
+            DataList dataList = getDataList(appDefinition, dataListId);
+
+            // configure sorting
+            if (sort != null) {
+                dataList.setDefaultSortColumn(sort);
+
+                // order ASC / DESC
+                dataList.setDefaultOrder(desc ? DataList.ORDER_DESCENDING_VALUE : DataList.ORDER_ASCENDING_VALUE);
+            }
+
+            // paging
+            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? dataList.getPageSize() : DataList.MAXIMUM_PAGE_SIZE;
+            int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
+
+            getCollectFilters(request.getParameterMap(), dataList);
+
+            try {
+                @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
+                @Nonnull List<String> aids = convertMultiValueParameterToList(activityDefIds);
+
+                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(pids, aids, null, null, null, null);
+
+                // get original process ID from assignments
+                final Map<String, Collection<String>> mapPrimaryKeyToProcessId = workflowProcessLinkDao.getOriginalIds(assignmentList.stream().map(WorkflowAssignment::getProcessId).collect(Collectors.toList()));
+                @Nonnull List<String> originalPids = mapPrimaryKeyToProcessId
+                        .keySet()
+                        .stream()
+                        .distinct()
+                        .sorted()
+                        .collect(Collectors.toList());
+
+                addFilterById(dataList, originalPids);
+
+                JSONArray jsonData = Optional.ofNullable((DataListCollection<Map<String, Object>>) dataList.getRows(pageSize, rowStart))
+                        .orElse(new DataListCollection<>())
+                        .stream()
+
+                        // reformat content value
+                        .map(row -> formatRow(dataList, row))
+
+                        .map(tryFunction(row -> {
+                            String primaryKeyColumn = getPrimaryKeyColumn(dataList);
+                            String primaryKey = String.valueOf(row.get(primaryKeyColumn));
+
+                            // put process detail
+                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, String.valueOf(row.get("_" + FormUtil.PROPERTY_ID)));
+                            if (workflowAssignment != null) {
+                                row.put("activityId", workflowAssignment.getActivityId());
+                                row.put("activityDefId", workflowAssignment.getActivityDefId());
+                                row.put("processId", workflowAssignment.getProcessId());
+                                row.put("processDefId", workflowAssignment.getProcessDefId());
+                                row.put("assigneeId", workflowAssignment.getAssigneeId());
+                                row.put("appId", appDefinition.getAppId());
+                                row.put("appVersion", appDefinition.getVersion());
+
+                                FormData formData = new FormData();
+                                formData.setPrimaryKeyValue(primaryKey);
+
+                                retrieveMappedFormId(appDefinition, workflowAssignment, formData)
+                                        .ifPresent(s -> row.put("formId", s));
+                            }
+
+                            return new JSONObject(row);
+                        }))
+
+                        // collect as JSON
+                        .collect(JSONCollectors.toJSONArray());
+
+                String currentDigest = getDigest(jsonData);
+
+                JSONObject jsonResponse = new JSONObject();
+
+                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
+
+                if (!Objects.equals(digest, currentDigest))
+                    jsonResponse.put(FIELD_DATA, jsonData);
+
+                jsonResponse.put(FIELD_DIGEST, currentDigest);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("getDataListAssignments", new Object[] {
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        dataListId,
+                        processId,
+                        activityDefIds,
+                        page,
+                        start,
+                        rows,
+                        sort,
+                        desc,
+                        digest
+                });
+
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+        } catch (ApiException e) {
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+
+    /**
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityId
+     * @throws IOException
+     * @deprecated use {@link #getDataListAssignmentsCount(HttpServletRequest, HttpServletResponse, String, Long, String, String[], String[])}
+     */
+    @Deprecated
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
+    public void depecatedGetDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
+                                                     @RequestParam("appId") final String appId,
+                                                     @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                                     @RequestParam("dataListId") final String dataListId,
+                                                     @RequestParam(value = "processId", required = false) final String[] processId,
+                                                     @RequestParam(value = "activityId", required = false) final String[] activityId)
+            throws IOException {
+        getDataListAssignmentsCount(request, response, appId, appVersion, dataListId, processId, activityId);
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param processId
+     * @param activityId
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/assignments/count", method = RequestMethod.GET)
+    public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
+                                            @RequestParam("appId") final String appId,
+                                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                            @RequestParam("dataListId") final String dataListId,
+                                            @RequestParam(value = "processId", required = false) final String[] processId,
+                                            @RequestParam(value = "activityId", required = false) final String[] activityId)
+            throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        try {
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // get dataList
+            DataList dataList = getDataList(appDefinition, dataListId);
+
+            getCollectFilters(request.getParameterMap(), dataList);
+
+            try {
+                @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
+                @Nonnull List<String> aids = convertMultiValueParameterToList(activityId);
+
+                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(pids, aids, null, null, null, null);
+
+                // get original process ID from assignments
+                @Nonnull List<String> originalPids = workflowProcessLinkDao
+                        .getOriginalIds(assignmentList
+                                .stream()
+                                .map(WorkflowAssignment::getProcessId)
+                                .collect(Collectors.toList()))
+                        .keySet()
+                        .stream()
+                        .distinct()
+                        .sorted()
+                        .collect(Collectors.toList());
+
+                addFilterById(dataList, originalPids);
+
+                JSONObject jsonResponse = new JSONObject();
+
+                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
+
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail( "getDataListAssignmentsCount", new Object[] {
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        dataListId,
+                        processId,
+                        activityId
+                });
+
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+        } catch (ApiException e) {
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param appId
+     * @param appVersion
+     * @param dataListId
+     * @param actionType
+     * @param actionIndex
+     * @param ids
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST, headers = "content-type=application/json")
+    public void postDataListAction(final HttpServletRequest request, final HttpServletResponse response,
+                                   @RequestParam("appId") final String appId,
+                                   @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                   @RequestParam("dataListId") final String dataListId,
+                                   @RequestParam("actionType") final String actionType,
+                                   @RequestParam(value = "actionIndex", defaultValue = "0") final Integer actionIndex,
+                                   @RequestParam("id") final String[] ids) throws IOException {
+
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        
+        try {
+            // get current App
+            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
+
+            // get dataList
+            DataList dataList = getDataList(appDefinition, dataListId);
+            DataListAction action = getDataListAction(dataList, actionType, ifNullThen(actionIndex, 0));
+            DataListActionResult actionResult = action.executeAction(dataList, ids);
+
+            try {
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("message", actionResult.getMessage());
+                jsonResponse.put("url", actionResult.getUrl());
+                jsonResponse.put("type", actionResult.getType());
+                response.setStatus(HttpServletResponse.SC_OK);
+
+                response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("postDataListAction", new Object[] {
+                        request,
+                        response,
+                        appId,
+                        appVersion,
+                        dataListId,
+                        actionType,
+                        actionIndex,
+                        ids
+                });
+
+            } catch (JSONException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+        } catch (ApiException e) {
+            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
+    }
+
+
 
     /**
      * Delete assignment data
@@ -2257,314 +2930,6 @@ public class DataJsonController implements Declutter {
                 .filter(this::isNotEmpty)
                 .collect(FormRow::new, (result, entry) -> result.put(entry.getKey(), assignValue(entry.getValue())), FormRow::putAll);
     }
-
-    /**
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param processId
-     * @param activityDefIds
-     * @param page
-     * @param start
-     * @param rows
-     * @param sort
-     * @param desc
-     * @param digest
-     * @throws IOException
-     * @deprecated use {@link DataJsonController#getDataListAssignments}
-     */
-    @Deprecated
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)", method = RequestMethod.GET)
-    public void deprecatedGetDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
-                                                 @RequestParam("appId") final String appId,
-                                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                                 @RequestParam("dataListId") final String dataListId,
-                                                 @RequestParam(value = "processId", required = false) final String[] processId,
-                                                 @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
-                                                 @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                                 @RequestParam(value = "start", required = false) final Integer start,
-                                                 @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
-                                                 @RequestParam(value = "sort", required = false) final String sort,
-                                                 @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
-                                                 @RequestParam(value = "digest", required = false) final String digest)
-            throws IOException {
-
-        getDataListAssignments(request, response, appId, appVersion, dataListId, processId, activityDefIds, page, start, rows, sort, desc, digest);
-    }
-
-    /**
-     * Get DataList Assignments
-     * <p>
-     * Same functionality as DataList Inbox plugin
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param processId
-     * @param activityDefIds
-     * @param page
-     * @param start
-     * @param rows
-     * @param sort
-     * @param desc
-     * @param digest
-     * @throws IOException
-     */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/assignments", method = RequestMethod.GET)
-    public void getDataListAssignments(final HttpServletRequest request, final HttpServletResponse response,
-                                       @RequestParam("appId") final String appId,
-                                       @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                       @RequestParam("dataListId") final String dataListId,
-                                       @RequestParam(value = "processId", required = false) final String[] processId,
-                                       @RequestParam(value = "activityId", required = false) final String[] activityDefIds,
-                                       @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
-                                       @RequestParam(value = "start", required = false) final Integer start,
-                                       @RequestParam(value = "rows", required = false, defaultValue = "0") final Integer rows,
-                                       @RequestParam(value = "sort", required = false) final String sort,
-                                       @RequestParam(value = "desc", required = false, defaultValue = "false") final Boolean desc,
-                                       @RequestParam(value = "digest", required = false) final String digest)
-            throws IOException {
-
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
-
-            // get dataList
-            DataList dataList = getDataList(appDefinition, dataListId);
-
-            // configure sorting
-            if (sort != null) {
-                dataList.setDefaultSortColumn(sort);
-
-                // order ASC / DESC
-                dataList.setDefaultOrder(desc ? DataList.ORDER_DESCENDING_VALUE : DataList.ORDER_ASCENDING_VALUE);
-            }
-
-            // paging
-            int pageSize = rows != null && rows > 0 ? rows : page != null && page > 0 ? dataList.getPageSize() : DataList.MAXIMUM_PAGE_SIZE;
-            int rowStart = start != null ? start : page != null && page > 0 ? ((page - 1) * pageSize) : 0;
-
-            getCollectFilters(request.getParameterMap(), dataList);
-
-            try {
-                @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
-                @Nonnull List<String> aids = convertMultiValueParameterToList(activityDefIds);
-
-                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(pids, aids, null, null, null, null);
-
-                // get original process ID from assignments
-                final Map<String, Collection<String>> mapPrimaryKeyToProcessId = workflowProcessLinkDao.getOriginalIds(assignmentList.stream().map(WorkflowAssignment::getProcessId).collect(Collectors.toList()));
-                @Nonnull List<String> originalPids = mapPrimaryKeyToProcessId
-                        .keySet()
-                        .stream()
-                        .distinct()
-                        .sorted()
-                        .collect(Collectors.toList());
-
-                addFilterById(dataList, originalPids);
-
-                JSONArray jsonData = Optional.ofNullable((DataListCollection<Map<String, Object>>) dataList.getRows(pageSize, rowStart))
-                        .orElse(new DataListCollection<>())
-                        .stream()
-
-                        // reformat content value
-                        .map(row -> formatRow(dataList, row))
-
-                        .map(tryFunction(row -> {
-                            String primaryKeyColumn = getPrimaryKeyColumn(dataList);
-                            String primaryKey = String.valueOf(row.get(primaryKeyColumn));
-
-                            // put process detail
-                            WorkflowAssignment workflowAssignment = getAssignmentFromProcessIdMap(mapPrimaryKeyToProcessId, String.valueOf(row.get("_" + FormUtil.PROPERTY_ID)));
-                            if (workflowAssignment != null) {
-                                row.put("activityId", workflowAssignment.getActivityId());
-                                row.put("activityDefId", workflowAssignment.getActivityDefId());
-                                row.put("processId", workflowAssignment.getProcessId());
-                                row.put("processDefId", workflowAssignment.getProcessDefId());
-                                row.put("assigneeId", workflowAssignment.getAssigneeId());
-                                row.put("appId", appDefinition.getAppId());
-                                row.put("appVersion", appDefinition.getVersion());
-
-                                FormData formData = new FormData();
-                                formData.setPrimaryKeyValue(primaryKey);
-
-                                retrieveMappedFormId(appDefinition, workflowAssignment, formData)
-                                        .ifPresent(s -> row.put("formId", s));
-                            }
-
-                            return new JSONObject(row);
-                        }))
-
-                        // collect as JSON
-                        .collect(JSONCollectors.toJSONArray());
-
-                String currentDigest = getDigest(jsonData);
-
-                JSONObject jsonResponse = new JSONObject();
-
-                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
-
-                if (!Objects.equals(digest, currentDigest))
-                    jsonResponse.put(FIELD_DATA, jsonData);
-
-                jsonResponse.put(FIELD_DIGEST, currentDigest);
-
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                response.getWriter().write(jsonResponse.toString());
-            } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
-            }
-        } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
-            response.sendError(e.getErrorCode(), e.getMessage());
-        }
-    }
-
-
-    /**
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param processId
-     * @param activityId
-     * @throws IOException
-     * @deprecated use {@link #getDataListAssignmentsCount(HttpServletRequest, HttpServletResponse, String, Long, String, String[], String[])}
-     */
-    @Deprecated
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/assignments/datalist/(*:dataListId)/count", method = RequestMethod.GET)
-    public void depecatedGetDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
-                                                     @RequestParam("appId") final String appId,
-                                                     @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                                     @RequestParam("dataListId") final String dataListId,
-                                                     @RequestParam(value = "processId", required = false) final String[] processId,
-                                                     @RequestParam(value = "activityId", required = false) final String[] activityId)
-            throws IOException {
-        getDataListAssignmentsCount(request, response, appId, appVersion, dataListId, processId, activityId);
-    }
-
-    /**
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param processId
-     * @param activityId
-     * @throws IOException
-     */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/assignments/count", method = RequestMethod.GET)
-    public void getDataListAssignmentsCount(final HttpServletRequest request, final HttpServletResponse response,
-                                            @RequestParam("appId") final String appId,
-                                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                            @RequestParam("dataListId") final String dataListId,
-                                            @RequestParam(value = "processId", required = false) final String[] processId,
-                                            @RequestParam(value = "activityId", required = false) final String[] activityId)
-            throws IOException {
-
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-
-        try {
-            // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
-
-            // get dataList
-            DataList dataList = getDataList(appDefinition, dataListId);
-
-            getCollectFilters(request.getParameterMap(), dataList);
-
-            try {
-                @Nonnull List<String> pids = convertMultiValueParameterToList(processId);
-                @Nonnull List<String> aids = convertMultiValueParameterToList(activityId);
-
-                @Nonnull Collection<WorkflowAssignment> assignmentList = getAssignmentList(pids, aids, null, null, null, null);
-
-                // get original process ID from assignments
-                @Nonnull List<String> originalPids = workflowProcessLinkDao
-                        .getOriginalIds(assignmentList
-                                .stream()
-                                .map(WorkflowAssignment::getProcessId)
-                                .collect(Collectors.toList()))
-                        .keySet()
-                        .stream()
-                        .distinct()
-                        .sorted()
-                        .collect(Collectors.toList());
-
-                addFilterById(dataList, originalPids);
-
-                JSONObject jsonResponse = new JSONObject();
-
-                jsonResponse.put(FIELD_TOTAL, dataList.getSize());
-
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                response.getWriter().write(jsonResponse.toString());
-            } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
-            }
-        } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
-            response.sendError(e.getErrorCode(), e.getMessage());
-        }
-    }
-
-    /**
-     *
-     * @param request
-     * @param response
-     * @param appId
-     * @param appVersion
-     * @param dataListId
-     * @param actionType
-     * @param actionIndex
-     * @param ids
-     * @throws IOException
-     */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST, headers = "content-type=application/json")
-    public void postDataListAction(final HttpServletRequest request, final HttpServletResponse response,
-                                   @RequestParam("appId") final String appId,
-                                   @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                   @RequestParam("dataListId") final String dataListId,
-                                   @RequestParam("actionType") final String actionType,
-                                   @RequestParam(value = "actionIndex", defaultValue = "0") final Integer actionIndex,
-                                   @RequestParam("id") final String[] ids) throws IOException {
-
-        try {
-            // get current App
-            AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
-
-            // get dataList
-            DataList dataList = getDataList(appDefinition, dataListId);
-            DataListAction action = getDataListAction(dataList, actionType, ifNullThen(actionIndex, 0));
-            DataListActionResult actionResult = action.executeAction(dataList, ids);
-
-            try {
-                JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("message", actionResult.getMessage());
-                jsonResponse.put("url", actionResult.getUrl());
-                jsonResponse.put("type", actionResult.getType());
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                response.getWriter().write(jsonResponse.toString());
-            } catch (JSONException e) {
-                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
-            }
-        } catch (ApiException e) {
-            LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
-            response.sendError(e.getErrorCode(), e.getMessage());
-        }
-    }
-
 
     @Nonnull
     protected DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionType, int actionIndex) throws ApiException {
@@ -3309,8 +3674,17 @@ public class DataJsonController implements Declutter {
      * @return
      */
     protected boolean isAuthorize(@Nonnull DataList dataList) {
-        return (dataList.getPermission() != null || !WorkflowUtil.isCurrentUserAnonymous())
-                && dataListService.isAuthorize(dataList);
+        final boolean isPermissionSet = dataList.getPermission() != null;
+        return !isPermissionSet && isDefaultUserToHavePermission() || isPermissionSet && dataListService.isAuthorize(dataList);
+    }
+
+    /**
+     * Is default user to be able to access API when permission is not set
+     *
+     * @return
+     */
+    protected boolean isDefaultUserToHavePermission() {
+        return WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN);
     }
 
     /**
@@ -3337,8 +3711,8 @@ public class DataJsonController implements Declutter {
      * @return
      */
     protected boolean isAuthorize(@Nonnull Form form, FormData formData) {
-        return (form.getProperty("permission") != null || !WorkflowUtil.isCurrentUserAnonymous())
-                && form.isAuthorize(formData);
+        final boolean isPermissionSet = form.getProperty("permission") != null;
+        return !isPermissionSet && isDefaultUserToHavePermission() || isPermissionSet && form.isAuthorize(formData);
     }
 
     /**
@@ -3517,5 +3891,30 @@ public class DataJsonController implements Declutter {
         Map<String, String> workflowVariables = generateWorkflowVariable(form, formData);
         FormData resultFormData = appService.completeAssignmentForm(form, assignment, formData, workflowVariables);
         return resultFormData;
+    }
+
+    protected void addAuditTrail(String methodName, Object[] parameters) {
+        final Class[] types = Optional.of(this)
+                .map(Object::getClass)
+                .map(Class::getMethods)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .filter(m -> methodName.equals(m.getName()))
+                .findFirst()
+                .map(Method::getParameterTypes)
+                .orElse(null);
+
+        final HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
+        final String httpUrl = Optional.ofNullable(request).map(HttpServletRequest::getRequestURI).orElse("");
+        final String httpMethod = Optional.ofNullable(request).map(HttpServletRequest::getMethod).orElse("");
+
+        workflowHelper.addAuditTrail(
+                DataJsonController.class.getName(),
+                methodName,
+                "Rest API " + httpUrl + " method " + httpMethod,
+                types,
+                parameters,
+                null
+        );
     }
 }
