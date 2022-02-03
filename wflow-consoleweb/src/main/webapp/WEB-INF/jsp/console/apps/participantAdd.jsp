@@ -140,6 +140,11 @@
                                     </label>
                                     </div>
                                     <div class="form-row">
+                                    <label for="requesterReportTo">
+                                        <input id="requesterReportTo" type="radio" name="participantType" value="requesterReportTo"> <fmt:message key="console.process.config.label.mapParticipants.performer.reportTo"/>
+                                    </label>
+                                    </div>
+                                    <div class="form-row">
                                     <label for="requesterSubordinates">
                                         <input id="requesterSubordinates" type="radio" name="participantType" value="requesterSubordinates"> <fmt:message key="console.process.config.label.mapParticipants.performer.subordinate"/>
                                     </label>
