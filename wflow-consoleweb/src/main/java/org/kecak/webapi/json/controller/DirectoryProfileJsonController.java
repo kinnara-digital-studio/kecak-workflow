@@ -43,12 +43,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class DirectoryProfileJsonController implements Declutter {
@@ -97,6 +100,19 @@ public class DirectoryProfileJsonController implements Declutter {
     }
 
     /**
+     * Get profile picture
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/directory/profile/picture/(*:username)", method = RequestMethod.GET)
+    public void getProfilePicture(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("userId") final String username) throws IOException {
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        // TODO
+    }
+
+    /**
      * Get Profile
      *
      * @param request  HTTP Request
@@ -138,6 +154,19 @@ public class DirectoryProfileJsonController implements Declutter {
     }
 
     /**
+     * Change user profile
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/directory/profile", method = {RequestMethod.PUT})
+    public void putProfile(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+        LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        // TODO
+    }
+
+    /**
      * Reset Password for user ID
      *
      * Requires json object field "password" as request body
@@ -172,6 +201,12 @@ public class DirectoryProfileJsonController implements Declutter {
                 JSONObject jsonResponse = new JSONObject();
                 jsonResponse.put("message", "Password has been reset");
                 response.getWriter().write(jsonResponse.toString());
+
+                addAuditTrail("postResetPassword",new Object[]{
+                        request,
+                        response,
+                        userId
+                });
             } else {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Password is not supplied");
             }
@@ -233,5 +268,30 @@ public class DirectoryProfileJsonController implements Declutter {
         }
 
         return false;
+    }
+
+    protected void addAuditTrail(String methodName, Object[] parameters) {
+        final Class[] types = Optional.of(this)
+                .map(Object::getClass)
+                .map(Class::getMethods)
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .filter(m -> methodName.equals(m.getName()))
+                .findFirst()
+                .map(Method::getParameterTypes)
+                .orElse(null);
+
+        final HttpServletRequest request = WorkflowUtil.getHttpServletRequest();
+        final String httpUrl = Optional.ofNullable(request).map(HttpServletRequest::getRequestURI).orElse("");
+        final String httpMethod = Optional.ofNullable(request).map(HttpServletRequest::getMethod).orElse("");
+
+        workflowHelper.addAuditTrail(
+                DataJsonController.class.getName(),
+                methodName,
+                "Rest API " + httpUrl + " method " + httpMethod,
+                types,
+                parameters,
+                null
+        );
     }
 }
