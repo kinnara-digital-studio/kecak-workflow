@@ -125,7 +125,7 @@ public class DirectoryProfileJsonController implements Declutter {
                 JSONObject jsonResponse = new JSONObject();
 
                 jsonResponse.put("username", user.getUsername());
-                jsonResponse.put("profilePicture", "data:image/jpg;base64," + b64);
+                jsonResponse.put("profilePicture", "/web/json/directory/profile/picture/" + user.getUsername());
 
                 response.getWriter().write(jsonResponse.toString());
             } catch (JSONException | IOException | SQLException e) {
