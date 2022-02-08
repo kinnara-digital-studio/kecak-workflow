@@ -13,7 +13,9 @@ import org.joget.apps.form.service.FormService;
 import org.joget.commons.util.HashSalt;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.PasswordGeneratorUtil;
+import org.joget.commons.util.SecurityUtil;
 import org.joget.commons.util.SetupManager;
+import org.apache.commons.io.IOUtils;
 import org.joget.directory.dao.UserDao;
 import org.joget.directory.dao.UserSaltDao;
 import org.joget.directory.model.User;
@@ -107,9 +109,29 @@ public class DirectoryProfileJsonController implements Declutter {
      * @throws IOException
      */
     @RequestMapping(value = "/json/directory/profile/picture/(*:username)", method = RequestMethod.GET)
-    public void getProfilePicture(final HttpServletRequest request, final HttpServletResponse response, @RequestParam("userId") final String username) throws IOException {
+    public void getProfilePicture(final HttpServletRequest request, final HttpServletResponse response, 
+        @RequestParam("username") final String username) throws IOException {
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-        // TODO
+        response.setContentType("image/jpeg");  
+        try {
+            // username = SecurityUtil.decrypt(username);
+            User user = userDao.getUser(username);
+            if(user==null){
+                throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "User not found");
+            }
+            Blob blob = user.getProfilePicture();
+            try (InputStream in = blob.getBinaryStream();) {
+                IOUtils.copy(in, response.getOutputStream());
+                
+            } catch (IOException | SQLException e) {
+                throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+            }
+
+            
+        } catch (ApiException e) {
+            LogUtil.error(getClass().getName(), e, e.getMessage());
+            response.sendError(e.getErrorCode(), e.getMessage());
+        }
     }
 
     /**
