@@ -205,10 +205,18 @@ public class AuthenticationJsonController implements Declutter {
         try {
             JSONObject jsonUser = new JSONObject();
             jsonUser.put("id", user.getId());
+            jsonUser.put("dateCreated", user.getDateCreated());
+            jsonUser.put("createdBy", user.getCreatedBy());
+            jsonUser.put("dateModified", user.getDateModified());
+            jsonUser.put("modifiedBy", user.getModifiedBy());
             jsonUser.put("username", user.getUsername());
             jsonUser.put("email", user.getEmail());
             jsonUser.put("firstName", user.getFirstName());
             jsonUser.put("lastName", user.getLastName());
+            jsonUser.put("timeZone", user.getTimeZone());
+            jsonUser.put("timeZoneLabel", user.getTimeZoneLabel());
+            jsonUser.put("telephoneNumber", user.getTelephoneNumber());
+            jsonUser.put("locale", user.getLocale());
             jsonUser.put("active", user.getActive());
             return jsonUser;
         } catch (JSONException e) {
