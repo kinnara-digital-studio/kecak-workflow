@@ -78,30 +78,53 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
                     }
 
                     FormRowSet rows = Arrays.stream(primaryKeys)
-                            .map(primaryKey -> {
-                                String cacheKey = tableName + "##" + String.join("", primaryKey);
+                            .map(new Function<String, FormRow>() {
+                                @Override
+                                public FormRow apply(String primaryKey) {
+                                    String cacheKey = tableName + "##" + String.join("", primaryKey);
 
-                                if(formDataCache.containsKey(cacheKey)) {
-                                    return formDataCache.get(cacheKey);
+                                    if (formDataCache.containsKey(cacheKey)) {
+                                        return formDataCache.get(cacheKey);
+                                    }
+
+                                    FormRow row = formDataDao.loadByTableNameAndColumnName(tableName, columnName, primaryKey);
+                                    formDataCache.put(cacheKey, row);
+
+                                    return row;
                                 }
-
-                                FormRow row = formDataDao.loadByTableNameAndColumnName(tableName, columnName, primaryKey);
-                                formDataCache.put(cacheKey, row);
-
-                                return row;
                             }).collect(Collectors.toCollection(FormRowSet::new));
 
                     String val = rows.stream()
-                            .map(FormRow::getCustomProperties)
-                            .filter(Objects::nonNull)
+                            .map(new Function<FormRow, Map>() {
+                                @Override
+                                public Map apply(FormRow row) {
+                                    return row.getCustomProperties();
+                                }
+                            })
+                            .filter(new Predicate<Map>() {
+                                @Override
+                                public boolean test(Map m) {
+                                    return Objects.nonNull(m);
+                                }
+                            })
                             .map(new Function<Map, Object>() {
                                 @Override
                                 public Object apply(Map m) {
                                     return m.get(columnName);
                                 }
                             })
-                            .filter(Objects::nonNull)
-                            .map(String::valueOf)
+                            .filter(new Predicate<Object>() {
+                                @Override
+                                public boolean test(Object s) {
+                                    return Objects.nonNull(s);
+                                }
+                            })
+                            .map(new Function<Object, String>() {
+                                @Override
+                                public String apply(Object s) {
+                                    return String.valueOf(s);
+                                }
+                            })
                             .collect(Collectors.joining(";"));
 
                     if (!val.isEmpty()) {
