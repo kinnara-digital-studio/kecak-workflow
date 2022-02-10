@@ -95,42 +95,12 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
                             }).collect(Collectors.toCollection(FormRowSet::new));
 
                     String val = rows.stream()
-                            .filter(new Predicate<Map>() {
-                                @Override
-                                public boolean test(Map m) {
-                                    return Objects.nonNull(m);
-                                }
-                            })
-                            .map(new Function<FormRow, Map>() {
-                                @Override
-                                public Map apply(FormRow row) {
-                                    return row.getCustomProperties();
-                                }
-                            })
-                            .filter(new Predicate<Map>() {
-                                @Override
-                                public boolean test(Map m) {
-                                    return Objects.nonNull(m);
-                                }
-                            })
-                            .map(new Function<Map, Object>() {
-                                @Override
-                                public Object apply(Map m) {
-                                    return m.get(columnName);
-                                }
-                            })
-                            .filter(new Predicate<Object>() {
-                                @Override
-                                public boolean test(Object s) {
-                                    return Objects.nonNull(s);
-                                }
-                            })
-                            .map(new Function<Object, String>() {
-                                @Override
-                                public String apply(Object s) {
-                                    return String.valueOf(s);
-                                }
-                            })
+                            .filter(Objects::nonNull)
+                            .map(FormRow::getCustomProperties)
+                            .filter(Objects::nonNull)
+                            .map(m -> m.get(columnName))
+                            .filter(Objects::nonNull)
+                            .map(String::valueOf)
                             .collect(Collectors.joining(";"));
 
                     if (!val.isEmpty()) {
