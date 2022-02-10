@@ -95,6 +95,12 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
                             }).collect(Collectors.toCollection(FormRowSet::new));
 
                     String val = rows.stream()
+                            .filter(new Predicate<Map>() {
+                                @Override
+                                public boolean test(Map m) {
+                                    return Objects.nonNull(m);
+                                }
+                            })
                             .map(new Function<FormRow, Map>() {
                                 @Override
                                 public Map apply(FormRow row) {
