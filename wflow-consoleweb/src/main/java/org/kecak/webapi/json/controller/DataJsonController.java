@@ -273,15 +273,11 @@ public class DataJsonController implements Declutter {
      *
      * @param request
      * @param response
-     * @param appId
-     * @param appVersion
      * @throws IOException
      * @throws JSONException
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadAssignment(final HttpServletRequest request, final HttpServletResponse response,
-                                       @RequestParam("appId") final String appId,
-                                       @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                        @RequestParam("assignmentId") final String assignmentId) throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -305,8 +301,6 @@ public class DataJsonController implements Declutter {
             addAuditTrail("postTempFileUploadAssignment", new Object[] {
                     request,
                     response,
-                    appId,
-                    appVersion,
                     assignmentId
             });
 
@@ -320,15 +314,11 @@ public class DataJsonController implements Declutter {
      *
      * @param request
      * @param response
-     * @param appId
-     * @param appVersion
      * @throws IOException
      * @throws JSONException
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
-                                             @RequestParam("appId") final String appId,
-                                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                              @RequestParam("processId") final String processId) throws IOException, JSONException {
 
         LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
@@ -353,8 +343,6 @@ public class DataJsonController implements Declutter {
             addAuditTrail("postTempFileUploadAssignmentByProcess", new Object[] {
                     request,
                     response,
-                    appId,
-                    appVersion,
                     processId
             });
 

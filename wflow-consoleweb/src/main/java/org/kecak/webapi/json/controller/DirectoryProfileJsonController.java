@@ -184,12 +184,12 @@ public class DirectoryProfileJsonController implements Declutter {
 
         try {
             final String currentUser = WorkflowUtil.getCurrentUsername();
-            if(!currentUser.equals(username) && !WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
+            if (!currentUser.equals(username) && !WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
                 throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Current user is not an Administrator");
             }
 
             final User user = directoryManager.getUserByUsername(username);
-            if(user == null) {
+            if (user == null) {
                 throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "User [" + username + "] not found");
             }
 
@@ -249,29 +249,47 @@ public class DirectoryProfileJsonController implements Declutter {
     }
 
     /**
+     *
      * Reset Password for user ID
      * <p>
      * Requires json object field "password" as request body
      *
      * @param request
      * @param response
-     * @param userId
      * @throws IOException
      */
-    @RequestMapping(value = "/json/directory/profile/resetPassword/(*:userId)", method = {RequestMethod.POST, RequestMethod.PUT})
+    @RequestMapping(value = "/json/directory/profile/resetPassword", method = RequestMethod.POST)
+    public void postResetPassword(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+        postResetPassword(request, response, "");
+    }
+
+    /**
+     *
+     * Reset Password for user ID
+     * <p>
+     * Requires json object field "password" as request body
+     *
+     * @param request
+     * @param response
+     * @param foo
+     * @throws IOException
+     */
+    @RequestMapping(value = "/json/directory/profile/resetPassword/(~:foo)", method = {RequestMethod.POST, RequestMethod.PUT})
     public void postResetPassword(final HttpServletRequest request, final HttpServletResponse response,
-                                  @RequestParam("userId") String userId) throws IOException {
+                                  @RequestParam(value = "foo", defaultValue = "") String foo) throws IOException {
+
         LogUtil.info(getClass().getName(), "Executing JSON Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
+        if(!foo.isEmpty()) {
+            LogUtil.warn(getClass().getName(), "Parameter [" + foo + "] will be ignored");
+        }
 
         try {
             final String currentUsername = WorkflowUtil.getCurrentUsername();
-            if (!userId.equals(currentUsername) && !WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
-                throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Current user is not administrator");
-            }
 
-            final User user = Optional.of(userId)
+            final User user = Optional.of(currentUsername)
                     .map(directoryManager::getUserByUsername)
-                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "User [" + userId + "] is not available"));
+                    .orElseThrow(() -> new ApiException(HttpServletResponse.SC_NOT_FOUND, "User [" + currentUsername + "] is not available"));
 
             final JSONObject jsonBody = getRequestPayload(request);
             final String password = jsonBody.getString("password");
@@ -287,7 +305,7 @@ public class DirectoryProfileJsonController implements Declutter {
                 addAuditTrail("postResetPassword", new Object[]{
                         request,
                         response,
-                        userId
+                        foo
                 });
             } else {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Password is not supplied");
@@ -358,7 +376,7 @@ public class DirectoryProfileJsonController implements Declutter {
                 .map(Class::getMethods)
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty)
-                .filter(m -> methodName.equals(m.getName()))
+                .filter(m -> methodName.equals(m.getName()) && m.getParameterCount() == parameters.length)
                 .findFirst()
                 .map(Method::getParameterTypes)
                 .orElse(null);
