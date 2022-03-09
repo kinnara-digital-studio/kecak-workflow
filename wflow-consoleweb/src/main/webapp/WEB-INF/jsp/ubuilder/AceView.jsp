@@ -267,7 +267,8 @@ if (!MobileUtil.isMobileDisabled() && MobileUtil.isMobileUserAgent(request)) {
         </button>
 
         <div class="navbar-header pull-left">
-          <a href="${pageContext.request.contextPath}/web/userview/${appId}/${userview.properties.id}/<c:out value="${key}"/>/" class="navbar-brand">
+          <i class="ace-icon glyphicon glyphicon-th navbar-brand" style="padding-right:0px;"></i>
+          <a href="${pageContext.request.contextPath}/web/desktop" class="navbar-brand" style="padding-left:0px;">
             ${navigationBarHeader}
           </a>
         </div>
