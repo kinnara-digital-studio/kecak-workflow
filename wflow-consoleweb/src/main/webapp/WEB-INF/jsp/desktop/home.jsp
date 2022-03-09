@@ -15,7 +15,7 @@
 
         <div id="main-container">
             <div id="main-content">
-                <h1><i class="icon-desktop"></i> <fmt:message key="adminBar.label.appCenter"/></h1>
+                <h1><img src="${pageContext.request.contextPath}/images/app-center.png" width="38px;"/> <fmt:message key="adminBar.label.appCenter"/></h1>
                 <div id="search"></div>
                 <c:if test="${isAdmin && !empty marketplaceUrl && marketplaceUrl != '???appCenter.link.marketplace.url???'}">
                     <div id="categories" class="menu-link-admin">

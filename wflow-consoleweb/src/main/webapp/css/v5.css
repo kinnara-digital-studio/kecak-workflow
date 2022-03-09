@@ -806,5 +806,7 @@ button#installApp {
     opacity: 0.7;
     text-decoration: none;
 }
-
+.icon-app-center{
+    background: url(../images/app-center.png) no-repeat;
+}
 
