@@ -98,7 +98,12 @@ public class FormHashVariable extends DefaultHashVariablePlugin {
                             .filter(Objects::nonNull)
                             .map(FormRow::getCustomProperties)
                             .filter(Objects::nonNull)
-                            .map(m -> m.get(columnName))
+                            .map(new Function<Map, Object>() {
+                                @Override
+                                public Object apply(Map m) {
+                                    return m.get(columnName);
+                                }
+                            })
                             .filter(Objects::nonNull)
                             .map(String::valueOf)
                             .collect(Collectors.joining(";"));
