@@ -4875,7 +4875,7 @@ public class WorkflowManagerImpl implements WorkflowManager, Declutter {
                     Map<String, WorkflowParticipant> participantMap = getParticipantMap(assignment.getProcessDefId());
                     WorkflowParticipant participant = (WorkflowParticipant) participantMap.get(performerId);
                     if (participant != null) {
-                        assignment.setParticipant(participant.getName());
+                        assignment.setParticipant(participant.getId());
                     }
                 }
             }
