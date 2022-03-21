@@ -1192,6 +1192,9 @@ public class StandardPackageValidator implements XMLValidator{
             XPDLRepositoryHandler repH = new XPDLRepositoryHandler();
             repH.toXML(document, pkg);
             TransformerFactory tFactory = TransformerFactory.newInstance();
+            tFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            tFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            tFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
             Transformer transformer = tFactory.newTransformer();
             transformer.setOutputProperty("indent", "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
