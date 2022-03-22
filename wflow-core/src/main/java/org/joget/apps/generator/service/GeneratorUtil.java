@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.xml.serialize.OutputFormat;
@@ -211,11 +212,13 @@ public class GeneratorUtil {
     public static String addParticipantsAndProcessXmlToXpdl(String participantsXml, String processXml, String xpdl) throws RuntimeException {
         try {
             DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+            domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             domFactory.setNamespaceAware(true);
             DocumentBuilder builder = domFactory.newDocumentBuilder();
             Document xpdlDoc = builder.parse(new InputSource(new ByteArrayInputStream(xpdl.getBytes("UTF-8"))));
             
             DocumentBuilderFactory domFactory2 = DocumentBuilderFactory.newInstance();
+            domFactory2.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
             DocumentBuilder builder2 = domFactory2.newDocumentBuilder();
             Document processDoc = builder2.parse(new InputSource(new ByteArrayInputStream(processXml.getBytes("UTF-8"))));
         
@@ -228,6 +231,7 @@ public class GeneratorUtil {
             
             if (participantsXml != null && !participantsXml.isEmpty()) {
                 DocumentBuilderFactory domFactory3 = DocumentBuilderFactory.newInstance();
+                domFactory3.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
                 DocumentBuilder builder3 = domFactory3.newDocumentBuilder();
                 Document participantsDoc = builder3.parse(new InputSource(new ByteArrayInputStream(participantsXml.getBytes("UTF-8"))));
             

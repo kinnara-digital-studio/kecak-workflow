@@ -9,6 +9,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.XMLConstants;
 import org.apache.xerces.parsers.DOMParser;
 import org.enhydra.shark.xpdl.elements.Activities;
 import org.enhydra.shark.xpdl.elements.Activity;

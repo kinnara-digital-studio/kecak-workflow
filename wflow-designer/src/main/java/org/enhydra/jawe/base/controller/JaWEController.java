@@ -33,6 +33,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.XMLConstants;
 
 import org.enhydra.jawe.BarFactory;
 import org.enhydra.jawe.ChoiceButton;
@@ -1464,6 +1465,9 @@ public class JaWEController extends Observable implements
 
                 // Use a Transformer for output
                 TransformerFactory tFactory = TransformerFactory.newInstance();
+                tFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                tFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                tFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
                 Transformer transformer = tFactory.newTransformer();
                 transformer.setOutputProperty("indent", "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
