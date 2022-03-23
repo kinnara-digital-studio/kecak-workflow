@@ -2,6 +2,8 @@ package org.joget.commons.util;
 
 import java.io.File;
 import java.net.URLDecoder;
+import java.text.Normalizer;
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
@@ -9,6 +11,10 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class LogUtil {
+
+    protected static Log getLog(String className) {
+        return LogFactory.getLog(className);
+    }
 
     /**
      * Log message with logger level is info
@@ -52,6 +58,46 @@ public class LogUtil {
         } else {
             LogFactory.getLog(className).error(getHost() + e.toString(), e);
         }
+    }
+
+    /**
+     * Check is the info log is enabled
+     * @param className
+     * @return 
+     */
+    public static boolean isInfoEnabled(String className) {
+        Log log = getLog(className);
+        return log.isInfoEnabled();
+    }
+    
+    /**
+     * Check is the debug log is enabled
+     * @param className
+     * @return 
+     */
+    public static boolean isDebugEnabled(String className) {
+        Log log = getLog(className);
+        return log.isDebugEnabled();
+    }
+    
+    /**
+     * Check is the warn log is enabled
+     * @param className
+     * @return 
+     */
+    public static boolean isWarnEnabled(String className) {
+        Log log = getLog(className);
+        return log.isWarnEnabled();
+    }
+    
+    /**
+     * Check is the error log is enabled
+     * @param className
+     * @return 
+     */
+    public static boolean isErrorEnabled(String className) {
+        Log log = getLog(className);
+        return log.isErrorEnabled();
     }
     
     /**
