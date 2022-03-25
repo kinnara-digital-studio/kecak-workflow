@@ -43,7 +43,7 @@ public class EmailProcessorRouteBuilder extends RouteBuilder {
 			fromUriBuilder.append("&delete=false&unseen=true");
 
 			String fromUri = fromUriBuilder.toString();
-			from(fromUri).bean("emailProcessor", "parseEmail");
+			// from(fromUri).bean("emailProcessor", "parseEmail");
 		}
 	}
 
