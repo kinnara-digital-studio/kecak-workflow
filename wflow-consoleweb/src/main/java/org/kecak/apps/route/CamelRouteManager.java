@@ -23,7 +23,7 @@ public class CamelRouteManager implements CamelContextAware {
 				try {
 					// remove all existing routes
 					getCamelContext().removeEndpoint(r.getEndpoint());
-					// getCamelContext().stopRoute(r.getId());
+					getCamelContext().stop();
 					getCamelContext().removeRoute(r.getId());
 				} catch (Exception e) {
 					LogUtil.error(getClass().getName(), e, e.getMessage());
