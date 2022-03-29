@@ -88,6 +88,8 @@
         </Logger>
         <Logger name="TimeProfiler-EventAudit" level="error" additivity="false">
         </Logger>
+        <logger name="com.atomikos" level="error" additivity="false">
+        </logger>
 
         <!-- Email log file -->
         <Logger name="org.joget.apps.app.lib.EmailTool" level="debug" additivity="true">
