@@ -18,6 +18,8 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.displaytag.Messages;
 import org.displaytag.exception.BaseNestableJspTagException;
 import org.displaytag.exception.SeverityEnum;
@@ -83,11 +85,12 @@ public class CustomExcelHssfView implements BinaryExportView {
                 XSSFRow xlsRow = sheet.createRow(rowNum++);
 
                 XSSFCellStyle headerStyle = wb.createCellStyle();
-                headerStyle.setFillPattern(XSSFCellStyle.FINE_DOTS);
-                headerStyle.setFillBackgroundColor(HSSFColor.BLUE_GREY.index);
+                headerStyle.setFillPattern(FillPatternType.FINE_DOTS);
+                headerStyle.setFillBackgroundColor(HSSFColorPredefined.BLUE_GREY.getIndex());
                 XSSFFont bold = wb.createFont();
-                bold.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
-                bold.setColor(HSSFColor.WHITE.index);
+                // bold.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+                bold.setBold(true);
+                bold.setColor(HSSFColorPredefined.WHITE.getIndex());
                 headerStyle.setFont(bold);
 
                 @SuppressWarnings("rawtypes")
