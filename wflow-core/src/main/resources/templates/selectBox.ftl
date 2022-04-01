@@ -1,6 +1,7 @@
 <div class="form-cell" ${elementMetaData!}>
-    <script type="text/javascript" src="${request.contextPath}/bower_components/select2/dist/js/select2.full.min.js"></script>
-    <link rel="stylesheet" href="${request.contextPath}/bower_components/select2/dist/css/select2.min.css">
+    <script type="text/javascript" src="${request.contextPath}/node_modules/select2/dist/js/select2.full.min.js"></script>
+    <link rel="stylesheet" href="${request.contextPath}/node_modules/select2/dist/css/select2.min.css">
+
     <script type="text/javascript" src="${request.contextPath}/js/json/formUtil.js"></script>
 
     <label class="label">${element.properties.label} <span class="form-cell-validator">${decoration}</span><#if error??> <span class="form-error-message">${error}</span></#if></label>

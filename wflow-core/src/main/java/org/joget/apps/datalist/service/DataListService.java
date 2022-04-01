@@ -2,13 +2,16 @@ package org.joget.apps.datalist.service;
 
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.*;
+import org.joget.apps.userview.model.UserviewPermission;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
+import org.joget.directory.model.service.DirectoryManager;
 import org.joget.directory.model.service.ExtDirectoryManager;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
+import org.joget.workflow.util.WorkflowUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,7 @@ public class DataListService {
 
     /**
      * Create a DataList object from JSON definition
+     *
      * @param json
      * @param ignoreColumnPermission
      * @return
@@ -44,10 +48,25 @@ public class DataListService {
     public DataList fromJson(String json, boolean ignoreColumnPermission) {
         json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
 
-        DataList dataList = JsonUtil.fromJson(json, DataList.class);
+        final DataList dataList = JsonUtil.fromJson(json, DataList.class);
+
+        final Optional<UserviewPermission> optPermission = Optional.ofNullable(dataList)
+                .map(DataList::getPermission);
+
+        if (optPermission.isPresent()) {
+            final UserviewPermission permission = optPermission.get();
+            final DirectoryManager directoryManager = (DirectoryManager) AppUtil.getApplicationContext().getBean("directoryManager");
+            final User user = directoryManager.getUserByUsername(WorkflowUtil.getCurrentUsername());
+
+            permission.setCurrentUser(user);
+            if (!permission.isAuthorize()) {
+                LogUtil.info(getClass().getName(), "User [" + user.getUsername() + "] is unauthorized to access datalist [" + dataList.getId() + "]");
+                return null;
+            }
+        }
 
         // check column permission
-        if(dataList != null) {
+        if (dataList != null) {
             DataListColumn[] columns = Optional.of(dataList)
                     .map(DataList::getColumns)
                     .map(Arrays::stream)
@@ -63,6 +82,7 @@ public class DataListService {
 
     /**
      * Create a DataList object from JSON definition
+     *
      * @param json
      * @return
      */
@@ -72,6 +92,7 @@ public class DataListService {
 
     /**
      * Retrieve a binder plugin by ID. For now the ID is the class name
+     *
      * @param id
      * @return
      */
@@ -88,6 +109,7 @@ public class DataListService {
 
     /**
      * Retrieve an action plugin by class name.
+     *
      * @param className
      * @return
      */
@@ -102,7 +124,8 @@ public class DataListService {
     }
 
     /**
-     * Returns an array of available binder plugins. For now, ID is the fully qualified class name. 
+     * Returns an array of available binder plugins. For now, ID is the fully qualified class name.
+     *
      * @return
      */
     public DataListBinder[] getAvailableBinders() {
@@ -119,6 +142,7 @@ public class DataListService {
 
     /**
      * Returns an array of available action plugins. For now, ID is the fully qualified class name.
+     *
      * @return
      */
     public DataListAction[] getAvailableActions() {
@@ -135,6 +159,7 @@ public class DataListService {
 
     /**
      * Returns an array of available formatter plugins. For now, ID is the fully qualified class name.
+     *
      * @return
      */
     public DataListColumnFormat[] getAvailableFormats() {
