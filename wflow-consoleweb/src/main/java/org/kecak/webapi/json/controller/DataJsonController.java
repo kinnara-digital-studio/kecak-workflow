@@ -59,9 +59,8 @@ import java.util.stream.Stream;
 
 /**
  * @author aristo
- *
+ * <p>
  * Automatic API generation using Kecak UI builder.
- *
  * @see DataJsonControllerHandler
  */
 @Controller
@@ -126,7 +125,7 @@ public class DataJsonController implements Declutter {
                                @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -137,7 +136,7 @@ public class DataJsonController implements Declutter {
 
             final FormData formData = new FormData();
             String primaryKey = jsonBody.optString("id");
-            if(!primaryKey.isEmpty()) {
+            if (!primaryKey.isEmpty()) {
                 formData.setPrimaryKeyValue(primaryKey);
             }
 
@@ -152,7 +151,7 @@ public class DataJsonController implements Declutter {
 
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postFormSubmit", new Object[] {
+            addAuditTrail("postFormSubmit", new Object[]{
                     request,
                     response,
                     appId,
@@ -168,7 +167,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request    Request
      * @param response   Response
      * @param appId      Application ID
@@ -186,7 +184,7 @@ public class DataJsonController implements Declutter {
                                         @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -195,7 +193,7 @@ public class DataJsonController implements Declutter {
 
             FormData formData = new FormData();
             String primaryKey = getOptionalParameter(request, "id", "");
-            if(!primaryKey.isEmpty()) {
+            if (!primaryKey.isEmpty()) {
                 formData.setPrimaryKeyValue(primaryKey);
             }
 
@@ -210,7 +208,7 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail( "postFormSubmitMultipart", new Object[]{
+            addAuditTrail("postFormSubmitMultipart", new Object[]{
                     request,
                     response,
                     appId,
@@ -226,7 +224,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param response
      * @param appId
@@ -236,11 +233,11 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadForm(final HttpServletRequest request, final HttpServletResponse response,
-                                   @RequestParam("appId") final String appId,
-                                   @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                   @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
+                                       @RequestParam("appId") final String appId,
+                                       @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                       @RequestParam("formDefId") final String formDefId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -270,7 +267,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param response
      * @throws IOException
@@ -278,9 +274,9 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/assignment/(*:assignmentId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadAssignment(final HttpServletRequest request, final HttpServletResponse response,
-                                       @RequestParam("assignmentId") final String assignmentId) throws IOException, JSONException {
+                                             @RequestParam("assignmentId") final String assignmentId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -298,7 +294,7 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
-            addAuditTrail("postTempFileUploadAssignment", new Object[] {
+            addAuditTrail("postTempFileUploadAssignment", new Object[]{
                     request,
                     response,
                     assignmentId
@@ -311,7 +307,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param response
      * @throws IOException
@@ -319,9 +314,9 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/assignment/process/(*:processId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadAssignmentByProcess(final HttpServletRequest request, final HttpServletResponse response,
-                                             @RequestParam("processId") final String processId) throws IOException, JSONException {
+                                                      @RequestParam("processId") final String processId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -340,7 +335,7 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
-            addAuditTrail("postTempFileUploadAssignmentByProcess", new Object[] {
+            addAuditTrail("postTempFileUploadAssignmentByProcess", new Object[]{
                     request,
                     response,
                     processId
@@ -363,12 +358,12 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/process/(*:processId)/tempUpload", method = RequestMethod.POST, headers = "content-type=multipart/form-data")
     public void postTempFileUploadProcessStart(final HttpServletRequest request, final HttpServletResponse response,
-                                 @RequestParam("appId") String appId,
-                                 @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                                 @RequestParam("processId") String processId)
+                                               @RequestParam("appId") String appId,
+                                               @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                               @RequestParam("processId") String processId)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -393,7 +388,7 @@ public class DataJsonController implements Declutter {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
 
             FormData formData = new FormData();
-            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[]{DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER});
 
             // check form permission
             if (!isAuthorize(form, formData)) {
@@ -405,7 +400,7 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
-            addAuditTrail( "postTempFileUploadProcessStart", new Object[]{
+            addAuditTrail("postTempFileUploadProcessStart", new Object[]{
                     request,
                     response,
                     appId,
@@ -488,7 +483,7 @@ public class DataJsonController implements Declutter {
                                    @RequestParam("formDefId") final String formDefId,
                                    @RequestParam("elementId") final String elementId) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App Definition
@@ -521,7 +516,7 @@ public class DataJsonController implements Declutter {
                 response.getWriter().write(jsonResponse.toString());
             }
 
-            addAuditTrail( "postTempFileUploadProcessStart", new Object[] {
+            addAuditTrail("postTempFileUploadProcessStart", new Object[]{
                     request,
                     response,
                     appId,
@@ -558,7 +553,7 @@ public class DataJsonController implements Declutter {
                             @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
 
@@ -598,7 +593,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param response
      * @param appId
@@ -617,7 +611,7 @@ public class DataJsonController implements Declutter {
                                      @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
 
@@ -668,14 +662,14 @@ public class DataJsonController implements Declutter {
      */
     @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/form/(*:formDefId)", method = RequestMethod.GET)
     public void getFormDataWithIdAsParameter(final HttpServletRequest request, final HttpServletResponse response,
-                            @RequestParam("appId") final String appId,
-                            @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
-                            @RequestParam("formDefId") final String formDefId,
-                            @RequestParam(value = "id") final String id,
-                            @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
-                            @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
-                            @RequestParam(value = "asOptions", defaultValue = "false") final Boolean asOptions,
-                            @RequestParam(value = "digest", required = false) final String digest)
+                                             @RequestParam("appId") final String appId,
+                                             @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
+                                             @RequestParam("formDefId") final String formDefId,
+                                             @RequestParam(value = "id") final String id,
+                                             @RequestParam(value = "asLabel", defaultValue = "false") final Boolean asLabel,
+                                             @RequestParam(value = "asAttachmentUrl", defaultValue = "false") final Boolean asAttachmentUrl,
+                                             @RequestParam(value = "asOptions", defaultValue = "false") final Boolean asOptions,
+                                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
         try {
@@ -711,7 +705,7 @@ public class DataJsonController implements Declutter {
                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -791,7 +785,7 @@ public class DataJsonController implements Declutter {
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -806,7 +800,7 @@ public class DataJsonController implements Declutter {
             // construct response
             @Nonnull
             JSONObject jsonData;
-            if(minify) {
+            if (minify) {
                 jsonData = getMinifiedData(formData);
             } else {
                 jsonData = getData(form, formData, false);
@@ -826,7 +820,7 @@ public class DataJsonController implements Declutter {
             deleteData(form, formData, true);
 
             // abort related process
-            if(abort) {
+            if (abort) {
                 WorkflowAssignment assignment = getAssignmentByProcess(formData.getProcessId());
                 abortProcess(assignment, terminate);
             }
@@ -884,7 +878,7 @@ public class DataJsonController implements Declutter {
                                @RequestParam(value = "asOptions", defaultValue = "false") final Boolean asOptions)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -959,7 +953,7 @@ public class DataJsonController implements Declutter {
                                       @RequestParam(value = "digest", required = false) final String digest)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             final FormData formData = new FormData();
@@ -1004,7 +998,7 @@ public class DataJsonController implements Declutter {
 
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("getElementOptionsData",new Object[]{
+            addAuditTrail("getElementOptionsData", new Object[]{
                     request,
                     response,
                     appId,
@@ -1017,7 +1011,7 @@ public class DataJsonController implements Declutter {
                     includeSubForm,
                     digest
             });
-            
+
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
             LogUtil.error(getClass().getName(), e, "HTTP error [" + e.getErrorCode() + "] : " + e.getMessage());
@@ -1041,7 +1035,7 @@ public class DataJsonController implements Declutter {
                              @RequestParam("dataListId") final String dataListId)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -1066,7 +1060,7 @@ public class DataJsonController implements Declutter {
                         appVersion,
                         dataListId
                 });
-                
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1104,7 +1098,7 @@ public class DataJsonController implements Declutter {
                         @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -1169,7 +1163,7 @@ public class DataJsonController implements Declutter {
                         desc,
                         digest
                 });
-                
+
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
             }
@@ -1211,7 +1205,7 @@ public class DataJsonController implements Declutter {
                             @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -1285,7 +1279,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getListForm", new Object[] {
+                addAuditTrail("getListForm", new Object[]{
                         request,
                         response,
                         appId,
@@ -1322,7 +1316,7 @@ public class DataJsonController implements Declutter {
                                  @RequestParam(value = "asOptions", required = false, defaultValue = "false") Boolean asOptions)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -1350,8 +1344,8 @@ public class DataJsonController implements Declutter {
             JSONObject jsonBody = getRequestPayload(request);
             final FormData formData = fillStoreBinderInFormData(jsonBody, form, new FormData(), true);
 
-            if(isNotEmpty(asOptions)) {
-                formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] {"true"});
+            if (isNotEmpty(asOptions)) {
+                formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[]{"true"});
             }
 
             // check form permission
@@ -1400,7 +1394,7 @@ public class DataJsonController implements Declutter {
                                           @RequestParam(value = "asOptions", defaultValue = "false") Boolean asOptions)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -1425,8 +1419,8 @@ public class DataJsonController implements Declutter {
                     .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Error retrieving form for [" + packageActivityForm.getActivityDefId() + "]"));
 
             final FormData formData = addRequestParameterForMultipart(form, new FormData(), request.getParameterMap());
-            if(asOptions) {
-                formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] {"true"});
+            if (asOptions) {
+                formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[]{"true"});
             }
 
             // check form permission
@@ -1440,7 +1434,7 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postProcessStartMultipart", new Object[] {
+            addAuditTrail("postProcessStartMultipart", new Object[]{
                     request,
                     response,
                     appId,
@@ -1472,7 +1466,7 @@ public class DataJsonController implements Declutter {
                                        @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -1486,8 +1480,7 @@ public class DataJsonController implements Declutter {
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            @Nonnull
-            final Form form = getForm(assignment, formData, true);
+            @Nonnull final Form form = getForm(assignment, formData, true);
             final FormData readyToCompleteFormData = fillStoreBinderInFormData(jsonBody, form, formData, true);
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
@@ -1495,7 +1488,7 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentComplete", new Object[] {
+            addAuditTrail("postAssignmentComplete", new Object[]{
                     request,
                     response,
                     assignmentId,
@@ -1524,7 +1517,7 @@ public class DataJsonController implements Declutter {
                                                 @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -1538,8 +1531,7 @@ public class DataJsonController implements Declutter {
             formData.setProcessId(assignment.getProcessId());
 
             // get assignment form
-            @Nonnull
-            final Form form = getForm(assignment, formData, true);
+            @Nonnull final Form form = getForm(assignment, formData, true);
             final FormData readyToCompleteFormData = addRequestParameterForMultipart(form, formData, request.getParameterMap());
             final FormData resultFormData = completeAssignmentForm(form, assignment, readyToCompleteFormData);
 
@@ -1547,7 +1539,7 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentCompleteMultipart", new Object[] {
+            addAuditTrail("postAssignmentCompleteMultipart", new Object[]{
                     request,
                     response,
                     assignmentId,
@@ -1577,7 +1569,7 @@ public class DataJsonController implements Declutter {
                                                 @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -1600,7 +1592,7 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail( "postAssignmentCompleteByProcess", new Object[] {
+            addAuditTrail("postAssignmentCompleteByProcess", new Object[]{
                     request,
                     response,
                     processId,
@@ -1632,7 +1624,7 @@ public class DataJsonController implements Declutter {
                                                          @RequestParam(value = "minify", defaultValue = "false") Boolean minify)
             throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get assignment
@@ -1652,7 +1644,7 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentCompleteByProcessMultipart", new Object[] {
+            addAuditTrail("postAssignmentCompleteByProcessMultipart", new Object[]{
                     request,
                     response,
                     processId,
@@ -1686,7 +1678,7 @@ public class DataJsonController implements Declutter {
                               @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
@@ -1706,7 +1698,7 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignment", new Object[] {
+                addAuditTrail("getAssignment", new Object[]{
                         request,
                         response,
                         asLabel,
@@ -1743,7 +1735,7 @@ public class DataJsonController implements Declutter {
                                        @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
@@ -1763,7 +1755,7 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentByProcess",new Object[] {
+                addAuditTrail("getAssignmentByProcess", new Object[]{
                         request,
                         response,
                         processId,
@@ -1805,7 +1797,7 @@ public class DataJsonController implements Declutter {
                                        @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignment(assignmentId);
@@ -1838,7 +1830,7 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentUsingForm", new Object[] {
+                addAuditTrail("getAssignmentUsingForm", new Object[]{
                         request,
                         response,
                         formDefId,
@@ -1881,7 +1873,7 @@ public class DataJsonController implements Declutter {
                                                 @RequestParam(value = "digest", required = false) String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment = getAssignmentByProcess(processId, activityDefId);
@@ -1914,7 +1906,7 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentByProcessUsingForm", new Object[] {
+                addAuditTrail("getAssignmentByProcessUsingForm", new Object[]{
                         request,
                         response,
                         formDefId,
@@ -1951,7 +1943,7 @@ public class DataJsonController implements Declutter {
                                     @RequestParam(value = "version", required = false, defaultValue = "0") final Long appVersion,
                                     @RequestParam(value = "processId", required = false) final String processId) throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
@@ -1963,7 +1955,7 @@ public class DataJsonController implements Declutter {
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentsCount", new Object[] {
+                addAuditTrail("getAssignmentsCount", new Object[]{
                         request,
                         response,
                         appId,
@@ -2009,7 +2001,7 @@ public class DataJsonController implements Declutter {
                                @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
@@ -2074,7 +2066,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignments", new Object[] {
+                addAuditTrail("getAssignments", new Object[]{
                         request,
                         response,
                         appId,
@@ -2117,11 +2109,11 @@ public class DataJsonController implements Declutter {
                                 @RequestParam(value = "statusField", defaultValue = "") final String statusField,
                                 @RequestParam(value = "digest", required = false) final String digest) throws IOException, JSONException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             WorkflowAssignment assignment;
-            if(force) {
+            if (force) {
                 assignment = takeoverAssignment(assignmentId);
             } else {
                 assignment = getAssignment(assignmentId);
@@ -2129,7 +2121,7 @@ public class DataJsonController implements Declutter {
 
             Map.Entry<Form, FormData> result = internalDeleteAssignmentData(assignment, terminate, statusField);
             JSONObject jsonData;
-            if(minify) {
+            if (minify) {
                 jsonData = new JSONObject();
                 jsonData.put("_" + FormUtil.PROPERTY_ID, result.getValue().getPrimaryKeyValue());
             } else {
@@ -2152,7 +2144,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("abortAssignment", new Object[] {
+                addAuditTrail("abortAssignment", new Object[]{
                         request,
                         response,
                         terminate,
@@ -2188,11 +2180,11 @@ public class DataJsonController implements Declutter {
                                           @RequestParam(value = "statusField", defaultValue = "") final String statusField,
                                           @RequestParam(value = "digest", required = false) final String digest) throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             Collection<WorkflowAssignment> assignments;
-            if(force) {
+            if (force) {
                 assignments = takeoverAssignmentsByProcess(processId, activityDefId);
             } else {
                 assignments = getAssignmentsByProcess(processId, activityDefId);
@@ -2203,11 +2195,10 @@ public class DataJsonController implements Declutter {
                     .collect(JSONCollectors.toJSONArray(JSONArray::new, Try.onFunction(p -> {
                         FormData formData = p.getValue();
 
-                        if(minify) {
+                        if (minify) {
                             // return as array of String
                             return formData.getPrimaryKeyValue();
-                        }
-                        else {
+                        } else {
                             Form form = p.getKey();
                             JSONObject jsonData = getData(form, formData, false);
 
@@ -2232,7 +2223,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("abortAssignmentsByProcess", new Object[] {
+                addAuditTrail("abortAssignmentsByProcess", new Object[]{
                         request,
                         response,
                         processId,
@@ -2324,7 +2315,7 @@ public class DataJsonController implements Declutter {
                                        @RequestParam(value = "digest", required = false) final String digest)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -2414,7 +2405,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getDataListAssignments", new Object[] {
+                addAuditTrail("getDataListAssignments", new Object[]{
                         request,
                         response,
                         appId,
@@ -2464,7 +2455,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param response
      * @param appId
@@ -2483,7 +2473,7 @@ public class DataJsonController implements Declutter {
                                             @RequestParam(value = "activityId", required = false) final String[] activityId)
             throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
 
         try {
             // get current App
@@ -2522,7 +2512,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail( "getDataListAssignmentsCount", new Object[] {
+                addAuditTrail("getDataListAssignmentsCount", new Object[]{
                         request,
                         response,
                         appId,
@@ -2542,35 +2532,31 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param response
      * @param appId
      * @param appVersion
      * @param dataListId
-     * @param actionType
-     * @param actionIndex
      * @param ids
      * @throws IOException
      */
-    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/(~:actionType)/(~:actionIndex)", method = RequestMethod.POST, headers = "content-type=application/json")
+    @RequestMapping(value = "/json/data/app/(*:appId)/(~:appVersion)/datalist/(*:dataListId)/action/(*:actionId)", method = RequestMethod.POST, headers = "content-type=application/json")
     public void postDataListAction(final HttpServletRequest request, final HttpServletResponse response,
                                    @RequestParam("appId") final String appId,
                                    @RequestParam(value = "appVersion", required = false, defaultValue = "0") Long appVersion,
                                    @RequestParam("dataListId") final String dataListId,
-                                   @RequestParam("actionType") final String actionType,
-                                   @RequestParam(value = "actionIndex", defaultValue = "0") final Integer actionIndex,
+                                   @RequestParam("actionId") final String actionId,
                                    @RequestParam("id") final String[] ids) throws IOException {
 
-        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType ["+ request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
-        
+        LogUtil.info(getClass().getName(), "Executing Rest API [" + request.getRequestURI() + "] in method [" + request.getMethod() + "] contentType [" + request.getContentType() + "] as [" + WorkflowUtil.getCurrentUsername() + "]");
+
         try {
             // get current App
             AppDefinition appDefinition = getApplicationDefinition(appId, ifNullThen(appVersion, 0L));
 
             // get dataList
             DataList dataList = getDataList(appDefinition, dataListId);
-            DataListAction action = getDataListAction(dataList, actionType, ifNullThen(actionIndex, 0));
+            DataListAction action = getDataListAction(dataList, actionId);
             DataListActionResult actionResult = action.executeAction(dataList, ids);
 
             try {
@@ -2582,14 +2568,13 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("postDataListAction", new Object[] {
+                addAuditTrail("postDataListAction", new Object[]{
                         request,
                         response,
                         appId,
                         appVersion,
                         dataListId,
-                        actionType,
-                        actionIndex,
+                        actionId,
                         ids
                 });
 
@@ -2603,13 +2588,11 @@ public class DataJsonController implements Declutter {
     }
 
 
-
     /**
      * Delete assignment data
      *
      * @param assignment
-     * @param terminate terminate process
-     *
+     * @param terminate  terminate process
      * @return
      * @throws ApiException
      */
@@ -2625,10 +2608,10 @@ public class DataJsonController implements Declutter {
 
         abortProcess(assignment, terminate);
 
-        if(!statusField.isEmpty()) {
+        if (!statusField.isEmpty()) {
             Element element = FormUtil.findElement(statusField, form, formData, true);
             String parameterName = FormUtil.getElementParameterName(element);
-            formData.addRequestParameterValues(parameterName, new String[] { terminate ? "terminated" : "aborted" });
+            formData.addRequestParameterValues(parameterName, new String[]{terminate ? "terminated" : "aborted"});
             submitForm(form, formData, true);
         } else {
             deleteData(form, formData, true);
@@ -2713,7 +2696,7 @@ public class DataJsonController implements Declutter {
     protected void abortProcess(@Nonnull WorkflowAssignment assignment, boolean terminate) throws ApiException {
         String runningProcessId = assignment.getProcessId();
 
-        if(terminate) {
+        if (terminate) {
             workflowManager.removeProcessInstance(runningProcessId);
         } else if (!workflowManager.processAbort(runningProcessId)) {
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Failed to abort assignment [" + assignment + "]");
@@ -2736,7 +2719,7 @@ public class DataJsonController implements Declutter {
             return formData;
         }
 
-        if(formData.getPrimaryKeyValue() == null) {
+        if (formData.getPrimaryKeyValue() == null) {
             String primaryKey = determinePrimaryKey(jsonBody, formData, isAssignment);
             formData.setPrimaryKeyValue(primaryKey);
         }
@@ -2754,7 +2737,7 @@ public class DataJsonController implements Declutter {
         // fill request parameter using workflow variables
         JSONStream.of(jsonBody, JSONObject::optString)
                 .filter(e -> e.getKey().startsWith(WORKFLOW_VARIABLE_PREFIX))
-                .forEach(e -> formData.addRequestParameterValues(e.getKey(), new String[] {e.getValue()}));
+                .forEach(e -> formData.addRequestParameterValues(e.getKey(), new String[]{e.getValue()}));
 
         return formData;
     }
@@ -2824,7 +2807,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param fieldId
      * @param form
      * @param formData
@@ -2881,7 +2863,7 @@ public class DataJsonController implements Declutter {
      */
     protected void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
         String primaryKey = formData.getPrimaryKeyValue();
-        formDataDao.delete(form, new String[]{ primaryKey });
+        formDataDao.delete(form, new String[]{primaryKey});
 
         // delete sub data
         if (deepClean) {
@@ -2920,29 +2902,17 @@ public class DataJsonController implements Declutter {
     }
 
     @Nonnull
-    protected DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionType, int actionIndex) throws ApiException {
-        // validate action type
-        if (!actionType.matches("rowAction|action")) {
-            throw new ApiException(HttpServletResponse.SC_NOT_FOUND, "Action type [" + actionType + "] not found");
-        }
-
-        return Optional.of(actionIndex)
-                .flatMap(i -> Optional.of(dataList)
-                        .map(d -> {
-                            switch (actionType) {
-                                case "rowAction":
-                                    return d.getRowActions();
-                                case "action":
-                                    return d.getActions();
-                                default:
-                                    return null;
-                            }
-                        })
-                        .filter(a -> i < a.length)
-                        .map(a -> a[i])
-                )
-                .filter(DataListAction::isPermitted)
-                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Action type [" + actionType + "] index [" + actionIndex + "] not found"));
+    protected DataListAction getDataListAction(@Nonnull DataList dataList, @Nonnull String actionId) throws ApiException {
+        return Stream.concat(Optional.of(dataList)
+                        .map(DataList::getRowActions)
+                        .map(Arrays::stream)
+                        .orElseGet(Stream::empty), Optional.of(dataList)
+                        .map(DataList::getActions)
+                        .map(Arrays::stream)
+                        .orElseGet(Stream::empty))
+                .filter(a -> a.getPropertyString("id").equals(actionId))
+                .findFirst()
+                .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Action ID [" + actionId + "] not found"));
     }
 
     /**
@@ -2994,8 +2964,8 @@ public class DataJsonController implements Declutter {
     /**
      * Get form from assignment
      *
-     * @param assignment    I
-     * @param formData      I/O
+     * @param assignment I
+     * @param formData   I/O
      * @return
      * @throws ApiException
      */
@@ -3004,12 +2974,12 @@ public class DataJsonController implements Declutter {
         // get application definition
         @Nonnull AppDefinition appDefinition = getApplicationDefinition(assignment);
 
-        if(optimizeReadonlyElementsDataLoading) {
+        if (optimizeReadonlyElementsDataLoading) {
             // optimize form loading for non-GET
-            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS, new String[] { "true" });
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS, new String[]{"true"});
         }
 
-        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
+        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[]{DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER});
 
         final Form form = Optional.ofNullable(appService.viewAssignmentForm(appDefinition, assignment, formData, ""))
                 .map(PackageActivityForm::getForm)
@@ -3024,7 +2994,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param appDefinition
      * @param assignment
      * @param formData
@@ -3040,7 +3009,7 @@ public class DataJsonController implements Declutter {
      * Calculate digest (version if I may call) but will omit "elementUniqueKey"
      *
      * @param value any object
-     * @return      digest value
+     * @return digest value
      */
     protected String getDigest(Object value) {
         String stringValue = String.valueOf(value);
@@ -3153,7 +3122,7 @@ public class DataJsonController implements Declutter {
     @Nonnull
     protected Map<String, String> generateWorkflowVariable(@Nonnull final Form form, @Nonnull final FormData formData) {
         return formData.getRequestParams().entrySet().stream().collect(HashMap::new, (m, e) -> {
-            if(e.getKey().startsWith(WORKFLOW_VARIABLE_PREFIX)) {
+            if (e.getKey().startsWith(WORKFLOW_VARIABLE_PREFIX)) {
                 String workflowVariable = e.getKey().replaceAll("^" + WORKFLOW_VARIABLE_PREFIX, "");
                 m.put(workflowVariable, String.join(";", e.getValue()));
             } else {
@@ -3216,7 +3185,7 @@ public class DataJsonController implements Declutter {
 
     @Nonnull
     protected WorkflowAssignment takeoverAssignment(@Nonnull String activityId) throws ApiException {
-        if(WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
+        if (WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
             String username = WorkflowUtil.getCurrentUsername();
             return Optional.ofNullable(workflowAssignmentDao.getAssignmentsByProcessIds(null, null, "open", null, null, null, null))
                     .map(Collection::stream)
@@ -3231,7 +3200,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param processId
      * @param activityDefId
      * @return
@@ -3239,7 +3207,7 @@ public class DataJsonController implements Declutter {
      */
     @Nonnull
     protected Collection<WorkflowAssignment> takeoverAssignmentsByProcess(@Nonnull String processId, @Nonnull String activityDefId) throws ApiException {
-        if(WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
+        if (WorkflowUtil.isCurrentUserInRole(WorkflowUtil.ROLE_ADMIN)) {
             final String username = WorkflowUtil.getCurrentUsername();
 
             final Set<WorkflowAssignment> assignments = Optional.of(processId)
@@ -3253,7 +3221,7 @@ public class DataJsonController implements Declutter {
                     .peek(a -> workflowManager.assignmentReassign(a.getProcessDefId(), a.getProcessId(), a.getActivityId(), username, a.getAssigneeName()))
                     .collect(Collectors.toSet());
 
-            if(assignments.isEmpty()) {
+            if (assignments.isEmpty()) {
                 throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment process [" + processId + "] is not available");
             }
 
@@ -3297,7 +3265,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param processId
      * @param activityDefId
      * @return
@@ -3330,7 +3297,7 @@ public class DataJsonController implements Declutter {
                         .orElse(false))
                 .collect(Collectors.toList());
 
-        if(assignments.isEmpty()) {
+        if (assignments.isEmpty()) {
             throw new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Assignment for process [" + processId + "] activity definition [" + activityDefId + "] not available");
         }
 
@@ -3372,8 +3339,8 @@ public class DataJsonController implements Declutter {
     @Nonnull
     protected JSONObject getData(@Nonnull final Form form, @Nonnull final FormData formData, final Boolean asOptions) throws ApiException {
         boolean retrieveOptionsData = Optional.ofNullable(asOptions).orElse(false);
-        if(retrieveOptionsData) {
-            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[] { "true" });
+        if (retrieveOptionsData) {
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_AS_OPTIONS, new String[]{"true"});
         }
 
         // check result size
@@ -3495,11 +3462,11 @@ public class DataJsonController implements Declutter {
     @Nonnull
     protected Form getForm(@Nonnull AppDefinition appDefinition, @Nonnull String formDefId, @Nonnull final FormData formData, boolean optimizeReadonlyElementsDataLoading) throws ApiException {
 
-        if(optimizeReadonlyElementsDataLoading) {
-            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS, new String[] { "true" });
+        if (optimizeReadonlyElementsDataLoading) {
+            formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_OPTIMIZE_READONLY_ELEMENTS, new String[]{"true"});
         }
 
-        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[] { DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER });
+        formData.addRequestParameterValues(DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER, new String[]{DataJsonControllerHandler.PARAMETER_DATA_JSON_CONTROLLER});
 
         final Form form = Optional.ofNullable(appService.viewDataForm(appDefinition.getAppId(), appDefinition.getVersion().toString(), formDefId, null, null, null, formData, null, null))
                 .orElseThrow(() -> new ApiException(HttpServletResponse.SC_BAD_REQUEST, "Form [" + formDefId + "] in app [" + appDefinition.getAppId() + "] version [" + appDefinition.getVersion() + "] not available"));
@@ -3513,12 +3480,12 @@ public class DataJsonController implements Declutter {
                 .orElseGet(() -> UuidGenerator.getInstance().getUuid());
 
         FormRowSet rowSet = appService.loadFormData(form, primaryKey);
-        if(rowSet != null) {
+        if (rowSet != null) {
             rowSet.forEach(row -> row.forEach((key, value) -> {
                 Element element = FormUtil.findElement(String.valueOf(key), form, formData);
-                if(element != null) {
+                if (element != null) {
                     String parameterName = FormUtil.getElementParameterName(element);
-                    formData.addRequestParameterValues(parameterName, new String[] { String.valueOf(value) });
+                    formData.addRequestParameterValues(parameterName, new String[]{String.valueOf(value)});
                 }
             }));
         }
@@ -3704,7 +3671,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param parameterName
      * @return
@@ -3717,7 +3683,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param parameterName
      * @return
@@ -3728,7 +3693,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param request
      * @param parameterName
      * @param defaultValue
@@ -3739,7 +3703,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param form
      * @param formData
      * @param data
@@ -3747,9 +3710,9 @@ public class DataJsonController implements Declutter {
      */
     protected FormData addRequestParameterForMultipart(Form form, FormData formData, Map<String, String[]> data) {
         // register primary key
-        if(formData.getPrimaryKeyValue() == null && data.containsKey("id")) {
+        if (formData.getPrimaryKeyValue() == null && data.containsKey("id")) {
             String[] values = data.get("id");
-            if(values != null && values.length > 0) {
+            if (values != null && values.length > 0) {
                 formData.setPrimaryKeyValue(values[0]);
             }
         }
@@ -3770,7 +3733,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param packageActivityForm
      * @param formData
      * @return
@@ -3782,12 +3744,11 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
-     * @param form           Form
-     * @param formData       Form data
-     * @param processResult  Process result
-     * @param minify         Response only returns primaryKey
-     * @return               JSONObject
+     * @param form          Form
+     * @param formData      Form data
+     * @param processResult Process result
+     * @param minify        Response only returns primaryKey
+     * @return JSONObject
      * @throws JSONException Json exception
      * @throws ApiException  API exception
      */
@@ -3799,9 +3760,8 @@ public class DataJsonController implements Declutter {
             jsonResponse.put(FIELD_VALIDATION_ERROR, jsonError);
             jsonResponse.put(FIELD_MESSAGE, MESSAGE_VALIDATION_ERROR);
         } else {
-            @Nonnull
-            final JSONObject jsonData;
-            if(minify) {
+            @Nonnull final JSONObject jsonData;
+            if (minify) {
                 jsonData = getMinifiedData(formData);
             } else {
                 FormUtil.executeLoadBinders(form, formData);
@@ -3809,7 +3769,7 @@ public class DataJsonController implements Declutter {
             }
 
             Optional<String> optProcessId;
-            if(processResult != null) {
+            if (processResult != null) {
                 optProcessId = Optional.of(processResult)
                         .map(WorkflowProcessResult::getProcess)
                         .map(WorkflowProcess::getInstanceId);
@@ -3856,10 +3816,9 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
-     * @param form      Form
-     * @param formData  Form data
-     * @param minify    Response only returns primaryKey
+     * @param form     Form
+     * @param formData Form data
+     * @param minify   Response only returns primaryKey
      * @return
      * @throws JSONException
      * @throws ApiException
@@ -3869,7 +3828,6 @@ public class DataJsonController implements Declutter {
     }
 
     /**
-     *
      * @param form
      * @param assignment
      * @param formData
