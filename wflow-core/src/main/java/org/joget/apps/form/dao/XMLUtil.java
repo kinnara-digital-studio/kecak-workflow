@@ -13,7 +13,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.XMLConstants;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -60,9 +59,6 @@ public class XMLUtil {
             throws TransformerException, IOException {
 
         TransformerFactory tf = TransformerFactory.newInstance();
-        tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         Transformer transformer = tf.newTransformer();
 
         transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, dom.getDoctype().getPublicId());

@@ -131,6 +131,6 @@
             <groupId>org.owasp</groupId>
             <artifactId>csrfguard</artifactId>
             <version>3.1.0</version>
-        </dependency>   
+        </dependency>        
     </dependencies>
 </project>

@@ -56,10 +56,8 @@
 <script src="${pageContext.request.contextPath}/js/json/util.js?build=<fmt:message key="build.number"/>"></script>
 <script src="${pageContext.request.contextPath}/js/json/formUtil.js?build=<fmt:message key="build.number"/>"></script>
 <script src="${pageContext.request.contextPath}/js/jquery/jquery.blockUI.js"></script>
-<!--
 <script src="${pageContext.request.contextPath}/mobile/mobile.js?build=<fmt:message key="build.number"/>"></script>
 <script src="${pageContext.request.contextPath}/mobile/mobile_util.js?build=<fmt:message key="build.number"/>"></script>
--->
 <script>
     $(document).ready(function(){
         UI.base = "${pageContext.request.contextPath}";

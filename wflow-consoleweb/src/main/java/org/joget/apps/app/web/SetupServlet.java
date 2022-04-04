@@ -343,13 +343,9 @@ public class SetupServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response){
-        try {
-            processRequest(request, response);
-        } catch (Exception e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
-            
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**
@@ -361,13 +357,9 @@ public class SetupServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response){
-        try {
-            processRequest(request, response);
-        } catch (Exception e) {
-            LogUtil.error(getClass().getName(), e, e.getMessage());
-        }
-        
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**
