@@ -61,6 +61,8 @@ public class XMLUtil {
 
         TransformerFactory tf = TransformerFactory.newInstance();
         tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         Transformer transformer = tf.newTransformer();
 
         transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, dom.getDoctype().getPublicId());
