@@ -8,6 +8,7 @@
         <meta http-equiv="refresh" content="0; url=../web/desktop">
         <link rel="shortcut icon" href="../images/v3/kecak.ico"/>
         <c:set var="mobileDisabled" value="<%= MobileUtil.isMobileDisabled() %>"/>
+        <!--
         <c:if test="${!mobileDisabled}">
         <script type="text/javascript" src="../js/jquery/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="../js/jquery/jquery.cookie.js"></script>
@@ -17,7 +18,7 @@
             Mobile.directToMobileSite(url);
         </script>
         </c:if>
-       
+        -->
     </head>
     <body id="splash">
     </body>

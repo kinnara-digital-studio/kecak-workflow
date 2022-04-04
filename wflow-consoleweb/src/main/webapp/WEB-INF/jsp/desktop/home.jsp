@@ -11,8 +11,9 @@
 <commons:header id="appcenter" />
 
 <script src="${pageContext.request.contextPath}/mobile/jqm/jquery.cookie.js"></script>
+<!--
 <script src="${pageContext.request.contextPath}/mobile/mobile.js"></script>
-
+-->
         <div id="main-container">
             <div id="main-content">
                 <h1><img src="${pageContext.request.contextPath}/images/app-center.png" width="38px;"/> <fmt:message key="adminBar.label.appCenter"/></h1>
