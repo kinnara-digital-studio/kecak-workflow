@@ -2,8 +2,5 @@
   "name": "wflow-core",
   "version": "5.0-SNAPSHOT",
   "author": "kinnarastudio.com",
-  "license": "MIT",
-  "dependencies": {
-    "select2": "4.0.13"
-  }
+  "license": "MIT"
 }

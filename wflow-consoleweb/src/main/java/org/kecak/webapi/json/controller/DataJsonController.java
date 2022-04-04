@@ -2863,6 +2863,11 @@ public class DataJsonController implements Declutter {
      */
     protected void deleteData(@Nonnull Form form, @Nonnull FormData formData, boolean deepClean) throws ApiException {
         String primaryKey = formData.getPrimaryKeyValue();
+
+        if (FormUtil.isReadonly(form, formData) || form.getStoreBinder() == null) {
+            throw new ApiException(HttpServletResponse.SC_UNAUTHORIZED, "Form [" + form.getPropertyString("id") + "] is not writable");
+        }
+
         formDataDao.delete(form, new String[]{primaryKey});
 
         // delete sub data
