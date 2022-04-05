@@ -3796,29 +3796,33 @@ public class DataJsonController implements Declutter {
             }
 
             optProcessId.map(workflowManager::getAssignmentByProcess)
-                    .ifPresent(Try.onConsumer(nextAssignment -> {
-                        final JSONObject jsonProcess = new JSONObject();
-                        jsonProcess.put("processId", nextAssignment.getProcessId());
-                        jsonProcess.put("activityId", nextAssignment.getActivityId());
-                        jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
-                        jsonProcess.put("dueDate", nextAssignment.getDueDate());
-                        jsonProcess.put("priority", nextAssignment.getPriority());
-                        jsonProcess.put("assigneeList", Optional.of(nextAssignment)
-                                .map(WorkflowAssignment::getAssigneeList)
-                                .map(Collection::stream)
-                                .orElseGet(Stream::empty)
-                                .collect(Collectors.joining(";")));
-                        jsonProcess.put("assigneeId", nextAssignment.getAssigneeId());
-                        jsonProcess.put("assigneeName", nextAssignment.getAssigneeName());
+                    .ifPresent(nextAssignment -> {
+                        try {
+                            final JSONObject jsonProcess = new JSONObject();
+                            jsonProcess.put("processId", nextAssignment.getProcessId());
+                            jsonProcess.put("activityId", nextAssignment.getActivityId());
+                            jsonProcess.put("dateCreated", nextAssignment.getDateCreated());
+                            jsonProcess.put("dueDate", nextAssignment.getDueDate());
+                            jsonProcess.put("priority", nextAssignment.getPriority());
+                            jsonProcess.put("assigneeList", Optional.of(nextAssignment)
+                                    .map(WorkflowAssignment::getAssigneeList)
+                                    .map(Collection::stream)
+                                    .orElseGet(Stream::empty)
+                                    .collect(Collectors.joining(";")));
+                            jsonProcess.put("assigneeId", nextAssignment.getAssigneeId());
+                            jsonProcess.put("assigneeName", nextAssignment.getAssigneeName());
 
-                        Optional.ofNullable(processResult)
-                                .map(WorkflowProcessResult::getActivities)
-                                .map(l -> l.stream().map(WorkflowActivity::getId).collect(Collectors.toList()))
-                                .map(Try.onFunction(JSONArray::new))
-                                .ifPresent(Try.onConsumer(a -> jsonProcess.put("activityIds", a)));
+                            Optional.ofNullable(processResult)
+                                    .map(WorkflowProcessResult::getActivities)
+                                    .map(l -> l.stream().map(WorkflowActivity::getId).collect(Collectors.toList()))
+                                    .map(Try.onFunction(JSONArray::new))
+                                    .ifPresent(Try.onConsumer(a -> jsonProcess.put("activityIds", a)));
 
-                        jsonResponse.put("process", jsonProcess);
-                    }));
+                            jsonResponse.put("process", jsonProcess);
+                        } catch (JSONException e) {
+                            LogUtil.error(getClass().getName(), e, e.getMessage());
+                        }
+                    });
 
             String digest = getDigest(jsonData);
             jsonResponse.put(FIELD_DATA, jsonData);
