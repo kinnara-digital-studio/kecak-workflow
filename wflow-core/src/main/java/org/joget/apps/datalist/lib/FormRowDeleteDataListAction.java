@@ -144,7 +144,7 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
                 String tableName = getSelectedFormTableName(formDefId);
                 if (tableName != null) {
                     FormDataDao formDataDao = (FormDataDao) FormUtil.getApplicationContext().getBean("formDataDao");
-                    formDataDao.delete(formDefId, tableName, rowKeys);
+                    formDataDao.delete(formDefId, tableName, rowKeys, isHardDelete());
                     
                     FormDataAuditTrail formDataAuditTrail = new FormDataAuditTrail();
                     formDataAuditTrail.setId(UuidGenerator.getInstance().getUuid());
@@ -241,7 +241,7 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
                     formId = form.getPropertyString(FormUtil.PROPERTY_ID);
                     tableName = form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
                     String[] primaryKeyValues = new String[]{primaryKey};
-                    formDataDao.delete(formId, tableName, primaryKeyValues);
+                    formDataDao.delete(formId, tableName, primaryKeyValues, isHardDelete());
                     
                     deleted = true;
                     dateTime = new Date();
@@ -263,7 +263,7 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
                     formId = b.getFormId();
                     tableName = b.getTableName(); 
                     FormRowSet rows = binders.get(binder);
-                    formDataDao.delete(formId, tableName, rows);
+                    formDataDao.delete(formId, tableName, rows, isHardDelete());
                     
                     deleted = true;
                     dateTime = new Date();
@@ -303,6 +303,10 @@ public class FormRowDeleteDataListAction extends DataListActionDefault {
         for (FormRow r : rows) {
             abortRunningProcesses(r.getId());
         }
+    }
+
+    protected boolean isHardDelete() {
+        return "true".equalsIgnoreCase(getPropertyString("hardDelete"));
     }
 
     public String getClassName() {
