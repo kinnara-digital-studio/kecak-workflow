@@ -210,6 +210,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param primaryKey
      * @return null if the row does not exist
      */
+    @Override
     public FormRow loadByTableNameAndColumnName(String tableName, String columnName, String primaryKey) {
         if (!tableName.startsWith(FORM_PREFIX_TABLE_NAME)) {
             tableName = FormDataDaoImpl.FORM_PREFIX_TABLE_NAME + tableName;
@@ -231,11 +232,34 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param rows
      * @return
      */
+    @Override
     public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows) {
         final String entityName = getFormEntityName(formDefId);
         final String newTableName = getFormTableName(formDefId, tableName);
+        final String sortAs = FormUtil.PROPERTY_DATE_CREATED.equals(sort) || FormUtil.PROPERTY_DATE_MODIFIED.equals(sort) ? "timestamp" : "string";
 
-        return internalFind(entityName, newTableName, condition, params, sort, desc, start, rows, false);
+        return internalFind(entityName, newTableName, condition, params, sort, sortAs, desc, start, rows, false);
+    }
+
+    /**
+     *
+     * @param formDefId
+     * @param tableName
+     * @param condition
+     * @param params
+     * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    @Override
+    public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows) {
+        final String entityName = getFormEntityName(formDefId);
+        final String newTableName = getFormTableName(formDefId, tableName);
+
+        return internalFind(entityName, newTableName, condition, params, sort, sortAs, desc, start, rows, false);
     }
 
     /**
@@ -252,11 +276,35 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param loadDeleted
      * @return
      */
+    @Override
     public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
         final String entityName = getFormEntityName(formDefId);
         final String newTableName = getFormTableName(formDefId, tableName);
+        final String sortAs = FormUtil.PROPERTY_DATE_CREATED.equals(sort) || FormUtil.PROPERTY_DATE_MODIFIED.equals(sort) ? "timestamp" : "string";
 
-        return internalFind(entityName, newTableName, condition, params, sort, desc, start, rows, loadDeleted);
+        return internalFind(entityName, newTableName, condition, params, sort, sortAs, desc, start, rows, loadDeleted);
+    }
+
+    /**
+     *
+     * @param formDefId
+     * @param tableName
+     * @param condition
+     * @param params
+     * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @param loadDeleted
+     * @return
+     */
+    @Override
+    public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+        final String entityName = getFormEntityName(formDefId);
+        final String newTableName = getFormTableName(formDefId, tableName);
+
+        return internalFind(entityName, newTableName, condition, params, sort, sortAs, desc, start, rows, loadDeleted);
     }
 
     /**
@@ -271,18 +319,75 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param rows
      * @return
      */
+    @Override
     public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows) {
         final String entityName = getFormEntityName(form);
         final String tableName = getFormTableName(form);
+        final String sortAs = FormUtil.PROPERTY_DATE_CREATED.equals(sort) || FormUtil.PROPERTY_DATE_MODIFIED.equals(sort) ? "timestamp" : "string";
 
-        return internalFind(entityName, tableName, condition, params, sort, desc, start, rows, false);
+        return internalFind(entityName, tableName, condition, params, sort, sortAs, desc, start, rows, false);
     }
 
-    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+    /**
+     *
+     * @param form
+     * @param condition
+     * @param params
+     * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    @Override
+    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows) {
         final String entityName = getFormEntityName(form);
         final String tableName = getFormTableName(form);
 
-        return internalFind(entityName, tableName, condition, params, sort, desc, start, rows, loadDeleted);
+        return internalFind(entityName, tableName, condition, params, sort, sortAs, desc, start, rows, false);
+    }
+
+    /**
+     *
+     * @param form
+     * @param condition
+     * @param params
+     * @param sort
+     * @param desc
+     * @param start
+     * @param rows
+     * @param loadDeleted
+     * @return
+     */
+    @Override
+    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+        final String entityName = getFormEntityName(form);
+        final String tableName = getFormTableName(form);
+        final String sortAs = FormUtil.PROPERTY_DATE_CREATED.equals(sort) || FormUtil.PROPERTY_DATE_MODIFIED.equals(sort) ? "timestamp" : "string";
+
+        return internalFind(entityName, tableName, condition, params, sort, sortAs, desc, start, rows, loadDeleted);
+    }
+
+    /**
+     *
+     * @param form
+     * @param condition
+     * @param params
+     * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @param loadDeleted
+     * @return
+     */
+    @Override
+    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+        final String entityName = getFormEntityName(form);
+        final String tableName = getFormTableName(form);
+
+        return internalFind(entityName, tableName, condition, params, sort, sortAs, desc, start, rows, loadDeleted);
     }
 
     /**
@@ -292,7 +397,8 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @param tableName
      * @param condition
      * @param params
-     * @param sort
+     * @param sort          Order by column
+     * @param sortAs        Order based on SQL type
      * @param desc
      * @param start
      * @param rows
@@ -300,7 +406,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
      * @return
      */
     @SuppressWarnings("unchecked")
-    protected FormRowSet internalFind(final String entityName, final String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
+    protected FormRowSet internalFind(final String entityName, final String tableName, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted) {
         // get hibernate template
         Session session = getHibernateSession(tableName, tableName, null, ACTION_TYPE_LOAD);
 
@@ -312,19 +418,17 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
-                if (!FormUtil.PROPERTY_ID.equals(sortProperty)
-                        && !FormUtil.PROPERTY_DATE_CREATED.equals(sortProperty) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(sortProperty)
-                        && !FormUtil.PROPERTY_CREATED_BY.equals(sortProperty) && !FormUtil.PROPERTY_MODIFIED_BY.equals(sortProperty)
-                        && !FormUtil.PROPERTY_DELETED.equals(sortProperty)) {
+                if (!FormUtil.PROPERTY_ID.equals(sort)
+                        && !FormUtil.PROPERTY_DATE_CREATED.equals(sort) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(sort)
+                        && !FormUtil.PROPERTY_CREATED_BY.equals(sort) && !FormUtil.PROPERTY_MODIFIED_BY.equals(sort)
+                        && !FormUtil.PROPERTY_DELETED.equals(sort)) {
                     Collection<String> columnNames = getFormDefinitionColumnNames(tableName);
                     if (columnNames.contains(sort)) {
                         sortProperty = FormUtil.PROPERTY_CUSTOM_PROPERTIES + "." + sort;
                     }
                 }
 
-                String sortAs = FormUtil.PROPERTY_DATE_CREATED.equals(sortProperty) || FormUtil.PROPERTY_DATE_MODIFIED.equals(sortProperty) ? "as timestamp" : "as string";
-
-                query += " ORDER BY cast(e." + sortProperty + " " + sortAs + ")";
+                query += " ORDER BY cast(e." + sortProperty + " as " + sortAs + ")";
 
                 if (desc) {
                     query += " DESC";
@@ -582,7 +686,7 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
                     .map(s -> "?")
                     .collect(Collectors.joining(", ", "where id in (", ")"));
 
-            FormRowSet rowSet = Optional.ofNullable(internalFind(entityName, tableName, condition, primaryKeyValues, null, null, null, null, false))
+            FormRowSet rowSet = Optional.ofNullable(internalFind(entityName, tableName, condition, primaryKeyValues, null, null, null, null, null, false))
                     .map(Collection::stream)
                     .orElseGet(Stream::empty)
                     .peek(row -> {

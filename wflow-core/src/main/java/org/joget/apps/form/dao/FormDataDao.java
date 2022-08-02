@@ -81,6 +81,20 @@ public interface FormDataDao {
      * @param condition
      * @param params
      * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows);
+
+    /**
+     *
+     * @param form
+     * @param condition
+     * @param params
+     * @param sort
      * @param desc
      * @param start
      * @param rows
@@ -88,6 +102,21 @@ public interface FormDataDao {
      * @return
      */
     public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted);
+
+    /**
+     *
+     * @param form
+     * @param condition
+     * @param params
+     * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @param loadDeleted
+     * @return
+     */
+    public FormRowSet find(Form form, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted);
 
     /**
      * Query to find a list of matching form rows.
@@ -110,6 +139,20 @@ public interface FormDataDao {
      * @param condition
      * @param params
      * @param sort
+     * @param sortAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @return
+     */
+    public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final String sortAs, final Boolean desc, final Integer start, final Integer rows);
+    /**
+     *
+     * @param formDefId
+     * @param tableName
+     * @param condition
+     * @param params
+     * @param sort
      * @param desc
      * @param start
      * @param rows
@@ -117,6 +160,22 @@ public interface FormDataDao {
      * @return
      */
     public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted);
+
+    /**
+     *
+     * @param formDefId
+     * @param tableName
+     * @param condition
+     * @param params
+     * @param sort
+     * @param soryAs
+     * @param desc
+     * @param start
+     * @param rows
+     * @param loadDeleted
+     * @return
+     */
+    public FormRowSet find(String formDefId, String tableName, final String condition, final Object[] params, final String sort, final String soryAs, final Boolean desc, final Integer start, final Integer rows, final Boolean loadDeleted);
 
     /**
      * Query total row count for a form.
