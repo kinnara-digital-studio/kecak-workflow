@@ -418,17 +418,18 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
 
             if ((sort != null && !sort.trim().isEmpty()) && !query.toLowerCase().contains("order by")) {
                 String sortProperty = sort;
-                if (!FormUtil.PROPERTY_ID.equals(sort)
-                        && !FormUtil.PROPERTY_DATE_CREATED.equals(sort) && !FormUtil.PROPERTY_DATE_MODIFIED.equals(sort)
-                        && !FormUtil.PROPERTY_CREATED_BY.equals(sort) && !FormUtil.PROPERTY_MODIFIED_BY.equals(sort)
-                        && !FormUtil.PROPERTY_DELETED.equals(sort)) {
+                if (!isDefaultFormColumns(sort)) {
                     Collection<String> columnNames = getFormDefinitionColumnNames(tableName);
                     if (columnNames.contains(sort)) {
                         sortProperty = FormUtil.PROPERTY_CUSTOM_PROPERTIES + "." + sort;
                     }
                 }
 
-                query += " ORDER BY cast(e." + sortProperty + " as " + sortAs + ")";
+                if(sortAs.contains("?")) {
+                    query += " ORDER BY " + sortAs.replaceAll("\\?", "e." + sortProperty);
+                } else {
+                    query += " ORDER BY cast(e." + sortProperty + " as " + sortAs + ")";
+                }
 
                 if (desc) {
                     query += " DESC";
@@ -1397,5 +1398,12 @@ public class FormDataDaoImpl extends HibernateDaoSupport implements FormDataDao 
         if (session != null && session.isOpen()) {
             session.close();
         }
+    }
+
+    protected boolean isDefaultFormColumns(String column) {
+        return FormUtil.PROPERTY_ID.equals(column)
+                || FormUtil.PROPERTY_DATE_CREATED.equals(column) || FormUtil.PROPERTY_DATE_MODIFIED.equals(column)
+                || FormUtil.PROPERTY_CREATED_BY.equals(column) || FormUtil.PROPERTY_MODIFIED_BY.equals(column)
+                || FormUtil.PROPERTY_DELETED.equals(column);
     }
 }

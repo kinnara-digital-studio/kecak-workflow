@@ -261,13 +261,16 @@ public class FormRowDataListBinder extends DataListBinderDefault {
     protected String getSortAs(DataList dataList, String columnName) {
         final DataListColumn[] columns = dataList.getColumns();
         for (DataListColumn column : columns) {
-            if(column.getName().equalsIgnoreCase(columnName)) {
+            if(column != null && column.getName().equalsIgnoreCase(columnName) && column.getFormats() != null) {
                 for (DataListColumnFormat format : column.getFormats()) {
-                    return format.getSortAs(dataList, column);
+                    if(format != null) {
+                        return format.getSortAs(dataList, column);
+                    }
                 }
             }
         }
 
-        return "string";
+        return FormUtil.PROPERTY_DATE_CREATED.equals(columnName)
+                || FormUtil.PROPERTY_DATE_MODIFIED.equals(columnName) ? "timestamp" : "string";
     }
 }
