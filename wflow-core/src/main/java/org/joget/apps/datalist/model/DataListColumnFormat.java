@@ -28,8 +28,11 @@ public interface DataListColumnFormat extends PropertyEditable {
      * Manipulate how the column will be sort when being displayed on dataList.
      *
      * When using {@link org.joget.apps.form.dao.FormDataDao} for example binder {@link org.joget.apps.datalist.lib.FormRowDataListBinder},
-     * if the return contains question mark character ('?'), the binder will use its own ORDER BY formula;
-     * otherwise default CAST([column] AS [type]) function will be used.
+     * if the return contains question mark character ('?') the binder will consider it as a function
+     * that will be implemented using "ORDER BY [sortAs]" pattern, otherwise
+     * default "ORDER BY CAST([sort] AS [sortAs])" pattern will be used.
+     *
+     * For other custom dataList binder, you should implement your own handling mechanism.
      *
      * @param dataList
      * @param column
