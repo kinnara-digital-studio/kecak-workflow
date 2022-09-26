@@ -3072,7 +3072,7 @@ public class DataJsonController implements Declutter {
      * @return
      */
     @Nonnull
-    protected String formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
+    protected Object formatValue(@Nonnull final DataList dataList, @Nonnull final Map<String, Object> row, String field) {
         String value = Optional.of(field)
                 .map(row::get)
                 .map(String::valueOf)
@@ -3084,15 +3084,13 @@ public class DataJsonController implements Declutter {
                 .orElseGet(Stream::empty)
                 .filter(c -> field.equals(c.getName()))
                 .findFirst()
-                .map(column -> Optional.of(column)
+                .flatMap(column -> Optional.of(column)
                         .map(DataListColumn::getFormats)
                         .map(Collection::stream)
                         .orElseGet(Stream::empty)
                         .filter(Objects::nonNull)
                         .findFirst()
-                        .map(f -> f.format(dataList, column, row, value))
-                        .map(s -> s.replaceAll("<[^>]*>", ""))
-                        .orElse(value))
+                        .map(Try.onFunction(f -> f.handleColumnValueResponse(dataList, column, f, row, value))))
                 .orElse(value);
     }
 

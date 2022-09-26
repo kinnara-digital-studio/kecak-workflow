@@ -2,6 +2,7 @@ package org.joget.apps.datalist.model;
 
 import org.joget.apps.form.service.FormUtil;
 import org.joget.plugin.property.model.PropertyEditable;
+import org.kecak.apps.datalist.DataJsonControllerDataListColumnHandler;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * Interface of Datalist Column Formatter plugin
  */
-public interface DataListColumnFormat extends PropertyEditable {
+public interface DataListColumnFormat extends PropertyEditable, DataJsonControllerDataListColumnHandler {
 
     /**
      * Format column value 
