@@ -7,7 +7,7 @@ import org.kecak.apps.userview.model.*;
  * A base abstract class to develop a Userview Menu plugin. 
  * 
  */
-public abstract class UserviewMenu extends ExtElement{
+public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu {
 
     public static final String REDIRECT_URL_PROPERTY = "userviewRedirectUrl";
     public static final String REDIRECT_PARENT_PROPERTY = "userviewRedirectParent";
@@ -221,5 +221,42 @@ public abstract class UserviewMenu extends ExtElement{
     public void setAlertMessage(String title, String message) {
         setProperty(ALERT_TITLE_PROPERTY, title);
         setProperty(ALERT_MESSAGE_PROPERTY, message);
+    }
+
+    /**
+     * Implementation of interface {@link AceUserviewMenu}
+     *
+     * Override this method to write your own implementation of Ace's render page
+     *
+     * @return
+     */
+    @Override
+    public String getAceRenderPage() {
+        return getRenderPage();
+    }
+
+    /**
+     * Implementation of interface {@link AceUserviewMenu}
+     *
+     * Override this method to write your own implementation of Ace's JSP page
+     *
+     * @param theme
+     * @return
+     */
+    @Override
+    public String getAceJspPage(BootstrapUserviewTheme theme) {
+        return getJspPage();
+    }
+
+    /**
+     * Implementation of interface {@link AceUserviewMenu}
+     *
+     * Override this method to write your own implementation of Ace's decorate menu
+     *
+     * @return
+     */
+    @Override
+    public String getAceDecoratedMenu() {
+        return getDecoratedMenu();
     }
 }
