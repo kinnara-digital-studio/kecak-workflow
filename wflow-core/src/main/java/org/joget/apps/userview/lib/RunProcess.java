@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunProcess extends UserviewMenu implements PluginWebSupport, AceUserviewMenu, AdminLteUserviewMenu {
+public class RunProcess extends UserviewMenu implements PluginWebSupport, AdminLteUserviewMenu {
 
     public String getClassName() {
         return getClass().getName();

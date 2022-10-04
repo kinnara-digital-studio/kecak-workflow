@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Represents a menu item that displays a data form and handles form submission.
  */
-public class FormMenu extends UserviewMenu implements AceUserviewMenu, AdminLteUserviewMenu {
+public class FormMenu extends UserviewMenu implements AdminLteUserviewMenu {
     @Override
     public String getIcon() {
         return "/plugin/org.joget.apps.userview.lib.FormMenu/images/subForm_icon.gif";

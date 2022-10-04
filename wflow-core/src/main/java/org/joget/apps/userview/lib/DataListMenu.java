@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu, AceUserviewMenu {
+public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu {
     private DataList cacheDataList = null;
 
     public String getClassName() {
