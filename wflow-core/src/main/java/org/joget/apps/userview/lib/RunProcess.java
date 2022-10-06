@@ -11,7 +11,8 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
-import org.joget.apps.userview.model.*;
+import org.joget.apps.userview.model.UserviewBuilderPalette;
+import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.LogUtil;
@@ -27,8 +28,6 @@ import org.joget.workflow.model.service.WorkflowManager;
 import org.joget.workflow.model.service.WorkflowUserManager;
 import org.joget.workflow.util.WorkflowUtil;
 import org.json.JSONArray;
-import org.kecak.apps.userview.model.AceUserviewMenu;
-import org.kecak.apps.userview.model.AdminLteUserviewMenu;
 import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 import org.springframework.context.ApplicationContext;
 
@@ -41,7 +40,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunProcess extends UserviewMenu implements PluginWebSupport, AdminLteUserviewMenu {
+public class RunProcess extends UserviewMenu implements PluginWebSupport {
 
     public String getClassName() {
         return getClass().getName();
@@ -613,27 +612,7 @@ public class RunProcess extends UserviewMenu implements PluginWebSupport, AdminL
     }
 
     @Override
-    public String getAceRenderPage() {
-        return null;
-    }
-
-    @Override
-    public String getAceDecoratedMenu() {
-        return getDecoratedMenu();
-    }
-
-    @Override
     public String getAdminLteJspPage(BootstrapUserviewTheme bootstrapTheme) {
         return getJspPage(bootstrapTheme.getRunProcessJsp());
-    }
-
-    @Override
-    public String getAdminLteRenderPage() {
-        return null;
-    }
-
-    @Override
-    public String getAdminLteDecoratedMenu() {
-        return getDecoratedMenu();
     }
 }

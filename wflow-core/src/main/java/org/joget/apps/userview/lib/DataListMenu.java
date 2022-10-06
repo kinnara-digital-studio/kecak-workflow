@@ -8,11 +8,11 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.userview.model.*;
+import org.joget.apps.userview.model.Userview;
+import org.joget.apps.userview.model.UserviewBuilderPalette;
+import org.joget.apps.userview.model.UserviewMenu;
 import org.joget.commons.util.StringUtil;
 import org.joget.workflow.util.WorkflowUtil;
-import org.kecak.apps.userview.model.AceUserviewMenu;
-import org.kecak.apps.userview.model.AdminLteUserviewMenu;
 import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu {
+public class DataListMenu extends UserviewMenu {
     private DataList cacheDataList = null;
 
     public String getClassName() {
@@ -185,27 +185,7 @@ public class DataListMenu extends UserviewMenu implements AdminLteUserviewMenu {
     }
 
     @Override
-    public String getAceRenderPage() {
-        return getRenderPage();
-    }
-
-    @Override
-    public String getAceDecoratedMenu() {
-        return getDecoratedMenu();
-    }
-
-    @Override
     public String getAdminLteJspPage(BootstrapUserviewTheme bootstrapTheme) {
         return getJspPage(bootstrapTheme.getDataListJsp());
-    }
-
-    @Override
-    public String getAdminLteRenderPage() {
-        return null;
-    }
-
-    @Override
-    public String getAdminLteDecoratedMenu() {
-        return getDecoratedMenu();
     }
 }

@@ -7,7 +7,7 @@ import org.kecak.apps.userview.model.*;
  * A base abstract class to develop a Userview Menu plugin. 
  * 
  */
-public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu {
+public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu, AdminLteUserviewMenu {
 
     public static final String REDIRECT_URL_PROPERTY = "userviewRedirectUrl";
     public static final String REDIRECT_PARENT_PROPERTY = "userviewRedirectParent";
@@ -226,7 +226,7 @@ public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu
     /**
      * Implementation of interface {@link AceUserviewMenu}
      *
-     * Override this method to write your own implementation of Ace's render page
+     * Override this method to write your own implementation of {@link AbstractAceUserviewTheme}'s render page
      *
      * @return
      */
@@ -238,7 +238,7 @@ public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu
     /**
      * Implementation of interface {@link AceUserviewMenu}
      *
-     * Override this method to write your own implementation of Ace's JSP page
+     * Override this method to write your own implementation of {@link AbstractAceUserviewTheme}'s JSP page
      *
      * @param theme
      * @return
@@ -251,12 +251,49 @@ public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu
     /**
      * Implementation of interface {@link AceUserviewMenu}
      *
-     * Override this method to write your own implementation of Ace's decorate menu
+     * Override this method to write your own implementation of {@link AbstractAceUserviewTheme}'s decorate menu
      *
      * @return
      */
     @Override
     public String getAceDecoratedMenu() {
+        return getDecoratedMenu();
+    }
+
+    /**
+     * Implementation of {@link AdminLteUserviewMenu}
+     *
+     * Override this method to write your own implementation of {@link AbstractAdminLteUserviewTheme} 's render page
+     *
+     * @return
+     */
+    @Override
+    public String getAdminLteRenderPage() {
+        return getRenderPage();
+    }
+
+    /**
+     * Implementation of {@link AdminLteUserviewMenu}
+     *
+     * Override this method to write your own implementation of {@link AbstractAdminLteUserviewTheme}'s JSP page
+     *
+     * @param theme
+     * @return
+     */
+    @Override
+    public String getAdminLteJspPage(BootstrapUserviewTheme theme) {
+        return getJspPage();
+    }
+
+    /**
+     * Implementation of {@link AdminLteUserviewMenu}
+     *
+     * Override this method to write your own implementation of {@link AbstractAdminLteUserviewTheme}'s decorate menu
+     *
+     * @return
+     */
+    @Override
+    public String getAdminLteDecoratedMenu() {
         return getDecoratedMenu();
     }
 }
