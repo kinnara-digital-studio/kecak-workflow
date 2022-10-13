@@ -8,9 +8,7 @@ import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.DataList;
 import org.joget.apps.datalist.model.DataListActionResult;
 import org.joget.apps.datalist.service.DataListService;
-import org.joget.apps.userview.model.Userview;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.commons.util.StringUtil;
 import org.joget.workflow.util.WorkflowUtil;
 import org.kecak.apps.userview.model.BootstrapUserviewTheme;
@@ -20,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
 public class DataListMenu extends UserviewMenu {
     private DataList cacheDataList = null;
@@ -162,7 +161,8 @@ public class DataListMenu extends UserviewMenu {
             DatalistDefinition datalistDefinition = datalistDefinitionDao.loadById(id, appDef);
 
             if (datalistDefinition != null) {
-                cacheDataList = dataListService.fromJson(datalistDefinition.getJson(), false);
+                final UserviewTheme theme = Optional.of(this).map(UserviewMenu::getUserview).map(Userview::getSetting).map(UserviewSetting::getTheme).orElse(null);
+                cacheDataList = dataListService.fromJson(datalistDefinition.getJson(), false, theme);
 
                 if (getPropertyString(Userview.USERVIEW_KEY_NAME) != null && getPropertyString(Userview.USERVIEW_KEY_NAME).trim().length() > 0) {
                     cacheDataList.addBinderProperty(Userview.USERVIEW_KEY_NAME, getPropertyString(Userview.USERVIEW_KEY_NAME));

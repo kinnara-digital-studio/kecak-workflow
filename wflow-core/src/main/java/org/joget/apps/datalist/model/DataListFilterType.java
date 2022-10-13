@@ -1,12 +1,15 @@
 package org.joget.apps.datalist.model;
 
 import org.joget.plugin.property.model.PropertyEditable;
+import org.kecak.apps.datalist.model.AceDataListFilterType;
+import org.kecak.apps.datalist.model.AdminKitDataListFilterType;
+import org.kecak.apps.datalist.model.AdminLteDataListFilterType;
 
 /**
  * Interface of Datalist Filter Type Plugin
  * 
  */
-public interface DataListFilterType extends PropertyEditable {
+public interface DataListFilterType extends PropertyEditable, AceDataListFilterType, AdminLteDataListFilterType, AdminKitDataListFilterType {
 
     /**
      * HTML template of the filter

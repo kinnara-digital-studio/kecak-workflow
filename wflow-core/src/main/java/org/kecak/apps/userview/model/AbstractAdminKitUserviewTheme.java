@@ -1,5 +1,7 @@
 package org.kecak.apps.userview.model;
 
+import org.joget.apps.datalist.model.DataList;
+import org.joget.apps.datalist.model.DataListFilterType;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
@@ -81,5 +83,12 @@ public abstract class AbstractAdminKitUserviewTheme extends UserviewTheme implem
     public String getNavigationBarHeader() {
 
         return "<span class=\"align-middle\">" + userview.getPropertyString("name") + "</span>";
+    }
+
+    @Override
+    public String renderBootstrapDataListFilterTemplate(DataList dataList, DataListFilterType filterType, String name, String label) {
+        Objects.requireNonNull(dataList);
+        Objects.requireNonNull(filterType);
+        return filterType.getAdminKitTemplate(dataList, name, label);
     }
 }

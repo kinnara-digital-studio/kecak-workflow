@@ -96,7 +96,7 @@ public abstract class UserviewMenu extends ExtElement implements AceUserviewMenu
         // sanitize output if not decorated. Otherwise need to sanitize in individial plugins
         String decoratedMenu;
 
-        if(userview.getSetting().getTheme() instanceof BootstrapUserviewTheme && this instanceof BootstrapUserviewMenu) {
+        if(userview.getSetting().getTheme() instanceof BootstrapUserviewTheme) {
             decoratedMenu = ((BootstrapUserviewTheme) userview.getSetting().getTheme()).getBootstrapDecoratedMenu(this);
         } else {
             decoratedMenu = getDecoratedMenu();

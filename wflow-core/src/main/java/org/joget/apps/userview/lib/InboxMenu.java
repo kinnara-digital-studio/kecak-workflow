@@ -13,8 +13,7 @@ import org.joget.apps.datalist.service.DataListService;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormService;
-import org.joget.apps.userview.model.UserviewBuilderPalette;
-import org.joget.apps.userview.model.UserviewMenu;
+import org.joget.apps.userview.model.*;
 import org.joget.apps.workflow.lib.AssignmentCompleteButton;
 import org.joget.apps.workflow.lib.AssignmentWithdrawButton;
 import org.joget.commons.util.LogUtil;
@@ -40,6 +39,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class InboxMenu extends UserviewMenu implements PluginWebSupport {
     private DataList cacheDataList = null;
@@ -193,7 +193,8 @@ public class InboxMenu extends UserviewMenu implements PluginWebSupport {
 			AppService appService = (AppService) ac.getBean("appService");
             DataListService dataListService = (DataListService) ac.getBean("dataListService");
             String json = AppUtil.readPluginResource(getClass().getName(), "/properties/userview/inboxMenuListJson.json", null, true, "message/userview/inboxMenu");
-            cacheDataList = dataListService.fromJson(json, false);
+            final UserviewTheme theme = Optional.of(this).map(UserviewMenu::getUserview).map(Userview::getSetting).map(UserviewSetting::getTheme).orElse(null);
+            cacheDataList = dataListService.fromJson(json, false, theme);
         }
         return cacheDataList;
     }

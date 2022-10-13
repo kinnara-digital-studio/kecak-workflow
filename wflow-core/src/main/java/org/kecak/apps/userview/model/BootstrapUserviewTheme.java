@@ -1,5 +1,7 @@
 package org.kecak.apps.userview.model;
 
+import org.joget.apps.datalist.model.DataList;
+import org.joget.apps.datalist.model.DataListFilterType;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
@@ -70,4 +72,6 @@ public interface BootstrapUserviewTheme extends BootstrapUserview {
      * @return
      */
     String getNavigationBarHeader();
+
+    String renderBootstrapDataListFilterTemplate(DataList dataList, DataListFilterType filterType, String name, String label);
 }

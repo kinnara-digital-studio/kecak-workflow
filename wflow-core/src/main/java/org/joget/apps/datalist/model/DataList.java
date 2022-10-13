@@ -5,11 +5,17 @@ import org.displaytag.util.ParamEncoder;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.service.DataListDecorator;
 import org.joget.apps.userview.model.UserviewPermission;
+import org.joget.apps.userview.model.UserviewTheme;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.ResourceBundleUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.plugin.base.PluginManager;
 import org.joget.workflow.util.WorkflowUtil;
+import org.kecak.apps.datalist.model.AceDataListFilterType;
+import org.kecak.apps.datalist.model.BootstrapDataListFilterType;
+import org.kecak.apps.userview.model.AbstractAceUserviewTheme;
+import org.kecak.apps.userview.model.AbstractAdminLteUserviewTheme;
+import org.kecak.apps.userview.model.BootstrapUserviewTheme;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -74,6 +80,8 @@ public class DataList {
     private Collection<DataListFilterQueryObject> dataListFilterQueryObjectList = new ArrayList<DataListFilterQueryObject>();
     private boolean filterQueryBuild = false;
     private UserviewPermission permission = null;
+
+    private UserviewTheme theme;
 
     //Required when using session
     public void init() {
@@ -582,7 +590,12 @@ public class DataList {
             DataListFilter[] filterList = getFilters();
             for (int i = 0; i < filterList.length; i++) {
                 String label = filterList[i].getLabel();
-                templates.add(filterList[i].getType().getTemplate(this, filterList[i].getName(), label));
+                final DataListFilterType type = filterList[i].getType();
+                if(theme != null && theme instanceof BootstrapUserviewTheme) {
+                    templates.add(((BootstrapUserviewTheme) theme).renderBootstrapDataListFilterTemplate(this, type, filterList[i].getName(), label));
+                } else {
+                    templates.add(type.getTemplate(this, filterList[i].getName(), label));
+                }
             }
             filterTemplates = (String[]) templates.toArray(new String[0]);
         }
@@ -698,5 +711,13 @@ public class DataList {
      */
     public UserviewPermission getPermission() {
         return permission;
+    }
+
+    public UserviewTheme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(UserviewTheme theme) {
+        this.theme = theme;
     }
 }

@@ -1,5 +1,7 @@
 package org.kecak.apps.userview.model;
 
+import org.joget.apps.datalist.model.DataList;
+import org.joget.apps.datalist.model.DataListFilterType;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.userview.model.UserviewMenu;
@@ -53,29 +55,17 @@ public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implem
 
     @Override
     public String getBootstrapJspPage(UserviewMenu menu) {
-        if(menu instanceof AdminLteUserviewMenu) {
-            return ((AdminLteUserviewMenu) menu).getAdminLteJspPage(this);
-        } else {
-            return menu.getJspPage();
-        }
+        return ((AdminLteUserviewMenu) menu).getAdminLteJspPage(this);
     }
 
     @Override
     public String getBootstrapRenderPage(UserviewMenu menu) {
-        if(menu instanceof AdminLteUserviewMenu) {
-            return ((AdminLteUserviewMenu) menu).getAdminLteRenderPage();
-        } else {
-            return menu.getRenderPage();
-        }
+        return ((AdminLteUserviewMenu) menu).getAdminLteRenderPage();
     }
 
     @Override
     public String getBootstrapDecoratedMenu(UserviewMenu menu) {
-        if(menu instanceof AdminLteUserviewMenu) {
-            return ((AdminLteUserviewMenu) menu).getAdminLteDecoratedMenu();
-        } else {
-            return menu.getDecoratedMenu();
-        }
+        return ((AdminLteUserviewMenu) menu).getAdminLteDecoratedMenu();
     }
 
     @Override
@@ -84,5 +74,12 @@ public abstract class AbstractAdminLteUserviewTheme extends UserviewTheme implem
                 " <span class=\"logo-mini\"><b>A</b>LT</span>\n" +
                 " <!-- logo for regular state and mobile devices -->\n" +
                 " <span class=\"logo-lg\">" + getUserview().getPropertyString("name") + "</span>";
+    }
+
+    @Override
+    public String renderBootstrapDataListFilterTemplate(DataList dataList, DataListFilterType filterType, String name, String label) {
+        Objects.requireNonNull(dataList);
+        Objects.requireNonNull(filterType);
+        return filterType.getAdminLteTemplate(dataList, name, label);
     }
 }

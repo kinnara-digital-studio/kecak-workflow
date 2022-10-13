@@ -1,12 +1,14 @@
 package org.joget.apps.datalist.model;
 
 import org.joget.plugin.base.ExtDefaultPlugin;
+import org.kecak.apps.datalist.model.AceDataListFilterType;
 
 /**
  * A base abstract class to develop a Datalist Filter Type plugin
  * 
  */
-public abstract class DataListFilterTypeDefault extends ExtDefaultPlugin implements DataListFilterType {
+public abstract class DataListFilterTypeDefault extends ExtDefaultPlugin
+        implements DataListFilterType, AceDataListFilterType {
 
     /**
      * Convenience method to get value from request parameters.
@@ -68,5 +70,20 @@ public abstract class DataListFilterTypeDefault extends ExtDefaultPlugin impleme
             }
         }
         return null;
+    }
+
+    @Override
+    public String getAceTemplate(DataList datalist, String name, String label) {
+        return getTemplate(datalist, name, label);
+    }
+
+    @Override
+    public String getAdminLteTemplate(DataList datalist, String name, String label) {
+        return getTemplate(datalist, name, label);
+    }
+
+    @Override
+    public String getAdminKitTemplate(DataList datalist, String name, String label) {
+        return getTemplate(datalist, name, label);
     }
 }

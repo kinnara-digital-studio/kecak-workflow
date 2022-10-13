@@ -3,6 +3,7 @@ package org.joget.apps.datalist.service;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.*;
 import org.joget.apps.userview.model.UserviewPermission;
+import org.joget.apps.userview.model.UserviewTheme;
 import org.joget.commons.util.LogUtil;
 import org.joget.commons.util.StringUtil;
 import org.joget.directory.model.User;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +47,7 @@ public class DataListService {
      * @param ignoreColumnPermission
      * @return
      */
-    public DataList fromJson(String json, boolean ignoreColumnPermission) {
+    public DataList fromJson(String json, boolean ignoreColumnPermission, @Nullable UserviewTheme theme) {
         json = AppUtil.processHashVariable(json, null, StringUtil.TYPE_JSON, null);
 
         final DataList dataList = JsonUtil.fromJson(json, DataList.class);
@@ -77,7 +79,13 @@ public class DataListService {
             dataList.setColumns(columns);
         }
 
+        dataList.setTheme(theme);
+
         return dataList;
+    }
+
+    public DataList fromJson(String json, boolean ignoreColumnPermission) {
+        return fromJson(json, ignoreColumnPermission, null);
     }
 
     /**
