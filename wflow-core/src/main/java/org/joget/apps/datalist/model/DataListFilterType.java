@@ -9,7 +9,8 @@ import org.kecak.apps.datalist.model.AdminLteDataListFilterType;
  * Interface of Datalist Filter Type Plugin
  * 
  */
-public interface DataListFilterType extends PropertyEditable, AceDataListFilterType, AdminLteDataListFilterType, AdminKitDataListFilterType {
+public interface DataListFilterType extends PropertyEditable, AceDataListFilterType,
+        AdminLteDataListFilterType, AdminKitDataListFilterType {
 
     /**
      * HTML template of the filter

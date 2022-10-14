@@ -8,7 +8,7 @@ import org.kecak.apps.datalist.model.AceDataListFilterType;
  * 
  */
 public abstract class DataListFilterTypeDefault extends ExtDefaultPlugin
-        implements DataListFilterType, AceDataListFilterType {
+        implements DataListFilterType {
 
     /**
      * Convenience method to get value from request parameters.
