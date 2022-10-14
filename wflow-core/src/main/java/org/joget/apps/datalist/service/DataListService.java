@@ -77,9 +77,9 @@ public class DataListService {
                     .toArray(DataListColumn[]::new);
 
             dataList.setColumns(columns);
-        }
 
-        dataList.setTheme(theme);
+            dataList.setTheme(theme);
+        }
 
         return dataList;
     }
