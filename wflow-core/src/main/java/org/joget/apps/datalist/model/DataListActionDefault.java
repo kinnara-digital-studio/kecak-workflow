@@ -35,7 +35,8 @@ public abstract class DataListActionDefault extends ExtDefaultPlugin implements 
 
     @Override
     public boolean isPermitted() {
-        UserviewPermission permission = generatePlugin((Map<String, Object>) getProperty(JsonUtil.PROPERTY_PERMISSION));
+        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
+        UserviewPermission permission = pluginManager.getPlugin((Map<String, Object>) getProperty(JsonUtil.PROPERTY_PERMISSION));
         if(WorkflowUtil.getCurrentUsername() == null || permission == null) {
             return true;
         }
@@ -44,20 +45,5 @@ public abstract class DataListActionDefault extends ExtDefaultPlugin implements 
         User user = directoryManager.getUserByUsername(WorkflowUtil.getCurrentUsername());
         permission.setCurrentUser(user);
         return permission.isAuthorize();
-    }
-
-    private <T extends Plugin> T generatePlugin(Map<String, Object> plugin) {
-        if(plugin == null)
-            return null;
-
-        PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
-        Map<String, Object> pluginProperties = (Map<String, Object>)plugin.get("properties");
-        String pluginClassName = String.valueOf(plugin.get("className"));
-        Plugin pluginObject = pluginManager.getPlugin(pluginClassName);
-        if(pluginObject == null)
-            return null;
-
-        ((PropertyEditable)pluginObject).setProperties(pluginProperties);
-        return (T) pluginObject;
     }
 }
