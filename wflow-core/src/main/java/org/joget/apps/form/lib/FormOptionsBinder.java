@@ -68,7 +68,8 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
     }
 
     public FormRowSet load(Element element, String primaryKey, FormData formData) {
-        return loadAjaxOptions(null, formData);
+        setFormData(formData);
+        return loadAjaxOptions(null);
     }
 
     /**
@@ -91,10 +92,6 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
     }
 
     public FormRowSet loadAjaxOptions(String[] dependencyValues) {
-        return loadAjaxOptions(dependencyValues, null);
-    }
-
-    public FormRowSet loadAjaxOptions(String[] dependencyValues, FormData formData) {
         FormRowSet results = new FormRowSet();
         results.setMultiRow(true);
         //Using filtered formset to ensure the returned result is clean with no unnecessary nulls
@@ -112,6 +109,7 @@ public class FormOptionsBinder extends FormBinder implements FormLoadOptionsBind
 
                 WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
 
+                FormData formData = getFormData();
                 WorkflowAssignment workflowAssignment = null;
                 if(formData != null && formData.getActivityId() != null) {
                 	workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
