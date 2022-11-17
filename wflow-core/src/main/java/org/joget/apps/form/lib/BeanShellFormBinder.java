@@ -3,6 +3,8 @@ package org.joget.apps.form.lib;
 import bsh.Interpreter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormAjaxOptionsBinder;
@@ -106,14 +108,17 @@ public class BeanShellFormBinder extends FormBinder implements FormLoadBinder, F
     }
 
     @SuppressWarnings("unchecked")
-	public FormRowSet loadAjaxOptions(String[] dependencyValues, FormData formData) {
+	public FormRowSet loadAjaxOptions(String[] dependencyValues) {
         @SuppressWarnings("rawtypes")
 		Map properties = new HashMap();
         properties.putAll(getProperties());
         properties.put("values", (dependencyValues == null)? new String[]{}: dependencyValues);
 
         WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
-        WorkflowAssignment workflowAssignment = workflowManager.getAssignment(formData.getActivityId());
+        WorkflowAssignment workflowAssignment = Optional.ofNullable(getFormData())
+                .map(FormData::getActivityId)
+                .map(workflowManager::getAssignment)
+                .orElse(null);
         String script = AppUtil.processHashVariable(getPropertyString("script"), workflowAssignment, null, null);
         return executeScript(script, properties, false);
     }

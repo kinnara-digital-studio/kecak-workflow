@@ -14,6 +14,8 @@ public abstract class FormBinder extends ExtDefaultPlugin implements PropertyEdi
     public static final String FORM_OPTIONS_BINDER = "optionsBinder";
     public static final String FORM_STORE_BINDER = "storeBinder";
     private Element element;
+
+    private FormData formData;
     @SuppressWarnings("unused")
 	private Map<String, Object> properties;
 
@@ -33,5 +35,21 @@ public abstract class FormBinder extends ExtDefaultPlugin implements PropertyEdi
      */
     public void setElement(Element element) {
         this.element = element;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public FormData getFormData() {
+        return formData;
+    }
+
+    /**
+     *
+     * @param formData
+     */
+    public void setFormData(FormData formData) {
+        this.formData = formData;
     }
 }
