@@ -2,6 +2,7 @@ package org.joget.apps.app.service;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
+import org.joget.commons.util.DataEncryption;
 import org.joget.commons.util.SetupManager;
 import org.joget.directory.model.User;
 import org.joget.workflow.model.service.WorkflowUserManager;
@@ -17,18 +18,16 @@ public class AuthTokenService implements Serializable {
     private static final long serialVersionUID = -3301605591108950415L;
     private Clock clock = DefaultClock.INSTANCE;
 
-
     private final static String DEFAULT_SECRET = "It's not secure to use default key";
     private static final String ISSUER = "org.kecak";
 
     @Nonnull private final String secret;
-
     private final Long expiration = 600L;
     private final Long expirationRefreshToken = 300L;
 
-    public AuthTokenService() {
+    public AuthTokenService(DataEncryption dataEncryption) {
         String masterPassword = SetupManager.getSettingValue(SetupManager.MASTER_LOGIN_PASSWORD);
-        secret = masterPassword.isEmpty() ? DEFAULT_SECRET : masterPassword;
+        secret = masterPassword.isEmpty() ? DEFAULT_SECRET : dataEncryption.decrypt(masterPassword);
     }
 
     public String getUsernameFromToken(String token) throws ExpiredJwtException {

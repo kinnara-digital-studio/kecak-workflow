@@ -8,26 +8,23 @@ import org.jasypt.salt.SaltGenerator;
 import org.jasypt.salt.ZeroSaltGenerator;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.joget.commons.util.DataEncryption;
+import org.joget.commons.util.SetupManager;
+
+import static org.joget.commons.util.SecurityUtil.PROPERTY_SETUP_SECURITY_KEY;
+import static org.joget.commons.util.SecurityUtil.PROPERTY_SETUP_SECURITY_SALT;
 
 public class SecureDataEncryptionImpl implements DataEncryption {
-    private String salt;
-    private String key;
+
+    private SetupManager setupManager;
+
     private static Map<String, String> cache = new HashMap<String, String>();
 
     public String getSalt() {
-        return this.salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
+        return SetupManager.getSettingValue(PROPERTY_SETUP_SECURITY_SALT);
     }
 
     public String getKey() {
-        return this.key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+        return SetupManager.getSettingValue(PROPERTY_SETUP_SECURITY_KEY);
     }
 
     public String encrypt(String rawContent) {
@@ -120,5 +117,9 @@ public class SecureDataEncryptionImpl implements DataEncryption {
             s = "";
         }
         return content;
+    }
+
+    public void setSetupManager(SetupManager setupManager) {
+        this.setupManager = setupManager;
     }
 }

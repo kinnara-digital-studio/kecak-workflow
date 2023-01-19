@@ -154,7 +154,9 @@
 
     </security:http>
 
-    <bean id="authTokenService" class="org.joget.apps.app.service.AuthTokenService"/>
+    <bean id="authTokenService" class="org.joget.apps.app.service.AuthTokenService">
+        <constructor-arg ref="dataEncryption" />
+    </bean>
 
     <bean id="workflowApiAuthEntryPoint" class="org.kecak.webapi.security.WorkflowApiAuthenticationEntryPoint" />
 

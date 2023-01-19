@@ -5,12 +5,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppService;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.workflow.security.SecureDataEncryptionImpl;
+import org.joget.commons.spring.model.Setting;
 import org.joget.commons.spring.web.CustomContextLoaderListener;
 import org.joget.commons.spring.web.CustomDispatcherServlet;
-import org.joget.commons.util.DynamicDataSourceManager;
-import org.joget.commons.util.HostManager;
-import org.joget.commons.util.LogUtil;
-import org.joget.commons.util.ResourceBundleUtil;
+import org.joget.commons.util.*;
 import org.kecak.apps.scheduler.SchedulerManager;
 import org.kecak.apps.scheduler.SchedulerPluginJob;
 import org.kecak.apps.scheduler.model.SchedulerDetails;
@@ -35,6 +34,9 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
+import static org.joget.commons.util.SecurityUtil.PROPERTY_SETUP_SECURITY_KEY;
+import static org.joget.commons.util.SecurityUtil.PROPERTY_SETUP_SECURITY_SALT;
 
 /**
  * Servlet to handle first-time database setup and initialization.
@@ -245,6 +247,24 @@ public class SetupServlet extends HttpServlet {
 	                LogUtil.info(getClass().getName(), "Profile init complete [" + profileName + "]");
 	                LogUtil.info(getClass().getName(), "===== Database Setup Complete =====");
 
+                    //Initialize security
+                    final SetupManager setupManager = (SetupManager) AppUtil.getApplicationContext().getBean("setupManager");
+                    {
+                        final Setting setting = new Setting();
+                        setting.setProperty(PROPERTY_SETUP_SECURITY_SALT);
+                        setting.setValue(SecurityUtil.generateRandomString(32, true, true, true, false, false));
+                        setupManager.saveSetting(setting);
+                    }
+
+                    {
+                        final Setting setting = new Setting();
+                        setting.setProperty(PROPERTY_SETUP_SECURITY_KEY);
+                        setting.setValue(SecurityUtil.generateRandomString(16, true, true, true, false, false));
+                        setupManager.saveSetting(setting);
+                    }
+
+                    LogUtil.info(getClass().getName(), "===== Security Setup Complete =====");
+
 	                //Initialize Scheduler Job
                     SchedulerDetails schedulerDetails = new SchedulerDetails();
                     schedulerDetails.setJobName("SchedulerPluginJob");
@@ -262,6 +282,8 @@ public class SetupServlet extends HttpServlet {
                     schedulerDetails.setTriggerName("SchedulerPluginJob");
                     SchedulerManager schedulerManager = (SchedulerManager) AppUtil.getApplicationContext().getBean("schedulerManager");
                     schedulerManager.saveOrUpdateJobDetails(schedulerDetails);
+
+                    LogUtil.info(getClass().getName(), "===== Scheduler Setup Complete =====");
 	            }
                 
             } catch (Exception ex) {
