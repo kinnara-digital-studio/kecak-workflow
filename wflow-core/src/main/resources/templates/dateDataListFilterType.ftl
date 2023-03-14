@@ -1,8 +1,8 @@
-<link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-daterangepicker/daterangepicker.css">
-<link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/moment/min/moment.min.js"></script>
-<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/node_modules/bootstrap-daterangepicker/daterangepicker.css">
+<link rel="stylesheet" href="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/node_modules/moment/min/moment.min.js"></script>
+<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/node_modules/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="${request.contextPath}/plugin/org.joget.apps.form.lib.DatePicker/node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
 <script type="text/javascript" src="${contextPath}/plugin/org.joget.apps.datalist.lib.TextFieldDataListFilterType/js/jquery.placeholder.min.js"></script>
 <#if request.getAttribute("currentLocale")!?starts_with("zh") >
