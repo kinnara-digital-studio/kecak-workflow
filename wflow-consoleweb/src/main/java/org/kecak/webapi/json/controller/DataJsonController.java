@@ -151,14 +151,12 @@ public class DataJsonController implements Declutter {
 
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postFormSubmit", new Object[]{
-                    request,
+            addAuditTrail("postFormSubmit", request,
                     response,
                     appId,
                     appVersion,
                     formDefId,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -208,14 +206,12 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postFormSubmitMultipart", new Object[]{
-                    request,
+            addAuditTrail("postFormSubmitMultipart", request,
                     response,
                     appId,
                     appVersion,
                     formDefId,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -252,13 +248,11 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResponse.toString());
 
-            addAuditTrail("postTempFileUploadForm", new Object[]{
-                    request,
+            addAuditTrail("postTempFileUploadForm", request,
                     response,
                     appId,
                     appVersion,
-                    formDefId
-            });
+                    formDefId);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -294,11 +288,9 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
-            addAuditTrail("postTempFileUploadAssignment", new Object[]{
-                    request,
+            addAuditTrail("postTempFileUploadAssignment", request,
                     response,
-                    assignmentId
-            });
+                    assignmentId);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -335,11 +327,9 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
-            addAuditTrail("postTempFileUploadAssignmentByProcess", new Object[]{
-                    request,
+            addAuditTrail("postTempFileUploadAssignmentByProcess", request,
                     response,
-                    processId
-            });
+                    processId);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -400,13 +390,11 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(uploadResult.toString());
 
-            addAuditTrail("postTempFileUploadProcessStart", new Object[]{
-                    request,
+            addAuditTrail("postTempFileUploadProcessStart", request,
                     response,
                     appId,
                     appVersion,
-                    processId
-            });
+                    processId);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -511,14 +499,12 @@ public class DataJsonController implements Declutter {
                 response.getWriter().write(jsonResponse.toString());
             }
 
-            addAuditTrail("postTempFileUploadProcessStart", new Object[]{
-                    request,
+            addAuditTrail("postTempFileUploadProcessStart", request,
                     response,
                     appId,
                     appVersion,
                     formDefId,
-                    elementId
-            });
+                    elementId);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -571,15 +557,13 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("putFormData", new Object[]{
-                    request,
+            addAuditTrail("putFormData", request,
                     response,
                     appId,
                     appVersion,
                     formDefId,
                     primaryKey,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -626,15 +610,13 @@ public class DataJsonController implements Declutter {
             final JSONObject jsonResponse = getJsonResponseResult(form, result, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("putFormDataMultipart", new Object[]{
-                    request,
+            addAuditTrail("putFormDataMultipart", request,
                     response,
                     appId,
                     appVersion,
                     formDefId,
                     primaryKey,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -736,8 +718,7 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("getFormData", new Object[]{
-                    request,
+            addAuditTrail("getFormData", request,
                     response,
                     appId,
                     appVersion,
@@ -746,8 +727,7 @@ public class DataJsonController implements Declutter {
                     asLabel,
                     asAttachmentUrl,
                     asOptions,
-                    digest
-            });
+                    digest);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -825,8 +805,7 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("deleteFormData", new Object[]{
-                    request,
+            addAuditTrail("deleteFormData", request,
                     response,
                     appId,
                     appVersion,
@@ -835,8 +814,7 @@ public class DataJsonController implements Declutter {
                     abort,
                     terminate,
                     minify,
-                    digest
-            });
+                    digest);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -914,8 +892,7 @@ public class DataJsonController implements Declutter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("getElementData", new Object[]{
-                    request,
+            addAuditTrail("getElementData", request,
                     response,
                     appId,
                     appVersion,
@@ -926,8 +903,7 @@ public class DataJsonController implements Declutter {
                     digest,
                     asAttachmentUrl,
                     asLabel,
-                    asOptions
-            });
+                    asOptions);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -993,8 +969,7 @@ public class DataJsonController implements Declutter {
 
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("getElementOptionsData", new Object[]{
-                    request,
+            addAuditTrail("getElementOptionsData", request,
                     response,
                     appId,
                     appVersion,
@@ -1004,8 +979,7 @@ public class DataJsonController implements Declutter {
                     start,
                     rows,
                     includeSubForm,
-                    digest
-            });
+                    digest);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1048,13 +1022,11 @@ public class DataJsonController implements Declutter {
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getListCount", new Object[]{
-                        request,
+                addAuditTrail("getListCount", request,
                         response,
                         appId,
                         appVersion,
-                        dataListId
-                });
+                        dataListId);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1145,8 +1117,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getList", new Object[]{
-                        request,
+                addAuditTrail("getList", request,
                         response,
                         appId,
                         appVersion,
@@ -1156,8 +1127,7 @@ public class DataJsonController implements Declutter {
                         rows,
                         sort,
                         desc,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1274,14 +1244,12 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getListForm", new Object[]{
-                        request,
+                addAuditTrail("getListForm", request,
                         response,
                         appId,
                         appVersion,
                         dataListId,
-                        formDefId
-                });
+                        formDefId);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1354,15 +1322,13 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postProcessStart", new Object[]{
-                    request,
+            addAuditTrail("postProcessStart", request,
                     response,
                     appId,
                     appVersion,
                     processId,
                     minify,
-                    asOptions
-            });
+                    asOptions);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1429,15 +1395,13 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, formData, processResult, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postProcessStartMultipart", new Object[]{
-                    request,
+            addAuditTrail("postProcessStartMultipart", request,
                     response,
                     appId,
                     appVersion,
                     processId,
                     minify,
-                    asOptions
-            });
+                    asOptions);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1483,12 +1447,10 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentComplete", new Object[]{
-                    request,
+            addAuditTrail("postAssignmentComplete", request,
                     response,
                     assignmentId,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1534,12 +1496,10 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentCompleteMultipart", new Object[]{
-                    request,
+            addAuditTrail("postAssignmentCompleteMultipart", request,
                     response,
                     assignmentId,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1587,13 +1547,11 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentCompleteByProcess", new Object[]{
-                    request,
+            addAuditTrail("postAssignmentCompleteByProcess", request,
                     response,
                     processId,
                     activityDefId,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1639,13 +1597,11 @@ public class DataJsonController implements Declutter {
             JSONObject jsonResponse = getJsonResponseResult(form, resultFormData, minify);
             response.getWriter().write(jsonResponse.toString());
 
-            addAuditTrail("postAssignmentCompleteByProcessMultipart", new Object[]{
-                    request,
+            addAuditTrail("postAssignmentCompleteByProcessMultipart", request,
                     response,
                     processId,
                     activityDefId,
-                    minify
-            });
+                    minify);
 
         } catch (ApiException e) {
             response.sendError(e.getErrorCode(), e.getMessage());
@@ -1693,14 +1649,12 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignment", new Object[]{
-                        request,
+                addAuditTrail("getAssignment", request,
                         response,
                         asLabel,
                         asOptions,
                         asAttachmentUrl,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1750,16 +1704,14 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentByProcess", new Object[]{
-                        request,
+                addAuditTrail("getAssignmentByProcess", request,
                         response,
                         processId,
                         activityDefId,
                         asLabel,
                         asOptions,
                         asAttachmentUrl,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1825,16 +1777,14 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentUsingForm", new Object[]{
-                        request,
+                addAuditTrail("getAssignmentUsingForm", request,
                         response,
                         formDefId,
                         assignmentId,
                         asLabel,
                         asOptions,
                         asAttachmentUrl,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1901,8 +1851,7 @@ public class DataJsonController implements Declutter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentByProcessUsingForm", new Object[]{
-                        request,
+                addAuditTrail("getAssignmentByProcessUsingForm", request,
                         response,
                         formDefId,
                         processId,
@@ -1910,8 +1859,7 @@ public class DataJsonController implements Declutter {
                         asLabel,
                         asOptions,
                         asAttachmentUrl,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -1950,13 +1898,11 @@ public class DataJsonController implements Declutter {
                 jsonResponse.put(FIELD_TOTAL, total);
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignmentsCount", new Object[]{
-                        request,
+                addAuditTrail("getAssignmentsCount", request,
                         response,
                         appId,
                         appVersion,
-                        processId
-                });
+                        processId);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -2061,8 +2007,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getAssignments", new Object[]{
-                        request,
+                addAuditTrail("getAssignments", request,
                         response,
                         appId,
                         appVersion,
@@ -2072,8 +2017,7 @@ public class DataJsonController implements Declutter {
                         rows,
                         sort,
                         desc,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -2139,15 +2083,13 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("abortAssignment", new Object[]{
-                        request,
+                addAuditTrail("abortAssignment", request,
                         response,
                         terminate,
                         force,
                         minify,
                         statusField,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -2218,8 +2160,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("abortAssignmentsByProcess", new Object[]{
-                        request,
+                addAuditTrail("abortAssignmentsByProcess", request,
                         response,
                         processId,
                         activityDefId,
@@ -2227,8 +2168,7 @@ public class DataJsonController implements Declutter {
                         force,
                         minify,
                         statusField,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -2400,8 +2340,7 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getDataListAssignments", new Object[]{
-                        request,
+                addAuditTrail("getDataListAssignments", request,
                         response,
                         appId,
                         appVersion,
@@ -2413,8 +2352,7 @@ public class DataJsonController implements Declutter {
                         rows,
                         sort,
                         desc,
-                        digest
-                });
+                        digest);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -2507,15 +2445,13 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("getDataListAssignmentsCount", new Object[]{
-                        request,
+                addAuditTrail("getDataListAssignmentsCount", request,
                         response,
                         appId,
                         appVersion,
                         dataListId,
                         processId,
-                        activityId
-                });
+                        activityId);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -2568,15 +2504,13 @@ public class DataJsonController implements Declutter {
 
                 response.getWriter().write(jsonResponse.toString());
 
-                addAuditTrail("postDataListAction", new Object[]{
-                        request,
+                addAuditTrail("postDataListAction", request,
                         response,
                         appId,
                         appVersion,
                         dataListId,
                         actionId,
-                        ids
-                });
+                        ids);
 
             } catch (JSONException e) {
                 throw new ApiException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
@@ -3738,7 +3672,7 @@ public class DataJsonController implements Declutter {
 
                     Optional.of(elementId)
                             .map(key -> {
-                                if(e instanceof FileDownloadSecurity && fileMap.containsKey(key)) {
+                                if (e instanceof FileDownloadSecurity && fileMap.containsKey(key)) {
                                     return getTempFilePath(key);
                                 } else {
                                     return data.get(key);
@@ -3860,7 +3794,7 @@ public class DataJsonController implements Declutter {
         return resultFormData;
     }
 
-    protected void addAuditTrail(String methodName, Object[] parameters) {
+    protected void addAuditTrail(String methodName, Object... parameters) {
         final Class[] types = Optional.of(this)
                 .map(Object::getClass)
                 .map(Class::getMethods)
