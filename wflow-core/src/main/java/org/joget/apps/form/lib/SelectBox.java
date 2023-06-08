@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -344,13 +345,13 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
      * @throws SelectBoxException
      */
     protected void handleGet(HttpServletRequest request, HttpServletResponse response) throws SelectBoxException {
-        final String formDefId = getRequiredParameter(request, "formDefId");
-        final String[] fieldIds = getOptionalParameterValues(request, "fieldId", new String[0]);
+        final String formDefId = getOptionalParameter(request, "formDefId", "");
+        final String fieldId = getOptionalParameter(request, "fieldId", "");
         final String search = getOptionalParameter(request, "search", "");
         final Pattern searchPattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
         final long page = Long.parseLong(getOptionalParameter(request, "page", "1"));
-        final String grouping = getOptionalParameter(request, "grouping", "");
-        final String[] values = getOptionalParameterValues(request, "values", new String[0]);
+        final String controlValue = getOptionalParameter(request, "controlValue", "");
+        final String[] values = getOptionalParameterValues(request, "value", new String[0]);
 
         final AppDefinition appDefinition = AppUtil.getCurrentAppDefinition();
 
@@ -358,71 +359,75 @@ public class SelectBox extends Element implements FormBuilderPaletteElement, For
         final Form form = generateForm(appDefinition, formDefId);
 
         final JSONArray jsonResults = new JSONArray();
-        for (String fieldId : fieldIds) {
-            Element element = FormUtil.findElement(fieldId, form, formData);
+        Element elementSelectBox = FormUtil.findElement(fieldId, form, formData);
+        if (elementSelectBox == null)
+            throw new SelectBoxException(HttpServletResponse.SC_NOT_FOUND, "Element [" + fieldId + "] not found");
 
-            if (element == null)
-                continue;
+        Element elementControlField = ((FormAjaxOptionsElement)elementSelectBox).getControlElement(formData);
+        if (elementControlField != null) {
+            String parameterName = FormUtil.getElementParameterName(elementControlField);
+            formData.addRequestParameterValues(parameterName, new String[]{controlValue});
+        }
 
-            FormUtil.executeOptionBinders(element, formData);
-            FormRowSet optionsRowSet = FormUtil.getElementPropertyOptionsMap(element, formData);
-            if (values.length > 0) {
-                for (FormRow row : optionsRowSet) {
-                    boolean found = false;
-                    for (String value : values) {
-                        if (found = value.equals(row.getProperty(FormUtil.PROPERTY_VALUE))) {
-                            break;
-                        }
-                    }
-
+        FormUtil.executeOptionBinders(elementSelectBox, formData);
+        FormRowSet optionsRowSet = FormUtil.getElementPropertyOptionsMap(elementSelectBox, formData);
+        if (values.length > 0) {
+            for (FormRow row : optionsRowSet) {
+                String rowValue = row.getProperty(FormUtil.PROPERTY_VALUE);
+                boolean found = false;
+                for (String value : values) {
+                    found = value.equals(rowValue);
                     if (found) {
+                        break;
+                    }
+                }
+
+                if (found) {
+                    try {
+                        JSONObject jsonRow = new JSONObject();
+                        jsonRow.put("id", row.getProperty(FormUtil.PROPERTY_VALUE));
+                        jsonRow.put("text", row.getProperty(FormUtil.PROPERTY_LABEL));
+                        jsonResults.put(jsonRow);
+                    } catch (JSONException ignored) {
+                    }
+                }
+            }
+        } else {
+            int skip = (int) ((page - 1) * PAGE_SIZE);
+            int pageSize = (int) PAGE_SIZE;
+            for (int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
+                FormRow formRow = optionsRowSet.get(i);
+                String label = formRow.getProperty(FormUtil.PROPERTY_LABEL);
+                Matcher m = searchPattern.matcher(label);
+                if (m.find()) {
+                    if (skip > 0) {
+                        skip--;
+                    } else {
                         try {
                             JSONObject jsonRow = new JSONObject();
-                            jsonRow.put("id", row.getProperty(FormUtil.PROPERTY_VALUE));
-                            jsonRow.put("text", row.getProperty(FormUtil.PROPERTY_LABEL));
+                            jsonRow.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
+                            jsonRow.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
                             jsonResults.put(jsonRow);
+                            pageSize--;
                         } catch (JSONException ignored) {
                         }
                     }
                 }
-            } else {
-                int skip = (int) ((page - 1) * PAGE_SIZE);
-                int pageSize = (int) PAGE_SIZE;
-                for (int i = 0, size = optionsRowSet.size(); i < size && pageSize > 0; i++) {
-                    FormRow formRow = optionsRowSet.get(i);
-                    if (searchPattern.matcher(formRow.getProperty(FormUtil.PROPERTY_LABEL)).find() && (
-                            grouping.isEmpty()
-                                    || grouping.equalsIgnoreCase(formRow.getProperty(FormUtil.PROPERTY_GROUPING)))) {
-
-                        if (skip > 0) {
-                            skip--;
-                        } else {
-                            try {
-                                JSONObject jsonRow = new JSONObject();
-                                jsonRow.put("id", formRow.getProperty(FormUtil.PROPERTY_VALUE));
-                                jsonRow.put("text", formRow.getProperty(FormUtil.PROPERTY_LABEL));
-                                jsonResults.put(jsonRow);
-                                pageSize--;
-                            } catch (JSONException ignored) {
-                            }
-                        }
-                    }
-                }
             }
+        }
 
-            try {
-                JSONObject jsonPagination = new JSONObject();
-                jsonPagination.put("more", jsonResults.length() >= PAGE_SIZE);
+        try {
+            JSONObject jsonPagination = new JSONObject();
+            jsonPagination.put("more", jsonResults.length() >= PAGE_SIZE);
 
-                JSONObject jsonData = new JSONObject();
-                jsonData.put("results", jsonResults);
-                jsonData.put("pagination", jsonPagination);
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("results", jsonResults);
+            jsonData.put("pagination", jsonPagination);
 
-                response.setContentType("application/json");
-                response.getWriter().write(jsonData.toString());
-            } catch (JSONException | IOException e) {
-                throw new SelectBoxException(HttpServletResponse.SC_BAD_REQUEST, e);
-            }
+            response.setContentType("application/json");
+            response.getWriter().write(jsonData.toString());
+        } catch (JSONException | IOException e) {
+            throw new SelectBoxException(HttpServletResponse.SC_BAD_REQUEST, e);
         }
     }
 

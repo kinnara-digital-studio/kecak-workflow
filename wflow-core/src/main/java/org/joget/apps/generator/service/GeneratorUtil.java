@@ -276,7 +276,7 @@ public class GeneratorUtil {
             for (DatalistDefinition d : list) {
                 String json = d.getJson();
                 if (json != null && !json.isEmpty()) {
-                    if ((json.contains("org.joget.apps.datalist.lib.FormRowDataListBinder") || json.contains("org.joget.plugin.enterprise.AdvancedFormRowDataListBinder")) && json.contains(formId)) {
+                    if ((json.contains("org.joget.apps.datalist.lib.FormRowDataListBinder")) && json.contains(formId)) {
                         try {
                             // create json object
                             JSONObject obj = new JSONObject(json);

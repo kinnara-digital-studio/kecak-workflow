@@ -82,7 +82,7 @@
                                     formDefId : '${formDefId!}',
                                     fieldId : '${element.properties.id!}',
                                     <#if element.properties.controlField! != '' >
-                                        grouping : FormUtil.getValue('${element.properties.controlField!}'),
+                                        controlValue : FormUtil.getValue('${element.properties.controlField!}'),
                                     </#if>
                                     page : params.page || 1
                                 };
